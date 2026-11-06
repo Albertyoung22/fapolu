@@ -1137,11 +1137,12 @@ function initHardnessCalculator() {
 }
 
 /* ==========================================================================
-   5. Product Filter Tabs
+   5. Product Filter Tabs & Image Lightbox
    ========================================================================== */
 function initProductFilters() {
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const productCards = document.querySelectorAll('.product-card');
+    const filterBtns = document.querySelectorAll('#products .filter-btn[data-filter]');
+    const productCards = document.querySelectorAll('#products .product-card');
+    const embossedPanel = document.getElementById('embossedGalleryPanel');
 
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -1157,9 +1158,48 @@ function initProductFilters() {
                     card.style.display = 'none';
                 }
             });
+
+            if (embossedPanel) {
+                embossedPanel.style.display = (filter === 'all' || filter === '鋁合金板材') ? '' : 'none';
+            }
         });
     });
 }
+
+window.openImageLightbox = function(src, caption) {
+    const modal = document.getElementById('imageLightboxModal');
+    const img = document.getElementById('lightboxImg');
+    const cap = document.getElementById('lightboxCaption');
+    if (!modal || !img) return;
+    img.src = src;
+    if (cap) cap.textContent = caption || '';
+    modal.classList.add('open');
+};
+
+window.closeImageLightbox = function() {
+    const modal = document.getElementById('imageLightboxModal');
+    if (modal) modal.classList.remove('open');
+};
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        window.closeImageLightbox();
+    }
+});
+
+window.quickFilterExtrusion = function(filterCat, searchKw, imgSrc, caption) {
+    const catSelect = document.getElementById('specsCatSelect');
+    const searchInput = document.getElementById('specsSearchInput');
+    if (filterCat && filterCat !== '全部' && catSelect) {
+        if (searchInput) searchInput.value = '';
+        catSelect.value = filterCat;
+        catSelect.dispatchEvent(new Event('change'));
+        showToast(`📐 已篩選「${filterCat}」現貨規格，並開啟斷面標示圖`);
+    }
+    if (imgSrc) {
+        window.openImageLightbox(imgSrc, caption);
+    }
+};
 
 /* ==========================================================================
    6. Contact Form Submission

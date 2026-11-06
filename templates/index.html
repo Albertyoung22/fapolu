@@ -8,7 +8,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img_crawled/favicon.png') }}">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='8.0') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='9.0') }}">
 </head>
 <body>
 
@@ -120,7 +120,7 @@
                     <div class="hero-visual">
                         <div class="hero-preview-card glass-card">
                             <span class="preview-badge-top">半導體產業首選材料</span>
-                            <img src="{{ url_for('static', filename='img_crawled/pro_1.jpg') }}" alt="日本 UACJ 貼膜鋁板">
+                            <img src="{{ url_for('static', filename='img_crawled/05.jpg') }}" alt="日本原裝進口 UACJ 5052 貼膜鋁板" class="zoomable-img" onclick="openImageLightbox(this.src, '日本原裝進口 UACJ 5052 貼膜鋁板 · 半導體與精密光電指定材料')">
                             <div class="preview-info">
                                 <h4>日本原裝進口 UACJ 5052 貼膜鋁板</h4>
                                 <p>獨特壓延工藝消除內應力，大量精密 CNC 銑削去除不易變形翹曲，確保超高真平度與氣密性。</p>
@@ -170,7 +170,7 @@
                     <div class="about-split-grid">
                         <div class="about-photo-stack">
                             <div class="about-main-photo">
-                                <img src="{{ data.company.about_us.hero_image }}" alt="法寶實業成立概要與鋁材儲運實景" loading="lazy">
+                                <img src="{{ data.company.about_us.hero_image }}" alt="法寶實業有限公司成立概要" loading="lazy">
                                 <span class="about-seal-tag">創立於 1986 年 · 成立概要</span>
                             </div>
                             <div class="about-sub-banner">
@@ -369,8 +369,8 @@
                 <div class="products-grid">
                     {% for prod in data.products %}
                     <div class="product-card glass-card" data-category="{{ prod.category }}">
-                        <div class="product-thumb">
-                            <img src="{{ prod.image }}" alt="{{ prod.name }}" loading="lazy">
+                        <div class="product-thumb {% if prod.image_fit == 'contain' %}thumb-contain{% endif %}">
+                            <img src="{{ prod.image }}" alt="{{ prod.name }}" loading="lazy" class="zoomable-img" onclick="openImageLightbox(this.src, '{{ prod.name }}')">
                             <span class="product-badge">{{ prod.badge }}</span>
                             <span class="product-series">{{ prod.series }}</span>
                         </div>
@@ -395,6 +395,34 @@
                     </div>
                     {% endfor %}
                 </div>
+
+                <!-- 官網鏡面鋁及壓花鋁板實品圖鑑 (附圖一 ~ 附圖七) -->
+                {% if data.embossed_samples %}
+                <div class="showcase-subpanel glass-card" id="embossedGalleryPanel">
+                    <div class="showcase-subhead">
+                        <div>
+                            <span class="showcase-tag">Official Sample Atlas · 鏡面鋁及壓花板實拍</span>
+                            <h3>鏡面鋁及壓花鋁板實品圖鑑（附圖一 ～ 附圖七）</h3>
+                        </div>
+                        <p>對應官網鏡面鋁與止滑壓花板實品樣板，點擊任一圖鑑可放大檢視紋路細節</p>
+                    </div>
+                    <div class="sample-atlas-grid">
+                        {% for s in data.embossed_samples %}
+                        <div class="sample-atlas-card" onclick="openImageLightbox('{{ s.image }}', '{{ s.fig }} · {{ s.title }}（{{ s.spec }}）')">
+                            <div class="sample-atlas-img">
+                                <img src="{{ s.image }}" alt="{{ s.fig }} {{ s.title }}" loading="lazy">
+                                <span class="sample-fig-badge">{{ s.fig }}</span>
+                            </div>
+                            <div class="sample-atlas-info">
+                                <h4>{{ s.title }}</h4>
+                                <span class="sample-spec">{{ s.spec }}</span>
+                                <p>{{ s.usage }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </section>
 
@@ -410,6 +438,27 @@
                         即時查詢廠內 490 多種常備鋁合金板材、圓棒、扁條規格。支援以合金型號、厚度、長度快速檢索，可一鍵將規格加入詢價單。
                     </p>
                 </div>
+
+                <!-- 官網鋁擠型現有模具七大斷面規格示意圖 -->
+                {% if data.extrusion_profiles %}
+                <div class="extrusion-diagram-strip glass-card">
+                    <div class="diagram-strip-head">
+                        <strong>📐 鋁擠型現有模具七大標準斷面標示圖</strong>
+                        <span>點擊斷面圖可放大檢視尺寸定義或快速篩選現貨規格</span>
+                    </div>
+                    <div class="extrusion-diagram-grid">
+                        {% for ep in data.extrusion_profiles %}
+                        <button type="button" class="diagram-item-btn" onclick="quickFilterExtrusion('{{ ep.filter_cat }}', '{{ ep.search_kw or '' }}', '{{ ep.image }}', '{{ ep.name }} · {{ ep.dim }}')">
+                            <div class="diagram-img-box">
+                                <img src="{{ ep.image }}" alt="{{ ep.name }}" loading="lazy">
+                            </div>
+                            <span class="diagram-name">{{ ep.name }}</span>
+                            <span class="diagram-dim">{{ ep.dim }}</span>
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
 
                 <div class="specs-explorer-card glass-card">
                     <div class="specs-toolbar">
@@ -480,7 +529,7 @@
                     {% for cap in data.capabilities %}
                     <div class="capability-card glass-card">
                         <div class="cap-image">
-                            <img src="{{ cap.image }}" alt="{{ cap.name }}" loading="lazy">
+                            <img src="{{ cap.image }}" alt="{{ cap.name }}" loading="lazy" class="zoomable-img" onclick="openImageLightbox(this.src, '{{ cap.name }}')">
                         </div>
                         <div class="cap-title">
                             <span>{{ cap.name }}</span>
@@ -493,6 +542,32 @@
                     </div>
                     {% endfor %}
                 </div>
+
+                <!-- 官網加工部門 16 件 CNC 精密加工與細孔加工實品圖鑑 -->
+                {% if data.machining_gallery %}
+                <div class="showcase-subpanel glass-card">
+                    <div class="showcase-subhead">
+                        <div>
+                            <span class="showcase-tag">Precision Parts Gallery · 加工部門實品展示</span>
+                            <h3>法寶加工部門 · CNC 銑削、車銑小零件與微細孔加工實品</h3>
+                        </div>
+                        <p>廠內與協力資源網實際生產之精密鋁合金工件，點擊照片可放大檢視加工細節</p>
+                    </div>
+                    {% for grp in data.machining_gallery %}
+                    <div class="machining-group-block">
+                        <h4 class="machining-group-title">◆ {{ grp.group }}</h4>
+                        <div class="machining-parts-grid">
+                            {% for item in grp['items'] %}
+                            <div class="machining-part-card" onclick="openImageLightbox('{{ item.image }}', '{{ grp.group }} · {{ item.title }}')">
+                                <img src="{{ item.image }}" alt="{{ item.title }}" loading="lazy">
+                                <span>{{ item.title }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
         </section>
 
@@ -514,7 +589,7 @@
                     <div class="case-card glass-card">
                         {% if c.image %}
                         <div class="case-photo-wrap">
-                            <img src="{{ c.image }}" alt="{{ c.title }}" loading="lazy">
+                            <img src="{{ c.image }}" alt="{{ c.title }}" loading="lazy" class="zoomable-img" onclick="openImageLightbox(this.src, '{{ c.tag }} · {{ c.title }}')">
                             <span class="case-badge">{{ c.tag }}</span>
                         </div>
                         {% else %}
@@ -846,12 +921,21 @@
         </div>
     </div>
 
+    <!-- Image Zoom Lightbox Modal -->
+    <div id="imageLightboxModal" class="modal-overlay" onclick="if(event.target===this) closeImageLightbox()">
+        <div class="modal-content glass-card lightbox-modal-box">
+            <button class="modal-close" onclick="closeImageLightbox()">✕</button>
+            <img id="lightboxImg" src="" alt="放大檢視實品圖">
+            <p id="lightboxCaption" class="lightbox-caption"></p>
+        </div>
+    </div>
+
     <!-- Embedded Data for Instant Client Interaction -->
     <script>
         window.SITE_DATA = {{ data | tojson }};
     </script>
     <!-- Main Interactive Script -->
-    <script src="{{ url_for('static', filename='js/main.js', v='8.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v='9.0') }}"></script>
 </body>
 </html>
 

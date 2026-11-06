@@ -2419,3 +2419,329 @@ button {
   .zen-label-txt { display: none; }
   .mobile-nav-grid { grid-template-columns: 1fr; }
 }
+
+/* ==========================================================================
+   Official Sample Atlases, Extrusion Cross-Section Strip & Image Lightbox
+   ========================================================================== */
+.zoomable-img {
+  cursor: zoom-in;
+}
+
+.product-thumb.thumb-contain {
+  background: #fffdf8;
+  padding: 8px;
+}
+
+.product-thumb.thumb-contain img {
+  object-fit: contain;
+}
+
+.showcase-subpanel {
+  margin-top: 36px;
+  padding: 28px 26px;
+}
+
+.showcase-subhead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  margin-bottom: 22px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--border-subtle);
+}
+
+.showcase-tag {
+  display: inline-block;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--accent-cinnabar);
+  letter-spacing: 0.6px;
+  margin-bottom: 4px;
+}
+
+.showcase-subhead h3 {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: var(--text-main);
+}
+
+.showcase-subhead p {
+  font-size: 0.86rem;
+  color: var(--text-muted);
+}
+
+/* Mirror & Embossed Aluminum Sample Atlas (附圖一 ~ 附圖七) */
+.sample-atlas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+  gap: 16px;
+}
+
+.sample-atlas-card {
+  background: rgba(255, 253, 248, 0.9);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: zoom-in;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.sample-atlas-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-amber);
+  box-shadow: 0 10px 24px rgba(72, 56, 30, 0.12);
+}
+
+.sample-atlas-img {
+  position: relative;
+  height: 148px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.sample-atlas-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.45s ease;
+}
+
+.sample-atlas-card:hover .sample-atlas-img img {
+  transform: scale(1.06);
+}
+
+.sample-fig-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(166, 44, 34, 0.92);
+  color: #fffaf2;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 6px;
+}
+
+.sample-atlas-info {
+  padding: 12px 14px;
+}
+
+.sample-atlas-info h4 {
+  font-family: var(--font-serif);
+  font-size: 0.96rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.sample-spec {
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  margin-bottom: 5px;
+}
+
+.sample-atlas-info p {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+/* 7 Extrusion Mold Cross-Section Diagrams */
+.extrusion-diagram-strip {
+  padding: 20px 22px;
+  margin-bottom: 22px;
+}
+
+.diagram-strip-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-bottom: 14px;
+}
+
+.diagram-strip-head strong {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  color: var(--text-main);
+}
+
+.diagram-strip-head span {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.extrusion-diagram-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.diagram-item-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: #fffdf9;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 10px 8px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+}
+
+.diagram-item-btn:hover {
+  border-color: var(--accent-cinnabar);
+  box-shadow: 0 6px 16px rgba(166, 44, 34, 0.1);
+  transform: translateY(-2px);
+}
+
+.diagram-img-box {
+  width: 100%;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.diagram-img-box img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.diagram-name {
+  font-family: var(--font-serif);
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 2px;
+}
+
+.diagram-dim {
+  font-size: 0.71rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+/* CNC Machining Real Parts Gallery (pro_1 ~ pro_16) */
+.machining-group-block + .machining-group-block {
+  margin-top: 24px;
+}
+
+.machining-group-title {
+  font-family: var(--font-serif);
+  font-size: 1.04rem;
+  font-weight: 800;
+  color: var(--accent-cinnabar);
+  margin-bottom: 12px;
+}
+
+.machining-parts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  gap: 14px;
+}
+
+.machining-part-card {
+  background: #fffdf8;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: zoom-in;
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.machining-part-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 8px 20px rgba(45, 106, 79, 0.12);
+}
+
+.machining-part-card img {
+  width: 100%;
+  height: 138px;
+  object-fit: cover;
+  display: block;
+}
+
+.machining-part-card span {
+  display: block;
+  padding: 8px 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-main);
+  text-align: center;
+}
+
+/* Fullscreen Lightbox Modal */
+.lightbox-modal-box {
+  max-width: min(92vw, 860px);
+  padding: 20px;
+  text-align: center;
+}
+
+.lightbox-modal-box img {
+  max-width: 100%;
+  max-height: 76vh;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #fffdf9;
+  border: 1px solid var(--border-subtle);
+}
+
+.lightbox-caption {
+  margin-top: 12px;
+  font-family: var(--font-serif);
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+@media (max-width: 960px) {
+  .extrusion-diagram-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .showcase-subpanel {
+    padding: 18px 14px;
+    margin-top: 24px;
+  }
+  .sample-atlas-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .sample-atlas-img {
+    height: 120px;
+  }
+  .extrusion-diagram-strip {
+    padding: 14px 12px;
+  }
+  .extrusion-diagram-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .diagram-item-btn:last-child {
+    grid-column: 1 / -1;
+  }
+  .machining-parts-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .machining-part-card img {
+    height: 120px;
+  }
+}
