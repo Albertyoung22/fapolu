@@ -8,7 +8,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img_crawled/favicon.png', v='10.0') }}">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='14.0') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='15.0') }}">
 </head>
 <body>
 
@@ -19,7 +19,13 @@
     <header class="navbar">
         <div class="container">
             <a href="/" data-nav-page="hero" class="logo-group">
-                <img src="{{ url_for('static', filename='img_crawled/fapo_logo.png', v='10.0') }}" alt="法寶實業有限公司 LOGO" class="logo-img">
+                <span class="logo-emblem-fx">
+                    <span class="logo-halo-ring" aria-hidden="true"></span>
+                    <span class="logo-shine-mask">
+                        <img src="{{ url_for('static', filename='img_crawled/fapo_logo.png', v='10.0') }}" alt="法寶實業有限公司 LOGO" class="logo-img">
+                    </span>
+                    <span class="logo-glint-star" aria-hidden="true">✦</span>
+                </span>
                 <div class="logo-text">
                     <h1>法寶實業有限公司</h1>
                     <p>FAPO ENTERPRISE CO., LTD. · 創立於 1986</p>
@@ -923,7 +929,13 @@
             <div class="footer-grid">
                 <div class="footer-brand">
                     <div class="logo-group">
-                        <img src="{{ url_for('static', filename='img_crawled/fapo_logo.png', v='10.0') }}" alt="法寶實業有限公司 LOGO" class="logo-img">
+                        <span class="logo-emblem-fx">
+                            <span class="logo-halo-ring" aria-hidden="true"></span>
+                            <span class="logo-shine-mask">
+                                <img src="{{ url_for('static', filename='img_crawled/fapo_logo.png', v='10.0') }}" alt="法寶實業有限公司 LOGO" class="logo-img">
+                            </span>
+                            <span class="logo-glint-star" aria-hidden="true">✦</span>
+                        </span>
                         <div class="logo-text">
                             <h2 style="font-size:1.2rem; font-family: var(--font-serif);">法寶實業有限公司</h2>
                             <p>FAPO ENTERPRISE CO., LTD.</p>
@@ -1088,7 +1100,7 @@
         window.ALL_PAGES_META = {{ (all_pages_meta or {}) | tojson }};
     </script>
     <!-- Main Interactive Script -->
-    <script src="{{ url_for('static', filename='js/main.js', v='14.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v='15.0') }}"></script>
 </body>
 </html>
 

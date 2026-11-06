@@ -317,11 +317,25 @@ const BGM_TRACKS = {
 const StudioBgmEngine = {
     audio: null,
     fadeTimer: null,
+    outroTimer: null,
     currentTrack: 'piano',
     bgmEnabled: true,
     standaloneMode: false,
     isAmbientPlaying: false,
+    isInFinaleOutro: false,
     bowlVisualEnergy: 0,
+
+    _clearTimers() {
+        this.isInFinaleOutro = false;
+        if (this.fadeTimer) {
+            clearInterval(this.fadeTimer);
+            this.fadeTimer = null;
+        }
+        if (this.outroTimer) {
+            clearTimeout(this.outroTimer);
+            this.outroTimer = null;
+        }
+    },
 
     ensureAudio() {
         if (!this.audio) {
@@ -359,6 +373,7 @@ const StudioBgmEngine = {
 
     startAmbient(isSpeaking = false) {
         if (!this.bgmEnabled || this.currentTrack === 'off' || !BGM_TRACKS[this.currentTrack]) return;
+        this._clearTimers();
         const a = this.ensureAudio();
         const expectedUrl = BGM_TRACKS[this.currentTrack].url;
         if (!a.src || !a.src.endsWith(expectedUrl)) {
@@ -380,13 +395,33 @@ const StudioBgmEngine = {
     setDucking(isSpeaking) {
         if (!this.audio || !this.isAmbientPlaying) return;
         if (isSpeaking) {
+            this.isInFinaleOutro = false;
             this._fadeTo(0.16, 450);
+        } else if (this.isInFinaleOutro) {
+            return;
         } else if (this.standaloneMode && this.bgmEnabled && this.currentTrack !== 'off') {
             this._fadeTo(0.38, 600);
         } else {
-            // Pause BGM cleanly when voice tour pauses so no unwanted music keeps playing!
             this.stopAmbient();
         }
+    },
+
+    playFinaleOutro() {
+        if (!this.audio || !this.isAmbientPlaying || this.standaloneMode) return;
+        this._clearTimers();
+        this.isInFinaleOutro = true;
+        // Gently swell music for a warm 2.6s closing cadence, then smoothly fade out to silence
+        this._fadeTo(0.28, 700, () => {
+            this.outroTimer = setTimeout(() => {
+                this.isAmbientPlaying = false;
+                this.isInFinaleOutro = false;
+                this._fadeTo(0.0, 2200, () => {
+                    if (!this.isAmbientPlaying && this.audio) {
+                        this.audio.pause();
+                    }
+                });
+            }, 2600);
+        });
     },
 
     setTrack(trackKey, isVoiceActive = false) {
@@ -574,9 +609,9 @@ function initAudioTour() {
             }, 650);
         } else {
             audioTourState.isPlaying = false;
-            updatePlayButtonUI();
-            StudioBgmEngine.setDucking(false);
-            showToast("✨ 法寶實業全站語音導覽播放完畢");
+            StudioBgmEngine.playFinaleOutro();
+            selectChapter(0, false);
+            showToast("✨ 感謝聆聽法寶實業企業導覽 · 歡迎隨時線上諮詢估價！");
         }
     });
 
@@ -589,9 +624,11 @@ function initAudioTour() {
     });
 
     audioTourState.audio.addEventListener('pause', () => {
-        audioTourState.isPlaying = false;
-        updatePlayButtonUI();
-        StudioBgmEngine.setDucking(false);
+        if (!audioTourState.audio.ended) {
+            audioTourState.isPlaying = false;
+            updatePlayButtonUI();
+            StudioBgmEngine.setDucking(false);
+        }
     });
 
     // Button actions

@@ -225,15 +225,118 @@ button {
   min-width: 0;
 }
 
-/* 法寶實業官方圓形金框藍底 AL 企業標誌 */
+/* 法寶實業官方圓形 24K 流金炫亮動態企業標誌 */
+.logo-emblem-fx {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), filter 0.35s ease;
+  filter: drop-shadow(0 0 8px rgba(245, 190, 50, 0.42)) drop-shadow(0 3px 8px rgba(45, 34, 16, 0.18));
+  animation: logoAuraPulse 3.6s ease-in-out infinite;
+}
+
+.logo-halo-ring {
+  position: absolute;
+  inset: -2.5px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    rgba(245, 190, 50, 0.2) 0deg,
+    #fff9c4 72deg,
+    #ffd54f 110deg,
+    rgba(218, 152, 26, 0.25) 180deg,
+    #fff3b0 255deg,
+    #f5b82e 295deg,
+    rgba(245, 190, 50, 0.2) 360deg
+  );
+  animation: logoHaloSpin 4.2s linear infinite;
+  z-index: 0;
+}
+
+.logo-shine-mask {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  display: block;
+  z-index: 1;
+  background: #14549c;
+}
+
+.logo-shine-mask::after {
+  content: '';
+  position: absolute;
+  top: -35%;
+  left: -130%;
+  width: 85%;
+  height: 170%;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0) 15%,
+    rgba(255, 248, 200, 0.18) 38%,
+    rgba(255, 255, 240, 0.92) 50%,
+    rgba(255, 215, 70, 0.45) 62%,
+    rgba(255, 255, 255, 0) 85%
+  );
+  transform: skewX(-22deg);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: logoShineSweep 3.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
 .logo-img {
-  width: 48px;
-  height: 48px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   object-fit: contain;
   display: block;
-  flex-shrink: 0;
-  filter: drop-shadow(0 3px 8px rgba(45, 34, 16, 0.18));
+}
+
+.logo-glint-star {
+  position: absolute;
+  top: -5px;
+  right: -3px;
+  font-size: 0.78rem;
+  line-height: 1;
+  color: #fffbe0;
+  text-shadow: 0 0 6px #ffe066, 0 0 12px #f59e0b, 0 0 18px rgba(255, 215, 64, 0.9);
+  pointer-events: none;
+  z-index: 2;
+  animation: logoStarTwinkle 3.4s ease-in-out infinite;
+}
+
+.logo-group:hover .logo-emblem-fx {
+  transform: scale(1.1) rotate(3deg);
+  filter: drop-shadow(0 0 14px rgba(255, 210, 65, 0.85)) drop-shadow(0 4px 12px rgba(45, 34, 16, 0.24));
+}
+
+@keyframes logoHaloSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes logoShineSweep {
+  0%, 18% { left: -130%; opacity: 0; }
+  28% { opacity: 1; }
+  62% { left: 155%; opacity: 1; }
+  68%, 100% { left: 155%; opacity: 0; }
+}
+
+@keyframes logoStarTwinkle {
+  0%, 36%, 76%, 100% { transform: scale(0.35) rotate(0deg); opacity: 0.15; }
+  52% { transform: scale(1.22) rotate(45deg); opacity: 1; }
+  64% { transform: scale(0.8) rotate(90deg); opacity: 0.65; }
+}
+
+@keyframes logoAuraPulse {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(245, 190, 50, 0.36)) drop-shadow(0 3px 8px rgba(45, 34, 16, 0.18)); }
+  52% { filter: drop-shadow(0 0 13px rgba(255, 212, 72, 0.72)) drop-shadow(0 3px 10px rgba(45, 34, 16, 0.22)); }
 }
 
 .logo-text h1 {
@@ -2467,7 +2570,8 @@ button {
   .navbar { height: auto; min-height: 58px; padding: 8px 0; }
   .mobile-nav-overlay { top: 58px; }
   .logo-group { gap: 8px; flex: 1; min-width: 0; }
-  .logo-img { width: 36px; height: 36px; }
+  .logo-emblem-fx { width: 38px; height: 38px; }
+  .logo-glint-star { font-size: 0.64rem; top: -4px; right: -2px; }
   .logo-text h1 {
     font-size: clamp(0.92rem, 4.2vw, 1.05rem);
     letter-spacing: 0.5px;

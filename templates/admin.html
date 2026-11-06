@@ -102,13 +102,72 @@
             gap: 12px;
             margin-bottom: 24px;
         }
+        .logo-emblem-fx {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            flex-shrink: 0;
+            filter: drop-shadow(0 0 9px rgba(245, 190, 50, 0.55));
+        }
+        .logo-halo-ring {
+            position: absolute;
+            inset: -2.5px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, rgba(245,190,50,0.2), #fff9c4 75deg, #ffd54f 115deg, rgba(218,152,26,0.25) 180deg, #fff3b0 260deg, #f5b82e 300deg, rgba(245,190,50,0.2));
+            animation: logoHaloSpin 4.2s linear infinite;
+        }
+        .logo-shine-mask {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            z-index: 1;
+            background: #14549c;
+        }
+        .logo-shine-mask::after {
+            content: '';
+            position: absolute;
+            top: -35%;
+            left: -130%;
+            width: 85%;
+            height: 170%;
+            background: linear-gradient(115deg, transparent 15%, rgba(255,248,200,0.2) 38%, rgba(255,255,240,0.9) 50%, rgba(255,215,70,0.45) 62%, transparent 85%);
+            transform: skewX(-22deg);
+            mix-blend-mode: screen;
+            animation: logoShineSweep 3.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
         .logo-img {
-            width: 46px;
-            height: 46px;
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             object-fit: contain;
-            flex-shrink: 0;
-            filter: drop-shadow(0 3px 8px rgba(45, 34, 16, 0.18));
+            display: block;
+        }
+        .logo-glint-star {
+            position: absolute;
+            top: -5px;
+            right: -3px;
+            font-size: 0.76rem;
+            color: #fffbe0;
+            text-shadow: 0 0 6px #ffe066, 0 0 12px #f59e0b;
+            z-index: 2;
+            animation: logoStarTwinkle 3.4s ease-in-out infinite;
+        }
+        @keyframes logoHaloSpin { to { transform: rotate(360deg); } }
+        @keyframes logoShineSweep {
+            0%, 18% { left: -130%; opacity: 0; }
+            28% { opacity: 1; }
+            62% { left: 155%; opacity: 1; }
+            68%, 100% { left: 155%; opacity: 0; }
+        }
+        @keyframes logoStarTwinkle {
+            0%, 36%, 76%, 100% { transform: scale(0.35) rotate(0deg); opacity: 0.15; }
+            52% { transform: scale(1.2) rotate(45deg); opacity: 1; }
         }
         .form-group { margin-bottom: 16px; }
         .form-group label {
@@ -520,7 +579,13 @@
     <div class="login-wrap">
         <div class="login-card">
             <div class="brand-row">
-                <img src="/static/img_crawled/fapo_logo.png?v=10.0" alt="法寶實業 LOGO" class="logo-img">
+                <span class="logo-emblem-fx">
+                    <span class="logo-halo-ring" aria-hidden="true"></span>
+                    <span class="logo-shine-mask">
+                        <img src="/static/img_crawled/fapo_logo.png?v=10.0" alt="法寶實業 LOGO" class="logo-img">
+                    </span>
+                    <span class="logo-glint-star" aria-hidden="true">✦</span>
+                </span>
                 <div>
                     <h2 style="font-size: 1.2rem; font-weight: 800;">法寶實業 · 詢價管理後台</h2>
                     <p style="font-size: 0.78rem; color: var(--text-muted);">FAPO ENTERPRISE RFQ ADMIN</p>
@@ -584,7 +649,13 @@
          ===================================================================== -->
     <header class="topbar">
         <div class="brand-row" style="margin-bottom: 0;">
-            <img src="/static/img_crawled/fapo_logo.png?v=10.0" alt="法寶實業 LOGO" class="logo-img">
+            <span class="logo-emblem-fx">
+                <span class="logo-halo-ring" aria-hidden="true"></span>
+                <span class="logo-shine-mask">
+                    <img src="/static/img_crawled/fapo_logo.png?v=10.0" alt="法寶實業 LOGO" class="logo-img">
+                </span>
+                <span class="logo-glint-star" aria-hidden="true">✦</span>
+            </span>
             <div>
                 <h1 style="font-size: 1.1rem; font-weight: 800;">法寶實業 · 客戶詢價管理後台</h1>
                 <p style="font-size: 0.76rem; color: var(--text-muted);">北中南業務報價追蹤與 Email 即時通知中心</p>

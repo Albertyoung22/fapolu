@@ -14,9 +14,12 @@ VOICE_PRESETS = [
 ]
 
 
+import re
+
 def format_zen_script(script: str) -> str:
-    """加入適度呼吸停頓，讓語氣更從容莊嚴"""
-    text = script.replace("。", "。…… ").replace("；", "；… ")
+    """句間加入適度呼吸停頓，結尾保持自然流暢收尾"""
+    text = re.sub(r"。(?=.)", "。…… ", script)
+    text = re.sub(r"；(?=.)", "；… ", text)
     return text
 
 
