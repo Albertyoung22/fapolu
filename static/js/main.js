@@ -1551,7 +1551,7 @@ window.sendAiChatMessage = function() {
     // Append loading bubble
     const botDiv = document.createElement('div');
     botDiv.className = 'ai-msg ai-msg-bot';
-    botDiv.innerHTML = `<div class="ai-msg-bubble">⏳ 正在啟動 CP-SAT 求解器與檢索規格庫...</div>`;
+    botDiv.innerHTML = `<div class="ai-msg-bubble">⏳ 正在智慧檢索規格與計算最佳方案...</div>`;
     box.appendChild(botDiv);
     box.scrollTop = box.scrollHeight;
 
@@ -1583,13 +1583,13 @@ window.sendAiChatMessage = function() {
 
         if (data.cutting_plan && data.cutting_plan.success) {
             const p = data.cutting_plan;
-            const quoteSummary = `[CP-SAT 最佳化裁切需求] 母材 ${p.stock_length_mm}mm 共需 ${p.total_bars_used} 支 (利用率 ${p.overall_utilization_pct}%): ` +
+            const quoteSummary = `[最佳化裁切需求] 母材 ${p.stock_length_mm}mm 共需 ${p.total_bars_used} 支 (利用率 ${p.overall_utilization_pct}%): ` +
                 p.bars_plan.map(b => `第${b.bar_no}支(${b.cuts_summary})`).join('；');
             const safeQuote = quoteSummary.replace(/'/g, "\'");
             html += `
                 <div style="margin-top:10px;">
                     <button type="button" class="ai-spec-mini-btn" style="width:100%;padding:7px;" onclick="addSpecToQuote('${safeQuote}')">
-                        📋 將此 CP-SAT 裁切方案加入詢價單
+                        📋 將此最佳裁切方案加入詢價單
                     </button>
                 </div>
             `;
@@ -1635,7 +1635,7 @@ window.runInteractiveCpsatSolver = function() {
     });
 
     resBox.style.display = 'block';
-    resBox.innerHTML = `⏳ 正在呼叫後端 <code>ortools.sat.python.cp_model</code> 執行最佳化求解...`;
+    resBox.innerHTML = `⏳ 正在執行最佳化下料運算...`;
     if (solveBtn) solveBtn.disabled = true;
 
     fetch('/api/ai/cutting-stock', {
@@ -1680,7 +1680,7 @@ window.runInteractiveCpsatSolver = function() {
             `;
         });
 
-        const quoteSummary = `[CP-SAT 最佳化裁切需求] 母材 ${plan.stock_length_mm}mm 共需 ${plan.total_bars_used} 支 (利用率 ${plan.overall_utilization_pct}%): ` +
+        const quoteSummary = `[最佳化裁切需求] 母材 ${plan.stock_length_mm}mm 共需 ${plan.total_bars_used} 支 (利用率 ${plan.overall_utilization_pct}%): ` +
             plan.bars_plan.map(b => `第${b.bar_no}支(${b.cuts_summary})`).join('；');
         const safeQuote = quoteSummary.replace(/'/g, "\'");
 
@@ -1698,7 +1698,7 @@ window.runInteractiveCpsatSolver = function() {
             </div>
             ${barsHtml}
             <button type="button" class="ai-spec-mini-btn" style="width:100%;padding:8px;margin-top:6px;" onclick="addSpecToQuote('${safeQuote}')">
-                📋 將此 CP-SAT 最佳裁切明細帶入詢價單
+                📋 將此最佳裁切明細帶入詢價單
             </button>
         `;
     })
@@ -1706,4 +1706,161 @@ window.runInteractiveCpsatSolver = function() {
         if (solveBtn) solveBtn.disabled = false;
         resBox.innerHTML = `<div style="color:#b91c1c;">⚠️ 求解器連線異常</div>`;
     });
+};
+
+
+/* ==========================================================================
+   Industrial Metal Weight & Volume Calculator
+   ========================================================================== */
+
+window.updateWeightShapeInputs = function() {
+    const shape = document.getElementById('wtShapeSelect')?.value || 'plate';
+    const d1Wrap = document.getElementById('wtDim1Wrap');
+    const d2Wrap = document.getElementById('wtDim2Wrap');
+    const d3Wrap = document.getElementById('wtDim3Wrap');
+    const d1Label = document.getElementById('wtDim1Label');
+    const d2Label = document.getElementById('wtDim2Label');
+    const d3Label = document.getElementById('wtDim3Label');
+    const d1Input = document.getElementById('wtDim1');
+    const d2Input = document.getElementById('wtDim2');
+    const d3Input = document.getElementById('wtDim3');
+    const lenInput = document.getElementById('wtLength');
+    const presetRow = document.getElementById('wtPresetRow');
+    const formulaDesc = document.getElementById('wtFormulaDesc');
+
+    if (!d1Wrap || !d2Wrap || !d3Wrap) return;
+
+    if (shape === 'plate') {
+        d1Label.textContent = '厚度 T (mm)：';
+        d2Wrap.style.display = '';
+        d2Label.textContent = '寬度 W (mm)：';
+        d3Wrap.style.display = 'none';
+        if (presetRow) presetRow.style.display = 'flex';
+        if (formulaDesc) formulaDesc.textContent = '計算公式：厚(mm) × 寬(mm) × 長(mm) × 比重 ÷ 1,000,000';
+    } else if (shape === 'round_bar') {
+        d1Label.textContent = '外徑 D (mm)：';
+        d1Input.value = '50';
+        lenInput.value = '3000';
+        d2Wrap.style.display = 'none';
+        d3Wrap.style.display = 'none';
+        if (presetRow) presetRow.style.display = 'none';
+        if (formulaDesc) formulaDesc.textContent = '計算公式：π × (外徑/2)² × 長(mm) × 比重 ÷ 1,000,000';
+    } else if (shape === 'round_tube') {
+        d1Label.textContent = '外徑 OD (mm)：';
+        d1Input.value = '60';
+        d2Wrap.style.display = 'none';
+        d3Wrap.style.display = '';
+        d3Label.textContent = '管壁厚 t (mm)：';
+        d3Input.value = '5';
+        lenInput.value = '3000';
+        if (presetRow) presetRow.style.display = 'none';
+        if (formulaDesc) formulaDesc.textContent = '計算公式：π × ((外徑/2)² - (內徑/2)²) × 長(mm) × 比重 ÷ 1,000,000';
+    } else if (shape === 'square_bar') {
+        d1Label.textContent = '四方邊寬 W (mm)：';
+        d1Input.value = '40';
+        lenInput.value = '3000';
+        d2Wrap.style.display = 'none';
+        d3Wrap.style.display = 'none';
+        if (presetRow) presetRow.style.display = 'none';
+        if (formulaDesc) formulaDesc.textContent = '計算公式：邊寬² × 長(mm) × 比重 ÷ 1,000,000';
+    } else if (shape === 'hex_bar') {
+        d1Label.textContent = '六角對邊 D (mm)：';
+        d1Input.value = '30';
+        lenInput.value = '3000';
+        d2Wrap.style.display = 'none';
+        d3Wrap.style.display = 'none';
+        if (presetRow) presetRow.style.display = 'none';
+        if (formulaDesc) formulaDesc.textContent = '計算公式：0.866025 × 對邊² × 長(mm) × 比重 ÷ 1,000,000';
+    } else if (shape === 'rect_tube') {
+        d1Label.textContent = '管寬 W (mm)：';
+        d1Input.value = '60';
+        d2Wrap.style.display = '';
+        d2Label.textContent = '管高 H (mm)：';
+        d2Input.value = '40';
+        d3Wrap.style.display = '';
+        d3Label.textContent = '管壁厚 t (mm)：';
+        d3Input.value = '3';
+        lenInput.value = '3000';
+        if (presetRow) presetRow.style.display = 'none';
+        if (formulaDesc) formulaDesc.textContent = '計算公式：(W×H - (W-2t)×(H-2t)) × 長(mm) × 比重 ÷ 1,000,000';
+    }
+    calculateMetalWeight();
+};
+
+window.applyPlatePreset = function(w, l) {
+    const d2 = document.getElementById('wtDim2');
+    const len = document.getElementById('wtLength');
+    if (d2) d2.value = w;
+    if (len) len.value = l;
+    calculateMetalWeight();
+};
+
+window.calculateMetalWeight = function() {
+    const alloyRaw = document.getElementById('wtAlloySelect')?.value || '2.70|6061';
+    const density = parseFloat(alloyRaw.split('|')[0]) || 2.70;
+    const shape = document.getElementById('wtShapeSelect')?.value || 'plate';
+    const d1 = Math.max(0, parseFloat(document.getElementById('wtDim1')?.value || '0'));
+    const d2 = Math.max(0, parseFloat(document.getElementById('wtDim2')?.value || '0'));
+    const d3 = Math.max(0, parseFloat(document.getElementById('wtDim3')?.value || '0'));
+    const length = Math.max(0, parseFloat(document.getElementById('wtLength')?.value || '0'));
+    const qty = Math.max(1, parseInt(document.getElementById('wtQty')?.value || '1', 10));
+
+    let areaMm2 = 0;
+    if (shape === 'plate') {
+        areaMm2 = d1 * d2;
+    } else if (shape === 'round_bar') {
+        areaMm2 = Math.PI * Math.pow(d1 / 2, 2);
+    } else if (shape === 'round_tube') {
+        const od = d1;
+        const id = Math.max(0, od - 2 * d3);
+        areaMm2 = Math.PI * (Math.pow(od / 2, 2) - Math.pow(id / 2, 2));
+    } else if (shape === 'square_bar') {
+        areaMm2 = d1 * d1;
+    } else if (shape === 'hex_bar') {
+        areaMm2 = (Math.sqrt(3) / 2) * d1 * d1;
+    } else if (shape === 'rect_tube') {
+        const innerW = Math.max(0, d1 - 2 * d3);
+        const innerH = Math.max(0, d2 - 2 * d3);
+        areaMm2 = (d1 * d2) - (innerW * innerH);
+    }
+
+    const volumeCm3 = (areaMm2 * length) / 1000.0;
+    const singleKg = (areaMm2 * length * density) / 1000000.0;
+    const perMeterKg = (areaMm2 * 1000.0 * density) / 1000000.0;
+    const totalKg = singleKg * qty;
+
+    const elSingle = document.getElementById('wtSingleKg');
+    const elMeter = document.getElementById('wtPerMeterKg');
+    const elVol = document.getElementById('wtVolumeCm3');
+    const elTotal = document.getElementById('wtTotalKg');
+
+    if (elSingle) elSingle.textContent = `${singleKg.toFixed(2)} kg`;
+    if (elMeter) elMeter.textContent = `${perMeterKg.toFixed(2)} kg/m`;
+    if (elVol) elVol.textContent = `${Math.round(volumeCm3).toLocaleString()} cm³`;
+    if (elTotal) elTotal.textContent = `${totalKg.toFixed(2)} kg`;
+};
+
+window.addCalculatedWeightToQuote = function() {
+    const alloyRaw = document.getElementById('wtAlloySelect')?.value || '2.70|6061 鋁合金';
+    const alloyName = alloyRaw.split('|')[1] || '6061 鋁合金';
+    const shape = document.getElementById('wtShapeSelect')?.value || 'plate';
+    const d1 = document.getElementById('wtDim1')?.value || '0';
+    const d2 = document.getElementById('wtDim2')?.value || '0';
+    const d3 = document.getElementById('wtDim3')?.value || '0';
+    const length = document.getElementById('wtLength')?.value || '0';
+    const qty = document.getElementById('wtQty')?.value || '1';
+    const totalTxt = document.getElementById('wtTotalKg')?.textContent || '';
+
+    let dimStr = '';
+    if (shape === 'plate') dimStr = `鋁板/扁條 厚${d1} × 寬${d2} × 長${length}mm`;
+    else if (shape === 'round_bar') dimStr = `圓棒 φ${d1} × 長${length}mm`;
+    else if (shape === 'round_tube') dimStr = `圓管 OD${d1} × 壁厚${d3} × 長${length}mm`;
+    else if (shape === 'square_bar') dimStr = `四方條 ${d1}×${d1} × 長${length}mm`;
+    else if (shape === 'hex_bar') dimStr = `六角條 對邊${d1} × 長${length}mm`;
+    else if (shape === 'rect_tube') dimStr = `方矩管 ${d1}×${d2}×壁厚${d3} × 長${length}mm`;
+
+    const summary = `[算料詢價] ${alloyName} · ${dimStr} × ${qty}件 (預估總重 ${totalTxt})`;
+    if (typeof window.addSpecToQuote === 'function') {
+        window.addSpecToQuote(summary);
+    }
 };

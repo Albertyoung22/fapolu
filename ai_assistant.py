@@ -345,7 +345,7 @@ def process_ai_chat(message, inventory_data):
     msg = (message or "").strip()
     if not msg:
         return {
-            "reply": "您好！我是 **法寶實業 AI 智能工程客服（搭載 Google OR-Tools CP-SAT 最佳化引擎）**。請問今天需要查詢現貨規格、鋁合金選料建議，還是進行母材定寸裁切下料最佳化計算呢？",
+            "reply": "您好！我是 **法寶實業 AI 智能工程客服**。請問今天需要查詢現貨規格、鋁合金選料建議，還是進行母材定寸裁切下料最佳化計算呢？",
             "specs": [],
             "cutting_plan": None
         }
@@ -371,7 +371,7 @@ def process_ai_chat(message, inventory_data):
             plan = solve_cutting_stock_cpsat(stock_length_mm=stock_len, kerf_mm=3, demands=demands)
             if plan.get("success"):
                 reply_lines = [
-                    f"🧮 **Google OR-Tools CP-SAT 下料最佳化求解完成！**",
+                    f"🧮 **智慧母材下料最佳化計算完成！**",
                     f"• **求解狀態**：`{plan['solver_status']}`（耗時 `{plan['solve_time_ms']} ms`）",
                     f"• **母材長度**：`{plan['stock_length_mm']} mm`（含每刀鋸縫損耗 `{plan['kerf_mm']} mm`）",
                     f"• **最少需用母材**：**`{plan['total_bars_used']} 支`**（共裁切 `{plan['total_pieces_cut']} 段`）",
@@ -413,7 +413,7 @@ def process_ai_chat(message, inventory_data):
         matched_specs = find_optimal_inventory_specs_cpsat(prim["alloy"][:4], inventory_data)
 
         reply = (
-            f"🔬 **CP-SAT 多目標材質選型求解建議**：\n\n"
+            f"🔬 **智慧工程材質選型建議**：\n\n"
             f"🏆 **首選推薦牌號：`{prim['alloy']}`**\n"
             f"• **核心優勢**：{prim['desc']}\n"
             f"• **工程指標**：強度評分 `{prim['strength']}` ｜ 耐蝕性 `{prim['corrosion']}` ｜ 切削性 `{prim['machinability']}` ｜ 陽極效果 `{prim['anodizing']}`\n\n"
@@ -441,7 +441,7 @@ def process_ai_chat(message, inventory_data):
     matched_specs = find_optimal_inventory_specs_cpsat(msg, inventory_data)
     if matched_specs:
         reply = (
-            f"📦 **已透過 CP-SAT 規格匹配引擎為您檢索「`{msg}`」的最佳現貨與模具規格**（優先挑選加工裕度最接近、切削餘料最少之項目）：\n"
+            f"📦 **已為您智慧檢索「`{msg}`」的最佳現貨與模具規格**（優先挑選加工裕度最接近、切削餘料最少之項目）：\n"
             f"您可以直接點擊下方規格旁的 **「＋詢價」** 按鈕帶入詢價單，或切換至 **「🧮 CP-SAT 下料優化」** 計算定寸裁切方案！"
         )
         return {

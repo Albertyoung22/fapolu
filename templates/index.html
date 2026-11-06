@@ -891,11 +891,117 @@
                 <!-- Interactive Tech Knowledge Sub-Tabs -->
                 <div class="product-filters tech-tabs" id="techTabBar">
                     <button class="filter-btn active" data-tech-tab="all">📚 全部知識庫總覽</button>
+                    <button class="filter-btn" data-tech-tab="weight">⚖️ 鋁材重量/材積計算機</button>
                     <button class="filter-btn" data-tech-tab="chars15">🌟 15 大材料特性</button>
                     <button class="filter-btn" data-tech-tab="series">🔬 1000~7000 系列選用原則</button>
                     <button class="filter-btn" data-tech-tab="chemical">📊 化學成分與機械物性表</button>
                     <button class="filter-btn" data-tech-tab="standards">🌐 國際規範對照 (JIS/ASTM/CNS)</button>
                     <button class="filter-btn" data-tech-tab="hardness">⚡ 硬度試算與調質辭典</button>
+                </div>
+
+                <!-- Panel 0: Interactive Aluminum & Metal Weight / Volume Calculator -->
+                <div class="tech-block glass-card" data-tech-panel="weight">
+                    <div class="tech-subhead">
+                        <h3><span>⚖️</span> 工業鋁合金與特殊金屬重量／材積即時試算器</h3>
+                        <p>支援鋁板、扁條、圓棒、圓管、四方條、六角條與方矩管之精確理論重量試算，並可一鍵將算料規格加入詢價單：</p>
+                    </div>
+
+                    <div class="tech-grid">
+                        <div class="calculator-card glass-card">
+                            <div class="calc-input-group" style="margin-bottom: 14px;">
+                                <label for="wtAlloySelect">1. 選擇材質牌號與標準比重 (g/cm³)：</label>
+                                <select id="wtAlloySelect" onchange="calculateMetalWeight()" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-subtle); background: #fffdf9; color: var(--text-main); font-weight: 700;">
+                                    <option value="2.70|6061 / 6063 鋁合金" selected>6061 / 6063 結構鋁合金 (比重 2.70 g/cm³)</option>
+                                    <option value="2.68|5052 耐蝕鋁合金">5052 耐蝕鋁鎂合金 (比重 2.68 g/cm³)</option>
+                                    <option value="2.66|5083 船用鋁合金">5083 船用高耐蝕鋁合金 (比重 2.66 g/cm³)</option>
+                                    <option value="2.81|7075 航太超硬鋁">7075 航太超硬鋁合金 (比重 2.81 g/cm³)</option>
+                                    <option value="2.78|2024 航太高強鋁">2024 航太高疲勞鋁合金 (比重 2.78 g/cm³)</option>
+                                    <option value="2.71|1050 純鋁 / Korea 4N 超平板">1050 純鋁 ／ Korea 4N 超平板 (比重 2.71 g/cm³)</option>
+                                    <option value="7.93|SUS304 不鏽鋼">AISI / SUS 304 不鏽鋼 (比重 7.93 g/cm³)</option>
+                                    <option value="8.96|C1100 紅銅 / 紫銅">C1100 紅銅 ／ 紫銅 (比重 8.96 g/cm³)</option>
+                                    <option value="8.50|C3604 黃銅">C3604 黃銅 (比重 8.50 g/cm³)</option>
+                                    <option value="1.77|AZ31B 鎂合金">AZ31B 工業鎂合金 (比重 1.77 g/cm³)</option>
+                                </select>
+                            </div>
+
+                            <div class="calc-input-group" style="margin-bottom: 14px;">
+                                <label for="wtShapeSelect">2. 選擇型材斷面形狀：</label>
+                                <select id="wtShapeSelect" onchange="updateWeightShapeInputs()" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-subtle); background: #fffdf9; color: var(--text-main); font-weight: 700;">
+                                    <option value="plate" selected>🟦 鋁板 ／ 扁條 (厚 T × 寬 W × 長 L)</option>
+                                    <option value="round_bar">⚪ 圓棒 (外徑 D × 長度 L)</option>
+                                    <option value="round_tube">⭕ 圓管 (外徑 OD × 管壁厚 t × 長度 L)</option>
+                                    <option value="square_bar">⬛ 四方條 ／ 正方棒 (邊寬 W × 長度 L)</option>
+                                    <option value="hex_bar">⬡ 六角棒 ／ 六方條 (對邊 D × 長度 L)</option>
+                                    <option value="rect_tube">🔲 方管 ／ 長方管 (寬 W × 高 H × 壁厚 t × 長 L)</option>
+                                </select>
+                            </div>
+
+                            <div id="wtPresetRow" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px;">
+                                <span style="font-size: 0.78rem; color: var(--text-muted); align-self: center;">常用板規快選：</span>
+                                <button type="button" class="cpsat-add-btn" onclick="applyPlatePreset(1220, 2440)">4'×8' (1220×2440)</button>
+                                <button type="button" class="cpsat-add-btn" onclick="applyPlatePreset(914, 1829)">3'×6' (914×1829)</button>
+                                <button type="button" class="cpsat-add-btn" onclick="applyPlatePreset(1524, 3048)">5'×10' (1524×3048)</button>
+                                <button type="button" class="cpsat-add-btn" onclick="applyPlatePreset(1000, 2000)">1m×2m (1000×2000)</button>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                                <div class="calc-input-group" id="wtDim1Wrap">
+                                    <label id="wtDim1Label" for="wtDim1">厚度 T (mm)：</label>
+                                    <input type="number" id="wtDim1" value="10" min="0.1" step="0.1" oninput="calculateMetalWeight()">
+                                </div>
+                                <div class="calc-input-group" id="wtDim2Wrap">
+                                    <label id="wtDim2Label" for="wtDim2">寬度 W (mm)：</label>
+                                    <input type="number" id="wtDim2" value="1220" min="1" step="1" oninput="calculateMetalWeight()">
+                                </div>
+                                <div class="calc-input-group" id="wtDim3Wrap" style="display: none;">
+                                    <label id="wtDim3Label" for="wtDim3">管壁厚 t (mm)：</label>
+                                    <input type="number" id="wtDim3" value="3" min="0.2" step="0.1" oninput="calculateMetalWeight()">
+                                </div>
+                                <div class="calc-input-group">
+                                    <label for="wtLength">長度 L (mm)：</label>
+                                    <input type="number" id="wtLength" value="2440" min="1" step="1" oninput="calculateMetalWeight()">
+                                </div>
+                                <div class="calc-input-group">
+                                    <label for="wtQty">需求數量 (片 / 支 / 件)：</label>
+                                    <input type="number" id="wtQty" value="1" min="1" step="1" oninput="calculateMetalWeight()">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="calculator-card glass-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>
+                                <h4 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 8px;">📊 理論材積與重量試算結果</h4>
+                                <p id="wtFormulaDesc" style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 18px;">
+                                    計算公式：厚(mm) × 寬(mm) × 長(mm) × 比重 ÷ 1,000,000
+                                </p>
+
+                                <div class="calc-results-grid">
+                                    <div class="calc-metric-box">
+                                        <div class="metric-label">單件理論重量 (Single Weight)</div>
+                                        <div class="metric-value" id="wtSingleKg">80.37 kg</div>
+                                    </div>
+                                    <div class="calc-metric-box">
+                                        <div class="metric-label">每米單位重 (Weight / Meter)</div>
+                                        <div class="metric-value" id="wtPerMeterKg">32.94 kg/m</div>
+                                    </div>
+                                    <div class="calc-metric-box">
+                                        <div class="metric-label">單件材積體積 (Volume)</div>
+                                        <div class="metric-value" id="wtVolumeCm3">29,768 cm³</div>
+                                    </div>
+                                    <div class="calc-metric-box" style="border-color: var(--accent-cinnabar); background: rgba(182, 59, 46, 0.06);">
+                                        <div class="metric-label">總計理論重量 (Total Batch Weight)</div>
+                                        <div class="metric-value" id="wtTotalKg" style="color: var(--accent-cinnabar); font-size: 1.45rem;">80.37 kg</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 20px;">
+                                <button type="button" class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="addCalculatedWeightToQuote()">
+                                    📋 將此算料規格與總重加入詢價單
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Panel 1: 15 Characteristics -->
@@ -1331,11 +1437,11 @@
     <!-- ==========================================================================
          FAPO AI Customer Service & Google OR-Tools CP-SAT Optimizer Widget
          ========================================================================== -->
-    <button id="aiChatLauncher" class="ai-chat-launcher" onclick="toggleAiChatWidget()" title="開啟法寶 AI 智能工程客服與 CP-SAT 下料求解器">
+    <button id="aiChatLauncher" class="ai-chat-launcher" onclick="toggleAiChatWidget()" title="開啟法寶 AI 智能工程客服與智慧下料計算">
         <span class="ai-launcher-icon">🤖</span>
         <span class="ai-launcher-text">
             <strong>AI 智能客服</strong>
-            <small>OR-Tools CP-SAT 算料</small>
+            <small>現貨查詢 · 智慧算料</small>
         </span>
         <span class="ai-pulse-dot"></span>
     </button>
@@ -1346,7 +1452,6 @@
                 <span class="ai-avatar">🤖</span>
                 <div>
                     <h4>法寶 AI 智能工程客服</h4>
-                    <p>Google OR-Tools CP-SAT 規格檢索與下料最佳化引擎</p>
                 </div>
             </div>
             <button class="ai-close-btn" onclick="toggleAiChatWidget()" title="縮小視窗">✕</button>
@@ -1357,7 +1462,7 @@
                 💬 智能規格與選料對答
             </button>
             <button type="button" class="ai-mode-btn" id="aiTabBtnCpsat" onclick="switchAiMode('cpsat')">
-                🧮 CP-SAT 母材裁切最佳化
+                🧮 母材裁切最佳化
             </button>
         </div>
 
@@ -1366,10 +1471,10 @@
             <div id="aiChatMessages" class="ai-chat-messages">
                 <div class="ai-msg ai-msg-bot">
                     <div class="ai-msg-bubble">
-                        您好！我是 <strong>法寶實業 AI 智能工程客服</strong>（內建 <code>ortools.sat.python.cp_model</code> 最佳化求解器與 3,071 筆即時規格庫）。<br><br>
+                        您好！我是 <strong>法寶實業 AI 智能工程客服</strong>（即時串聯 3,071 筆現貨與模具規格資料庫）。<br><br>
                         您可以直接詢問：<br>
                         • <strong>現貨與模具查詢</strong>：「6061 圓棒 50mm」、「7075 厚 20mm 鋁板」<br>
-                        • <strong>CP-SAT 裁切排料</strong>：「母材 3000mm 切 800*3, 550*4, 420*5」<br>
+                        • <strong>智慧裁切排料</strong>：「母材 3000mm 切 800*3, 550*4, 420*5」<br>
                         • <strong>工程選料顧問</strong>：「推薦適合硬陽極與高強度的鋁材」
                     </div>
                 </div>
@@ -1378,7 +1483,7 @@
             <div class="ai-quick-chips">
                 <button type="button" onclick="sendAiQuickPrompt('查詢 6061 圓棒 直徑 50mm 現貨')">📦 6061圓棒 50mm</button>
                 <button type="button" onclick="sendAiQuickPrompt('推薦適合陽極處理與高強度的鋁材')">🔬 陽極高強選料</button>
-                <button type="button" onclick="sendAiQuickPrompt('母材 3000mm 切 800*3, 550*4, 420*5')">🧮 CP-SAT 下料範例</button>
+                <button type="button" onclick="sendAiQuickPrompt('母材 3000mm 切 800*3, 550*4, 420*5')">🧮 智慧下料範例</button>
                 <button type="button" onclick="sendAiQuickPrompt('全台服務據點與原廠材質證明')">📍 據點與證明</button>
             </div>
 
@@ -1388,11 +1493,11 @@
             </form>
         </div>
 
-        <!-- Mode 2: Interactive OR-Tools CP-SAT 1D Cutting Stock Solver -->
+        <!-- Mode 2: Interactive 1D Cutting Stock Solver -->
         <div id="aiPanelCpsat" class="ai-panel-body" style="display: none;">
             <div class="cpsat-form-scroll">
                 <div class="cpsat-intro-banner">
-                    <strong>⚡ Google OR-Tools CP-SAT 整數規劃求解器</strong>
+                    <strong>⚡ 智慧母材定寸裁切與餘料最小化計算</strong>
                     <span>自動計算最少母材支數、考慮鋸縫損耗並將餘料最小化</span>
                 </div>
 
@@ -1434,7 +1539,7 @@
                 </div>
 
                 <button type="button" id="cpsatSolveBtn" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 10px;" onclick="runInteractiveCpsatSolver()">
-                    🚀 啟動 CP-SAT 最佳化下料求解
+                    🚀 啟動最佳化下料計算
                 </button>
 
                 <div id="cpsatResultBox" class="cpsat-result-box" style="display: none;"></div>
