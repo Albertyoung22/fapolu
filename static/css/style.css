@@ -215,6 +215,11 @@ button {
   display: flex;
   align-items: center;
   gap: 14px;
+  min-width: 0;
+}
+
+.logo-text {
+  min-width: 0;
 }
 
 /* 傳統朱砂篆刻方印風格 */
@@ -234,6 +239,8 @@ button {
   letter-spacing: 1px;
   color: #fffaf2;
   box-shadow: 0 4px 14px var(--accent-cinnabar-glow);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .logo-text h1 {
@@ -365,6 +372,8 @@ button {
   border-radius: var(--radius-full);
   font-size: 0.95rem;
   font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: all var(--transition-smooth);
 }
 
@@ -1753,37 +1762,56 @@ button {
 @media (max-width: 768px) {
   .container { width: 92%; }
 
-  /* Crisp 64px Mobile Navbar */
-  .navbar { height: 64px; }
-  .logo-group { gap: 10px; }
-  .logo-badge { width: 38px; height: 38px; font-size: 0.82rem; outline-offset: -3px; }
-  .logo-text h1 { font-size: 1.05rem; letter-spacing: 0.5px; }
-  .logo-text p { font-size: 0.6rem; letter-spacing: 0.5px; }
+  /* Crisp Mobile Navbar (Large-Font Android Safe, Never Clips or Wraps Vertically) */
+  .navbar { height: auto; min-height: 58px; padding: 8px 0; }
+  .mobile-nav-overlay { top: 58px; }
+  .logo-group { gap: 8px; flex: 1; min-width: 0; }
+  .logo-badge { width: 34px; height: 34px; font-size: 0.76rem; outline-offset: -3px; }
+  .logo-text h1 {
+    font-size: clamp(0.92rem, 4.2vw, 1.05rem);
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .navbar .logo-text p { display: none; }
   .nav-share-desktop { display: none; }
-  .nav-actions { gap: 8px; }
-  .nav-cta-btn { padding: 7px 13px; font-size: 0.82rem; }
+  .nav-actions { gap: 6px; flex-shrink: 0; }
+  .nav-cta-btn { padding: 6px 12px; font-size: 0.8rem; }
+  .mobile-menu-btn { width: 36px; height: 36px; flex-shrink: 0; }
 
-  /* Balanced Mobile Sections & Typography */
-  .section { padding: 54px 0; }
-  .section-header { margin-bottom: 30px; }
+  /* Balanced Mobile Sections & Typography (Fits 11 CJK chars on 1 line even w/ 130% system font) */
+  .section { padding: 52px 0; }
+  .section-header { margin-bottom: 28px; }
   .section-tag { font-size: 0.74rem; padding: 4px 12px; letter-spacing: 1px; margin-bottom: 10px; }
-  .section-title { font-size: 1.68rem; line-height: 1.32; letter-spacing: 0.5px; margin-bottom: 10px; }
-  .section-desc { font-size: 0.94rem; line-height: 1.68; }
+  .section-title {
+    font-size: clamp(1.28rem, 5.8vw, 1.62rem);
+    line-height: 1.35;
+    letter-spacing: 0.3px;
+    margin-bottom: 10px;
+    text-wrap: balance;
+  }
+  .section-desc { font-size: 0.92rem; line-height: 1.68; }
 
   /* Mobile Hero */
   .hero-section {
     min-height: auto;
-    padding-top: 86px;
+    padding-top: 80px;
     padding-bottom: 44px;
   }
   .hero-badge {
-    font-size: 0.78rem;
+    font-size: clamp(0.68rem, 3.1vw, 0.78rem);
     padding: 5px 12px;
     margin-bottom: 16px;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .hero-title {
-    font-size: 1.88rem;
-    line-height: 1.3;
+    font-size: clamp(1.3rem, 6.3vw, 1.68rem);
+    line-height: 1.35;
+    letter-spacing: 0;
     margin-bottom: 16px;
   }
   .hero-lead {
@@ -1901,6 +1929,12 @@ button {
 
 /* Mobile Inventory Spec Cards (No Sideways Table Scrolling on Phones!) */
 @media (max-width: 680px) {
+  .zen-label-txt { display: none; }
+  .audio-dock { padding: 7px 11px; border-radius: 16px; }
+  .btn-play-dock { width: 36px; height: 36px; font-size: 0.92rem; }
+  .btn-dock-icon { width: 32px; height: 32px; font-size: 0.82rem; }
+  .btn-zen-pill { padding: 6px 9px; }
+  .btn-dock-more { padding: 6px 9px; font-size: 0.74rem; }
   .specs-table-container {
     background: transparent;
     border: none;

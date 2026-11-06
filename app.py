@@ -87,6 +87,14 @@ def api_tunnel_stop():
     tunnel.stop_tunnel()
     return jsonify({"success": True, "message": "Tunnel 已停止"})
 
+@app.after_request
+def add_header(response):
+    if response.mimetype == 'text/html':
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+    return response
+
 @app.route('/')
 def index():
     return render_template('index.html', data=SITE_DATA, inventory_count=len(INVENTORY_DATA))
