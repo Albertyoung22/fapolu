@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+
+# Build & Packaged Binaries (PyInstaller / Cloudflare Tunnel)
+build/
+dist/
+release/
+*.exe
+bin/*.exe
+
+# Runtime Caches & Temporary Logs
+static/audio/cache/
+data/public_url.txt
+crash_log.txt
+test_speech.mp3
+*.log
+*.tmp
+*.vbs
+
+# IDE & Editor configs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store

@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>法寶實業有限公司 | FAPO ENTERPRISE - 全方位鋁合金材料供應鏈與精密加工整合首選</title>
+    <meta name="description" content="法寶實業有限公司創立於1986年，深耕台灣近40年。專營日本UACJ 5052貼膜鋁板、7075航太鋁、6061、5083船用鋁板、各式鋁擠型現貨規格與CNC精密加工、五軸聯動與大型龍門銑削一站式服務。">
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- 3D Crystal Lattice Background Canvas -->
+    <canvas id="latticeCanvas"></canvas>
+
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+        <div class="container">
+            <a href="#hero" class="logo-group">
+                <div class="logo-badge">FP</div>
+                <div class="logo-text">
+                    <h1>法寶實業有限公司</h1>
+                    <p>FAPO ENTERPRISE CO., LTD. · SINCE 1986</p>
+                </div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#network" class="nav-item">服務網絡</a></li>
+                <li><a href="#products" class="nav-item">旗艦材料</a></li>
+                <li><a href="#specs" class="nav-item">現貨規格</a></li>
+                <li><a href="#machining" class="nav-item">精密加工</a></li>
+                <li><a href="#cases" class="nav-item">代表實績</a></li>
+                <li><a href="#tech" class="nav-item">技術硬度</a></li>
+                <li><a href="#contact" class="nav-item">聯絡諮詢</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="tunnelShareBtn" class="btn btn-audio" style="border-color: #38bdf8; color: #38bdf8;" onclick="openTunnelModal()">
+                    🌐 外網分享
+                </button>
+                <a href="#contact" class="btn btn-primary">立即詢價</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- ==========================================================================
+             Hero Section
+             ========================================================================== -->
+        <section id="hero" class="hero-section">
+            <div class="container">
+                <div class="hero-grid">
+                    <div class="hero-content">
+                        <div class="hero-badge">
+                            <span>⭐ 深耕台灣近 40 載 · 卓越材料與工藝標竿</span>
+                        </div>
+                        <h2 class="hero-title">
+                            全方位鋁合金材料供應鏈
+                            <span class="highlight">高階精密加工一站整合</span>
+                        </h2>
+                        <p class="hero-lead">
+                            法寶實業建構強大且彈性的金屬供應鏈平台。台北、台中、台南四重營運據點，常備上千噸現貨庫存；引進日本原裝 UACJ 貼膜鋁板與 7075 航太級鋁合金，整合 CNC 五軸與龍門銑削，為台灣半導體與高科技製造業提供堅實後盾。
+                        </p>
+                        <div class="hero-actions">
+                            <button id="startTourHeroBtn" class="btn btn-primary">
+                                🎙️ 啟動沉浸式語音導覽
+                            </button>
+                            <a href="#specs" class="btn btn-outline">
+                                🔍 查詢現貨規格資料庫 (490+項)
+                            </a>
+                            <a href="#contact" class="btn btn-outline">
+                                📋 線上規格圖面估價
+                            </a>
+                        </div>
+                        <div class="hero-stats">
+                            <div class="stat-item">
+                                <h3>38+</h3>
+                                <p>年專業誠信商譽</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>4 大</h3>
+                                <p>北中南營運據點</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>500+</h3>
+                                <p>型號常備現貨規格</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>100%</h3>
+                                <p>原廠材質證明保證</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hero-visual">
+                        <div class="hero-preview-card glass-card">
+                            <span class="preview-badge-top">半導體產業首選材料</span>
+                            <img src="{{ url_for('static', filename='img_crawled/pro_1.jpg') }}" alt="日本 UACJ 貼膜鋁板">
+                            <div class="preview-info">
+                                <h4>日本原裝進口 UACJ 5052 貼膜鋁板</h4>
+                                <p>獨特壓延工藝消除內應力，大量精密 CNC 銑削去除不易變形翹曲，確保超高真平度與氣密性。</p>
+                                <div class="preview-specs-chips">
+                                    <span class="chip">厚度 0.6mm - 120mm</span>
+                                    <span class="chip">雙面保護貼膜</span>
+                                    <span class="chip">附原廠 Mill Sheet</span>
+                                    <span class="chip">RoHS 認證</span>
+                                </div>
+                            </div>
+                            <div style="margin-top: 18px; display: flex; gap: 10px;">
+                                <button class="btn-read-tts" onclick="readAloudText('日本原裝進口 UACJ 5052 貼膜鋁板，獨特壓延工藝有效消除內部殘留應力，在經過大量精密銑削後不易變形翹曲，是半導體真空腔體與光電設備之指定材料。', this)">
+                                    🎙️ 語音朗讀介紹
+                                </button>
+                                <a href="#specs" class="btn-quote-item">查看庫存規格</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             Network & Locations Section
+             ========================================================================== -->
+        <section id="network" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Logistics & Branches</span>
+                    <h2 class="section-title">全台北中南服務網絡佈局</h2>
+                    <p class="section-desc">
+                        為即時回應全台客戶的材料需求，法寶實業於台北、台中、台南雙廠區打造緊密服務網，專屬物流車隊與大尺寸自動化裁切設備，實現最迅速的材料調撥與送達。
+                    </p>
+                </div>
+                <div class="locations-grid">
+                    {% for loc in data.company.locations %}
+                    <div class="location-card glass-card" id="loc-{{ loc.id }}">
+                        <div class="loc-header">
+                            <span class="loc-badge">{{ loc.id | upper }}</span>
+                            <h3 class="loc-title">{{ loc.name }}</h3>
+                            <p class="loc-role">{{ loc.role }}</p>
+                        </div>
+                        <div class="loc-body">
+                            <div class="loc-detail">
+                                <span class="icon">📍</span>
+                                <span>{{ loc.address }}</span>
+                            </div>
+                            <div class="loc-detail">
+                                <span class="icon">📞</span>
+                                <span>電話：<strong>{{ loc.tel }}</strong></span>
+                            </div>
+                            <div class="loc-detail">
+                                <span class="icon">📠</span>
+                                <span>傳真：{{ loc.fax }}</span>
+                            </div>
+                            <div class="loc-detail">
+                                <span class="icon">✉️</span>
+                                <span>信箱：{{ loc.email }}</span>
+                            </div>
+                            <div class="loc-highlights">
+                                {{ loc.highlights }}
+                            </div>
+                        </div>
+                        <div class="loc-actions">
+                            <a href="tel:{{ loc.tel }}" class="btn-primary">直接通話</a>
+                            <button class="btn-outline" onclick="readAloudText('{{ loc.name }}。{{ loc.role }}。地址位於{{ loc.address }}。電話{{ loc.tel }}。{{ loc.highlights }}', this)">🎙️ 介紹</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             Products & Materials Showcase
+             ========================================================================== -->
+        <section id="products" class="section" style="background: rgba(13, 21, 39, 0.4);">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Flagship Materials</span>
+                    <h2 class="section-title">精選旗艦鋁材與多元合金</h2>
+                    <p class="section-desc">
+                        涵蓋 1000 至 7000 系列鋁合金板材、擠型材、客製化模具以及不鏽鋼與銅材，附原廠檢驗證明書，滿足航太、半導體與高精密機械之嚴苛標準。
+                    </p>
+                </div>
+
+                <div class="product-filters">
+                    <button class="filter-btn active" data-filter="all">全部材料</button>
+                    <button class="filter-btn" data-filter="鋁合金板材">鋁合金板材</button>
+                    <button class="filter-btn" data-filter="鋁擠型材">鋁擠型材</button>
+                    <button class="filter-btn" data-filter="客製開發">客製模具開發</button>
+                    <button class="filter-btn" data-filter="多元合金">多元合金 / 原物料</button>
+                </div>
+
+                <div class="products-grid">
+                    {% for prod in data.products %}
+                    <div class="product-card glass-card" data-category="{{ prod.category }}">
+                        <div class="product-thumb">
+                            <img src="{{ prod.image }}" alt="{{ prod.name }}" loading="lazy">
+                            <span class="product-badge">{{ prod.badge }}</span>
+                            <span class="product-series">{{ prod.series }}</span>
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-title">{{ prod.name }}</h3>
+                            <p class="product-subtitle">{{ prod.subtitle }}</p>
+                            <p class="product-desc">{{ prod.desc }}</p>
+                            <ul class="product-specs-list">
+                                {% for spec in prod.specs %}
+                                <li>{{ spec }}</li>
+                                {% endfor %}
+                            </ul>
+                            <div class="product-actions">
+                                <button class="btn-read-tts" onclick="readAloudText('{{ prod.name }}。{{ prod.subtitle }}。{{ prod.desc }}', this)">
+                                    🎙️ 語音朗讀
+                                </button>
+                                <button class="btn-quote-item" onclick="addSpecToQuote('{{ prod.name }}')">
+                                    加入詢價單
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             Interactive Stock Specs Explorer (現貨規格即時查詢系統)
+             ========================================================================== -->
+        <section id="specs" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Inventory Query</span>
+                    <h2 class="section-title">現貨規格即時檢索系統</h2>
+                    <p class="section-desc">
+                        即時查詢廠內 490 多種常備鋁合金板材、圓棒、扁條規格。支援以合金型號、厚度、長度快速檢索，可一鍵將規格加入詢價單。
+                    </p>
+                </div>
+
+                <div class="specs-explorer-card glass-card">
+                    <div class="specs-toolbar">
+                        <div class="search-box">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" id="specsSearchInput" placeholder="搜尋材質或規格（例：5052、6061、7075、4' * 8'、Dia. 50...）">
+                        </div>
+                        <div class="category-select">
+                            <select id="specsCatSelect">
+                                <option value="全部">全部規格類別</option>
+                                <option value="1050 / 5052 鋁板">1050 / 5052 鋁板</option>
+                                <option value="5083 鋁合金板">5083 鋁合金板</option>
+                                <option value="6061 鋁合金板">6061 鋁合金板</option>
+                                <option value="7075 鋁合金板">7075 航太鋁合金板</option>
+                                <option value="日本進口 5052 貼膜鋁板">日本進口 5052 貼膜鋁板</option>
+                                <option value="鋁擠型圓棒">鋁擠型圓棒</option>
+                                <option value="鋁擠型扁條">鋁擠型扁條</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="specs-table-container">
+                        <table class="specs-table">
+                            <thead>
+                                <tr>
+                                    <th>編號</th>
+                                    <th>產品類別</th>
+                                    <th>材質 / 煉度</th>
+                                    <th>厚度 / 直徑規格</th>
+                                    <th>尺寸 / 長度</th>
+                                    <th>庫存狀態 / 動作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="specsTableBody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="specs-pagination">
+                        <div>
+                            共檢索到 <strong id="specsTotalCount" style="color:var(--accent-cyan);">0</strong> 筆符合規格
+                        </div>
+                        <div class="page-controls">
+                            <button id="specsPrevBtn" class="page-btn">上一頁</button>
+                            <span id="specsPageNum" style="align-self:center; font-weight:600;">1 / 1</span>
+                            <button id="specsNextBtn" class="page-btn">下一頁</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             Manufacturing & Capabilities Section
+             ========================================================================== -->
+        <section id="machining" class="section" style="background: rgba(13, 21, 39, 0.4);">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">High-End Processing</span>
+                    <h2 class="section-title">高階精密加工與表面工程</h2>
+                    <p class="section-desc">
+                        廠內配備高剛性 CNC 加工中心、多軸車床、大型龍門銑削、航太五軸聯動與表面陽極拉絲線，提供從毛胚鋸切到成品出貨的一站式加工製造能量。
+                    </p>
+                </div>
+
+                <div class="capabilities-grid">
+                    {% for cap in data.capabilities %}
+                    <div class="capability-card glass-card">
+                        <div class="cap-image">
+                            <img src="{{ cap.image }}" alt="{{ cap.name }}" loading="lazy">
+                        </div>
+                        <div class="cap-title">
+                            <span>{{ cap.name }}</span>
+                            <span style="font-size: 1.2rem; color: var(--accent-cyan);">⚙️</span>
+                        </div>
+                        <p class="cap-desc">{{ cap.desc }}</p>
+                        <button class="btn-read-tts" onclick="readAloudText('{{ cap.name }}。{{ cap.desc }}', this)">
+                            🎙️ 語音解析此製程
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             Representative Cases & Solutions
+             ========================================================================== -->
+        <section id="cases" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Case Studies</span>
+                    <h2 class="section-title">半導體與航太實績案例</h2>
+                    <p class="section-desc">
+                        法寶實業長期協同各領域設備大廠克服材料加工變形、嚴苛公差與輕量化挑戰，以數據與品質為客戶創造最高效益。
+                    </p>
+                </div>
+
+                <div class="cases-grid">
+                    {% for c in data.cases %}
+                    <div class="case-card glass-card">
+                        <span class="case-badge">{{ c.tag }}</span>
+                        <h3 class="case-title">{{ c.title }}</h3>
+                        <p class="case-client">產業對象：{{ c.client }}</p>
+                        
+                        <div class="case-box">
+                            <h5>關鍵挑戰</h5>
+                            <p>{{ c.challenge }}</p>
+                        </div>
+                        <div class="case-box" style="border-left-color: var(--accent-amber);">
+                            <h5 style="color: var(--accent-amber);">法寶解決方案</h5>
+                            <p>{{ c.solution }}</p>
+                        </div>
+                        <div class="case-box" style="border-left-color: var(--accent-emerald);">
+                            <h5 style="color: var(--accent-emerald);">成果與效益</h5>
+                            <p>{{ c.result }}</p>
+                        </div>
+
+                        <div style="margin-top: 18px;">
+                            <button class="btn-read-tts" style="width:100%;" onclick="readAloudText('{{ c.title }}。挑戰：{{ c.challenge }}。法寶解決方案：{{ c.solution }}。成果：{{ c.result }}', this)">
+                                🎙️ 語音聆聽完整案例解析
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             Technical Tools & Hardness Converter Hub
+             ========================================================================== -->
+        <section id="tech" class="section" style="background: rgba(13, 21, 39, 0.4);">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Engineering Tool</span>
+                    <h2 class="section-title">國際標準硬度換算與熱處理辭典</h2>
+                    <p class="section-desc">
+                        即時試算布氏 (HB)、洛氏 (HRC / HRB)、維氏 (HV)、肖氏 (HS) 硬度與抗拉強度對照，並提供鋁合金常見調質度規範解說。
+                    </p>
+                </div>
+
+                <div class="tech-grid">
+                    <!-- Calculator Card -->
+                    <div class="calculator-card glass-card">
+                        <h3 style="font-size: 1.4rem; font-weight:700; margin-bottom: 8px;">金屬硬度即時試算器</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 24px;">請輸入布氏硬度 (HB)，系統將自動對照各項國際硬度與近似抗拉強度：</p>
+                        
+                        <div class="calc-input-group">
+                            <label for="calcHbInput">布氏硬度 (HB / Brinell)：</label>
+                            <input type="number" id="calcHbInput" value="229" min="60" max="700">
+                        </div>
+
+                        <div class="calc-results-grid">
+                            <div class="calc-metric-box">
+                                <div class="metric-label">洛氏硬度 HRC (C標尺)</div>
+                                <div class="metric-value" id="calcHrcVal">20.5 HRC</div>
+                            </div>
+                            <div class="calc-metric-box">
+                                <div class="metric-label">洛氏硬度 HRB (B標尺)</div>
+                                <div class="metric-value" id="calcHrbVal">98.2 HRB</div>
+                            </div>
+                            <div class="calc-metric-box">
+                                <div class="metric-label">維氏硬度 HV</div>
+                                <div class="metric-value" id="calcHvVal">241 HV</div>
+                            </div>
+                            <div class="calc-metric-box">
+                                <div class="metric-label">肖氏硬度 HS</div>
+                                <div class="metric-value" id="calcShoreVal">36 HS</div>
+                            </div>
+                            <div class="calc-metric-box" style="grid-column: 1 / -1; border-color: var(--accent-cyan);">
+                                <div class="metric-label">估算抗拉強度 Tensile Strength</div>
+                                <div class="metric-value" id="calcTensileVal">≈ 775 MPa</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Temper Designation Card -->
+                    <div class="temper-card glass-card">
+                        <h3 style="font-size: 1.4rem; font-weight:700; margin-bottom: 8px;">熱處理與調質代號辭典</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">鋁合金常見之後綴調質狀態技術定義：</p>
+
+                        <div class="temper-accordion">
+                            {% for t in data.temper_definitions %}
+                            <div class="temper-item">
+                                <div>
+                                    <span class="temper-code">{{ t.code }}</span>
+                                    <span class="temper-name">{{ t.name }}</span>
+                                </div>
+                                <p class="temper-desc">{{ t.desc }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             Contact & Instant RFQ Form
+             ========================================================================== -->
+        <section id="contact" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Direct Inquiry</span>
+                    <h2 class="section-title">即時諮詢與快速估價</h2>
+                    <p class="section-desc">
+                        歡迎留下您的材料規格或加工圖面需求，法寶實業台北、台中、台南專業業務工程師將於 24 小時內為您提供詳盡報價與技術建議。
+                    </p>
+                </div>
+
+                <div class="contact-grid">
+                    <div class="contact-info-card glass-card">
+                        <h3 style="font-size: 1.4rem; font-weight:700; margin-bottom: 12px;">法寶實業聯繫窗口</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-dim); line-height: 1.7;">
+                            如需緊急調料或大批量合約專案，歡迎直接致電各據點物流中心，我們將安排專屬業務為您服務。
+                        </p>
+
+                        <div class="info-branch-list">
+                            <div class="info-branch-item">
+                                <h4>🏢 台北總公司 (貿易與行政樞紐)</h4>
+                                <p>地址：台北市民權東路三段136號3樓之5</p>
+                                <p>電話：(02) 2718-3134 ｜ 傳真：(02) 2718-9443</p>
+                                <p>信箱：taipei@fapolu.com.tw</p>
+                            </div>
+                            <div class="info-branch-item">
+                                <h4>🏭 台中廠 (物流與精密裁切中心)</h4>
+                                <p>地址：台中市西屯區台灣大道四段五巷167及167-1號</p>
+                                <p>電話：(04) 2258-4931 ｜ 傳真：(04) 2258-8743</p>
+                                <p>信箱：taichung@fapolu.com.tw</p>
+                            </div>
+                            <div class="info-branch-item">
+                                <h4>🏭 台南雙廠區 (佳里一廠 · 麻豆二廠)</h4>
+                                <p>地址：台南市佳里區麻佳路三段70巷30號 / 麻豆區麻柚路446號</p>
+                                <p>電話：(06) 726-3666 ｜ 傳真：(06) 726-3888</p>
+                                <p>信箱：fapotnn@ms37.hinet.net</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quote-form-card glass-card">
+                        <h3 style="font-size: 1.4rem; font-weight:700; margin-bottom: 20px;">填寫需求估價單</h3>
+                        <form id="quoteForm">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="companyName">公司寶號 *</label>
+                                    <input type="text" id="companyName" name="companyName" required placeholder="例：台積精密機械有限公司">
+                                </div>
+                                <div class="form-group">
+                                    <label for="contactPerson">聯絡人姓名 *</label>
+                                    <input type="text" id="contactPerson" name="contactPerson" required placeholder="例：陳經理 / 林先生">
+                                </div>
+                                <div class="form-group">
+                                    <label for="contactPhone">連絡電話 / 手機 *</label>
+                                    <input type="tel" id="contactPhone" name="contactPhone" required placeholder="例：0912-345-678 或 02-...">
+                                </div>
+                                <div class="form-group">
+                                    <label for="contactEmail">電子郵件 *</label>
+                                    <input type="email" id="contactEmail" name="contactEmail" required placeholder="name@company.com">
+                                </div>
+                                <div class="form-group full">
+                                    <label for="inquiryMaterial">材料型號與規格需求</label>
+                                    <input type="text" id="inquiryMaterial" name="inquiryMaterial" placeholder="例：UACJ 5052 貼膜板 10mm x 4' x 8' 或 6061-T6 圓棒 Dia.50">
+                                </div>
+                                <div class="form-group full">
+                                    <label for="inquiryMessage">需求數量、加工說明與備註</label>
+                                    <textarea id="inquiryMessage" name="inquiryMessage" placeholder="請填寫預計採購數量、裁切尺寸、是否有銑面/CNC加工或陽極需求..."></textarea>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 14px;">
+                                🚀 送出詢價需求單
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo-group">
+                        <div class="logo-badge">FP</div>
+                        <div class="logo-text">
+                            <h2 style="font-size:1.2rem;">法寶實業有限公司</h2>
+                            <p>FAPO ENTERPRISE CO., LTD.</p>
+                        </div>
+                    </div>
+                    <p>
+                        深耕台灣近四十載，以鋁為本、服務為先。全方位供應純鋁、鋁合金板、擠型材、特殊合金與精密 CNC 加工、表面陽極一貫化整合服務。
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h5>快速導覽</h5>
+                    <ul>
+                        <li><a href="#hero">首頁概覽</a></li>
+                        <li><a href="#network">全台服務據點</a></li>
+                        <li><a href="#products">旗艦產品系列</a></li>
+                        <li><a href="#specs">現貨規格表</a></li>
+                        <li><a href="#machining">精密加工能量</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>技術與服務</h5>
+                    <ul>
+                        <li><a href="#cases">半導體與航太實績</a></li>
+                        <li><a href="#tech">國際硬度換算</a></li>
+                        <li><a href="#tech">熱處理代號辭典</a></li>
+                        <li><a href="#contact">線上圖面估價</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 1986 - 2026 法寶實業有限公司 FAPO ENTERPRISE CO., LTD. 版權所有 ｜ 支援 WAITRESS · FLASK · EDGE-TTS 沉浸式語音架構</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==========================================================================
+         Floating Edge-TTS Audio Tour Player Dock
+         ========================================================================== -->
+    <div class="audio-dock">
+        <div class="dock-left">
+            <button id="dockPlayBtn" class="btn-play-dock" title="播放沉浸導覽">
+                ▶
+            </button>
+            <div class="dock-track-info">
+                <span class="track-badge">🎙️ 語音導覽導聆</span>
+                <span id="dockTrackTitle" class="track-title">法寶實業 · 企業簡介</span>
+            </div>
+        </div>
+
+        <div class="dock-visualizer">
+            <canvas id="audioWaveCanvas" width="240" height="32"></canvas>
+        </div>
+
+        <div class="dock-controls">
+            <button id="dockPrevBtn" class="btn-dock-icon" title="上一章節">⏮</button>
+            <button id="dockNextBtn" class="btn-dock-icon" title="下一章節">⏭</button>
+            
+            <div class="dock-chapter-select">
+                <select id="dockChapterSelect" class="chip">
+                    <!-- Populated by JS -->
+                </select>
+            </div>
+
+            <div class="dock-voice-select">
+                <select id="dockVoiceSelect">
+                    <option value="zh-TW-HsiaoChenNeural">專業女聲 (曉臻)</option>
+                    <option value="zh-TW-YunJheNeural">沉穩男聲 (雲哲)</option>
+                </select>
+            </div>
+
+            <div class="dock-speed-select">
+                <select id="dockSpeedSelect">
+                    <option value="1.0">1.0x 語速</option>
+                    <option value="1.2">1.2x 語速</option>
+                    <option value="0.9">0.9x 語速</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cloudflare Tunnel Modal -->
+    <div id="tunnelModal" class="modal-overlay">
+        <div class="modal-content glass-card">
+            <button class="modal-close" onclick="closeTunnelModal()">✕</button>
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+                <span style="font-size:1.8rem;">🌐</span>
+                <div>
+                    <h3 style="font-size: 1.4rem; color: var(--accent-cyan);">Cloudflare Tunnel 內網穿透</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">免固定 IP · 免設定路由器 · 外網隨時隨地安全連線</p>
+                </div>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.4); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px; margin-bottom: 20px;">
+                <label style="font-size: 0.8rem; color: var(--text-muted); display:block; margin-bottom: 6px;">trycloudflare.com 公開網址：</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="tunnelUrlInput" readonly value="檢測中..." style="flex:1; background: rgba(0,0,0,0.6); border: 1px solid var(--border-highlight); color: var(--accent-cyan); font-weight:700; padding:10px 14px; border-radius: var(--radius-sm); font-size:0.95rem; outline:none;">
+                    <button class="btn btn-primary" onclick="copyTunnelUrl()" style="padding: 10px 18px;">複製</button>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:10px;">
+                <button id="btnToggleTunnel" class="btn btn-outline" style="flex:1; justify-content:center;" onclick="toggleTunnelAction()">
+                    ⚡ 建立 / 重新取得外網網址
+                </button>
+                <a id="tunnelOpenLink" href="#" target="_blank" class="btn btn-outline" style="display:none; justify-content:center;">
+                    在新分頁開啟 ↗
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal-overlay">
+        <div class="modal-content glass-card">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <h3 style="font-size: 1.5rem; color: var(--accent-cyan); margin-bottom: 12px;">🎉 需求已成功送達</h3>
+            <p id="modalTicket" style="color: var(--accent-amber); font-weight: 700; margin-bottom: 12px;"></p>
+            <p id="modalMessage" style="color: var(--text-dim); line-height: 1.7; margin-bottom: 24px;"></p>
+            <button class="btn btn-primary" onclick="closeModal()" style="width: 100%; justify-content: center;">好，我知道了</button>
+        </div>
+    </div>
+
+    <!-- Embedded Data for Instant Client Interaction -->
+    <script>
+        window.SITE_DATA = {{ data | tojson }};
+    </script>
+    <!-- Main Interactive Script -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
+

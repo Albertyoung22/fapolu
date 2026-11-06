@@ -1,0 +1,374 @@
+import json
+import os
+import re
+
+# Load raw crawled data
+with open('data/crawled_site.json', 'r', encoding='utf-8') as f:
+    raw_pages = json.load(f)
+
+# Load image map
+try:
+    with open('data/image_map.json', 'r', encoding='utf-8') as f:
+        img_map = json.load(f)
+except:
+    img_map = {}
+
+company_info = {
+    "name": "法寶實業有限公司",
+    "name_en": "FAPO ENTERPRISE CO., LTD.",
+    "founded_year": 1986,
+    "years_experience": "近40年",
+    "slogan": "深耕台灣四十載，全方位鋁合金材料供應鏈與精密加工整合首選",
+    "mission": "以鋁為本，服務為先。建構彈性且強大的供應鏈平台，整合廠內高階加工技術與數千家協力夥伴資源，提供材料選用到精密加工的一站式解決方案。",
+    "vision": "立足台灣，佈局高科技產業鏈。深耕半導體真空腔體與散熱模組精密加工，邁向國防航太高規格7xxx系列高強度鋁合金關鍵供應鏈。",
+    "locations": [
+        {
+            "id": "taipei",
+            "name": "台北總公司",
+            "role": "國際貿易與行政核心 · 北部服務調度樞紐",
+            "address": "台北市民權東路三段136號3樓之5",
+            "tel": "02-27183134",
+            "fax": "02-27189443",
+            "email": "taipei@fapolu.com.tw",
+            "highlights": "鄰近松山機場，統籌全台進出口貿易、訂單調度與高科技客戶即時服務。"
+        },
+        {
+            "id": "taichung",
+            "name": "台中物流中心 (台中廠)",
+            "role": "中部樞紐 · 龐大常備現貨與大型精密裁切中心",
+            "address": "台中市西屯區台灣大道四段五巷167及167-1號",
+            "tel": "04-22584931",
+            "fax": "04-22588743",
+            "email": "taichung@fapolu.com.tw",
+            "highlights": "緊鄰國1台中沙鹿交流道。備有各式大型鋁合金裁切機具，1000/5000/6000/7000系列鋁板、擠型圓棒扁條常備庫存。"
+        },
+        {
+            "id": "tainan-1",
+            "name": "台南營運中心 (台南一廠 · 佳里倉)",
+            "role": "南部核心發貨倉庫 · 快速調撥樞紐",
+            "address": "台南市佳里區麻佳路三段70巷30號",
+            "tel": "06-7263666",
+            "fax": "06-7263888",
+            "email": "fapotnn@ms37.hinet.net",
+            "highlights": "鄰近麻豆交流道，長期深耕南部製造業與工業區核心發貨。"
+        },
+        {
+            "id": "tainan-2",
+            "name": "台南營運中心 (台南二廠 · 麻豆新廠)",
+            "role": "最新擴充據點 · 特殊大規格材料精密裁切與物流",
+            "address": "台南市麻豆區麻柚路446號",
+            "tel": "06-7263666",
+            "fax": "06-7263888",
+            "email": "fapotnn@ms37.hinet.net",
+            "highlights": "具備更寬敞儲運空間與最新型自動鋸切設備，專責處理大型專案與特殊規格材料。"
+        }
+    ]
+}
+
+# Products categorized
+products = [
+    {
+        "id": "p-5052-uacj",
+        "category": "鋁合金板材",
+        "series": "5000系列",
+        "name": "日本原裝 UACJ 5052 貼膜鋁合金板",
+        "badge": "熱門主力",
+        "subtitle": "低殘留應力 · 極致真平度 · 半導體腔體與精密治具指定",
+        "desc": "採用日本第一大鋁業 UACJ 原廠進口，獨家板材壓延及整平工法，內部殘留應力極低。在經過大量精密 CNC 銑削去除加工後不易變形與翹曲，確保超高真平度與氣密性，廣泛應用於半導體蝕刻腔體、檢測設備及光電自動化機台。",
+        "image": "/static/img_crawled/pro_1.jpg",
+        "specs": ["厚度：0.6mm ~ 120mm 常備庫存", "長寬：4'x8'、5'x10'、客製切切", "調質：H32, H112", "特點：雙面原廠保護膜、附原廠材質證明書(Mill Sheet)"]
+    },
+    {
+        "id": "p-7075",
+        "category": "鋁合金板材",
+        "series": "7000系列",
+        "name": "7075-T651 航太級超硬鋁合金板",
+        "badge": "航太軍工",
+        "subtitle": "超高抗拉強度 · 卓越耐疲勞性 · 國防航太與高負載治具首選",
+        "desc": "商用鋁合金中強度最高之鋼質鋁合金（含鋅鎂銅），經過 T651 預拉伸消除內應力熱處理，切削成形穩定。專為高負載運轉件、無人機結構件、航太零件與精密模具打造，符合國際嚴格幾何公差與機械性質規範。",
+        "image": "/static/img_crawled/pro_2.jpg",
+        "specs": ["強度：抗拉強度高達 570 MPa 以上", "調質：T6, T651 應力消除", "規格：厚度 6mm ~ 150mm+ 現貨", "認證：附原廠檢驗證明、符合航空級材料規範"]
+    },
+    {
+        "id": "p-6061",
+        "category": "鋁合金板材",
+        "series": "6000系列",
+        "name": "6061-T6 / T651 精密結構鋁板",
+        "badge": "全能應用",
+        "subtitle": "優異切削性 · 絕佳陽極上色性 · 結構件標竿",
+        "desc": "含鎂矽合金之熱處理型高強度鋁板，具備極優良的切削加工性、耐蝕性與陽極氧化表現。廣泛應用於半導體設備架構、自動化機械手臂、自行車與汽機車輕量化精密組件。",
+        "image": "/static/img_crawled/pro_3.jpg",
+        "specs": ["厚度：1mm ~ 135mm 現貨充足", "調質狀態：T6, T651, O態", "長寬：4'x8'、5'x10'、特規整平開平", "表面：可配合本色陽極、硬陽、染色"]
+    },
+    {
+        "id": "p-5083",
+        "category": "鋁合金板材",
+        "series": "5000系列",
+        "name": "5083-H111 / H112 耐蝕耐低溫船用鋁板",
+        "badge": "海洋工程",
+        "subtitle": "高耐海水腐蝕 · 卓越低溫韌性 · 船舶與壓力容器",
+        "desc": "非熱處理合金中強度最高之鋁鎂合金，在海洋氣候與化學環境下具備極佳耐腐蝕力，且在超低溫環境下不會脆化。常用於造船、LNG儲槽、低溫容器、裝甲載具及化工槽體。",
+        "image": "/static/img_crawled/pro_4.jpg",
+        "specs": ["厚度：8mm ~ 100mm 現貨", "調質：H111 (貼膜板), H112, H121", "標準：符合船級檢驗規範、超音波探傷檢驗", "加工：支援大型鋸切與龍門銑削"]
+    },
+    {
+        "id": "p-1050",
+        "category": "鋁合金板材",
+        "series": "1000系列",
+        "name": "1050 / 1100 工業純鋁板",
+        "badge": "高導熱純鋁",
+        "subtitle": "純度 ≥99.5% · 高導熱導電 · 優異延展性",
+        "desc": "工業用高純度鋁板，導熱係數高、導電性佳、深衝成形與彎折性優良。大量應用於散熱散熱片、LED反射罩、化工容器、名牌標籤、食品包裝及建築裝飾。",
+        "image": "/static/img_crawled/pro_5.jpg",
+        "specs": ["厚度：0.26mm ~ 6.0mm", "調質：H, H14, H16, H18, H24, F", "現貨：捲片、平片裁切供應", "特性：高反射率、耐化學腐蝕"]
+    },
+    {
+        "id": "p-korea-plate",
+        "category": "鋁合金板材",
+        "series": "5000/6000系列",
+        "name": "韓國進口雙面貼膜精密精平板",
+        "badge": "高精度",
+        "subtitle": "超高平坦度 · 雙面精密拋光保護 · 光電設備專用",
+        "desc": "進口超平坦度貼膜精平板，出廠經過高精度研磨與雙面保護貼膜，免除二次銑面工序，大幅節省客戶加工工時與成本，適用於精準光學基板與自動化平台。",
+        "image": "/static/img_crawled/pro_6.jpg",
+        "specs": ["平面度：每米公差極小", "表面：雙面貼膜防刮保護", "厚度：齊全供應", "服務：可依圖鋸切倒角"]
+    },
+    {
+        "id": "p-embossed",
+        "category": "鋁合金板材",
+        "series": "特殊飾板",
+        "name": "金銀鏡面鋁板 · 各式防滑壓花板",
+        "badge": "防滑裝飾",
+        "subtitle": "金銀亮面反射 · 五爪/二爪/人字紋/鑽石紋止滑",
+        "desc": "供應高反射光學級金、銀鏡面鋁板；以及各式防滑花紋板，包括五爪花紋、二爪、三爪、人字紋及鑽石花紋。廣泛應用於車輛底板、樓梯踏板、無塵室地坪、工業圍籬及建築裝潢。",
+        "image": "/static/img_crawled/pro_7.jpg",
+        "specs": ["花紋型式：五爪、人字紋、鑽石紋、二爪", "材質：1050 / 3003 / 5052", "規格：4'x8' 及客製長度", "用途：防滑踏板、冷藏車箱壁、帷幕牆"]
+    },
+    {
+        "id": "p-ext-6xxx",
+        "category": "鋁擠型材",
+        "series": "6000系列",
+        "name": "6xxx系列 結構型鋁擠型 (圓棒/扁條/方條/異型管)",
+        "badge": "現貨王",
+        "subtitle": "6061 / 6063 / 6082 · 齊全模具現貨庫存 · 精密尺寸",
+        "desc": "備有全台最豐富的擠型現貨：圓棒 (Dia.10mm ~ 406mm+)、扁條 (寬12mm ~ 203mm+)、正方管、方條、角鋁。適用於各類自動化設備支架、氣壓缸管、散熱器及五金精密車銑零件。",
+        "image": "/static/img_crawled/pro_8.jpg",
+        "specs": ["棒材：圓棒、六角棒、扁條、方條", "管材：圓管、方管、扁管、異型結構", "煉度：T5, T6, T651", "現有模具：數百種規格免開模費"]
+    },
+    {
+        "id": "p-ext-2xxx-7xxx",
+        "category": "鋁擠型材",
+        "series": "2000/7000系列",
+        "name": "2xxx & 7xxx 高強度航太鋁擠棒料與型材",
+        "badge": "高強度",
+        "subtitle": "2014, 2024, 7075 · 高承載耐磨 · 航太機械五金",
+        "desc": "專供高硬度與高強度要求之結構擠型料件。2024 高抗疲勞強度；7075 超高耐壓抗變形。提供圓棒、厚壁管與客製型材，附材質證明。",
+        "image": "/static/img_crawled/pro_9.jpg",
+        "specs": ["系列：2014-T6, 2024-T351, 7075-T651", "形狀：大直徑圓棒、特厚扁條、型材", "應用：高載重傳動軸、軍工治具、扣件", "檢驗：超音波探傷、光譜材質分析"]
+    },
+    {
+        "id": "p-custom-mold",
+        "category": "客製開發",
+        "series": "模具開發",
+        "name": "客製化鋁擠型開模 · 鑄造與鍛造設計開發",
+        "badge": "一站整合",
+        "subtitle": "圖面檢討 · 模流分析 · 模具開模 · 試樣量產一貫化",
+        "desc": "擁有豐富鋁合金模具開發經驗，協助客戶從 3D/2D CAD 圖面公差檢討、擠型模具或鍛造模具設計開模、試模打樣到表面陽極與 CNC 精密成形，大幅縮短量產時程並降低開發成本。",
+        "image": "/static/img_crawled/pro_10.jpg",
+        "specs": ["服務項目：鋁擠型開模、鍛造開模、重力鑄造、壓鑄", "支援格式：AutoCAD, STEP, IGES, SolidWorks", "後段整合：CNC五軸銑削、沖孔、攻牙、陽極", "彈性：少量多樣試作至大批量產"]
+    },
+    {
+        "id": "p-stainless-copper",
+        "category": "多元合金",
+        "series": "特殊金屬",
+        "name": "不鏽鋼材 · 銅與銅合金 · 純鋁錠原物料",
+        "badge": "全面配套",
+        "subtitle": "AISI 304/410/430 · 黃銅/紅銅/燐青銅 · ADC12鑄造錠料",
+        "desc": "為提供客戶一站購足服務，常備不鏽鋼捲片、保溫工程束帶扣件；高導電紅銅、黃銅平片棒材；以及 99.7% 純鋁錠與 ADC6/10/12、A356 鑄造錠料，提供各大鑄造與加工廠信賴的原物料來源。",
+        "image": "/static/img_crawled/pro_11.jpg",
+        "specs": ["不鏽鋼：SUS304, 410, 420, 430 板片捲材", "銅材：紅銅 (C1100), 黃銅 (C3604/C2680), 燐青銅", "鑄錠：純鋁錠 99.7%、ADC12、A356.2", "認證：RoHS / PFOS 環保無毒檢驗"]
+    }
+]
+
+# Manufacturing capabilities
+capabilities = [
+    {
+        "id": "cnc-milling",
+        "name": "CNC 銑床加工",
+        "icon": "cog",
+        "desc": "配備高剛性高精密 CNC 加工中心機，搭載精密光學尺與主軸內冷系統，專責半導體真空腔體、精密散熱底座與自動化治具之精密銑削與攻牙，尺寸公差與重複精度極致精準。",
+        "image": "/static/img_crawled/p01.jpg"
+    },
+    {
+        "id": "cnc-lathe",
+        "name": "精密 CNC 車床加工",
+        "icon": "disc",
+        "desc": "多軸車銑複合加工，能一次性完成複雜軸件之車外徑、內孔、螺紋、端面洗槽與偏心孔加工，確保高同心度與極致真圓度，滿足軸承套件、連接器與流體閥門要求。",
+        "image": "/static/img_crawled/p02.jpg"
+    },
+    {
+        "id": "stamping",
+        "name": "沖床與折床沖剪加工",
+        "icon": "layers",
+        "desc": "具備大型油壓與氣壓連續沖床，配備精密連續模具與伺服折床，提供精密沖孔、落料、引伸成形與折彎加工，適用於機殼金屬面板、散熱片與支架配件批量生產。",
+        "image": "/static/img_crawled/p03.jpg"
+    },
+    {
+        "id": "five-axis",
+        "name": "航太級五軸同動加工",
+        "icon": "cube",
+        "desc": "引進五軸聯動加工中心，專門攻克航太複雜 3D 自由曲面、葉輪、薄壁結構與深腔死角，大幅減少多次裝夾帶來的基準累積誤差，達到微米級航太精度要求。",
+        "image": "/static/img_crawled/p04.jpg"
+    },
+    {
+        "id": "gantry-milling",
+        "name": "大型龍門銑床加工",
+        "icon": "maximize",
+        "desc": "針對大行程、超大型板材與大型半導體真空腔體底座，提供大平面精銑、重切削與精密孔系加工，確保整體跨距內的真平度與幾何尺寸一致性。",
+        "image": "/static/img_crawled/p05.jpg"
+    },
+    {
+        "id": "polishing",
+        "name": "拋光與拉絲表面處理",
+        "icon": "sparkles",
+        "desc": "具備自動平面拉絲機與多道手工精密拋光站，可提供細緻髮絲面 (Hairline)、雪花砂紋及鏡面拋光，兼顧金屬冷冽質感與絕佳光學外觀。",
+        "image": "/static/img_crawled/p06.jpg"
+    },
+    {
+        "id": "anodizing",
+        "name": "陽極氧化與表面防蝕處理",
+        "icon": "shield",
+        "desc": "提供本色陽極、黑色/消光陽極、彩色陽極以及高耐磨微米級硬質陽極 (Hard Anodizing)，大幅提升鋁合金耐磨耗、抗電氣絕緣與耐鹽霧腐蝕性能。",
+        "image": "/static/img_crawled/p07.jpg"
+    }
+]
+
+# Representative cases
+cases = [
+    {
+        "id": "case-semiconductor",
+        "title": "半導體高真空蝕刻機台大型腔體底座",
+        "client": "半導體設備晶圓機台製造大廠",
+        "challenge": "客戶開發新一代先進蝕刻製程機台，鋁合金底座尺寸達 1500mm 以上，大量 CNC 切削後極易因材料內部殘留應力釋放而產生微翹曲，導致腔體真空氣密失效。",
+        "solution": "法寶實業堅持採用日本 UACJ 原廠進口 5052/6061 預拉伸貼膜鋁板，並搭配最佳化銑削轉速與低應力分道退火工法，成功將大型底座真平度公差控制在 0.03mm 以內。",
+        "result": "徹底解決組裝真空洩漏難題，組裝重工率降低 90%，獲選為該半導體設備廠指定專屬材料與初加工供應商。",
+        "tag": "半導體先進製程",
+        "image": "/static/img_crawled/3138.jpg"
+    },
+    {
+        "id": "case-aerospace",
+        "title": "航太無人載具與高剛性機載治具結構件",
+        "client": "民用航空與高負載航天科技客戶",
+        "challenge": "零件要求極致輕量化卻需承受高動態震動與超高抗拉強度，外型具備多曲面 3D 複雜流線，且必須通過航空級材料材質證明書 (Mill Sheet) 嚴苛檢驗。",
+        "solution": "供應正廠 7075-T651 航空鋁合金，附完整探傷檢驗證明；並出動廠內五軸同動加工機進行一次性成型，避免接縫與累積公差。",
+        "result": "零件減重達 35%，抗拉疲勞測試完全達標，順利通過飛行認證並投入批量生產。",
+        "tag": "航太國防工程",
+        "image": "/static/img_crawled/285.jpg"
+    }
+]
+
+# Hardness conversion chart data (国际标准硬度对照表)
+hardness_data = [
+    {"HB": 653, "HRC": 60.0, "HRB": "-", "HV": 697, "shore": 81, "tensile_approx": 2180},
+    {"HB": 601, "HRC": 57.3, "HRB": "-", "HV": 640, "shore": 76, "tensile_approx": 2010},
+    {"HB": 555, "HRC": 54.7, "HRB": "-", "HV": 590, "shore": 72, "tensile_approx": 1860},
+    {"HB": 514, "HRC": 52.0, "HRB": "-", "HV": 547, "shore": 68, "tensile_approx": 1720},
+    {"HB": 477, "HRC": 49.6, "HRB": "-", "HV": 506, "shore": 64, "tensile_approx": 1600},
+    {"HB": 444, "HRC": 47.1, "HRB": "-", "HV": 471, "shore": 61, "tensile_approx": 1490},
+    {"HB": 401, "HRC": 43.1, "HRB": "-", "HV": 425, "shore": 56, "tensile_approx": 1350},
+    {"HB": 363, "HRC": 39.1, "HRB": "-", "HV": 384, "shore": 52, "tensile_approx": 1220},
+    {"HB": 311, "HRC": 33.1, "HRB": "-", "HV": 328, "shore": 46, "tensile_approx": 1050},
+    {"HB": 269, "HRC": 27.6, "HRB": 102.5, "HV": 283, "shore": 41, "tensile_approx": 910},
+    {"HB": 229, "HRC": 20.5, "HRB": 98.2, "HV": 241, "shore": 36, "tensile_approx": 775},
+    {"HB": 197, "HRC": "-", "HRB": 92.8, "HV": 207, "shore": 32, "tensile_approx": 665},
+    {"HB": 163, "HRC": "-", "HRB": 84.5, "HV": 171, "shore": 27, "tensile_approx": 550},
+    {"HB": 143, "HRC": "-", "HRB": 78.7, "HV": 150, "shore": 24, "tensile_approx": 485},
+    {"HB": 121, "HRC": "-", "HRB": 69.8, "HV": 127, "shore": 21, "tensile_approx": 410},
+    {"HB": 100, "HRC": "-", "HRB": 56.4, "HV": 105, "shore": 18, "tensile_approx": 340},
+    {"HB": 80, "HRC": "-", "HRB": 36.4, "HV": 84, "shore": 15, "tensile_approx": 270}
+]
+
+# Temper treatment definitions (熱處理代號說明)
+temper_definitions = [
+    {
+        "code": "F",
+        "name": "自由加工狀態 (As Fabricated)",
+        "desc": "適用於在成形過程中對加工硬化或熱處理沒有特殊要求的產品，力學性質不作特定限制。"
+    },
+    {
+        "code": "O",
+        "name": "完全退火狀態 (Annealed)",
+        "desc": "適用於經過完全退火獲得最低強度與最佳延展性以利後續深抽成形的產品。"
+    },
+    {
+        "code": "H",
+        "name": "加工硬化狀態 (Strain-Hardened)",
+        "desc": "適用於通過冷加工提高強度的產品。H 後通常跟隨兩位或三位數字，第一位表示基本處理方式（H1單純冷作、H2冷作後不完全退火、H3冷作後穩定化處理），第二位數字表示硬化等級（8為全硬、4為半硬、2為1/4硬）。例如 5052-H32。"
+    },
+    {
+        "code": "W",
+        "name": "固溶熱處理狀態 (Solution Heat-Treated)",
+        "desc": "一種不穩定的過渡狀態，僅適用於固溶熱處理後在室溫下自然時效的合金。"
+    },
+    {
+        "code": "T",
+        "name": "熱處理狀態 (Heat-Treated to Produce Stable Tempers)",
+        "desc": "適用於經過熱處理達到穩定狀態的產品。T 後接數字 1 至 10，常見包括 T4（固溶處理後自然時效）、T6（固溶處理後人工時效，達到高強度）、T651（固溶處理後經由特定永久變形預拉伸消除內應力，再進行人工時效，加工不易變形）。"
+    }
+]
+
+# Voice Tour Chapters for Edge-TTS
+tour_chapters = [
+    {
+        "id": "tour-welcome",
+        "section_id": "hero",
+        "title": "法寶實業 · 企業簡介",
+        "audio_file": "/static/audio/tour_welcome.mp3",
+        "script": "歡迎蒞臨法寶實業有限公司。法寶實業創立於 1986 年，深耕台灣近四十載。我們致力於建構全方位、彈性且強大的鋁合金材料供應鏈與精密加工一站式平台，秉持以鋁為本、服務為先的理念，是全台高科技產業最堅實的後盾。"
+    },
+    {
+        "id": "tour-network",
+        "section_id": "network",
+        "title": "北中南服務佈局",
+        "audio_file": "/static/audio/tour_network.mp3",
+        "script": "為了滿足全台客戶即時調料與加工需求，法寶實業建立了綿密的北中南服務網。包括台北松山總公司、鄰近沙鹿交流道的台中物流裁切中心、以及台南佳里一廠與麻豆二廠雙廠區編制，龐大現貨與專屬車隊，提供最快速的材料調撥與配送。"
+    },
+    {
+        "id": "tour-products",
+        "section_id": "products",
+        "title": "精選旗艦鋁材介紹",
+        "audio_file": "/static/audio/tour_products.mp3",
+        "script": "在材料供應方面，我們主力引進日本原裝 UACJ 5052 貼膜鋁板，其獨特壓延工藝有效降低內部殘留應力，切削後絕不翹曲；同時常備 7075 航太級超硬鋁合金、6061 結構鋁板、5083 耐蝕船用板，以及兩千、五千、六千與七千系列鋁擠型型材，現貨規格全台最齊全。"
+    },
+    {
+        "id": "tour-machining",
+        "section_id": "machining",
+        "title": "高階加工與製程實力",
+        "audio_file": "/static/audio/tour_machining.mp3",
+        "script": "法寶實業不僅供應材料，更具備強大的精密加工能量。廠內整合 CNC 高速銑床、精密車床、航太級五軸同動加工、大型龍門銑床、沖剪折床以及表面陽極與拋光拉絲工藝，能從 3D 繪圖開模到微米級精密加工，為您一貫化高效完成。"
+    },
+    {
+        "id": "tour-cases",
+        "section_id": "cases",
+        "title": "半導體與航太實績",
+        "audio_file": "/static/audio/tour_cases.mp3",
+        "script": "我們深度參與半導體設備真空腔體底座、蝕刻機台部件以及航太高強度結構件的開發與製造，以優異的真平度控制與原廠材質證明，徹底解決客戶應力變形與輕量化挑戰，深獲國際級設備大廠的肯定與長期指名。"
+    }
+]
+
+site_data = {
+    "company": company_info,
+    "products": products,
+    "capabilities": capabilities,
+    "cases": cases,
+    "hardness_data": hardness_data,
+    "temper_definitions": temper_definitions,
+    "tour_chapters": tour_chapters
+}
+
+os.makedirs('data', exist_ok=True)
+with open('data/fapolu_complete_data.json', 'w', encoding='utf-8') as f:
+    json.dump(site_data, f, ensure_ascii=False, indent=2)
+
+print("Saved complete structured data to data/fapolu_complete_data.json successfully!")
+
