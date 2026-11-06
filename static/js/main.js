@@ -5,11 +5,11 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     initLatticeCanvas();
+    initPageRouter();
     initAudioTour();
     initSpecsExplorer();
     initHardnessCalculator();
     initContactForm();
-    initScrollSpy();
     initProductFilters();
     initAboutTabs();
     initMobileUI();
@@ -860,10 +860,11 @@ function updatePlayButtonUI() {
 
 function highlightAndScrollToSection(sectionId) {
     if (!sectionId) return;
+    if (window.navigateToPage) {
+        window.navigateToPage(sectionId, { fromTour: true });
+    }
     const el = document.getElementById(sectionId);
     if (!el) return;
-    
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     
     // Temporary glow highlight
     el.classList.add('active-tour-section');
@@ -1115,15 +1116,14 @@ function initSpecsExplorer() {
 window.addSpecToQuote = function(specText) {
     const inquiryMaterial = document.getElementById('inquiryMaterial');
     const inquiryMessage = document.getElementById('inquiryMessage');
-    const contactSection = document.getElementById('contact');
     
     if (inquiryMaterial) inquiryMaterial.value = specText;
     if (inquiryMessage) inquiryMessage.value = `您好，我需要詢問以下現貨規格的報價與交期：\n【規格】${specText}\n【預計採購數量】\n【加工需求】`;
     
-    if (contactSection) {
-        contactSection.scrollIntoView({ behavior: 'smooth' });
+    if (window.navigateToPage) {
+        window.navigateToPage('contact', { scrollTarget: 'quoteFormCard' });
     }
-    showToast(`已將規格「${specText}」帶入諮詢表單`);
+    showToast(`📋 已切換至詢價分頁並帶入規格「${specText}」`);
 };
 
 /* ==========================================================================
@@ -1296,27 +1296,147 @@ window.closeModal = function() {
 };
 
 /* ==========================================================================
-   7. Scroll Spy & Toast Utility
+   7. Seamless Multi-Page SPA Router (無縫分頁切換與獨立網址引擎)
    ========================================================================== */
-function initScrollSpy() {
-    const navItems = document.querySelectorAll('.nav-item');
-    const sections = document.querySelectorAll('section[id]');
+const PORTAL_PAGES = [
+    { id: 'hero', path: '/', short: '首頁總覽', label: '首頁總覽' },
+    { id: 'about', path: '/about', short: '關於我們', label: '關於我們 · 成立概要與願景' },
+    { id: 'network', path: '/network', short: '服務網絡', label: '全台北中南服務網絡' },
+    { id: 'products', path: '/products', short: '旗艦材料', label: '精選旗艦材料與壓花板圖鑑' },
+    { id: 'specs', path: '/specs', short: '現貨規格', label: '現貨規格與現有模具檢索' },
+    { id: 'machining', path: '/machining', short: '精密加工', label: '高階精密加工與實品圖鑑' },
+    { id: 'cases', path: '/cases', short: '代表實績', label: '半導體與航太代表實績' },
+    { id: 'tech', path: '/tech', short: '技術硬度', label: '國際硬度換算與熱處理辭典' },
+    { id: 'contact', path: '/contact', short: '聯絡諮詢', label: '即時諮詢與線上圖面估價' }
+];
 
-    window.addEventListener('scroll', () => {
-        let current = '';
-        sections.forEach(sec => {
-            const secTop = sec.offsetTop - 120;
-            if (window.pageYOffset >= secTop) {
-                current = sec.getAttribute('id');
-            }
+function initPageRouter() {
+    function resolveFromUrl() {
+        const hashId = (window.location.hash || '').replace(/^#/, '').trim();
+        if (hashId && PORTAL_PAGES.some(p => p.id === hashId)) {
+            return { pageId: hashId, replaceUrl: true };
+        }
+        const cleanPath = (window.location.pathname || '/').replace(/\/+$/, '') || '/';
+        const matched = PORTAL_PAGES.find(p => p.path === cleanPath);
+        if (matched) {
+            return { pageId: matched.id, replaceUrl: false };
+        }
+        return { pageId: window.INITIAL_PAGE || 'hero', replaceUrl: false };
+    }
+
+    window.navigateToPage = function(targetId, opts = {}) {
+        const idx = PORTAL_PAGES.findIndex(p => p.id === targetId);
+        const safeIdx = idx >= 0 ? idx : 0;
+        const page = PORTAL_PAGES[safeIdx];
+        const pageId = page.id;
+
+        // 1. Toggle active page view cleanly
+        document.querySelectorAll('.page-view').forEach(sec => {
+            const isMatch = sec.getAttribute('data-page-view') === pageId;
+            sec.classList.toggle('active-page', isMatch);
         });
 
-        navItems.forEach(item => {
-            item.classList.remove('active');
-            if (item.getAttribute('href') === `#${current}`) {
-                item.classList.add('active');
-            }
+        // 2. Sync active state across navbar, mobile drawer, and subpage pill strip
+        document.querySelectorAll('.nav-item[data-nav-page], .mobile-nav-link[data-nav-page], .subpage-pill[data-nav-page]').forEach(el => {
+            el.classList.toggle('active', el.getAttribute('data-nav-page') === pageId);
         });
+
+        // 3. Center active pill horizontally inside subpage strip without affecting vertical scroll
+        const strip = document.getElementById('subpagePillStrip');
+        const activePill = strip ? strip.querySelector(`.subpage-pill[data-nav-page="${pageId}"]`) : null;
+        if (strip && activePill) {
+            const targetLeft = activePill.offsetLeft - (strip.clientWidth / 2) + (activePill.offsetWidth / 2);
+            strip.scrollTo({ left: Math.max(0, targetLeft), behavior: 'smooth' });
+        }
+
+        // 4. Update subpage breadcrumb & sequential bottom pager
+        const isSubpage = pageId !== 'hero';
+        const topBar = document.getElementById('subpageTopBar');
+        const pagerBar = document.getElementById('subpagePagerBar');
+        const crumbLabel = document.getElementById('subpageCrumbLabel');
+        const prevBtn = document.getElementById('pagerPrevBtn');
+        const nextBtn = document.getElementById('pagerNextBtn');
+
+        if (topBar) topBar.classList.toggle('visible', isSubpage);
+        if (pagerBar) pagerBar.classList.toggle('visible', isSubpage);
+
+        const metaObj = (window.ALL_PAGES_META && window.ALL_PAGES_META[pageId]) || null;
+        if (crumbLabel) {
+            crumbLabel.textContent = (metaObj && metaObj.label) ? metaObj.label : page.label;
+        }
+        if (metaObj && metaObj.title) {
+            document.title = metaObj.title;
+        }
+
+        if (isSubpage && prevBtn && nextBtn) {
+            const prevPage = PORTAL_PAGES[safeIdx - 1] || PORTAL_PAGES[0];
+            const nextPage = PORTAL_PAGES[safeIdx + 1] || PORTAL_PAGES[3]; // Wrap after contact to products
+            prevBtn.href = prevPage.path;
+            prevBtn.setAttribute('data-nav-page', prevPage.id);
+            prevBtn.textContent = prevPage.id === 'hero'
+                ? '← 返回首頁總覽'
+                : `← 上一頁：${prevPage.short}`;
+
+            nextBtn.href = nextPage.path;
+            nextBtn.setAttribute('data-nav-page', nextPage.id);
+            nextBtn.textContent = `下一頁：${nextPage.short} →`;
+        }
+
+        // 5. Push or replace clean URL in browser history
+        if (!opts.skipHistory) {
+            const currentClean = (window.location.pathname || '/').replace(/\/+$/, '') || '/';
+            if (opts.replace) {
+                window.history.replaceState({ pageId }, document.title, page.path);
+            } else if (currentClean !== page.path || window.location.hash) {
+                window.history.pushState({ pageId }, document.title, page.path);
+            }
+        }
+
+        // 6. Close mobile drawer if open
+        if (window.closeMobileMenu) {
+            window.closeMobileMenu();
+        }
+
+        // 7. Scroll to top or specific target element
+        if (opts.scrollTarget) {
+            requestAnimationFrame(() => {
+                const targetEl = document.getElementById(opts.scrollTarget);
+                if (targetEl) {
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                    window.scrollTo({ top: 0, behavior: 'auto' });
+                }
+            });
+        } else if (!opts.preserveScroll) {
+            window.scrollTo({ top: 0, behavior: 'auto' });
+        }
+    };
+
+    // Intercept internal [data-nav-page] clicks for 0ms SPA transition
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest('[data-nav-page]');
+        if (!link) return;
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || (typeof e.button === 'number' && e.button !== 0)) {
+            return;
+        }
+        e.preventDefault();
+        const targetId = link.getAttribute('data-nav-page');
+        window.navigateToPage(targetId);
+    });
+
+    // Support browser Back / Forward buttons seamlessly
+    window.addEventListener('popstate', (e) => {
+        const stateId = e.state && e.state.pageId;
+        const resolved = stateId || resolveFromUrl().pageId;
+        window.navigateToPage(resolved, { skipHistory: true });
+    });
+
+    // Initial hydration (handles direct URLs AND legacy #hash links)
+    const initial = resolveFromUrl();
+    window.navigateToPage(initial.pageId, {
+        replace: initial.replaceUrl,
+        skipHistory: !initial.replaceUrl,
+        preserveScroll: !initial.replaceUrl
     });
 }
 

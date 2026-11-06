@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>法寶實業有限公司 | FAPO ENTERPRISE - 全方位鋁合金材料供應鏈與精密加工整合首選</title>
-    <meta name="description" content="法寶實業有限公司創立於1986年，深耕台灣近40年。專營日本UACJ 5052貼膜鋁板、7075航太鋁、6061、5083船用鋁板、各式鋁擠型現貨規格與CNC精密加工、五軸聯動與大型龍門銑削一站式服務。">
+    <title>{{ page_meta.title if page_meta else '法寶實業有限公司 | FAPO ENTERPRISE - 全方位鋁合金材料供應鏈與精密加工整合首選' }}</title>
+    <meta name="description" content="{{ page_meta.desc if page_meta else '法寶實業有限公司創立於1986年，深耕台灣近40年。專營日本UACJ 5052貼膜鋁板、7075航太鋁、6061、5083船用鋁板、各式鋁擠型現貨規格與CNC精密加工一站式服務。' }}">
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img_crawled/favicon.png', v='10.0') }}">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='12.0') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='13.0') }}">
 </head>
 <body>
 
@@ -18,7 +18,7 @@
     <!-- Top Navigation Bar -->
     <header class="navbar">
         <div class="container">
-            <a href="#hero" class="logo-group">
+            <a href="/" data-nav-page="hero" class="logo-group">
                 <img src="{{ url_for('static', filename='img_crawled/fapo_logo.png', v='10.0') }}" alt="法寶實業有限公司 LOGO" class="logo-img">
                 <div class="logo-text">
                     <h1>法寶實業有限公司</h1>
@@ -26,14 +26,15 @@
                 </div>
             </a>
             <ul class="nav-links">
-                <li><a href="#about" class="nav-item">關於我們</a></li>
-                <li><a href="#network" class="nav-item">服務網絡</a></li>
-                <li><a href="#products" class="nav-item">旗艦材料</a></li>
-                <li><a href="#specs" class="nav-item">現貨規格</a></li>
-                <li><a href="#machining" class="nav-item">精密加工</a></li>
-                <li><a href="#cases" class="nav-item">代表實績</a></li>
-                <li><a href="#tech" class="nav-item">技術硬度</a></li>
-                <li><a href="#contact" class="nav-item">聯絡諮詢</a></li>
+                <li><a href="/" data-nav-page="hero" class="nav-item {% if (active_page or 'hero') == 'hero' %}active{% endif %}">首頁</a></li>
+                <li><a href="/about" data-nav-page="about" class="nav-item {% if active_page == 'about' %}active{% endif %}">關於我們</a></li>
+                <li><a href="/network" data-nav-page="network" class="nav-item {% if active_page == 'network' %}active{% endif %}">服務網絡</a></li>
+                <li><a href="/products" data-nav-page="products" class="nav-item {% if active_page == 'products' %}active{% endif %}">旗艦材料</a></li>
+                <li><a href="/specs" data-nav-page="specs" class="nav-item {% if active_page == 'specs' %}active{% endif %}">現貨規格</a></li>
+                <li><a href="/machining" data-nav-page="machining" class="nav-item {% if active_page == 'machining' %}active{% endif %}">精密加工</a></li>
+                <li><a href="/cases" data-nav-page="cases" class="nav-item {% if active_page == 'cases' %}active{% endif %}">代表實績</a></li>
+                <li><a href="/tech" data-nav-page="tech" class="nav-item {% if active_page == 'tech' %}active{% endif %}">技術硬度</a></li>
+                <li><a href="/contact" data-nav-page="contact" class="nav-item {% if active_page == 'contact' %}active{% endif %}">聯絡諮詢</a></li>
             </ul>
             <div class="nav-actions">
                 <button id="tunnelShareBtn" class="btn btn-audio nav-share-desktop" onclick="openTunnelModal()">
@@ -42,7 +43,7 @@
                 <a href="/admin" class="btn btn-admin-nav nav-admin-desktop" title="進入業務詢價管理後台 (CRM)">
                     🔐 後台管理
                 </a>
-                <a href="#contact" class="btn btn-primary nav-cta-btn">立即詢價</a>
+                <a href="/contact" data-nav-page="contact" class="btn btn-primary nav-cta-btn">立即詢價</a>
                 <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="開啟導覽選單">☰</button>
             </div>
         </div>
@@ -52,14 +53,15 @@
     <div id="mobileNavOverlay" class="mobile-nav-overlay">
         <nav class="mobile-nav-drawer">
             <div class="mobile-nav-grid">
-                <a href="#about" class="mobile-nav-link">🪷 關於我們沿革</a>
-                <a href="#network" class="mobile-nav-link">📍 全台服務據點</a>
-                <a href="#products" class="mobile-nav-link">✨ 精選旗艦材料</a>
-                <a href="#specs" class="mobile-nav-link">📦 現貨規格檢索</a>
-                <a href="#machining" class="mobile-nav-link">⚙️ 精密加工能量</a>
-                <a href="#cases" class="mobile-nav-link">🏆 代表實績案例</a>
-                <a href="#tech" class="mobile-nav-link">📐 硬度換算辭典</a>
-                <a href="#contact" class="mobile-nav-link">📋 線上圖面詢價</a>
+                <a href="/" data-nav-page="hero" class="mobile-nav-link {% if (active_page or 'hero') == 'hero' %}active{% endif %}" style="grid-column: 1 / -1; justify-content: center;">🏠 首頁總覽</a>
+                <a href="/about" data-nav-page="about" class="mobile-nav-link {% if active_page == 'about' %}active{% endif %}">🪷 關於我們沿革</a>
+                <a href="/network" data-nav-page="network" class="mobile-nav-link {% if active_page == 'network' %}active{% endif %}">📍 全台服務據點</a>
+                <a href="/products" data-nav-page="products" class="mobile-nav-link {% if active_page == 'products' %}active{% endif %}">✨ 精選旗艦材料</a>
+                <a href="/specs" data-nav-page="specs" class="mobile-nav-link {% if active_page == 'specs' %}active{% endif %}">📦 現貨規格檢索</a>
+                <a href="/machining" data-nav-page="machining" class="mobile-nav-link {% if active_page == 'machining' %}active{% endif %}">⚙️ 精密加工能量</a>
+                <a href="/cases" data-nav-page="cases" class="mobile-nav-link {% if active_page == 'cases' %}active{% endif %}">🏆 代表實績案例</a>
+                <a href="/tech" data-nav-page="tech" class="mobile-nav-link {% if active_page == 'tech' %}active{% endif %}">📐 硬度換算辭典</a>
+                <a href="/contact" data-nav-page="contact" class="mobile-nav-link {% if active_page == 'contact' %}active{% endif %}">📋 線上圖面詢價</a>
                 <a href="/admin" class="mobile-nav-link mobile-nav-admin">🔐 進入業務詢價管理後台 (CRM)</a>
             </div>
             <div class="mobile-nav-footer">
@@ -72,10 +74,35 @@
 
     <!-- Main Content -->
     <main>
+        <!-- Subpage Breadcrumb & Horizontal Quick-Switch Bar (Shown on all subpages) -->
+        <div id="subpageTopBar" class="subpage-topbar {% if (active_page or 'hero') != 'hero' %}visible{% endif %}">
+            <div class="container">
+                <div class="subpage-crumb-row">
+                    <div class="subpage-crumbs">
+                        <a href="/" data-nav-page="hero" class="crumb-home">🏠 首頁總覽</a>
+                        <span class="crumb-sep">›</span>
+                        <strong id="subpageCrumbLabel" class="crumb-current">{{ page_meta.label if page_meta else '專區內容' }}</strong>
+                    </div>
+                    <a href="/contact" data-nav-page="contact" class="subpage-quick-rfq">📋 線上圖面估價 →</a>
+                </div>
+                <div class="subpage-pill-strip" id="subpagePillStrip">
+                    <a href="/" data-nav-page="hero" class="subpage-pill {% if (active_page or 'hero') == 'hero' %}active{% endif %}">🏠 首頁</a>
+                    <a href="/about" data-nav-page="about" class="subpage-pill {% if active_page == 'about' %}active{% endif %}">關於我們</a>
+                    <a href="/network" data-nav-page="network" class="subpage-pill {% if active_page == 'network' %}active{% endif %}">服務網絡</a>
+                    <a href="/products" data-nav-page="products" class="subpage-pill {% if active_page == 'products' %}active{% endif %}">旗艦材料</a>
+                    <a href="/specs" data-nav-page="specs" class="subpage-pill {% if active_page == 'specs' %}active{% endif %}">現貨規格</a>
+                    <a href="/machining" data-nav-page="machining" class="subpage-pill {% if active_page == 'machining' %}active{% endif %}">精密加工</a>
+                    <a href="/cases" data-nav-page="cases" class="subpage-pill {% if active_page == 'cases' %}active{% endif %}">代表實績</a>
+                    <a href="/tech" data-nav-page="tech" class="subpage-pill {% if active_page == 'tech' %}active{% endif %}">技術硬度</a>
+                    <a href="/contact" data-nav-page="contact" class="subpage-pill {% if active_page == 'contact' %}active{% endif %}">聯絡諮詢</a>
+                </div>
+            </div>
+        </div>
+
         <!-- ==========================================================================
-             Hero Section
+             Hero Section (Home Overview Page)
              ========================================================================== -->
-        <section id="hero" class="hero-section">
+        <section id="hero" data-page-view="hero" class="hero-section page-view {% if (active_page or 'hero') == 'hero' %}active-page{% endif %}">
             <div class="container">
                 <div class="hero-grid">
                     <div class="hero-content">
@@ -93,10 +120,10 @@
                             <button id="startTourHeroBtn" class="btn btn-primary">
                                 🎙️ 啟動沉浸式語音導覽
                             </button>
-                            <a href="#specs" class="btn btn-outline">
+                            <a href="/specs" data-nav-page="specs" class="btn btn-outline">
                                 🔍 查詢現貨與模具規格庫 ({{ inventory_count }}項)
                             </a>
-                            <a href="#contact" class="btn btn-outline">
+                            <a href="/contact" data-nav-page="contact" class="btn btn-outline">
                                 📋 線上規格圖面估價
                             </a>
                         </div>
@@ -138,9 +165,84 @@
                                 <button class="btn-read-tts" onclick="readAloudText('日本原裝進口 UACJ 5052 貼膜鋁板，獨特壓延工藝有效消除內部殘留應力，在經過大量精密銑削後不易變形翹曲，是半導體真空腔體與光電設備之指定材料。', this)">
                                     🎙️ 語音朗讀介紹
                                 </button>
-                                <a href="#specs" class="btn-quote-item">查看庫存規格</a>
+                                <a href="/specs" data-nav-page="specs" class="btn-quote-item">查看庫存規格</a>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Home Quick Portal Directory (八大核心專區分頁入口) -->
+                <div class="home-portal-directory">
+                    <div class="portal-dir-head">
+                        <span class="section-tag" style="margin-bottom: 10px;">Quick Portal Navigation</span>
+                        <h3>探索法寶八大核心業務與技術專區</h3>
+                        <p>點擊下方任一專區卡片，即可零延遲切換至獨立分頁檢視完整圖鑑與規格資料庫</p>
+                    </div>
+                    <div class="portal-dir-grid">
+                        <a href="/about" data-nav-page="about" class="portal-dir-card glass-card">
+                            <span class="portal-dir-icon">🪷</span>
+                            <div class="portal-dir-body">
+                                <h4>關於我們 · 沿革願景</h4>
+                                <p>1986 創立概要、誠信經營理念、九大營業項目與十一大應用產業</p>
+                            </div>
+                            <span class="portal-dir-arrow">進入專頁 →</span>
+                        </a>
+                        <a href="/network" data-nav-page="network" class="portal-dir-card glass-card">
+                            <span class="portal-dir-icon">📍</span>
+                            <div class="portal-dir-body">
+                                <h4>全台服務網絡據點</h4>
+                                <p>台北松山總公司、台中西屯裁切物流中心、台南佳里一廠與麻豆二廠</p>
+                            </div>
+                            <span class="portal-dir-arrow">進入專頁 →</span>
+                        </a>
+                        <a href="/products" data-nav-page="products" class="portal-dir-card glass-card">
+                            <span class="portal-dir-icon">✨</span>
+                            <div class="portal-dir-body">
+                                <h4>精選旗艦材料圖鑑</h4>
+                                <p>日本 UACJ 5052 貼膜板、7075 航太鋁、6061/5083 與壓花鋁板實拍</p>
+                            </div>
+                            <span class="portal-dir-arrow">進入專頁 →</span>
+                        </a>
+                        <a href="/specs" data-nav-page="specs" class="portal-dir-card glass-card portal-card-highlight">
+                            <span class="portal-dir-icon">📦</span>
+                            <div class="portal-dir-body">
+                                <h4>現貨與模具規格檢索</h4>
+                                <p>同步官網 514 項常備現貨 ＋ 2,557 種免開模擠型尺寸即時查詢</p>
+                            </div>
+                            <span class="portal-dir-arrow">立即檢索 →</span>
+                        </a>
+                        <a href="/machining" data-nav-page="machining" class="portal-dir-card glass-card">
+                            <span class="portal-dir-icon">⚙️</span>
+                            <div class="portal-dir-body">
+                                <h4>高階精密加工能量</h4>
+                                <p>CNC 銑床、多軸車床、五軸同動、龍門銑削與 16 件加工實品展示</p>
+                            </div>
+                            <span class="portal-dir-arrow">進入專頁 →</span>
+                        </a>
+                        <a href="/cases" data-nav-page="cases" class="portal-dir-card glass-card">
+                            <span class="portal-dir-icon">🏆</span>
+                            <div class="portal-dir-body">
+                                <h4>代表實績與解決方案</h4>
+                                <p>半導體真空腔體底座、航太高強度結構件與自動化設備成功案例</p>
+                            </div>
+                            <span class="portal-dir-arrow">進入專頁 →</span>
+                        </a>
+                        <a href="/tech" data-nav-page="tech" class="portal-dir-card glass-card">
+                            <span class="portal-dir-icon">📐</span>
+                            <div class="portal-dir-body">
+                                <h4>國際硬度換算與辭典</h4>
+                                <p>HB / HRC / HRB / HV / 抗拉強度即時試算器與鋁合金調質代號解說</p>
+                            </div>
+                            <span class="portal-dir-arrow">開啟工具 →</span>
+                        </a>
+                        <a href="/contact" data-nav-page="contact" class="portal-dir-card glass-card portal-card-highlight">
+                            <span class="portal-dir-icon">📋</span>
+                            <div class="portal-dir-body">
+                                <h4>即時諮詢與圖面估價</h4>
+                                <p>線上填寫材料規格或加工需求，北中南專業業務 24 小時內快速報價</p>
+                            </div>
+                            <span class="portal-dir-arrow">立即詢價 →</span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -149,7 +251,7 @@
         <!-- ==========================================================================
              About Us Section (關於我們：成立概要、經營理念願景、九大營業項目、十一大銷售行業)
              ========================================================================== -->
-        <section id="about" class="section section-alt">
+        <section id="about" data-page-view="about" class="section section-alt page-view {% if active_page == 'about' %}active-page{% endif %}">
             <div class="container">
                 <div class="section-header">
                     <span class="section-tag">About FAPO Enterprise · Since 1986</span>
@@ -300,7 +402,7 @@
         <!-- ==========================================================================
              Network & Locations Section
              ========================================================================== -->
-        <section id="network" class="section">
+        <section id="network" data-page-view="network" class="section page-view {% if active_page == 'network' %}active-page{% endif %}">
             <div class="container">
                 <div class="section-header">
                     <span class="section-tag">Logistics & Branches</span>
@@ -351,7 +453,7 @@
         <!-- ==========================================================================
              Products & Materials Showcase
              ========================================================================== -->
-        <section id="products" class="section section-alt">
+        <section id="products" data-page-view="products" class="section section-alt page-view {% if active_page == 'products' %}active-page{% endif %}">
             <div class="container">
                 <div class="section-header">
                     <span class="section-tag">Flagship Materials</span>
@@ -432,7 +534,7 @@
         <!-- ==========================================================================
              Interactive Stock Specs Explorer (現貨規格即時查詢系統)
              ========================================================================== -->
-        <section id="specs" class="section">
+        <section id="specs" data-page-view="specs" class="section page-view {% if active_page == 'specs' %}active-page{% endif %}">
             <div class="container">
                 <div class="section-header">
                     <span class="section-tag">Inventory &amp; Mold Specifications</span>
@@ -540,7 +642,7 @@
         <!-- ==========================================================================
              Manufacturing & Capabilities Section
              ========================================================================== -->
-        <section id="machining" class="section section-alt">
+        <section id="machining" data-page-view="machining" class="section section-alt page-view {% if active_page == 'machining' %}active-page{% endif %}">
             <div class="container">
                 <div class="section-header">
                     <span class="section-tag">High-End Processing</span>
@@ -599,7 +701,7 @@
         <!-- ==========================================================================
              Representative Cases & Solutions
              ========================================================================== -->
-        <section id="cases" class="section">
+        <section id="cases" data-page-view="cases" class="section page-view {% if active_page == 'cases' %}active-page{% endif %}">
             <div class="container">
                 <div class="section-header">
                     <span class="section-tag">Case Studies</span>
@@ -650,7 +752,7 @@
         <!-- ==========================================================================
              Technical Tools & Hardness Converter Hub
              ========================================================================== -->
-        <section id="tech" class="section section-alt">
+        <section id="tech" data-page-view="tech" class="section section-alt page-view {% if active_page == 'tech' %}active-page{% endif %}">
             <div class="container">
                 <div class="section-header">
                     <span class="section-tag">Engineering Tool</span>
@@ -719,7 +821,7 @@
         <!-- ==========================================================================
              Contact & Instant RFQ Form
              ========================================================================== -->
-        <section id="contact" class="section">
+        <section id="contact" data-page-view="contact" class="section page-view {% if active_page == 'contact' %}active-page{% endif %}">
             <div class="container">
                 <div class="section-header">
                     <span class="section-tag">Direct Inquiry</span>
@@ -765,7 +867,7 @@
                         </div>
                     </div>
 
-                    <div class="quote-form-card glass-card">
+                    <div class="quote-form-card glass-card" id="quoteFormCard">
                         <h3 style="font-size: 1.4rem; font-weight:700; margin-bottom: 20px;">填寫需求估價單</h3>
                         <form id="quoteForm">
                             <div class="form-grid">
@@ -802,6 +904,17 @@
                 </div>
             </div>
         </section>
+
+        <!-- Subpage Bottom Sequential Navigation Bar -->
+        <div id="subpagePagerBar" class="subpage-pager-wrap {% if (active_page or 'hero') != 'hero' %}visible{% endif %}">
+            <div class="container">
+                <div class="subpage-pager-card glass-card">
+                    <a href="/" id="pagerPrevBtn" class="pager-nav-btn">← 上一單元</a>
+                    <a href="/" data-nav-page="hero" class="pager-home-btn">🏠 返回首頁總覽</a>
+                    <a href="/contact" id="pagerNextBtn" class="pager-nav-btn">下一單元 →</a>
+                </div>
+            </div>
+        </div>
     </main>
 
     <!-- Footer -->
@@ -823,20 +936,21 @@
                 <div class="footer-col">
                     <h5>快速導覽</h5>
                     <ul>
-                        <li><a href="#about">關於我們 · 成立概要</a></li>
-                        <li><a href="#network">全台服務據點</a></li>
-                        <li><a href="#products">旗艦產品系列</a></li>
-                        <li><a href="#specs">現貨規格表</a></li>
-                        <li><a href="#machining">精密加工能量</a></li>
+                        <li><a href="/" data-nav-page="hero">首頁總覽</a></li>
+                        <li><a href="/about" data-nav-page="about">關於我們 · 成立概要</a></li>
+                        <li><a href="/network" data-nav-page="network">全台服務據點</a></li>
+                        <li><a href="/products" data-nav-page="products">旗艦產品系列</a></li>
+                        <li><a href="/specs" data-nav-page="specs">現貨規格表</a></li>
+                        <li><a href="/machining" data-nav-page="machining">精密加工能量</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
                     <h5>技術與服務</h5>
                     <ul>
-                        <li><a href="#cases">半導體與航太實績</a></li>
-                        <li><a href="#tech">國際硬度換算</a></li>
-                        <li><a href="#tech">熱處理代號辭典</a></li>
-                        <li><a href="#contact">線上圖面估價</a></li>
+                        <li><a href="/cases" data-nav-page="cases">半導體與航太實績</a></li>
+                        <li><a href="/tech" data-nav-page="tech">國際硬度換算</a></li>
+                        <li><a href="/tech" data-nav-page="tech">熱處理代號辭典</a></li>
+                        <li><a href="/contact" data-nav-page="contact">線上圖面估價</a></li>
                         <li style="margin-top: 10px;"><a href="/admin" class="footer-admin-btn">🔐 業務詢價管理後台</a></li>
                     </ul>
                 </div>
@@ -965,9 +1079,11 @@
     <!-- Embedded Data for Instant Client Interaction -->
     <script>
         window.SITE_DATA = {{ data | tojson }};
+        window.INITIAL_PAGE = {{ (active_page or 'hero') | tojson }};
+        window.ALL_PAGES_META = {{ (all_pages_meta or {}) | tojson }};
     </script>
     <!-- Main Interactive Script -->
-    <script src="{{ url_for('static', filename='js/main.js', v='11.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v='13.0') }}"></script>
 </body>
 </html>
 

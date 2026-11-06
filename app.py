@@ -95,9 +95,119 @@ def add_header(response):
         response.headers['Expires'] = '0'
     return response
 
+PAGE_META = {
+    'hero': {
+        'path': '/',
+        'label': '首頁總覽',
+        'title': '法寶實業有限公司 | FAPO ENTERPRISE - 全方位鋁合金材料供應鏈與精密加工整合首選',
+        'desc': '法寶實業有限公司創立於1986年，深耕台灣近40年。專營日本UACJ 5052貼膜鋁板、7075航太鋁、6061、5083船用鋁板、3,071項現貨與模具規格及CNC精密加工一站式服務。'
+    },
+    'about': {
+        'path': '/about',
+        'label': '關於我們 · 成立概要與願景',
+        'title': '關於我們 · 成立概要、經營理念與九大營業項目 | 法寶實業有限公司',
+        'desc': '法寶實業創立於1986年，秉持誠信立基、整合共榮，橫跨鋁材、不鏽鋼、鎂合金、銅材與精密加工九大營業範疇，服務半導體與航太十一大產業。'
+    },
+    'network': {
+        'path': '/network',
+        'label': '全台北中南服務網絡',
+        'title': '全台服務據點 · 台北總公司、台中廠、台南雙廠區 | 法寶實業有限公司',
+        'desc': '法寶實業於台北松山總公司、台中西屯物流裁切中心、台南佳里一廠與麻豆二廠建立緊密物流網絡，常備千噸鋁材迅速調撥配送。'
+    },
+    'products': {
+        'path': '/products',
+        'label': '精選旗艦材料與壓花板圖鑑',
+        'title': '精選旗艦鋁材、日本UACJ 5052貼膜鋁板與壓花板圖鑑 | 法寶實業有限公司',
+        'desc': '供應日本UACJ 5052低應力貼膜鋁板、7075航太超硬鋁、6061結構板、5083船用鋁板、鏡面鋁與五爪鑽石壓花鋁板，附原廠材質證明。'
+    },
+    'specs': {
+        'path': '/specs',
+        'label': '現貨規格與現有模具檢索',
+        'title': '現貨規格表與鋁擠型現有模具檢索 (3,071筆) | 法寶實業有限公司',
+        'desc': '即時查詢法寶實業514項常備鋁板、圓棒、扁條現貨規格，以及2,557種免開模鋁圓管、扁條、方管、六角條現有模具尺寸資料庫。'
+    },
+    'machining': {
+        'path': '/machining',
+        'label': '高階精密加工與實品圖鑑',
+        'title': '高階CNC精密加工、五軸聯動、龍門銑削與實品展示 | 法寶實業有限公司',
+        'desc': '整合CNC高速銑床、精密車床、航太五軸同動、大型龍門銑削、微細孔加工與表面陽極處理，提供毛胚鋸切至成品出貨一站式製造服務。'
+    },
+    'cases': {
+        'path': '/cases',
+        'label': '半導體與航太代表實績',
+        'title': '代表實績案例 · 半導體真空腔體、航太與光電設備 | 法寶實業有限公司',
+        'desc': '法寶實業協助半導體設備大廠、航太結構件與自動化機械客戶克服內應力變形與輕量化挑戰之成功實績解析。'
+    },
+    'tech': {
+        'path': '/tech',
+        'label': '國際硬度換算與熱處理辭典',
+        'title': '金屬硬度即時換算器 (HB/HRC/HRB/HV) 與鋁合金調質辭典 | 法寶實業有限公司',
+        'desc': '線上即時換算布氏HB、洛氏HRC/HRB、維氏HV、肖氏HS硬度與抗拉強度，並提供鋁合金F/O/H/W/T6/T651熱處理代號技術定義。'
+    },
+    'contact': {
+        'path': '/contact',
+        'label': '即時諮詢與線上圖面估價',
+        'title': '即時諮詢與線上規格圖面估價單 | 法寶實業有限公司',
+        'desc': '歡迎線上提交鋁合金材料規格或CNC加工圖面需求，法寶實業台北、台中、台南專業業務工程師將於24小時內提供報價與技術建議。'
+    }
+}
+
+
+def _render_portal_page(page_key):
+    meta = PAGE_META.get(page_key, PAGE_META['hero'])
+    return render_template(
+        'index.html',
+        data=SITE_DATA,
+        inventory_count=len(INVENTORY_DATA),
+        active_page=page_key,
+        page_meta=meta,
+        all_pages_meta=PAGE_META
+    )
+
+
 @app.route('/')
 def index():
-    return render_template('index.html', data=SITE_DATA, inventory_count=len(INVENTORY_DATA))
+    return _render_portal_page('hero')
+
+
+@app.route('/about', strict_slashes=False)
+def page_about():
+    return _render_portal_page('about')
+
+
+@app.route('/network', strict_slashes=False)
+def page_network():
+    return _render_portal_page('network')
+
+
+@app.route('/products', strict_slashes=False)
+def page_products():
+    return _render_portal_page('products')
+
+
+@app.route('/specs', strict_slashes=False)
+def page_specs():
+    return _render_portal_page('specs')
+
+
+@app.route('/machining', strict_slashes=False)
+def page_machining():
+    return _render_portal_page('machining')
+
+
+@app.route('/cases', strict_slashes=False)
+def page_cases():
+    return _render_portal_page('cases')
+
+
+@app.route('/tech', strict_slashes=False)
+def page_tech():
+    return _render_portal_page('tech')
+
+
+@app.route('/contact', strict_slashes=False)
+def page_contact():
+    return _render_portal_page('contact')
 
 @app.route('/api/site-data')
 def api_site_data():
