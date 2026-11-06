@@ -37,6 +37,12 @@ import tunnel
 
 @app.route('/api/tunnel-status')
 def api_tunnel_status():
+    render_url = os.environ.get('RENDER_EXTERNAL_URL')
+    if render_url or os.environ.get('RENDER'):
+        return jsonify({
+            "running": True,
+            "url": render_url or request.host_url.rstrip('/')
+        })
     url = tunnel.get_public_url()
     is_running = tunnel.tunnel_process is not None and tunnel.tunnel_process.poll() is None
     return jsonify({
@@ -46,6 +52,13 @@ def api_tunnel_status():
 
 @app.route('/api/tunnel/start', methods=['POST'])
 def api_tunnel_start():
+    render_url = os.environ.get('RENDER_EXTERNAL_URL')
+    if render_url or os.environ.get('RENDER'):
+        return jsonify({
+            "success": True,
+            "url": render_url or request.host_url.rstrip('/'),
+            "message": "目前已運行於 Render 雲端公開伺服器"
+        })
     port = request.json.get('port', 5000) if request.json else 5000
     if tunnel.tunnel_process and tunnel.tunnel_process.poll() is None:
         return jsonify({"success": True, "url": tunnel.get_public_url(), "message": "Tunnel 已經在運行中"})
@@ -127,7 +140,7 @@ def api_tts():
     # Generate unique cache hash
     text_hash = hashlib.md5(f"{voice}_{text}".encode('utf-8')).hexdigest()
     cache_filename = f"tts_{text_hash}.mp3"
-    cache_path = os.path.join('static', 'audio', 'cache', cache_filename)
+    cache_path = os.path.join(BASE_DIR, 'static', 'audio', 'cache', cache_filename)
     audio_url = f"/static/audio/cache/{cache_filename}"
     
     if os.path.exists(cache_path) and os.path.getsize(cache_path) > 500:
@@ -147,7 +160,7 @@ def api_tts():
 def api_contact():
     try:
         data = request.json or request.form.to_dict()
-        inquiries_file = os.path.join('data', 'inquiries.json')
+        inquiries_file = os.path.join(BASE_DIR, 'data', 'inquiries.json')
         inquiries = []
         if os.path.exists(inquiries_file):
             try:
@@ -173,5 +186,6 @@ def api_contact():
         return jsonify({"success": False, "error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
 
