@@ -5,6 +5,7 @@ import sys
 import time
 import hmac
 import json
+import re
 import hashlib
 import asyncio
 import datetime
@@ -304,42 +305,90 @@ def api_tts():
     if len(text) > 800:
         text = text[:800]
 
+    clean_text = _sanitize_tts_text(text)
+    if not clean_text:
+        return jsonify({"error": "No speakable text"}), 400
+
     # Map Zen / Buddhist Dharma prosody presets
     if voice_key in ('zen-male', 'zh-TW-YunJheNeural'):
         actual_voice = 'zh-TW-YunJheNeural'
         rate = '-18%'
         pitch = '-10Hz'
-        speak_text = text.replace('。', '。…… ').replace('；', '；… ')
+        speak_text = clean_text.replace('。', '。…… ').replace('；', '；… ')
     elif voice_key == 'zen-female':
         actual_voice = 'zh-TW-HsiaoChenNeural'
         rate = '-15%'
         pitch = '-4Hz'
-        speak_text = text.replace('。', '。…… ').replace('；', '；… ')
+        speak_text = clean_text.replace('。', '。…… ').replace('；', '；… ')
     else:
         actual_voice = 'zh-TW-HsiaoChenNeural'
         rate = '+0%'
         pitch = '+0Hz'
-        speak_text = text
-        
+        speak_text = clean_text
+
     # Generate unique cache hash including prosody parameters
     text_hash = hashlib.md5(f"{actual_voice}_{rate}_{pitch}_{speak_text}".encode('utf-8')).hexdigest()
+    cache_dir = os.path.join(BASE_DIR, 'static', 'audio', 'cache')
+    os.makedirs(cache_dir, exist_ok=True)
     cache_filename = f"tts_{text_hash}.mp3"
-    cache_path = os.path.join(BASE_DIR, 'static', 'audio', 'cache', cache_filename)
+    cache_path = os.path.join(cache_dir, cache_filename)
     audio_url = f"/static/audio/cache/{cache_filename}"
-    
+
     if os.path.exists(cache_path) and os.path.getsize(cache_path) > 500:
         return jsonify({"url": audio_url, "cached": True})
-        
+
+    # Fallback chain: preferred prosody -> neutral prosody -> plain text -> alternate voice
+    alt_voice = 'zh-TW-HsiaoChenNeural' if actual_voice == 'zh-TW-YunJheNeural' else 'zh-TW-YunJheNeural'
+    attempts = [
+        (speak_text, actual_voice, rate, pitch),
+        (clean_text, actual_voice, '+0%', '+0Hz'),
+        (clean_text, alt_voice, '+0%', '+0Hz'),
+    ]
+    last_error = None
+    for a_text, a_voice, a_rate, a_pitch in attempts:
+        ok, err = _synthesize_tts_to_file(a_text, a_voice, a_rate, a_pitch, cache_path)
+        if ok:
+            _prune_tts_cache_if_needed()
+            return jsonify({"url": audio_url, "cached": False})
+        last_error = err
+
+    return jsonify({"error": f"TTS unavailable: {last_error}", "fallback": "browser"}), 503
+
+
+def _sanitize_tts_text(text):
+    """Normalize text so the Edge neural voice reliably produces audio."""
+    t = str(text or '')
+    t = re.sub(r'(\d)xxx', r'\g<1>000 系列', t, flags=re.IGNORECASE)
+    t = t.replace('·', '，').replace('／', '、').replace(' / ', '、').replace('/', '、')
+    t = t.replace('φ', '直徑').replace('ψ', '直徑').replace('×', '乘').replace('*', '乘')
+    t = t.replace('±', '正負').replace('≥', '大於等於').replace('≤', '小於等於').replace('≈', '約')
+    t = t.replace('「', '').replace('」', '').replace('"', '').replace("'", '')
+    t = t.replace('<', ' ').replace('>', ' ').replace('&', '與')
+    t = re.sub(r'。{2,}', '。', t)
+    t = re.sub(r'\s+', ' ', t).strip()
+    return t[:800]
+
+
+def _synthesize_tts_to_file(text, voice, rate, pitch, final_path):
+    tmp_path = final_path + '.part'
     try:
         async def do_tts():
-            tts = edge_tts.Communicate(speak_text, actual_voice, rate=rate, pitch=pitch)
-            await tts.save(cache_path)
-            
+            tts = edge_tts.Communicate(text, voice, rate=rate, pitch=pitch)
+            await tts.save(tmp_path)
+
         asyncio.run(do_tts())
-        _prune_tts_cache_if_needed()
-        return jsonify({"url": audio_url, "cached": False})
+        if os.path.exists(tmp_path) and os.path.getsize(tmp_path) > 500:
+            os.replace(tmp_path, final_path)
+            return True, None
+        return False, 'empty audio'
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return False, str(e)
+    finally:
+        try:
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+        except OSError:
+            pass
 
 # Rate limiter for RFQ inquiries
 CONTACT_RATE_LIMIT = {}

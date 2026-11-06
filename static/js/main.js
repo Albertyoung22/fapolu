@@ -661,6 +661,21 @@ function initAudioTour() {
         }
     });
 
+    // If a voice-specific chapter file fails, fall back to the base file, then browser TTS
+    audioTourState.audio.addEventListener('error', () => {
+        const ch = audioTourState.chapters[audioTourState.currentChapter];
+        if (!ch) return;
+        const cur = audioTourState.audio.src || '';
+        if (ch.audio_file && !cur.endsWith(ch.audio_file)) {
+            audioTourState.audio.src = ch.audio_file;
+            audioTourState.audio.play().catch(() => {});
+        } else if (ch.text || ch.script) {
+            audioTourState.isPlaying = false;
+            updatePlayButtonUI();
+            speakWithBrowserTTS(ch.text || ch.script);
+        }
+    });
+
     // Button actions
     if (playBtn) {
         playBtn.addEventListener('click', () => {
@@ -709,6 +724,9 @@ function stopCardAudio() {
         audioTourState.cardAudio.pause();
         audioTourState.cardAudio.currentTime = 0;
         audioTourState.cardAudio = null;
+    }
+    if ('speechSynthesis' in window && window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
     }
     audioTourState.isCardPlaying = false;
 }
@@ -848,12 +866,57 @@ function initAudioVisualizer() {
     drawWave();
 }
 
+// Browser-native speech fallback (used when the neural TTS server is unreachable)
+function speakWithBrowserTTS(text, onDone) {
+    if (!('speechSynthesis' in window)) {
+        showToast("語音合成服務暫時無法使用，請稍後重試");
+        if (onDone) onDone();
+        return false;
+    }
+    try {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(String(text).slice(0, 1200));
+        utter.lang = 'zh-TW';
+        utter.rate = Math.min(1.6, Math.max(0.6, (audioTourState.speed || 1.0) * 0.95));
+        const voices = window.speechSynthesis.getVoices() || [];
+        const preferFemale = audioTourState.voice !== 'zen-male';
+        const zhVoices = voices.filter(v => /zh[-_](TW|HK|CN)/i.test(v.lang) || /Chinese|中文|國語/i.test(v.name));
+        const tw = zhVoices.filter(v => /TW/i.test(v.lang));
+        const pool = tw.length ? tw : zhVoices;
+        let pick = pool.find(v => preferFemale ? /female|Hsiao|Yating|Hanhan|女/i.test(v.name) : /male|Yun|Zhiwei|男/i.test(v.name));
+        if (!pick && pool.length) pick = pool[0];
+        if (pick) utter.voice = pick;
+
+        utter.onstart = () => { audioTourState.isCardPlaying = true; StudioBgmEngine.setDucking(true); };
+        const finish = () => {
+            audioTourState.isCardPlaying = false;
+            StudioBgmEngine.setDucking(false);
+            if (onDone) onDone();
+        };
+        utter.onend = finish;
+        utter.onerror = finish;
+        window.speechSynthesis.speak(utter);
+        showToast("🎙️ 正在為您朗讀內容（瀏覽器語音）...");
+        return true;
+    } catch (e) {
+        console.error(e);
+        if (onDone) onDone();
+        return false;
+    }
+}
+if ('speechSynthesis' in window) {
+    // Warm up voice list (Chrome loads asynchronously)
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+}
+
 // On-demand dynamic TTS read-aloud for cards
 window.readAloudText = function(text, btnElement) {
     if (!text) return;
     
     clearChimeTimer();
     stopCardAudio();
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     audioTourState.lastCardText = text;
     audioTourState.lastCardBtn = btnElement || null;
 
@@ -867,53 +930,70 @@ window.readAloudText = function(text, btnElement) {
     }
 
     const originalText = btnElement ? btnElement.innerHTML : '';
+    const restoreBtn = () => {
+        if (btnElement) {
+            btnElement.innerHTML = originalText;
+            btnElement.disabled = false;
+        }
+    };
     if (btnElement) {
         btnElement.innerHTML = '⏳ 語音載入中...';
         btnElement.disabled = true;
     }
+
+    if (audioTourState.isPlaying) {
+        audioTourState.audio.pause();
+    }
     
     const voice = audioTourState.voice || 'zen-male';
     const url = `/api/tts?text=${encodeURIComponent(text)}&voice=${encodeURIComponent(voice)}`;
+
+    const controller = ('AbortController' in window) ? new AbortController() : null;
+    const timeoutId = setTimeout(() => { if (controller) controller.abort(); }, 25000);
     
-    fetch(url)
-        .then(res => res.json())
-        .then(data => {
-            if (btnElement) {
-                btnElement.innerHTML = originalText;
-                btnElement.disabled = false;
+    fetch(url, controller ? { signal: controller.signal } : {})
+        .then(res => res.json().catch(() => ({})).then(data => ({ ok: res.ok, data })))
+        .then(({ ok, data }) => {
+            clearTimeout(timeoutId);
+            restoreBtn();
+            if (!ok || !data.url) {
+                speakWithBrowserTTS(text);
+                return;
             }
-            if (data.url) {
-                if (audioTourState.isPlaying) {
-                    audioTourState.audio.pause();
-                }
-                const speechAudio = new Audio(data.url);
-                speechAudio.playbackRate = audioTourState.speed || 1.0;
-                audioTourState.cardAudio = speechAudio;
-                speechAudio.addEventListener('play', () => {
-                    audioTourState.isCardPlaying = true;
-                    StudioBgmEngine.setDucking(true);
-                });
-                speechAudio.addEventListener('ended', () => {
-                    audioTourState.isCardPlaying = false;
-                    StudioBgmEngine.setDucking(false);
-                });
-                speechAudio.addEventListener('pause', () => {
-                    audioTourState.isCardPlaying = false;
-                    StudioBgmEngine.setDucking(false);
-                });
-                speechAudio.play();
-                showToast("🎙️ 正在為您朗讀內容...");
-            } else {
-                showToast("語音合成失敗，請稍後重試");
+            const speechAudio = new Audio(data.url);
+            speechAudio.playbackRate = audioTourState.speed || 1.0;
+            audioTourState.cardAudio = speechAudio;
+            speechAudio.addEventListener('play', () => {
+                audioTourState.isCardPlaying = true;
+                StudioBgmEngine.setDucking(true);
+            });
+            speechAudio.addEventListener('ended', () => {
+                audioTourState.isCardPlaying = false;
+                StudioBgmEngine.setDucking(false);
+            });
+            speechAudio.addEventListener('pause', () => {
+                audioTourState.isCardPlaying = false;
+                StudioBgmEngine.setDucking(false);
+            });
+            speechAudio.addEventListener('error', () => {
+                audioTourState.cardAudio = null;
+                speakWithBrowserTTS(text);
+            });
+            const p = speechAudio.play();
+            if (p && typeof p.then === 'function') {
+                p.then(() => showToast("🎙️ 正在為您朗讀內容..."))
+                 .catch(err => {
+                     console.warn('Audio play rejected:', err);
+                     audioTourState.cardAudio = null;
+                     speakWithBrowserTTS(text);
+                 });
             }
         })
         .catch(err => {
+            clearTimeout(timeoutId);
             console.error(err);
-            if (btnElement) {
-                btnElement.innerHTML = originalText;
-                btnElement.disabled = false;
-            }
-            showToast("連線至語音引擎超時");
+            restoreBtn();
+            speakWithBrowserTTS(text);
         });
 };
 
