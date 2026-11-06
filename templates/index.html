@@ -8,7 +8,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img_crawled/favicon.png', v='10.0') }}">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='11.0') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='12.0') }}">
 </head>
 <body>
 
@@ -39,6 +39,9 @@
                 <button id="tunnelShareBtn" class="btn btn-audio nav-share-desktop" onclick="openTunnelModal()">
                     🌐 外網分享
                 </button>
+                <a href="/admin" class="btn btn-admin-nav nav-admin-desktop" title="進入業務詢價管理後台 (CRM)">
+                    🔐 後台管理
+                </a>
                 <a href="#contact" class="btn btn-primary nav-cta-btn">立即詢價</a>
                 <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="開啟導覽選單">☰</button>
             </div>
@@ -57,7 +60,7 @@
                 <a href="#cases" class="mobile-nav-link">🏆 代表實績案例</a>
                 <a href="#tech" class="mobile-nav-link">📐 硬度換算辭典</a>
                 <a href="#contact" class="mobile-nav-link">📋 線上圖面詢價</a>
-                <a href="/admin" class="mobile-nav-link" style="grid-column: 1 / -1; justify-content: center;">🔐 業務詢價管理後台</a>
+                <a href="/admin" class="mobile-nav-link mobile-nav-admin">🔐 進入業務詢價管理後台 (CRM)</a>
             </div>
             <div class="mobile-nav-footer">
                 <button class="btn btn-outline" style="width:100%; justify-content:center;" onclick="closeMobileMenu(); openTunnelModal();">
@@ -753,6 +756,13 @@
                                 <p>信箱：fapotnn@ms37.hinet.net</p>
                             </div>
                         </div>
+
+                        <div class="admin-portal-box">
+                            <span class="admin-portal-hint">內部業務與管理人員專區</span>
+                            <a href="/admin" class="btn btn-admin-portal">
+                                🔐 進入業務詢價管理後台 (CRM)
+                            </a>
+                        </div>
                     </div>
 
                     <div class="quote-form-card glass-card">
@@ -827,7 +837,7 @@
                         <li><a href="#tech">國際硬度換算</a></li>
                         <li><a href="#tech">熱處理代號辭典</a></li>
                         <li><a href="#contact">線上圖面估價</a></li>
-                        <li><a href="/admin">🔐 業務詢價後台</a></li>
+                        <li style="margin-top: 10px;"><a href="/admin" class="footer-admin-btn">🔐 業務詢價管理後台</a></li>
                     </ul>
                 </div>
             </div>

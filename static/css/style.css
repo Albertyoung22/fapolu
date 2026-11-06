@@ -206,9 +206,12 @@ button {
 }
 
 .navbar .container {
+  width: 94%;
+  max-width: 1400px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
 }
 
 .logo-group {
@@ -251,13 +254,13 @@ button {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 15px;
   list-style: none;
 }
 
 .nav-item {
   color: var(--text-dim);
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: 600;
   white-space: nowrap;
   transition: color var(--transition-fast);
@@ -282,7 +285,8 @@ button {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 9px;
+  flex-shrink: 0;
 }
 
 /* Mobile Menu Button & Drawer (Hidden on Desktop) */
@@ -303,7 +307,7 @@ button {
 .mobile-nav-overlay {
   display: none;
   position: fixed;
-  top: 64px;
+  top: 80px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -354,6 +358,15 @@ button {
   border-color: var(--accent-cinnabar);
   color: var(--accent-cinnabar);
 }
+
+.mobile-nav-admin {
+  grid-column: 1 / -1;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(43, 84, 126, 0.1), rgba(180, 130, 45, 0.16));
+  border: 1.5px solid rgba(158, 112, 36, 0.55);
+  color: #4a2f06;
+  font-weight: 800;
+}
 /* Buttons */
 .btn {
   display: inline-flex;
@@ -396,9 +409,9 @@ button {
   background: rgba(180, 130, 45, 0.1);
   border: 1px solid rgba(148, 102, 31, 0.45);
   color: var(--accent-cyan);
-  padding: 8px 18px;
+  padding: 8px 15px;
   border-radius: var(--radius-full);
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 700;
 }
 
@@ -406,6 +419,29 @@ button {
   background: var(--accent-cyan);
   color: #fffaf2;
   box-shadow: 0 4px 16px var(--accent-cyan-glow);
+}
+
+.btn-admin-nav {
+  background: linear-gradient(135deg, rgba(43, 84, 126, 0.11), rgba(180, 130, 45, 0.15));
+  border: 1px solid rgba(158, 112, 36, 0.55);
+  color: #4a2f06;
+  padding: 8px 15px;
+  border-radius: var(--radius-full);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.btn-admin-nav:hover {
+  background: linear-gradient(135deg, #2b547e, #1f3f61);
+  border-color: #2b547e;
+  color: #fffaf2;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(43, 84, 126, 0.28);
+}
+
+.nav-cta-btn {
+  padding: 8px 18px;
+  font-size: 0.88rem;
 }
 
 /* ==========================================================================
@@ -1628,6 +1664,42 @@ button {
   line-height: 1.65;
 }
 
+.admin-portal-box {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px dashed rgba(158, 112, 36, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.admin-portal-hint {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: var(--text-muted);
+}
+
+.btn-admin-portal {
+  width: 100%;
+  justify-content: center;
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(43, 84, 126, 0.1), rgba(180, 130, 45, 0.16));
+  border: 1px solid rgba(158, 112, 36, 0.55);
+  color: #4a2f06;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.btn-admin-portal:hover {
+  background: linear-gradient(135deg, #2b547e, #1f3f61);
+  border-color: #2b547e;
+  color: #fffaf2;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(43, 84, 126, 0.25);
+}
+
 .quote-form-card {
   padding: 36px;
 }
@@ -1729,6 +1801,26 @@ button {
 
 .footer-col a:hover {
   color: var(--accent-cinnabar);
+}
+
+.footer-col a.footer-admin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 252, 245, 0.88);
+  border: 1px solid rgba(158, 112, 36, 0.52);
+  color: #4a2f06;
+  font-weight: 700;
+  font-size: 0.84rem;
+  transition: all var(--transition-fast);
+}
+
+.footer-col a.footer-admin-btn:hover {
+  background: #2b547e;
+  border-color: #2b547e;
+  color: #fffaf2;
 }
 
 .footer-bottom {
@@ -1996,6 +2088,11 @@ button {
 /* ==========================================================================
    Comprehensive Tablet & Mobile Responsive Optimization
    ========================================================================== */
+@media (max-width: 1240px) {
+  .nav-links { display: none; }
+  .mobile-menu-btn { display: inline-flex; }
+}
+
 @media (max-width: 992px) {
   html, body { overflow-x: clip; }
 
@@ -2130,7 +2227,8 @@ button {
     text-overflow: ellipsis;
   }
   .navbar .logo-text p { display: none; }
-  .nav-share-desktop { display: none; }
+  .nav-share-desktop,
+  .nav-admin-desktop { display: none; }
   .nav-actions { gap: 6px; flex-shrink: 0; }
   .nav-cta-btn { padding: 6px 12px; font-size: 0.8rem; }
   .mobile-menu-btn { width: 36px; height: 36px; flex-shrink: 0; }
