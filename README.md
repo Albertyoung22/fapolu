@@ -89,3 +89,16 @@ python run.py --tunnel
 #### 方法三：僅本機/區域網路伺服器啟動
 雙擊 `start_server.bat`，造訪 [http://localhost:5000](http://localhost:5000)。
 
+---
+
+### 🔐 業務詢價管理後台 (`/admin`) 與 Email 即時通知
+
+- **後台網址**：瀏覽器造訪 `/admin`（例如 `http://localhost:5000/admin` 或 `https://您的網域.onrender.com/admin`，亦可由官網頁尾「🔐 業務詢價後台」進入）。
+- **預設管理密碼**：`fapolu8888`（建議登入後點擊右上角「⚙️ 通知與密碼設定」修改，或於雲端設定環境變數 `ADMIN_PASSWORD`）。
+- **核心功能**：
+  1. **統計儀表板**：即時統計總單數、待處理新單、已報價跟進中、已成交結案。
+  2. **報價進度與廠區分派**：可指派「台北總公司 / 台中廠 / 台南雙廠區」、填寫內部報價備註、一鍵帶入範本開啟信箱回信給客戶。
+  3. **匯出 Excel (CSV)**：支援 UTF-8 BOM 編碼匯出，Windows Excel 直接雙擊開啟繁體中文不亂碼。
+  4. **Email (SMTP) 新單即時通知**：可於後台介面設定 Gmail / Office365 / HiNet 企業信箱並發送測試信；部署於 Render 時，建議在 **Environment** 設定 `ADMIN_PASSWORD`、`SMTP_HOST`、`SMTP_PORT`、`SMTP_USER`、`SMTP_PASS`、`NOTIFY_EMAIL` 永久保存。
+
+

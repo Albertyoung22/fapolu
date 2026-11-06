@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>法寶實業有限公司 | 詢價單管理後台 (RFQ Admin CRM)</title>
+    <style>
+        :root {
+            --bg-primary: #070b14;
+            --bg-secondary: #0d1527;
+            --bg-tertiary: #131e36;
+            --bg-card: rgba(16, 26, 48, 0.82);
+            --accent-cyan: #00f0ff;
+            --accent-blue: #3b82f6;
+            --accent-amber: #f59e0b;
+            --accent-emerald: #10b981;
+            --accent-rose: #f43f5e;
+            --text-main: #f8fafc;
+            --text-dim: #cbd5e1;
+            --text-muted: #8899b5;
+            --border-subtle: rgba(255, 255, 255, 0.09);
+            --border-highlight: rgba(0, 240, 255, 0.35);
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'PingFang TC', 'Microsoft JhengHei', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at 50% 0%, #101c38 0%, #070b14 75%);
+            color: var(--text-main);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-tertiary);
+            color: var(--text-main);
+            transition: all 0.2s ease;
+        }
+        .btn:hover { border-color: var(--accent-cyan); transform: translateY(-1px); }
+        .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+        .btn-primary {
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            border: none;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 198, 255, 0.25);
+        }
+        .btn-primary:hover { box-shadow: 0 6px 20px rgba(0, 240, 255, 0.4); }
+        .btn-emerald {
+            background: rgba(16, 185, 129, 0.16);
+            border-color: rgba(16, 185, 129, 0.45);
+            color: #34d399;
+        }
+        .btn-danger {
+            background: rgba(244, 63, 94, 0.14);
+            border-color: rgba(244, 63, 94, 0.4);
+            color: #fb7185;
+        }
+        .btn-sm { padding: 5px 11px; font-size: 0.8rem; }
+
+        /* Login View */
+        .login-wrap {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 430px;
+            background: var(--bg-card);
+            backdrop-filter: blur(18px);
+            border: 1px solid var(--border-highlight);
+            border-radius: var(--radius-lg);
+            padding: 38px 32px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), 0 0 30px rgba(0, 240, 255, 0.12);
+        }
+        .brand-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .logo-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 11px;
+            background: linear-gradient(135deg, #00f0ff, #2563eb);
+            color: #04101f;
+            font-weight: 900;
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .input-control {
+            width: 100%;
+            padding: 11px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-subtle);
+            background: rgba(7, 11, 20, 0.75);
+            color: var(--text-main);
+            font-size: 0.94rem;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+        .input-control:focus { border-color: var(--accent-cyan); }
+        textarea.input-control { min-height: 95px; resize: vertical; }
+
+        .error-msg {
+            display: none;
+            background: rgba(244, 63, 94, 0.15);
+            border: 1px solid rgba(244, 63, 94, 0.45);
+            color: #fda4af;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            margin-bottom: 14px;
+        }
+
+        /* Dashboard Header */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(7, 11, 20, 0.88);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .smtp-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-tertiary);
+        }
+        .smtp-pill.on { border-color: rgba(16, 185, 129, 0.45); color: #34d399; }
+        .smtp-pill.off { border-color: rgba(245, 158, 11, 0.45); color: #fbbf24; }
+
+        .container {
+            max-width: 1380px;
+            margin: 0 auto;
+            padding: 26px 24px 60px;
+        }
+
+        /* Alert Banner */
+        .cloud-banner {
+            display: none;
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: var(--radius-md);
+            padding: 14px 18px;
+            margin-bottom: 22px;
+            color: #fde68a;
+            font-size: 0.88rem;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 20px 22px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .stat-card:hover { border-color: var(--border-highlight); transform: translateY(-2px); }
+        .stat-label { font-size: 0.84rem; color: var(--text-muted); margin-bottom: 6px; }
+        .stat-value { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; }
+        .stat-card.pending .stat-value { color: var(--accent-amber); }
+        .stat-card.quoting .stat-value { color: #60a5fa; }
+        .stat-card.closed .stat-value { color: var(--accent-emerald); }
+        .stat-card.total .stat-value { color: var(--accent-cyan); }
+
+        /* Filter Bar */
+        .toolbar {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 16px 18px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+        .filter-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+        .chip {
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 0.83rem;
+            font-weight: 600;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+        .chip.active, .chip:hover {
+            background: rgba(0, 240, 255, 0.15);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+        .search-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            max-width: 480px;
+            min-width: 250px;
+        }
+
+        /* Table */
+        .table-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 960px;
+        }
+        th {
+            text-align: left;
+            padding: 14px 16px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            background: rgba(13, 21, 39, 0.9);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        td {
+            padding: 15px 16px;
+            border-bottom: 1px solid var(--border-subtle);
+            font-size: 0.9rem;
+            vertical-align: top;
+        }
+        tbody tr { transition: background 0.15s; cursor: pointer; }
+        tbody tr:hover { background: rgba(0, 240, 255, 0.04); }
+
+        .ticket-id {
+            font-family: 'Consolas', monospace;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            font-size: 0.92rem;
+        }
+        .time-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 3px; }
+        .company-title { font-weight: 700; color: var(--text-main); }
+        .person-sub { font-size: 0.83rem; color: var(--text-dim); margin-top: 2px; }
+        .contact-link {
+            display: block;
+            color: #38bdf8;
+            font-size: 0.84rem;
+        }
+        .contact-link:hover { text-decoration: underline; }
+        .material-tag {
+            display: inline-block;
+            color: #fbbf24;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .msg-preview {
+            font-size: 0.82rem;
+            color: var(--text-dim);
+            max-width: 300px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .note-preview {
+            margin-top: 5px;
+            font-size: 0.78rem;
+            color: #a78bfa;
+            background: rgba(139, 92, 246, 0.12);
+            padding: 3px 8px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        /* Status Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .badge-pending { background: rgba(245, 158, 11, 0.16); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+        .badge-quoting { background: rgba(59, 130, 246, 0.18); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
+        .badge-closed { background: rgba(16, 185, 129, 0.16); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+        .badge-archived { background: rgba(148, 163, 184, 0.14); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.3); }
+
+        .empty-state {
+            text-align: center;
+            padding: 56px 20px;
+            color: var(--text-muted);
+        }
+
+        /* Modals */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(3, 7, 15, 0.78);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-backdrop.open { display: flex; }
+        .modal-box {
+            width: 100%;
+            max-width: 680px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: #0d1629;
+            border: 1px solid var(--border-highlight);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65);
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 14px;
+            margin-bottom: 18px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+        .info-block {
+            background: rgba(7, 11, 20, 0.6);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 11px 14px;
+        }
+        .info-block.full { grid-column: 1 / -1; }
+        .info-block .lbl { font-size: 0.76rem; color: var(--text-muted); margin-bottom: 3px; }
+        .info-block .val { font-size: 0.94rem; color: var(--text-main); word-break: break-word; white-space: pre-wrap; }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #132342;
+            border: 1px solid var(--accent-cyan);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(12px);
+            transition: all 0.25s ease;
+            font-size: 0.9rem;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 680px) {
+            .detail-grid { grid-template-columns: 1fr; }
+            .topbar { padding: 12px 16px; }
+        }
+    </style>
+</head>
+<body>
+
+{% if not is_logged_in %}
+    <!-- =====================================================================
+         Admin Login Screen
+         ===================================================================== -->
+    <div class="login-wrap">
+        <div class="login-card">
+            <div class="brand-row">
+                <div class="logo-badge">FP</div>
+                <div>
+                    <h2 style="font-size: 1.2rem; font-weight: 800;">法寶實業 · 詢價管理後台</h2>
+                    <p style="font-size: 0.78rem; color: var(--text-muted);">FAPO ENTERPRISE RFQ ADMIN</p>
+                </div>
+            </div>
+
+            <div id="loginError" class="error-msg"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="adminPwd">管理員登入密碼</label>
+                    <input type="password" id="adminPwd" class="input-control" placeholder="請輸入管理密碼..." required autofocus>
+                </div>
+                <button type="submit" id="loginBtn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px; margin-top: 6px;">
+                    🔐 登入詢價管理系統
+                </button>
+            </form>
+
+            <div style="margin-top: 20px; text-align: center; font-size: 0.84rem; color: var(--text-muted);">
+                <a href="/" style="color: var(--accent-cyan);">← 返回法寶實業官方網站首頁</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const pwd = document.getElementById('adminPwd').value;
+            const errBox = document.getElementById('loginError');
+            const btn = document.getElementById('loginBtn');
+            errBox.style.display = 'none';
+            btn.disabled = true;
+            btn.textContent = '驗證中...';
+            try {
+                const res = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: pwd })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    errBox.textContent = data.error || '登入失敗';
+                    errBox.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = '🔐 登入詢價管理系統';
+                }
+            } catch (err) {
+                errBox.textContent = '網路連線異常，請稍後再試';
+                errBox.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = '🔐 登入詢價管理系統';
+            }
+        });
+    </script>
+
+{% else %}
+    <!-- =====================================================================
+         Authenticated Admin Dashboard
+         ===================================================================== -->
+    <header class="topbar">
+        <div class="brand-row" style="margin-bottom: 0;">
+            <div class="logo-badge">FP</div>
+            <div>
+                <h1 style="font-size: 1.1rem; font-weight: 800;">法寶實業 · 客戶詢價管理後台</h1>
+                <p style="font-size: 0.76rem; color: var(--text-muted);">北中南業務報價追蹤與 Email 即時通知中心</p>
+            </div>
+        </div>
+
+        <div class="topbar-actions">
+            <div id="smtpStatusPill" class="smtp-pill off" onclick="openSettingsModal()" title="點擊設定 Email 通知">
+                ⚪ Email 通知檢測中...
+            </div>
+            <button class="btn" onclick="fetchInquiries()">🔄 重新整理</button>
+            <button class="btn" onclick="openSettingsModal()">⚙️ 通知與密碼設定</button>
+            <button class="btn btn-emerald" onclick="exportCsv()">📥 匯出 Excel (CSV)</button>
+            <a href="/" class="btn">🏠 前台官網</a>
+            <button class="btn btn-danger" onclick="logoutAdmin()">登出</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Render Cloud Storage Reminder -->
+        <div id="renderBanner" class="cloud-banner">
+            <div>
+                ⚠️ <b>雲端環境提醒：</b>目前運行於 Render 伺服器，免費方案休眠重啟時會重置本地暫存檔。建議點擊右側按鈕設定 <b>Email (SMTP) 即時通知</b>（或於 Render 後台設定環境變數 <code>SMTP_USER</code> / <code>SMTP_PASS</code> / <code>NOTIFY_EMAIL</code>），新單送出即刻寄達業務信箱不漏單！
+            </div>
+            <button class="btn btn-sm" style="border-color:#fbbf24;color:#fbbf24;" onclick="openSettingsModal()">立即設定 Email 通知</button>
+        </div>
+
+        <!-- KPI Stats -->
+        <div class="stats-grid">
+            <div class="stat-card total" onclick="setStatusFilter('all')">
+                <div class="stat-label">📋 累計總詢價單</div>
+                <div class="stat-value" id="statTotal">0</div>
+            </div>
+            <div class="stat-card pending" onclick="setStatusFilter('pending')">
+                <div class="stat-label">🔔 待處理新單 (需優先報價)</div>
+                <div class="stat-value" id="statPending">0</div>
+            </div>
+            <div class="stat-card quoting" onclick="setStatusFilter('quoting')">
+                <div class="stat-label">💬 已報價 / 跟進中</div>
+                <div class="stat-value" id="statQuoting">0</div>
+            </div>
+            <div class="stat-card closed" onclick="setStatusFilter('closed')">
+                <div class="stat-label">✅ 已成交結案</div>
+                <div class="stat-value" id="statClosed">0</div>
+            </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="toolbar">
+            <div class="filter-chips" id="statusChips">
+                <button class="chip active" data-status="all" onclick="setStatusFilter('all')">全部單據</button>
+                <button class="chip" data-status="pending" onclick="setStatusFilter('pending')">🔔 待處理</button>
+                <button class="chip" data-status="quoting" onclick="setStatusFilter('quoting')">💬 已報價</button>
+                <button class="chip" data-status="closed" onclick="setStatusFilter('closed')">✅ 已結案</button>
+                <button class="chip" data-status="archived" onclick="setStatusFilter('archived')">🗄️ 已取消</button>
+            </div>
+
+            <div class="search-group">
+                <select id="branchFilter" class="input-control" style="width: 150px;" onchange="renderTable()">
+                    <option value="all">全部廠區據點</option>
+                    <option value="未指派">未指派</option>
+                    <option value="台北總公司">台北總公司</option>
+                    <option value="台中廠">台中廠</option>
+                    <option value="台南雙廠區">台南雙廠區</option>
+                </select>
+                <input type="text" id="searchInput" class="input-control" placeholder="🔍 搜尋單號、公司、聯絡人、電話、鋁材規格..." oninput="renderTable()">
+            </div>
+        </div>
+
+        <!-- Inquiries Data Table -->
+        <div class="table-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>單號 / 時間</th>
+                        <th>客戶公司 / 聯絡人</th>
+                        <th>聯絡方式</th>
+                        <th>材料規格與需求說明</th>
+                        <th>負責廠區</th>
+                        <th>狀態</th>
+                        <th>信件通知</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="inquiryTableBody">
+                    <tr><td colspan="8" class="empty-state">載入詢價資料中...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- =====================================================================
+         Inquiry Detail & Edit Modal
+         ===================================================================== -->
+    <div id="detailModal" class="modal-backdrop" onclick="if(event.target===this)closeDetailModal()">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div>
+                    <span id="mTicketId" class="ticket-id" style="font-size: 1.15rem;">REQ-1001</span>
+                    <span id="mTimestamp" style="font-size: 0.82rem; color: var(--text-muted); margin-left: 10px;"></span>
+                </div>
+                <button class="btn btn-sm" onclick="closeDetailModal()">✕ 關閉</button>
+            </div>
+
+            <div class="detail-grid">
+                <div class="info-block">
+                    <div class="lbl">公司寶號</div>
+                    <div class="val" id="mCompany" style="font-weight: 700;"></div>
+                </div>
+                <div class="info-block">
+                    <div class="lbl">聯絡人姓名</div>
+                    <div class="val" id="mPerson"></div>
+                </div>
+                <div class="info-block">
+                    <div class="lbl">聯絡電話 / 手機</div>
+                    <div class="val"><a id="mPhoneLink" href="#" style="color: #38bdf8; font-weight: 600;"></a></div>
+                </div>
+                <div class="info-block">
+                    <div class="lbl">電子郵件</div>
+                    <div class="val"><a id="mEmailLink" href="#" style="color: #38bdf8;"></a></div>
+                </div>
+                <div class="info-block full">
+                    <div class="lbl">材料型號與規格需求</div>
+                    <div class="val" id="mMaterial" style="color: #fbbf24; font-weight: 700;"></div>
+                </div>
+                <div class="info-block full">
+                    <div class="lbl">需求數量、加工說明與備註</div>
+                    <div class="val" id="mMessage"></div>
+                </div>
+            </div>
+
+            <!-- Quick Reply Actions -->
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px;">
+                <a id="mMailtoReply" href="#" class="btn btn-emerald btn-sm">✉️ 開啟郵件軟體回覆客戶報價</a>
+                <button class="btn btn-sm" onclick="resendEmailCurrent()">📨 補寄內部通知信</button>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid var(--border-subtle); margin: 16px 0;">
+
+            <!-- Admin CRM Controls -->
+            <div class="detail-grid">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="mStatus">處理進度狀態</label>
+                    <select id="mStatus" class="input-control">
+                        <option value="pending">🔔 待處理 (新進詢價)</option>
+                        <option value="quoting">💬 已報價 / 業務跟進中</option>
+                        <option value="closed">✅ 已成交結案</option>
+                        <option value="archived">🗄️ 已取消 / 歸檔</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="mBranch">指派負責廠區據點</label>
+                    <select id="mBranch" class="input-control">
+                        <option value="未指派">未指派</option>
+                        <option value="台北總公司">🏢 台北總公司</option>
+                        <option value="台中廠">🏭 台中廠 (沙鹿物流裁切)</option>
+                        <option value="台南雙廠區">🏭 台南雙廠區 (佳里/麻豆)</option>
+                    </select>
+                </div>
+                <div class="form-group full" style="grid-column: 1 / -1; margin-bottom: 6px;">
+                    <label for="mAdminNote">內部業務備註（報價金額、負責業務姓名、交期紀錄）</label>
+                    <textarea id="mAdminNote" class="input-control" placeholder="例如：11/06 張業務已電話聯繫，報價 UACJ 5052 20mm 每公斤 $XXX，等待客戶確認圖面..."></textarea>
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px; gap: 10px;">
+                <button class="btn btn-danger btn-sm" onclick="deleteCurrentInquiry()">🗑️ 刪除此單</button>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" onclick="closeDetailModal()">取消</button>
+                    <button id="btnSaveInquiry" class="btn btn-primary" onclick="saveCurrentInquiry()">💾 儲存處理狀態</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         SMTP Email Notification & Password Settings Modal
+         ===================================================================== -->
+    <div id="settingsModal" class="modal-backdrop" onclick="if(event.target===this)closeSettingsModal()">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 style="font-size: 1.1rem;">⚙️ Email (SMTP) 即時通知與後台密碼設定</h3>
+                <button class="btn btn-sm" onclick="closeSettingsModal()">✕ 關閉</button>
+            </div>
+
+            <div style="margin-bottom: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+                <span style="font-size: 0.82rem; color: var(--text-muted); align-self: center;">快速套用郵件主機：</span>
+                <button type="button" class="btn btn-sm" onclick="applySmtpPreset('smtp.gmail.com', 587)">Gmail (587)</button>
+                <button type="button" class="btn btn-sm" onclick="applySmtpPreset('smtp.office365.com', 587)">Office365 (587)</button>
+                <button type="button" class="btn btn-sm" onclick="applySmtpPreset('msa.hinet.net', 25)">HiNet 企業信箱 (25)</button>
+            </div>
+
+            <div class="detail-grid">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>SMTP 伺服器主機 (SMTP_HOST)</label>
+                    <input type="text" id="cfgHost" class="input-control" placeholder="smtp.gmail.com">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>通訊埠 Port (SMTP_PORT)</label>
+                    <input type="number" id="cfgPort" class="input-control" placeholder="587">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>寄件認證信箱帳號 (SMTP_USER)</label>
+                    <input type="email" id="cfgUser" class="input-control" placeholder="your.account@gmail.com">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>信箱應用程式密碼 (SMTP_PASS)</label>
+                    <input type="password" id="cfgPass" class="input-control" placeholder="Gmail 請填 16 位應用程式密碼">
+                </div>
+                <div class="form-group full" style="grid-column: 1 / -1; margin-bottom: 0;">
+                    <label>接收新詢價通知的業務信箱 (NOTIFY_EMAIL，多組信箱請用逗號分隔)</label>
+                    <input type="text" id="cfgNotify" class="input-control" placeholder="例：taipei@fapolu.com.tw, taichung@fapolu.com.tw">
+                </div>
+                <div class="form-group full" style="grid-column: 1 / -1; margin-bottom: 0;">
+                    <label>修改管理後台登入密碼 (留空則維持原密碼)</label>
+                    <input type="password" id="cfgNewAdminPwd" class="input-control" placeholder="若欲變更 /admin 登入密碼請在此輸入新密碼">
+                </div>
+            </div>
+
+            <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 12px 14px; font-size: 0.81rem; color: var(--text-dim); margin: 14px 0;">
+                💡 <b>Gmail 設定小撇步：</b>請至 Google 帳戶 →「安全性」→ 開啟「兩步驟驗證」→ 搜尋「<b>應用程式密碼</b>」產生一組 16 位數密碼填入上方 <code>SMTP_PASS</code>。<br>
+                ☁️ <b>Render 雲端永久保存建議：</b>在 Render 後台 <b>Environment</b> 加入 <code>ADMIN_PASSWORD</code>、<code>SMTP_HOST</code>、<code>SMTP_PORT</code>、<code>SMTP_USER</code>、<code>SMTP_PASS</code>、<code>NOTIFY_EMAIL</code>，即使雲端重啟設定也永久生效！
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px; flex-wrap: wrap; gap: 10px;">
+                <button type="button" id="btnTestEmail" class="btn btn-emerald" onclick="sendTestEmail()">📨 發送測試通知信</button>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" class="btn" onclick="closeSettingsModal()">取消</button>
+                    <button type="button" id="btnSaveSettings" class="btn btn-primary" onclick="saveSettings()">💾 儲存設定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastBox" class="toast"></div>
+
+    <script>
+        let allInquiries = [];
+        let currentStatusFilter = 'all';
+        let activeTicketId = null;
+
+        const statusMap = {
+            pending:  { text: '🔔 待處理', cls: 'badge-pending' },
+            quoting:  { text: '💬 已報價', cls: 'badge-quoting' },
+            closed:   { text: '✅ 已結案', cls: 'badge-closed' },
+            archived: { text: '🗄️ 已取消', cls: 'badge-archived' }
+        };
+
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toastBox');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3200);
+        }
+
+        async function fetchInquiries() {
+            try {
+                const res = await fetch('/api/admin/inquiries');
+                if (res.status === 401) { window.location.reload(); return; }
+                const data = await res.json();
+                if (!data.success) return;
+
+                allInquiries = data.items || [];
+                document.getElementById('statTotal').textContent = data.stats.total;
+                document.getElementById('statPending').textContent = data.stats.pending;
+                document.getElementById('statQuoting').textContent = data.stats.quoting;
+                document.getElementById('statClosed').textContent = data.stats.closed;
+
+                const pill = document.getElementById('smtpStatusPill');
+                if (data.smtpEnabled) {
+                    pill.className = 'smtp-pill on';
+                    pill.textContent = `🟢 Email 通知已啟用 (${data.notifyEmail})`;
+                } else {
+                    pill.className = 'smtp-pill off';
+                    pill.textContent = '🟠 Email 通知未啟用 (點擊設定)';
+                }
+
+                const banner = document.getElementById('renderBanner');
+                banner.style.display = (data.isRender && !data.smtpEnabled) ? 'flex' : 'none';
+
+                renderTable();
+            } catch (e) {
+                showToast('載入詢價清單失敗');
+            }
+        }
+
+        function setStatusFilter(status) {
+            currentStatusFilter = status;
+            document.querySelectorAll('#statusChips .chip').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.status === status);
+            });
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('inquiryTableBody');
+            const branchVal = document.getElementById('branchFilter').value;
+            const q = document.getElementById('searchInput').value.trim().toLowerCase();
+
+            const filtered = allInquiries.filter(item => {
+                if (currentStatusFilter !== 'all' && item.status !== currentStatusFilter) return false;
+                if (branchVal !== 'all' && (item.branch || '未指派') !== branchVal) return false;
+                if (q) {
+                    const hay = [
+                        item.id, item.companyName, item.contactPerson,
+                        item.contactPhone, item.contactEmail,
+                        item.inquiryMaterial, item.inquiryMessage, item.adminNote
+                    ].join(' ').toLowerCase();
+                    if (!hay.includes(q)) return false;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">目前沒有符合篩選條件的詢價單紀錄</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(item => {
+                const st = statusMap[item.status] || statusMap.pending;
+                const emailIcon = item.emailSent
+                    ? '<span style="color:#34d399;font-size:0.82rem;">✓ 已寄出</span>'
+                    : (item.emailError
+                        ? `<span style="color:#fb7185;font-size:0.8rem;" title="${escapeHtml(item.emailError)}">⚠ 失敗</span>`
+                        : '<span style="color:var(--text-muted);font-size:0.8rem;">—</span>');
+                const noteHtml = item.adminNote
+                    ? `<div class="note-preview">📝 ${escapeHtml(item.adminNote)}</div>`
+                    : '';
+
+                return `
+                    <tr onclick="openDetailModal('${escapeHtml(item.id)}')">
+                        <td>
+                            <div class="ticket-id">${escapeHtml(item.id)}</div>
+                            <div class="time-sub">${escapeHtml(item.timestamp)}</div>
+                        </td>
+                        <td>
+                            <div class="company-title">${escapeHtml(item.companyName || '—')}</div>
+                            <div class="person-sub">👤 ${escapeHtml(item.contactPerson || '—')}</div>
+                        </td>
+                        <td onclick="event.stopPropagation()">
+                            <a class="contact-link" href="tel:${escapeHtml(item.contactPhone)}">📞 ${escapeHtml(item.contactPhone || '—')}</a>
+                            <a class="contact-link" href="mailto:${escapeHtml(item.contactEmail)}">✉️ ${escapeHtml(item.contactEmail || '—')}</a>
+                        </td>
+                        <td>
+                            <div class="material-tag">${escapeHtml(item.inquiryMaterial || '（未填寫規格）')}</div>
+                            <div class="msg-preview">${escapeHtml(item.inquiryMessage || '')}</div>
+                            ${noteHtml}
+                        </td>
+                        <td><span style="font-size:0.84rem;color:var(--text-dim);">${escapeHtml(item.branch || '未指派')}</span></td>
+                        <td><span class="badge ${st.cls}">${st.text}</span></td>
+                        <td>${emailIcon}</td>
+                        <td onclick="event.stopPropagation()">
+                            <button class="btn btn-sm" onclick="openDetailModal('${escapeHtml(item.id)}')">檢視 / 處理</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function openDetailModal(ticketId) {
+            const item = allInquiries.find(i => i.id === ticketId);
+            if (!item) return;
+            activeTicketId = ticketId;
+
+            document.getElementById('mTicketId').textContent = item.id;
+            document.getElementById('mTimestamp').textContent = `送出時間：${item.timestamp}`;
+            document.getElementById('mCompany').textContent = item.companyName || '—';
+            document.getElementById('mPerson').textContent = item.contactPerson || '—';
+
+            const phoneEl = document.getElementById('mPhoneLink');
+            phoneEl.textContent = item.contactPhone || '—';
+            phoneEl.href = item.contactPhone ? `tel:${item.contactPhone}` : '#';
+
+            const emailEl = document.getElementById('mEmailLink');
+            emailEl.textContent = item.contactEmail || '—';
+            emailEl.href = item.contactEmail ? `mailto:${item.contactEmail}` : '#';
+
+            document.getElementById('mMaterial').textContent = item.inquiryMaterial || '（未指定材料型號）';
+            document.getElementById('mMessage').textContent = item.inquiryMessage || '（無額外說明）';
+
+            document.getElementById('mStatus').value = item.status || 'pending';
+            document.getElementById('mBranch').value = item.branch || '未指派';
+            document.getElementById('mAdminNote').value = item.adminNote || '';
+
+            const subject = encodeURIComponent(`【法寶實業報價回覆】${item.id} - ${item.inquiryMaterial || '鋁合金材料諮詢'}`);
+            const body = encodeURIComponent(
+                `${item.companyName} ${item.contactPerson} 您好：\n\n感謝您對法寶實業有限公司的詢價支持（單號：${item.id}）。\n針對您詢問的材料規格「${item.inquiryMaterial || ''}」，以下為本司業務報價與交期說明：\n\n1. 材料規格：\n2. 報價單價：\n3. 預計交期：\n\n若有任何裁切或精密加工需求，歡迎隨時回覆此信或來電洽詢！\n\n法寶實業有限公司 業務部 敬上`
+            );
+            document.getElementById('mMailtoReply').href = `mailto:${item.contactEmail || ''}?subject=${subject}&body=${body}`;
+
+            document.getElementById('detailModal').classList.add('open');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.remove('open');
+            activeTicketId = null;
+        }
+
+        async function saveCurrentInquiry() {
+            if (!activeTicketId) return;
+            const btn = document.getElementById('btnSaveInquiry');
+            btn.disabled = true;
+            btn.textContent = '儲存中...';
+            try {
+                const res = await fetch(`/api/admin/inquiries/${encodeURIComponent(activeTicketId)}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        status: document.getElementById('mStatus').value,
+                        branch: document.getElementById('mBranch').value,
+                        adminNote: document.getElementById('mAdminNote').value
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`✅ 已更新單號 ${activeTicketId}`);
+                    closeDetailModal();
+                    fetchInquiries();
+                } else {
+                    showToast('儲存失敗：' + data.error);
+                }
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '💾 儲存處理狀態';
+            }
+        }
+
+        async function deleteCurrentInquiry() {
+            if (!activeTicketId) return;
+            if (!confirm(`確定要永久刪除詢價單 ${activeTicketId} 嗎？此操作無法復原。`)) return;
+            const res = await fetch(`/api/admin/inquiries/${encodeURIComponent(activeTicketId)}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) {
+                showToast(`🗑️ 已刪除 ${activeTicketId}`);
+                closeDetailModal();
+                fetchInquiries();
+            } else {
+                showToast('刪除失敗：' + data.error);
+            }
+        }
+
+        async function resendEmailCurrent() {
+            if (!activeTicketId) return;
+            showToast('📨 正在寄送通知信...');
+            const res = await fetch(`/api/admin/inquiries/${encodeURIComponent(activeTicketId)}/resend-email`, { method: 'POST' });
+            const data = await res.json();
+            if (data.success) {
+                showToast('✅ ' + data.message);
+                fetchInquiries();
+            } else {
+                showToast('⚠ 寄送失敗：' + data.error);
+            }
+        }
+
+        function exportCsv() {
+            window.location.href = `/api/admin/inquiries/export?status=${encodeURIComponent(currentStatusFilter)}`;
+        }
+
+        /* Settings Modal */
+        async function openSettingsModal() {
+            const res = await fetch('/api/admin/settings');
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('cfgHost').value = data.smtp_host || 'smtp.gmail.com';
+                document.getElementById('cfgPort').value = data.smtp_port || 587;
+                document.getElementById('cfgUser').value = data.smtp_user || '';
+                document.getElementById('cfgPass').value = '';
+                document.getElementById('cfgPass').placeholder = data.has_smtp_pass
+                    ? '（已儲存密碼，若不修改請留空）'
+                    : 'Gmail 請填 16 位應用程式密碼';
+                document.getElementById('cfgNotify').value = data.notify_email || '';
+                document.getElementById('cfgNewAdminPwd').value = '';
+            }
+            document.getElementById('settingsModal').classList.add('open');
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').classList.remove('open');
+        }
+
+        function applySmtpPreset(host, port) {
+            document.getElementById('cfgHost').value = host;
+            document.getElementById('cfgPort').value = port;
+        }
+
+        async function saveSettings() {
+            const btn = document.getElementById('btnSaveSettings');
+            btn.disabled = true;
+            btn.textContent = '儲存中...';
+            try {
+                const res = await fetch('/api/admin/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        smtp_host: document.getElementById('cfgHost').value,
+                        smtp_port: document.getElementById('cfgPort').value,
+                        smtp_user: document.getElementById('cfgUser').value,
+                        smtp_pass: document.getElementById('cfgPass').value,
+                        notify_email: document.getElementById('cfgNotify').value,
+                        new_admin_password: document.getElementById('cfgNewAdminPwd').value
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('✅ 設定已成功儲存！');
+                    closeSettingsModal();
+                    fetchInquiries();
+                } else {
+                    showToast('儲存失敗：' + (data.error || ''));
+                }
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '💾 儲存設定';
+            }
+        }
+
+        async function sendTestEmail() {
+            const btn = document.getElementById('btnTestEmail');
+            btn.disabled = true;
+            btn.textContent = '⏳ 寄送測試中...';
+            try {
+                const res = await fetch('/api/admin/test-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        smtp_host: document.getElementById('cfgHost').value,
+                        smtp_port: document.getElementById('cfgPort').value,
+                        smtp_user: document.getElementById('cfgUser').value,
+                        smtp_pass: document.getElementById('cfgPass').value,
+                        notify_email: document.getElementById('cfgNotify').value
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('✅ ' + data.message);
+                } else {
+                    alert(data.error);
+                }
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '📨 發送測試通知信';
+            }
+        }
+
+        async function logoutAdmin() {
+            await fetch('/api/admin/logout', { method: 'POST' });
+            window.location.reload();
+        }
+
+        fetchInquiries();
+    </script>
+{% endif %}
+
+</body>
+</html>

@@ -19,6 +19,7 @@ bin/*.exe
 # Runtime Caches & Temporary Logs
 static/audio/cache/
 data/public_url.txt
+data/admin_config.json
 crash_log.txt
 test_speech.mp3
 *.log
