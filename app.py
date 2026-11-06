@@ -872,6 +872,34 @@ def api_admin_test_email():
         return jsonify({"success": False, "error": f"寄送失敗：{e}"}), 400
 
 
+# ==========================================================================
+#  AI Customer Service & Google OR-Tools CP-SAT Optimization APIs
+# ==========================================================================
+import ai_assistant
+
+
+@app.route('/api/ai/chat', methods=['POST'])
+def api_ai_chat():
+    body = request.json or {}
+    msg = str(body.get('message', '')).strip()
+    result = ai_assistant.process_ai_chat(msg, INVENTORY_DATA)
+    return jsonify({"success": True, **result})
+
+
+@app.route('/api/ai/cutting-stock', methods=['POST'])
+def api_ai_cutting_stock():
+    body = request.json or {}
+    stock_len = body.get('stock_length_mm', 3000)
+    kerf = body.get('kerf_mm', 3)
+    demands = body.get('demands', [])
+    plan = ai_assistant.solve_cutting_stock_cpsat(
+        stock_length_mm=stock_len,
+        kerf_mm=kerf,
+        demands=demands
+    )
+    return jsonify(plan)
+
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)

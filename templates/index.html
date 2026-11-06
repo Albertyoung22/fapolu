@@ -1328,6 +1328,120 @@
         </div>
     </div>
 
+    <!-- ==========================================================================
+         FAPO AI Customer Service & Google OR-Tools CP-SAT Optimizer Widget
+         ========================================================================== -->
+    <button id="aiChatLauncher" class="ai-chat-launcher" onclick="toggleAiChatWidget()" title="開啟法寶 AI 智能工程客服與 CP-SAT 下料求解器">
+        <span class="ai-launcher-icon">🤖</span>
+        <span class="ai-launcher-text">
+            <strong>AI 智能客服</strong>
+            <small>OR-Tools CP-SAT 算料</small>
+        </span>
+        <span class="ai-pulse-dot"></span>
+    </button>
+
+    <div id="aiChatWidget" class="ai-chat-widget glass-card">
+        <div class="ai-widget-header">
+            <div class="ai-header-title">
+                <span class="ai-avatar">🤖</span>
+                <div>
+                    <h4>法寶 AI 智能工程客服</h4>
+                    <p>Google OR-Tools CP-SAT 規格檢索與下料最佳化引擎</p>
+                </div>
+            </div>
+            <button class="ai-close-btn" onclick="toggleAiChatWidget()" title="縮小視窗">✕</button>
+        </div>
+
+        <div class="ai-mode-tabs">
+            <button type="button" class="ai-mode-btn active" id="aiTabBtnChat" onclick="switchAiMode('chat')">
+                💬 智能規格與選料對答
+            </button>
+            <button type="button" class="ai-mode-btn" id="aiTabBtnCpsat" onclick="switchAiMode('cpsat')">
+                🧮 CP-SAT 母材裁切最佳化
+            </button>
+        </div>
+
+        <!-- Mode 1: Conversational AI Customer Service -->
+        <div id="aiPanelChat" class="ai-panel-body">
+            <div id="aiChatMessages" class="ai-chat-messages">
+                <div class="ai-msg ai-msg-bot">
+                    <div class="ai-msg-bubble">
+                        您好！我是 <strong>法寶實業 AI 智能工程客服</strong>（內建 <code>ortools.sat.python.cp_model</code> 最佳化求解器與 3,071 筆即時規格庫）。<br><br>
+                        您可以直接詢問：<br>
+                        • <strong>現貨與模具查詢</strong>：「6061 圓棒 50mm」、「7075 厚 20mm 鋁板」<br>
+                        • <strong>CP-SAT 裁切排料</strong>：「母材 3000mm 切 800*3, 550*4, 420*5」<br>
+                        • <strong>工程選料顧問</strong>：「推薦適合硬陽極與高強度的鋁材」
+                    </div>
+                </div>
+            </div>
+
+            <div class="ai-quick-chips">
+                <button type="button" onclick="sendAiQuickPrompt('查詢 6061 圓棒 直徑 50mm 現貨')">📦 6061圓棒 50mm</button>
+                <button type="button" onclick="sendAiQuickPrompt('推薦適合陽極處理與高強度的鋁材')">🔬 陽極高強選料</button>
+                <button type="button" onclick="sendAiQuickPrompt('母材 3000mm 切 800*3, 550*4, 420*5')">🧮 CP-SAT 下料範例</button>
+                <button type="button" onclick="sendAiQuickPrompt('全台服務據點與原廠材質證明')">📍 據點與證明</button>
+            </div>
+
+            <form class="ai-chat-input-bar" onsubmit="event.preventDefault(); sendAiChatMessage();">
+                <input type="text" id="aiChatInput" placeholder="輸入規格需求、選料問題或裁切尺寸..." autocomplete="off">
+                <button type="submit" id="aiChatSendBtn" class="btn btn-primary">發送</button>
+            </form>
+        </div>
+
+        <!-- Mode 2: Interactive OR-Tools CP-SAT 1D Cutting Stock Solver -->
+        <div id="aiPanelCpsat" class="ai-panel-body" style="display: none;">
+            <div class="cpsat-form-scroll">
+                <div class="cpsat-intro-banner">
+                    <strong>⚡ Google OR-Tools CP-SAT 整數規劃求解器</strong>
+                    <span>自動計算最少母材支數、考慮鋸縫損耗並將餘料最小化</span>
+                </div>
+
+                <div class="cpsat-config-row">
+                    <div class="cpsat-field">
+                        <label>母材標準總長 (mm)</label>
+                        <input type="number" id="cpsatStockLen" value="3000" min="500" max="12000">
+                    </div>
+                    <div class="cpsat-field">
+                        <label>鋸片損耗鋸縫 (mm)</label>
+                        <input type="number" id="cpsatKerf" value="3" min="0" max="20">
+                    </div>
+                </div>
+
+                <div class="cpsat-demands-head">
+                    <span>需求裁切長度 (mm) × 需求數量 (支)</span>
+                    <button type="button" class="cpsat-add-btn" onclick="addCpsatDemandRow()">＋新增尺寸</button>
+                </div>
+
+                <div id="cpsatDemandList" class="cpsat-demand-list">
+                    <div class="cpsat-demand-row">
+                        <input type="number" class="cpsat-len-input" value="800" placeholder="長度 mm" min="10">
+                        <span>×</span>
+                        <input type="number" class="cpsat-qty-input" value="3" placeholder="支數" min="1">
+                        <button type="button" class="cpsat-del-btn" onclick="this.parentElement.remove()">✕</button>
+                    </div>
+                    <div class="cpsat-demand-row">
+                        <input type="number" class="cpsat-len-input" value="550" placeholder="長度 mm" min="10">
+                        <span>×</span>
+                        <input type="number" class="cpsat-qty-input" value="4" placeholder="支數" min="1">
+                        <button type="button" class="cpsat-del-btn" onclick="this.parentElement.remove()">✕</button>
+                    </div>
+                    <div class="cpsat-demand-row">
+                        <input type="number" class="cpsat-len-input" value="420" placeholder="長度 mm" min="10">
+                        <span>×</span>
+                        <input type="number" class="cpsat-qty-input" value="5" placeholder="支數" min="1">
+                        <button type="button" class="cpsat-del-btn" onclick="this.parentElement.remove()">✕</button>
+                    </div>
+                </div>
+
+                <button type="button" id="cpsatSolveBtn" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 10px;" onclick="runInteractiveCpsatSolver()">
+                    🚀 啟動 CP-SAT 最佳化下料求解
+                </button>
+
+                <div id="cpsatResultBox" class="cpsat-result-box" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Cloudflare Tunnel Modal -->
     <div id="tunnelModal" class="modal-overlay">
         <div class="modal-content glass-card">

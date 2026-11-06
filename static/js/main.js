@@ -1479,3 +1479,231 @@ function showToast(msg) {
     }, 3500);
 }
 
+
+/* ==========================================================================
+   FAPO AI Customer Service & Google OR-Tools CP-SAT Interactive Client
+   ========================================================================== */
+
+window.toggleAiChatWidget = function() {
+    const widget = document.getElementById('aiChatWidget');
+    if (!widget) return;
+    widget.classList.toggle('open');
+    if (widget.classList.contains('open')) {
+        const inp = document.getElementById('aiChatInput');
+        if (inp) setTimeout(() => inp.focus(), 120);
+    }
+};
+
+window.switchAiMode = function(mode) {
+    const btnChat = document.getElementById('aiTabBtnChat');
+    const btnCpsat = document.getElementById('aiTabBtnCpsat');
+    const panelChat = document.getElementById('aiPanelChat');
+    const panelCpsat = document.getElementById('aiPanelCpsat');
+    if (!panelChat || !panelCpsat) return;
+
+    if (mode === 'cpsat') {
+        btnChat.classList.remove('active');
+        btnCpsat.classList.add('active');
+        panelChat.style.display = 'none';
+        panelCpsat.style.display = 'flex';
+    } else {
+        btnCpsat.classList.remove('active');
+        btnChat.classList.add('active');
+        panelCpsat.style.display = 'none';
+        panelChat.style.display = 'flex';
+    }
+};
+
+function formatAiMarkdown(text) {
+    return String(text || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/`([^`]+)`/g, '<code style="background:rgba(182,59,46,0.1);color:var(--accent-cinnabar);padding:1px 5px;border-radius:4px;font-weight:700;">$1</code>')
+        .replace(/\n/g, '<br>');
+}
+
+window.sendAiQuickPrompt = function(promptText) {
+    const inp = document.getElementById('aiChatInput');
+    if (inp) {
+        inp.value = promptText;
+        sendAiChatMessage();
+    }
+};
+
+window.sendAiChatMessage = function() {
+    const inp = document.getElementById('aiChatInput');
+    const box = document.getElementById('aiChatMessages');
+    if (!inp || !box) return;
+
+    const text = inp.value.trim();
+    if (!text) return;
+    inp.value = '';
+
+    // Append user bubble
+    const userDiv = document.createElement('div');
+    userDiv.className = 'ai-msg ai-msg-user';
+    userDiv.innerHTML = `<div class="ai-msg-bubble">${formatAiMarkdown(text)}</div>`;
+    box.appendChild(userDiv);
+    box.scrollTop = box.scrollHeight;
+
+    // Append loading bubble
+    const botDiv = document.createElement('div');
+    botDiv.className = 'ai-msg ai-msg-bot';
+    botDiv.innerHTML = `<div class="ai-msg-bubble">⏳ 正在啟動 CP-SAT 求解器與檢索規格庫...</div>`;
+    box.appendChild(botDiv);
+    box.scrollTop = box.scrollHeight;
+
+    fetch('/api/ai/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text })
+    })
+    .then(r => r.json())
+    .then(data => {
+        let html = `<div class="ai-msg-bubble">${formatAiMarkdown(data.reply || '')}`;
+
+        if (data.specs && data.specs.length > 0) {
+            html += `<div class="ai-spec-cards">`;
+            data.specs.forEach(s => {
+                const safeSpec = `${s.category} ${s.material} ${s.dimension || ''} ${s.size || ''}`.replace(/'/g, "\'");
+                html += `
+                    <div class="ai-spec-mini-card">
+                        <div class="ai-spec-mini-info">
+                            <strong>${s.material} · ${s.dimension || '-'}</strong>
+                            <span>${s.category} (${s.size || '常備規格'})</span>
+                        </div>
+                        <button type="button" class="ai-spec-mini-btn" onclick="addSpecToQuote('${safeSpec}')">＋詢價</button>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+        }
+
+        if (data.cutting_plan && data.cutting_plan.success) {
+            const p = data.cutting_plan;
+            const quoteSummary = `[CP-SAT 最佳化裁切需求] 母材 ${p.stock_length_mm}mm 共需 ${p.total_bars_used} 支 (利用率 ${p.overall_utilization_pct}%): ` +
+                p.bars_plan.map(b => `第${b.bar_no}支(${b.cuts_summary})`).join('；');
+            const safeQuote = quoteSummary.replace(/'/g, "\'");
+            html += `
+                <div style="margin-top:10px;">
+                    <button type="button" class="ai-spec-mini-btn" style="width:100%;padding:7px;" onclick="addSpecToQuote('${safeQuote}')">
+                        📋 將此 CP-SAT 裁切方案加入詢價單
+                    </button>
+                </div>
+            `;
+        }
+
+        html += `</div>`;
+        botDiv.innerHTML = html;
+        box.scrollTop = box.scrollHeight;
+    })
+    .catch(() => {
+        botDiv.innerHTML = `<div class="ai-msg-bubble">⚠️ 連線發生異常，請稍後再試。</div>`;
+    });
+};
+
+window.addCpsatDemandRow = function() {
+    const list = document.getElementById('cpsatDemandList');
+    if (!list) return;
+    const row = document.createElement('div');
+    row.className = 'cpsat-demand-row';
+    row.innerHTML = `
+        <input type="number" class="cpsat-len-input" value="500" placeholder="長度 mm" min="10">
+        <span>×</span>
+        <input type="number" class="cpsat-qty-input" value="2" placeholder="支數" min="1">
+        <button type="button" class="cpsat-del-btn" onclick="this.parentElement.remove()">✕</button>
+    `;
+    list.appendChild(row);
+};
+
+window.runInteractiveCpsatSolver = function() {
+    const stockLen = parseInt(document.getElementById('cpsatStockLen')?.value || '3000', 10);
+    const kerf = parseInt(document.getElementById('cpsatKerf')?.value || '3', 10);
+    const rows = document.querySelectorAll('#cpsatDemandList .cpsat-demand-row');
+    const resBox = document.getElementById('cpsatResultBox');
+    const solveBtn = document.getElementById('cpsatSolveBtn');
+
+    if (!resBox) return;
+
+    const demands = [];
+    rows.forEach(r => {
+        const l = parseInt(r.querySelector('.cpsat-len-input')?.value || '0', 10);
+        const q = parseInt(r.querySelector('.cpsat-qty-input')?.value || '0', 10);
+        if (l > 0 && q > 0) demands.push({ length: l, qty: q });
+    });
+
+    resBox.style.display = 'block';
+    resBox.innerHTML = `⏳ 正在呼叫後端 <code>ortools.sat.python.cp_model</code> 執行最佳化求解...`;
+    if (solveBtn) solveBtn.disabled = true;
+
+    fetch('/api/ai/cutting-stock', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            stock_length_mm: stockLen,
+            kerf_mm: kerf,
+            demands: demands
+        })
+    })
+    .then(r => r.json())
+    .then(plan => {
+        if (solveBtn) solveBtn.disabled = false;
+        if (!plan.success) {
+            resBox.innerHTML = `<div style="color:#b91c1c;font-weight:700;">❌ ${plan.error || '求解失敗'}</div>`;
+            return;
+        }
+
+        let barsHtml = '';
+        plan.bars_plan.forEach(b => {
+            let segsHtml = '';
+            b.cuts.forEach((c, idx) => {
+                const pct = Math.max(8, Math.round(((c.length * c.count) / plan.stock_length_mm) * 100));
+                const bgColors = ['#a83327', '#b87b28', '#2b5b84', '#3d7a5a'];
+                const bg = bgColors[idx % bgColors.length];
+                segsHtml += `<div class="cpsat-seg" style="width:${pct}%;background:${bg};" title="${c.label}">${c.length}×${c.count}</div>`;
+            });
+            if (b.remnant_mm > 0) {
+                const remPct = Math.max(6, Math.round((b.remnant_mm / plan.stock_length_mm) * 100));
+                segsHtml += `<div class="cpsat-seg-rem" style="width:${remPct}%;" title="餘料 ${b.remnant_mm}mm">餘${b.remnant_mm}</div>`;
+            }
+
+            barsHtml += `
+                <div style="margin-bottom:8px;">
+                    <div style="display:flex;justify-content:space-between;font-weight:700;font-size:0.76rem;">
+                        <span>第 ${b.bar_no} 支母材：${b.cuts_summary}</span>
+                        <span style="color:var(--accent-cinnabar);">利用率 ${b.utilization_pct}% (餘 ${b.remnant_mm}mm)</span>
+                    </div>
+                    <div class="cpsat-bar-visual">${segsHtml}</div>
+                </div>
+            `;
+        });
+
+        const quoteSummary = `[CP-SAT 最佳化裁切需求] 母材 ${plan.stock_length_mm}mm 共需 ${plan.total_bars_used} 支 (利用率 ${plan.overall_utilization_pct}%): ` +
+            plan.bars_plan.map(b => `第${b.bar_no}支(${b.cuts_summary})`).join('；');
+        const safeQuote = quoteSummary.replace(/'/g, "\'");
+
+        resBox.innerHTML = `
+            <div style="margin-bottom:10px;border-bottom:1px solid rgba(180,160,120,0.35);padding-bottom:8px;">
+                <div style="font-weight:800;color:var(--accent-cinnabar);font-size:0.86rem;">
+                    ✅ ${plan.solver_status}（耗時 ${plan.solve_time_ms} ms）
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;">
+                    <div>最少需用母材：<strong>${plan.total_bars_used} 支</strong></div>
+                    <div>總材料利用率：<strong>${plan.overall_utilization_pct}%</strong></div>
+                    <div>總裁切段數：<strong>${plan.total_pieces_cut} 支</strong></div>
+                    <div>總餘料長度：<strong>${plan.total_remnant_mm} mm</strong></div>
+                </div>
+            </div>
+            ${barsHtml}
+            <button type="button" class="ai-spec-mini-btn" style="width:100%;padding:8px;margin-top:6px;" onclick="addSpecToQuote('${safeQuote}')">
+                📋 將此 CP-SAT 最佳裁切明細帶入詢價單
+            </button>
+        `;
+    })
+    .catch(() => {
+        if (solveBtn) solveBtn.disabled = false;
+        resBox.innerHTML = `<div style="color:#b91c1c;">⚠️ 求解器連線異常</div>`;
+    });
+};
