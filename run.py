@@ -1,4 +1,15 @@
 import sys
+
+# Ensure standard output supports UTF-8 on Windows command prompts
+if sys.platform.startswith('win'):
+    try:
+        if hasattr(sys.stdout, 'reconfigure'):
+            sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+        if hasattr(sys.stderr, 'reconfigure'):
+            sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+
 import argparse
 import logging
 import threading

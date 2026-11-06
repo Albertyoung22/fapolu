@@ -5,6 +5,17 @@ import socket
 import threading
 import logging
 import argparse
+
+# Ensure standard output supports UTF-8 on Windows command prompts
+if sys.platform.startswith('win'):
+    try:
+        if hasattr(sys.stdout, 'reconfigure'):
+            sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+        if hasattr(sys.stderr, 'reconfigure'):
+            sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+
 from waitress import serve
 from app import app
 import webview
