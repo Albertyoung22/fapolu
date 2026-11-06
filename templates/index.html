@@ -8,7 +8,7 @@
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='3.0') }}">
 </head>
 <body>
 
@@ -586,18 +586,27 @@
                 </select>
             </div>
 
+            <button id="dockZenBgmBtn" class="btn-zen-pill active" title="開關禪風頌缽古琴背景配樂">
+                🪷 禪樂
+            </button>
+
+            <button id="dockBowlBtn" class="btn-dock-icon btn-bowl-chime" title="敲擊靜心頌缽">
+                🔔
+            </button>
+
             <div class="dock-voice-select">
                 <select id="dockVoiceSelect">
-                    <option value="zh-TW-HsiaoChenNeural">專業女聲 (曉臻)</option>
-                    <option value="zh-TW-YunJheNeural">沉穩男聲 (雲哲)</option>
+                    <option value="zen-male" selected>🪷 莊嚴禪韻男聲 (法音)</option>
+                    <option value="zen-female">🙏 慈悲溫婉女聲 (禪心)</option>
+                    <option value="zh-TW-HsiaoChenNeural">🎙️ 現代專業女聲 (原速)</option>
                 </select>
             </div>
 
             <div class="dock-speed-select">
                 <select id="dockSpeedSelect">
                     <option value="1.0">1.0x 語速</option>
-                    <option value="1.2">1.2x 語速</option>
-                    <option value="0.9">0.9x 語速</option>
+                    <option value="0.9">0.9x 靜心慢速</option>
+                    <option value="1.15">1.15x 語速</option>
                 </select>
             </div>
         </div>
@@ -650,7 +659,7 @@
         window.SITE_DATA = {{ data | tojson }};
     </script>
     <!-- Main Interactive Script -->
-    <script src="{{ url_for('static', filename='js/main.js', v='2.1') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v='3.0') }}"></script>
 </body>
 </html>
 

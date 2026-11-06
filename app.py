@@ -142,7 +142,7 @@ def api_specs():
 @app.route('/api/tts')
 def api_tts():
     text = request.args.get('text', '').strip()
-    voice = request.args.get('voice', 'zh-TW-HsiaoChenNeural').strip()
+    voice_key = request.args.get('voice', 'zen-male').strip()
     
     if not text:
         return jsonify({"error": "No text provided"}), 400
@@ -150,9 +150,26 @@ def api_tts():
     # Limit length for safety
     if len(text) > 800:
         text = text[:800]
+
+    # Map Zen / Buddhist Dharma prosody presets
+    if voice_key in ('zen-male', 'zh-TW-YunJheNeural'):
+        actual_voice = 'zh-TW-YunJheNeural'
+        rate = '-18%'
+        pitch = '-10Hz'
+        speak_text = text.replace('。', '。…… ').replace('；', '；… ')
+    elif voice_key == 'zen-female':
+        actual_voice = 'zh-TW-HsiaoChenNeural'
+        rate = '-15%'
+        pitch = '-4Hz'
+        speak_text = text.replace('。', '。…… ').replace('；', '；… ')
+    else:
+        actual_voice = 'zh-TW-HsiaoChenNeural'
+        rate = '+0%'
+        pitch = '+0Hz'
+        speak_text = text
         
-    # Generate unique cache hash
-    text_hash = hashlib.md5(f"{voice}_{text}".encode('utf-8')).hexdigest()
+    # Generate unique cache hash including prosody parameters
+    text_hash = hashlib.md5(f"{actual_voice}_{rate}_{pitch}_{speak_text}".encode('utf-8')).hexdigest()
     cache_filename = f"tts_{text_hash}.mp3"
     cache_path = os.path.join(BASE_DIR, 'static', 'audio', 'cache', cache_filename)
     audio_url = f"/static/audio/cache/{cache_filename}"
@@ -162,7 +179,7 @@ def api_tts():
         
     try:
         async def do_tts():
-            tts = edge_tts.Communicate(text, voice)
+            tts = edge_tts.Communicate(speak_text, actual_voice, rate=rate, pitch=pitch)
             await tts.save(cache_path)
             
         asyncio.run(do_tts())

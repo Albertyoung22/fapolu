@@ -1361,6 +1361,45 @@ button {
   color: var(--accent-cyan);
 }
 
+.btn-zen-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  background: rgba(245, 158, 11, 0.08);
+  color: #cbd5e1;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.btn-zen-pill.active {
+  background: rgba(245, 158, 11, 0.22);
+  border-color: #fbbf24;
+  color: #fde68a;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.35);
+}
+
+.btn-zen-pill:hover {
+  border-color: #fbbf24;
+  color: #fef3c7;
+}
+
+.btn-bowl-chime {
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #fbbf24;
+}
+
+.btn-bowl-chime:hover {
+  background: rgba(245, 158, 11, 0.25);
+  color: #fde68a;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.4);
+}
+
 .dock-voice-select select, .dock-speed-select select {
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid var(--border-subtle);

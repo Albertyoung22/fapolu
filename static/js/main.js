@@ -101,18 +101,295 @@ function initLatticeCanvas() {
 }
 
 /* ==========================================================================
-   2. Edge-TTS Audio Tour Engine (微軟神經網路語音沉浸導覽)
+   2. Zen Dharma Soundscape & Edge-TTS Audio Tour Engine
+      (莊嚴佛韻語音導覽 · 物理建模西藏頌缽 · 清脆引磬 · 東方五聲古琴禪樂引擎)
    ========================================================================== */
+const ZenSoundEngine = {
+    ctx: null,
+    reverbNode: null,
+    bgmMaster: null,
+    droneNodes: [],
+    pluckTimer: null,
+    isAmbientPlaying: false,
+    bgmEnabled: true,
+    bowlVisualEnergy: 0,
+
+    ensureCtx() {
+        if (!this.ctx) {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return null;
+            this.ctx = new AudioCtx();
+            this.reverbNode = this._buildTempleReverb(3.6);
+            this.bgmMaster = this.ctx.createGain();
+            this.bgmMaster.gain.value = 0.0001;
+            this.bgmMaster.connect(this.ctx.destination);
+        }
+        if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+        }
+        return this.ctx;
+    },
+
+    _buildTempleReverb(durationSec) {
+        const ctx = this.ctx;
+        const rate = ctx.sampleRate;
+        const length = Math.floor(rate * durationSec);
+        const impulse = ctx.createBuffer(2, length, rate);
+        for (let ch = 0; ch < 2; ch++) {
+            const data = impulse.getChannelData(ch);
+            let last = 0;
+            for (let i = 0; i < length; i++) {
+                const t = i / length;
+                const env = Math.pow(1 - t, 2.6);
+                const white = (Math.random() * 2 - 1);
+                // Warm low-pass smoothing for monastery stone/wood hall acoustics
+                last = last * 0.72 + white * 0.28;
+                data[i] = last * env * 0.55;
+            }
+        }
+        const convolver = ctx.createConvolver();
+        convolver.buffer = impulse;
+        return convolver;
+    },
+
+    strikeSingingBowl(baseFreq = 216, volume = 0.26) {
+        const ctx = this.ensureCtx();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        this.bowlVisualEnergy = 1.0;
+
+        const out = ctx.createGain();
+        out.gain.setValueAtTime(volume, now);
+        out.connect(ctx.destination);
+        if (this.reverbNode) {
+            const wet = ctx.createGain();
+            wet.gain.value = 0.55;
+            out.connect(this.reverbNode);
+            this.reverbNode.connect(wet);
+            wet.connect(ctx.destination);
+        }
+
+        // Authentic Tibetan bronze singing bowl modal partials + slow meditative beating
+        const partials = [
+            { ratio: 1.0000, amp: 0.52, decay: 7.5 },
+            { ratio: 1.0052, amp: 0.40, decay: 7.2 }, // ~1.1Hz warm pulsation ("嗡～～")
+            { ratio: 2.7560, amp: 0.20, decay: 4.8 },
+            { ratio: 2.7625, amp: 0.13, decay: 4.5 },
+            { ratio: 5.1300, amp: 0.05, decay: 2.0 }
+        ];
+
+        partials.forEach(p => {
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(baseFreq * p.ratio, now);
+
+            g.gain.setValueAtTime(0.0001, now);
+            g.gain.linearRampToValueAtTime(p.amp, now + 0.045); // Soft wooden mallet strike
+            g.gain.exponentialRampToValueAtTime(0.0001, now + p.decay);
+
+            osc.connect(g);
+            g.connect(out);
+            osc.start(now);
+            osc.stop(now + p.decay + 0.1);
+        });
+    },
+
+    strikeYinqing(baseFreq = 1056, volume = 0.13) {
+        const ctx = this.ensureCtx();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        this.bowlVisualEnergy = 0.7;
+
+        const out = ctx.createGain();
+        out.gain.setValueAtTime(volume, now);
+        out.connect(ctx.destination);
+        if (this.reverbNode) {
+            const wet = ctx.createGain();
+            wet.gain.value = 0.45;
+            out.connect(this.reverbNode);
+            this.reverbNode.connect(wet);
+            wet.connect(ctx.destination);
+        }
+
+        // Clear Buddhist meditation Yinqing hand-bell partials
+        [
+            { ratio: 1.0, amp: 0.55, decay: 4.0 },
+            { ratio: 1.0018, amp: 0.35, decay: 3.8 },
+            { ratio: 2.92, amp: 0.16, decay: 1.9 }
+        ].forEach(p => {
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(baseFreq * p.ratio, now);
+            g.gain.setValueAtTime(0.0001, now);
+            g.gain.linearRampToValueAtTime(p.amp, now + 0.012);
+            g.gain.exponentialRampToValueAtTime(0.0001, now + p.decay);
+            osc.connect(g);
+            g.connect(out);
+            osc.start(now);
+            osc.stop(now + p.decay + 0.08);
+        });
+    },
+
+    startAmbient(isSpeaking = false) {
+        if (!this.bgmEnabled) return;
+        const ctx = this.ensureCtx();
+        if (!ctx) return;
+
+        const targetGain = isSpeaking ? 0.16 : 0.28;
+        const now = ctx.currentTime;
+        this.bgmMaster.gain.cancelScheduledValues(now);
+        this.bgmMaster.gain.setValueAtTime(Math.max(0.0001, this.bgmMaster.gain.value), now);
+        this.bgmMaster.gain.linearRampToValueAtTime(targetGain, now + 1.5);
+
+        if (this.isAmbientPlaying) return;
+        this.isAmbientPlaying = true;
+
+        // 1. Warm Meditative Harmonic Pad (D2 + A2 + D3 fifth drone)
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 340;
+
+        const padGain = ctx.createGain();
+        padGain.gain.value = 0.18;
+
+        // Slow 12-second breathing LFO
+        const lfo = ctx.createOscillator();
+        const lfoGain = ctx.createGain();
+        lfo.frequency.value = 0.08;
+        lfoGain.gain.value = 0.05;
+        lfo.connect(lfoGain);
+        lfoGain.connect(padGain.gain);
+        lfo.start();
+
+        filter.connect(padGain);
+        padGain.connect(this.bgmMaster);
+
+        const droneFreqs = [73.42, 110.0, 146.83];
+        this.droneNodes = [lfo];
+        droneFreqs.forEach((f, idx) => {
+            const osc = ctx.createOscillator();
+            osc.type = idx === 0 ? 'sine' : 'triangle';
+            osc.frequency.value = f;
+            const g = ctx.createGain();
+            g.gain.value = idx === 0 ? 0.45 : 0.22;
+            osc.connect(g);
+            g.connect(filter);
+            osc.start();
+            this.droneNodes.push(osc);
+        });
+
+        // 2. Contemplative Oriental Pentatonic Guqin Plucks (宮商角徵羽 D Pentatonic)
+        const scale = [146.83, 164.81, 185.00, 220.00, 246.94, 293.66, 329.63, 369.99, 440.00];
+        let stepCount = 0;
+
+        const scheduleNextNote = () => {
+            if (!this.isAmbientPlaying) return;
+            stepCount++;
+            const noteFreq = scale[Math.floor(Math.random() * scale.length)];
+            this._playGuqinPluck(noteFreq);
+
+            // Softly resonate a distant low singing bowl every ~5 notes
+            if (stepCount % 5 === 0) {
+                this.strikeSingingBowl(stepCount % 10 === 0 ? 146.83 : 220.0, 0.09);
+            }
+
+            const nextDelay = 3000 + Math.random() * 2400;
+            this.pluckTimer = setTimeout(scheduleNextNote, nextDelay);
+        };
+        this.pluckTimer = setTimeout(scheduleNextNote, 1400);
+    },
+
+    _playGuqinPluck(freq) {
+        if (!this.ctx || !this.isAmbientPlaying) return;
+        const ctx = this.ctx;
+        const now = ctx.currentTime;
+
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        osc1.type = 'triangle';
+        osc2.type = 'sine';
+        osc1.frequency.setValueAtTime(freq, now);
+        osc2.frequency.setValueAtTime(freq * 2, now);
+
+        const lp = ctx.createBiquadFilter();
+        lp.type = 'lowpass';
+        lp.frequency.setValueAtTime(1250, now);
+        lp.frequency.exponentialRampToValueAtTime(280, now + 2.6);
+
+        const g = ctx.createGain();
+        g.gain.setValueAtTime(0.0001, now);
+        g.gain.linearRampToValueAtTime(0.22, now + 0.035);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + 4.2);
+
+        const g2 = ctx.createGain();
+        g2.gain.value = 0.25;
+
+        osc1.connect(lp);
+        osc2.connect(g2);
+        g2.connect(lp);
+        lp.connect(g);
+        g.connect(this.bgmMaster);
+
+        if (this.reverbNode) {
+            const wet = ctx.createGain();
+            wet.gain.value = 0.65;
+            g.connect(this.reverbNode);
+            this.reverbNode.connect(wet);
+            wet.connect(this.bgmMaster);
+        }
+
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 4.3);
+        osc2.stop(now + 4.3);
+    },
+
+    setDucking(isSpeaking) {
+        if (!this.ctx || !this.bgmMaster || !this.isAmbientPlaying) return;
+        const now = this.ctx.currentTime;
+        const target = isSpeaking ? 0.16 : 0.28;
+        this.bgmMaster.gain.cancelScheduledValues(now);
+        this.bgmMaster.gain.setValueAtTime(Math.max(0.0001, this.bgmMaster.gain.value), now);
+        this.bgmMaster.gain.linearRampToValueAtTime(target, now + 0.8);
+    },
+
+    stopAmbient() {
+        if (this.pluckTimer) {
+            clearTimeout(this.pluckTimer);
+            this.pluckTimer = null;
+        }
+        if (!this.isAmbientPlaying || !this.ctx) {
+            this.isAmbientPlaying = false;
+            return;
+        }
+        this.isAmbientPlaying = false;
+        const now = this.ctx.currentTime;
+        this.bgmMaster.gain.cancelScheduledValues(now);
+        this.bgmMaster.gain.setValueAtTime(Math.max(0.0001, this.bgmMaster.gain.value), now);
+        this.bgmMaster.gain.linearRampToValueAtTime(0.0001, now + 0.7);
+        const nodesToStop = this.droneNodes.slice();
+        this.droneNodes = [];
+        setTimeout(() => {
+            nodesToStop.forEach(n => {
+                try { n.stop(); n.disconnect(); } catch (e) {}
+            });
+        }, 750);
+    }
+};
+
 let audioTourState = {
     audio: new Audio(),
     cardAudio: null,
     isCardPlaying: false,
     lastCardText: '',
     lastCardBtn: null,
+    chimeAdvanceTimer: null,
     isPlaying: false,
     currentChapter: 0,
     chapters: [],
-    voice: 'zh-TW-HsiaoChenNeural',
+    voice: 'zen-male',
     speed: 1.0,
     analyser: null,
     audioCtx: null
@@ -120,10 +397,20 @@ let audioTourState = {
 
 function getChapterAudioUrl(ch) {
     if (!ch || !ch.audio_file) return '';
-    if (audioTourState.voice === 'zh-TW-YunJheNeural') {
+    if (audioTourState.voice === 'zen-male' || audioTourState.voice === 'zh-TW-YunJheNeural') {
         return ch.audio_file.replace(/\.mp3$/i, '_male.mp3');
     }
+    if (audioTourState.voice === 'zen-female') {
+        return ch.audio_file.replace(/\.mp3$/i, '_zen_female.mp3');
+    }
     return ch.audio_file;
+}
+
+function clearChimeTimer() {
+    if (audioTourState.chimeAdvanceTimer) {
+        clearTimeout(audioTourState.chimeAdvanceTimer);
+        audioTourState.chimeAdvanceTimer = null;
+    }
 }
 
 function initAudioTour() {
@@ -133,6 +420,8 @@ function initAudioTour() {
     const chapterSelect = document.getElementById('dockChapterSelect');
     const voiceSelect = document.getElementById('dockVoiceSelect');
     const speedSelect = document.getElementById('dockSpeedSelect');
+    const zenBgmBtn = document.getElementById('dockZenBgmBtn');
+    const bowlBtn = document.getElementById('dockBowlBtn');
     
     // Read chapters from embedded data
     if (window.SITE_DATA && window.SITE_DATA.tour_chapters) {
@@ -141,7 +430,7 @@ function initAudioTour() {
 
     if (!audioTourState.chapters.length) return;
 
-    // Sync initial dropdown states (in case browser restores form values on reload)
+    // Sync initial dropdown states
     if (voiceSelect && voiceSelect.value) {
         audioTourState.voice = voiceSelect.value;
     }
@@ -156,18 +445,45 @@ function initAudioTour() {
         ).join('');
         
         chapterSelect.addEventListener('change', (e) => {
+            clearChimeTimer();
             stopCardAudio();
+            ZenSoundEngine.strikeYinqing(1056, 0.11);
             selectChapter(parseInt(e.target.value), true);
+        });
+    }
+
+    // Zen Ambient Background Music Toggle
+    if (zenBgmBtn) {
+        zenBgmBtn.addEventListener('click', () => {
+            ZenSoundEngine.bgmEnabled = !ZenSoundEngine.bgmEnabled;
+            zenBgmBtn.classList.toggle('active', ZenSoundEngine.bgmEnabled);
+            if (ZenSoundEngine.bgmEnabled) {
+                ZenSoundEngine.strikeSingingBowl(216, 0.22);
+                ZenSoundEngine.startAmbient(audioTourState.isPlaying || audioTourState.isCardPlaying);
+                showToast("🪷 已開啟禪風古琴與頌缽靜心背景配樂");
+            } else {
+                ZenSoundEngine.stopAmbient();
+                showToast("已關閉禪風背景配樂（保留語音導覽）");
+            }
+        });
+    }
+
+    // Manual Singing Bowl Chime Button
+    if (bowlBtn) {
+        bowlBtn.addEventListener('click', () => {
+            ZenSoundEngine.strikeSingingBowl(216, 0.32);
+            showToast("🔔 靜心頌缽 · 法寶初心，圓融至善");
         });
     }
 
     // Voice & Speed change
     if (voiceSelect) {
         voiceSelect.addEventListener('change', (e) => {
+            clearChimeTimer();
             const wasTourPlaying = audioTourState.isPlaying;
             const wasCardPlaying = audioTourState.isCardPlaying;
             audioTourState.voice = e.target.value;
-            showToast(`🎙️ 已切換導覽語音：${e.target.options[e.target.selectedIndex].text}`);
+            showToast(`🙏 已切換法音語韻：${e.target.options[e.target.selectedIndex].text}`);
 
             if (wasCardPlaying && audioTourState.lastCardText) {
                 stopCardAudio();
@@ -188,25 +504,37 @@ function initAudioTour() {
         });
     }
 
-    // Audio Event listeners
+    // Audio Event listeners with Temple Yinqing & Singing Bowl transitions
     audioTourState.audio.addEventListener('ended', () => {
         if (audioTourState.currentChapter < audioTourState.chapters.length - 1) {
-            selectChapter(audioTourState.currentChapter + 1, true);
+            ZenSoundEngine.strikeYinqing(1056, 0.13);
+            ZenSoundEngine.setDucking(false);
+            clearChimeTimer();
+            audioTourState.chimeAdvanceTimer = setTimeout(() => {
+                selectChapter(audioTourState.currentChapter + 1, true);
+            }, 950);
         } else {
             audioTourState.isPlaying = false;
             updatePlayButtonUI();
-            showToast("導覽已完成，感謝您的聆聽！");
+            ZenSoundEngine.strikeSingingBowl(174.6, 0.28);
+            ZenSoundEngine.setDucking(false);
+            showToast("🙏 法寶導覽圓滿，感謝您的靜心聆聽");
         }
     });
 
     audioTourState.audio.addEventListener('play', () => {
         audioTourState.isPlaying = true;
         updatePlayButtonUI();
+        if (ZenSoundEngine.bgmEnabled) {
+            ZenSoundEngine.startAmbient(true);
+        }
+        ZenSoundEngine.setDucking(true);
     });
 
     audioTourState.audio.addEventListener('pause', () => {
         audioTourState.isPlaying = false;
         updatePlayButtonUI();
+        ZenSoundEngine.setDucking(false);
     });
 
     // Button actions
@@ -219,6 +547,8 @@ function initAudioTour() {
     if (prevBtn) {
         prevBtn.addEventListener('click', () => {
             if (audioTourState.currentChapter > 0) {
+                clearChimeTimer();
+                ZenSoundEngine.strikeYinqing(1056, 0.11);
                 selectChapter(audioTourState.currentChapter - 1, true);
             }
         });
@@ -227,6 +557,8 @@ function initAudioTour() {
     if (nextBtn) {
         nextBtn.addEventListener('click', () => {
             if (audioTourState.currentChapter < audioTourState.chapters.length - 1) {
+                clearChimeTimer();
+                ZenSoundEngine.strikeYinqing(1056, 0.11);
                 selectChapter(audioTourState.currentChapter + 1, true);
             }
         });
@@ -237,6 +569,11 @@ function initAudioTour() {
     if (startTourHeroBtn) {
         startTourHeroBtn.addEventListener('click', (e) => {
             e.preventDefault();
+            clearChimeTimer();
+            ZenSoundEngine.strikeSingingBowl(216, 0.28);
+            if (ZenSoundEngine.bgmEnabled) {
+                ZenSoundEngine.startAmbient(true);
+            }
             selectChapter(0, true);
         });
     }
@@ -268,7 +605,7 @@ function selectChapter(index, autoPlay = false) {
     const chapterSelect = document.getElementById('dockChapterSelect');
     if (chapterSelect) chapterSelect.value = index;
 
-    // Load voice-specific audio file (female vs male)
+    // Load voice-specific audio file (Zen male / Zen female / Standard)
     const targetSrc = getChapterAudioUrl(ch);
     audioTourState.audio.pause();
     audioTourState.audio.src = targetSrc;
@@ -279,7 +616,6 @@ function selectChapter(index, autoPlay = false) {
             audioTourState.isPlaying = true;
             audioTourState.audio.playbackRate = audioTourState.speed;
             updatePlayButtonUI();
-            // Scroll to the corresponding section with smooth highlight
             highlightAndScrollToSection(ch.section_id);
         }).catch(err => {
             console.warn("Auto-play prevented:", err);
@@ -291,10 +627,15 @@ function selectChapter(index, autoPlay = false) {
 }
 
 function togglePlay() {
+    clearChimeTimer();
     stopCardAudio();
     if (audioTourState.isPlaying) {
         audioTourState.audio.pause();
     } else {
+        ZenSoundEngine.strikeSingingBowl(216, 0.26);
+        if (ZenSoundEngine.bgmEnabled) {
+            ZenSoundEngine.startAmbient(true);
+        }
         const ch = audioTourState.chapters[audioTourState.currentChapter];
         const expectedUrl = getChapterAudioUrl(ch);
         if (!audioTourState.audio.src || !audioTourState.audio.src.endsWith(expectedUrl)) {
@@ -314,10 +655,10 @@ function updatePlayButtonUI() {
     if (audioTourState.isPlaying) {
         playBtn.innerHTML = '⏸';
         playBtn.title = '暫停導覽';
-        playBtn.style.boxShadow = '0 0 25px #00f0ff';
+        playBtn.style.boxShadow = '0 0 25px #fbbf24';
     } else {
         playBtn.innerHTML = '▶';
-        playBtn.title = '播放導覽';
+        playBtn.title = '啟動禪韻語音導覽';
         playBtn.style.boxShadow = '0 0 15px rgba(0, 240, 255, 0.4)';
     }
 }
@@ -336,7 +677,7 @@ function highlightAndScrollToSection(sectionId) {
     }, 4500);
 }
 
-// Waveform visualizer
+// Waveform visualizer (supports Golden Lotus glow on Singing Bowl & Zen BGM)
 function initAudioVisualizer() {
     const canvas = document.getElementById('audioWaveCanvas');
     if (!canvas) return;
@@ -351,23 +692,34 @@ function initAudioVisualizer() {
         const height = canvas.height;
         const mid = height / 2;
         
+        if (ZenSoundEngine.bowlVisualEnergy > 0.01) {
+            ZenSoundEngine.bowlVisualEnergy *= 0.965;
+        } else {
+            ZenSoundEngine.bowlVisualEnergy = 0;
+        }
+
+        const isSpeaking = audioTourState.isPlaying || audioTourState.isCardPlaying;
+        const isAmbient = ZenSoundEngine.isAmbientPlaying;
+        const bowlBoost = ZenSoundEngine.bowlVisualEnergy * 11;
+
         ctx.beginPath();
         ctx.moveTo(0, mid);
         
-        const activeWave = audioTourState.isPlaying || audioTourState.isCardPlaying;
-        const amplitude = activeWave ? 10 : 2;
-        const speed = activeWave ? 0.15 : 0.03;
+        const amplitude = (isSpeaking ? 9 : (isAmbient ? 4.5 : 1.8)) + bowlBoost;
+        const speed = isSpeaking ? 0.11 : (isAmbient ? 0.05 : 0.025);
         waveOffset += speed;
 
         for (let x = 0; x < width; x++) {
-            const y = mid + Math.sin(x * 0.05 + waveOffset) * amplitude * Math.sin(x * 0.02);
+            const y = mid + Math.sin(x * 0.045 + waveOffset) * amplitude * Math.sin((x / width) * Math.PI);
             ctx.lineTo(x, y);
         }
         
-        ctx.strokeStyle = activeWave ? '#00f0ff' : 'rgba(255, 255, 255, 0.2)';
+        const isZenGolden = ZenSoundEngine.bowlVisualEnergy > 0.15 || (isAmbient && audioTourState.voice.startsWith('zen'));
+        const strokeColor = isZenGolden ? '#fbbf24' : (isSpeaking ? '#00f0ff' : 'rgba(255, 255, 255, 0.22)');
+        ctx.strokeStyle = strokeColor;
         ctx.lineWidth = 2;
-        ctx.shadowColor = activeWave ? '#00f0ff' : 'transparent';
-        ctx.shadowBlur = activeWave ? 8 : 0;
+        ctx.shadowColor = (isSpeaking || isAmbient || bowlBoost > 1) ? strokeColor : 'transparent';
+        ctx.shadowBlur = (isSpeaking || isAmbient || bowlBoost > 1) ? 9 : 0;
         ctx.stroke();
         
         requestAnimationFrame(drawWave);
@@ -379,6 +731,7 @@ function initAudioVisualizer() {
 window.readAloudText = function(text, btnElement) {
     if (!text) return;
     
+    clearChimeTimer();
     stopCardAudio();
     audioTourState.lastCardText = text;
     audioTourState.lastCardBtn = btnElement || null;
@@ -388,13 +741,18 @@ window.readAloudText = function(text, btnElement) {
         audioTourState.voice = voiceSelect.value;
     }
 
+    ZenSoundEngine.strikeYinqing(1056, 0.11);
+    if (ZenSoundEngine.bgmEnabled) {
+        ZenSoundEngine.startAmbient(true);
+    }
+
     const originalText = btnElement ? btnElement.innerHTML : '';
     if (btnElement) {
-        btnElement.innerHTML = '⏳ 語音生成中...';
+        btnElement.innerHTML = '⏳ 法音生成中...';
         btnElement.disabled = true;
     }
     
-    const voice = audioTourState.voice || 'zh-TW-HsiaoChenNeural';
+    const voice = audioTourState.voice || 'zen-male';
     const url = `/api/tts?text=${encodeURIComponent(text)}&voice=${encodeURIComponent(voice)}`;
     
     fetch(url)
@@ -405,18 +763,26 @@ window.readAloudText = function(text, btnElement) {
                 btnElement.disabled = false;
             }
             if (data.url) {
-                // Pause main tour if playing
                 if (audioTourState.isPlaying) {
                     audioTourState.audio.pause();
                 }
                 const speechAudio = new Audio(data.url);
                 speechAudio.playbackRate = audioTourState.speed || 1.0;
                 audioTourState.cardAudio = speechAudio;
-                speechAudio.addEventListener('play', () => { audioTourState.isCardPlaying = true; });
-                speechAudio.addEventListener('ended', () => { audioTourState.isCardPlaying = false; });
-                speechAudio.addEventListener('pause', () => { audioTourState.isCardPlaying = false; });
+                speechAudio.addEventListener('play', () => {
+                    audioTourState.isCardPlaying = true;
+                    ZenSoundEngine.setDucking(true);
+                });
+                speechAudio.addEventListener('ended', () => {
+                    audioTourState.isCardPlaying = false;
+                    ZenSoundEngine.setDucking(false);
+                });
+                speechAudio.addEventListener('pause', () => {
+                    audioTourState.isCardPlaying = false;
+                    ZenSoundEngine.setDucking(false);
+                });
                 speechAudio.play();
-                showToast("🎙️ 正在為您語音朗讀內容...");
+                showToast("🪷 正在為您靜心朗讀內容...");
             } else {
                 showToast("語音合成失敗，請稍後重試");
             }
