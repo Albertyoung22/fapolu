@@ -21,6 +21,11 @@ static/audio/cache/
 data/public_url.txt
 data/admin_config.json
 data/inquiries.json
+data/*.db
+data/*.db-journal
+*.db
+*.sqlite
+*.sqlite3
 crash_log.txt
 test_speech.mp3
 *.log

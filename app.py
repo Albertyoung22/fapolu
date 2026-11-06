@@ -41,9 +41,13 @@ SPECS_PATH = os.path.join(BASE_DIR, 'data', 'inventory_specs.json')
 with open(DATA_PATH, 'r', encoding='utf-8') as f:
     SITE_DATA = json.load(f)
 
+import db
+
 try:
-    with open(SPECS_PATH, 'r', encoding='utf-8') as f:
-        INVENTORY_DATA = json.load(f)
+    INVENTORY_DATA = db.get_all_specs()
+    if not INVENTORY_DATA:
+        with open(SPECS_PATH, 'r', encoding='utf-8') as f:
+            INVENTORY_DATA = json.load(f)
 except Exception:
     INVENTORY_DATA = []
 
@@ -364,6 +368,13 @@ def _normalize_inquiry(item):
 
 
 def load_inquiries():
+    try:
+        items = db.get_all_inquiries()
+        if items:
+            return items
+    except Exception:
+        pass
+
     with INQUIRIES_LOCK:
         if not os.path.exists(INQUIRIES_FILE):
             return []
@@ -376,13 +387,27 @@ def load_inquiries():
 
 
 def save_inquiries(items):
+    try:
+        for it in items:
+            db.add_inquiry(it)
+    except Exception:
+        pass
+
     with INQUIRIES_LOCK:
         os.makedirs(os.path.dirname(INQUIRIES_FILE), exist_ok=True)
-        with open(INQUIRIES_FILE, 'w', encoding='utf-8') as f:
-            json.dump(items, f, ensure_ascii=False, indent=2)
+        try:
+            with open(INQUIRIES_FILE, 'w', encoding='utf-8') as f:
+                json.dump(items, f, ensure_ascii=False, indent=2)
+        except Exception:
+            pass
 
 
-def _next_ticket_id(items):
+def _next_ticket_id(items=None):
+    try:
+        return db.next_ticket_id()
+    except Exception:
+        pass
+    items = items or []
     max_num = 1000
     for item in items:
         raw_id = str(item.get('id', ''))
@@ -573,15 +598,145 @@ def api_admin_update_inquiry(ticket_id):
     return jsonify({"success": True, "item": updated})
 
 
+@app.route('/api/admin/inquiries', methods=['POST'])
+@admin_required
+def api_admin_create_inquiry():
+    raw = request.json or {}
+    now_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    item = {
+        "id": db.next_ticket_id(),
+        "companyName": str(raw.get('companyName', '')).strip(),
+        "contactPerson": str(raw.get('contactPerson', '')).strip(),
+        "contactPhone": str(raw.get('contactPhone', '')).strip(),
+        "contactEmail": str(raw.get('contactEmail', '')).strip(),
+        "inquiryMaterial": str(raw.get('inquiryMaterial', '')).strip(),
+        "inquiryMessage": str(raw.get('inquiryMessage', '')).strip(),
+        "drawingUrl": str(raw.get('drawingUrl', '')).strip(),
+        "timestamp": now_str,
+        "updatedAt": now_str,
+        "status": str(raw.get('status', 'pending')).strip() or 'pending',
+        "branch": str(raw.get('branch', '未指派')).strip() or '未指派',
+        "adminNote": str(raw.get('adminNote', '')).strip(),
+        "emailSent": False
+    }
+    saved = db.add_inquiry(item)
+    return jsonify({"success": True, "item": saved, "message": "詢價單已成功手動建立！"})
+
+
 @app.route('/api/admin/inquiries/<ticket_id>', methods=['DELETE'])
 @admin_required
 def api_admin_delete_inquiry(ticket_id):
+    db.delete_inquiry(ticket_id)
     items = load_inquiries()
     new_items = [i for i in items if i.get('id') != ticket_id]
-    if len(new_items) == len(items):
-        return jsonify({"success": False, "error": "找不到該筆詢價單"}), 404
-    save_inquiries(new_items)
-    return jsonify({"success": True})
+    try:
+        with open(INQUIRIES_FILE, 'w', encoding='utf-8') as f:
+            json.dump(new_items, f, ensure_ascii=False, indent=2)
+    except Exception:
+        pass
+    return jsonify({"success": True, "message": "詢價單已成功刪除"})
+
+
+# ==========================================================================
+#  Specs CRUD APIs (/api/admin/specs)
+# ==========================================================================
+
+@app.route('/api/admin/specs', methods=['GET', 'POST'])
+@admin_required
+def api_admin_specs():
+    global INVENTORY_DATA
+    if request.method == 'POST':
+        data = request.json or {}
+        mat = str(data.get('material', '')).strip()
+        dim = str(data.get('dimension', '')).strip()
+        if not mat and not dim:
+            return jsonify({"success": False, "error": "請至少填寫材質或規格尺寸"}), 400
+
+        new_spec = db.add_spec(data)
+        INVENTORY_DATA = db.get_all_specs()
+        # Backup to JSON
+        try:
+            with open(SPECS_PATH, 'w', encoding='utf-8') as f:
+                json.dump(INVENTORY_DATA, f, ensure_ascii=False, indent=2)
+        except Exception:
+            pass
+        return jsonify({"success": True, "item": new_spec, "message": "現貨規格已成功新增！"})
+
+    # GET Specs list with pagination
+    q = request.args.get('q', '').strip().lower()
+    cat = request.args.get('category', '').strip()
+    group = request.args.get('group', '').strip()
+
+    results = INVENTORY_DATA
+    if group in ('stock', 'mold'):
+        results = [x for x in results if x.get('group') == group]
+    if cat and cat != '全部':
+        results = [x for x in results if x.get('category') == cat]
+    if q:
+        results = [
+            x for x in results
+            if q in str(x.get('material', '')).lower()
+            or q in str(x.get('dimension', '')).lower()
+            or q in str(x.get('size', '')).lower()
+            or q in str(x.get('note', '')).lower()
+            or q in str(x.get('category', '')).lower()
+            or q == str(x.get('no', '')).lower()
+            or q == str(x.get('id', '')).lower()
+        ]
+
+    try:
+        page = max(1, int(request.args.get('page', 1)))
+        per_page = max(10, min(100, int(request.args.get('per_page', 25))))
+    except ValueError:
+        page = 1
+        per_page = 25
+
+    total = len(results)
+    start = (page - 1) * per_page
+    paginated = results[start:start + per_page]
+    categories = sorted(list(set(x['category'] for x in INVENTORY_DATA if x.get('category'))))
+
+    return jsonify({
+        "success": True,
+        "total": total,
+        "page": page,
+        "per_page": per_page,
+        "total_pages": (total + per_page - 1) // per_page,
+        "categories": categories,
+        "items": paginated
+    })
+
+
+@app.route('/api/admin/specs/<int:spec_id>', methods=['PUT', 'DELETE'])
+@admin_required
+def api_admin_spec_detail(spec_id):
+    global INVENTORY_DATA
+    if request.method == 'DELETE':
+        ok = db.delete_spec(spec_id)
+        if not ok:
+            return jsonify({"success": False, "error": "找不到該筆規格或已被刪除"}), 404
+        INVENTORY_DATA = db.get_all_specs()
+        # Backup to JSON
+        try:
+            with open(SPECS_PATH, 'w', encoding='utf-8') as f:
+                json.dump(INVENTORY_DATA, f, ensure_ascii=False, indent=2)
+        except Exception:
+            pass
+        return jsonify({"success": True, "message": "規格已成功自資料庫刪除"})
+
+    # PUT: Edit
+    data = request.json or {}
+    updated = db.update_spec(spec_id, data)
+    if not updated:
+        return jsonify({"success": False, "error": "找不到該筆規格"}), 404
+    INVENTORY_DATA = db.get_all_specs()
+    # Backup to JSON
+    try:
+        with open(SPECS_PATH, 'w', encoding='utf-8') as f:
+            json.dump(INVENTORY_DATA, f, ensure_ascii=False, indent=2)
+    except Exception:
+        pass
+    return jsonify({"success": True, "item": updated, "message": "規格已成功儲存更新！"})
 
 
 @app.route('/api/admin/inquiries/<ticket_id>/resend-email', methods=['POST'])
