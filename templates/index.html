@@ -2,13 +2,13 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>法寶實業有限公司 | FAPO ENTERPRISE - 全方位鋁合金材料供應鏈與精密加工整合首選</title>
     <meta name="description" content="法寶實業有限公司創立於1986年，深耕台灣近40年。專營日本UACJ 5052貼膜鋁板、7075航太鋁、6061、5083船用鋁板、各式鋁擠型現貨規格與CNC精密加工、五軸聯動與大型龍門銑削一站式服務。">
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪷</text></svg>">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='4.0') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='5.0') }}">
 </head>
 <body>
 
@@ -35,13 +35,35 @@
                 <li><a href="#contact" class="nav-item">聯絡諮詢</a></li>
             </ul>
             <div class="nav-actions">
-                <button id="tunnelShareBtn" class="btn btn-audio" onclick="openTunnelModal()">
+                <button id="tunnelShareBtn" class="btn btn-audio nav-share-desktop" onclick="openTunnelModal()">
                     🌐 外網分享
                 </button>
-                <a href="#contact" class="btn btn-primary">立即詢價</a>
+                <a href="#contact" class="btn btn-primary nav-cta-btn">立即詢價</a>
+                <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="開啟導覽選單">☰</button>
             </div>
         </div>
     </header>
+
+    <!-- Mobile Slide-Down Navigation Drawer -->
+    <div id="mobileNavOverlay" class="mobile-nav-overlay">
+        <nav class="mobile-nav-drawer">
+            <div class="mobile-nav-grid">
+                <a href="#network" class="mobile-nav-link">📍 全台服務據點</a>
+                <a href="#products" class="mobile-nav-link">✨ 精選旗艦材料</a>
+                <a href="#specs" class="mobile-nav-link">📦 現貨規格檢索</a>
+                <a href="#machining" class="mobile-nav-link">⚙️ 精密加工能量</a>
+                <a href="#cases" class="mobile-nav-link">🏆 半導體航太實績</a>
+                <a href="#tech" class="mobile-nav-link">📐 硬度換算辭典</a>
+                <a href="#contact" class="mobile-nav-link">📋 線上圖面詢價</a>
+                <a href="/admin" class="mobile-nav-link">🔐 業務詢價後台</a>
+            </div>
+            <div class="mobile-nav-footer">
+                <button class="btn btn-outline" style="width:100%; justify-content:center;" onclick="closeMobileMenu(); openTunnelModal();">
+                    🌐 查看 / 複製公開分享網址
+                </button>
+            </div>
+        </nav>
+    </div>
 
     <!-- Main Content -->
     <main>
@@ -561,38 +583,48 @@
     <!-- ==========================================================================
          Floating Edge-TTS Audio Tour Player Dock
          ========================================================================== -->
-    <div class="audio-dock">
-        <div class="dock-left">
-            <button id="dockPlayBtn" class="btn-play-dock" title="播放沉浸導覽">
-                ▶
-            </button>
-            <div class="dock-track-info">
-                <span class="track-badge">🎙️ 語音導覽導聆</span>
-                <span id="dockTrackTitle" class="track-title">法寶實業 · 企業簡介</span>
+    <div id="audioDock" class="audio-dock">
+        <div class="dock-main-bar">
+            <div class="dock-left">
+                <button id="dockPlayBtn" class="btn-play-dock" title="播放沉浸導覽">
+                    ▶
+                </button>
+                <div class="dock-track-info">
+                    <span class="track-badge">🪷 法音導覽</span>
+                    <span id="dockTrackTitle" class="track-title">法寶實業 · 企業簡介</span>
+                </div>
+            </div>
+
+            <div class="dock-visualizer">
+                <canvas id="audioWaveCanvas" width="200" height="32"></canvas>
+            </div>
+
+            <div class="dock-quick-actions">
+                <button id="dockZenBgmBtn" class="btn-zen-pill active" title="開關禪風頌缽古琴背景配樂">
+                    🪷 <span class="zen-label-txt">禪樂</span>
+                </button>
+
+                <button id="dockBowlBtn" class="btn-dock-icon btn-bowl-chime" title="敲擊靜心頌缽">
+                    🔔
+                </button>
+
+                <button id="dockMoreBtn" class="btn-dock-more" title="展開音韻與章節設定">
+                    音韻 ▴
+                </button>
             </div>
         </div>
 
-        <div class="dock-visualizer">
-            <canvas id="audioWaveCanvas" width="240" height="32"></canvas>
-        </div>
-
-        <div class="dock-controls">
-            <button id="dockPrevBtn" class="btn-dock-icon" title="上一章節">⏮</button>
-            <button id="dockNextBtn" class="btn-dock-icon" title="下一章節">⏭</button>
+        <div id="dockExpandable" class="dock-expandable">
+            <div class="dock-step-btns">
+                <button id="dockPrevBtn" class="btn-dock-icon" title="上一章節">⏮</button>
+                <button id="dockNextBtn" class="btn-dock-icon" title="下一章節">⏭</button>
+            </div>
             
             <div class="dock-chapter-select">
-                <select id="dockChapterSelect" class="chip">
+                <select id="dockChapterSelect">
                     <!-- Populated by JS -->
                 </select>
             </div>
-
-            <button id="dockZenBgmBtn" class="btn-zen-pill active" title="開關禪風頌缽古琴背景配樂">
-                🪷 禪樂
-            </button>
-
-            <button id="dockBowlBtn" class="btn-dock-icon btn-bowl-chime" title="敲擊靜心頌缽">
-                🔔
-            </button>
 
             <div class="dock-voice-select">
                 <select id="dockVoiceSelect">
@@ -659,7 +691,7 @@
         window.SITE_DATA = {{ data | tojson }};
     </script>
     <!-- Main Interactive Script -->
-    <script src="{{ url_for('static', filename='js/main.js', v='4.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v='5.0') }}"></script>
 </body>
 </html>
 

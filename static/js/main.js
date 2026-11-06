@@ -11,7 +11,49 @@ document.addEventListener('DOMContentLoaded', () => {
     initContactForm();
     initScrollSpy();
     initProductFilters();
+    initMobileUI();
 });
+
+window.closeMobileMenu = function() {
+    const overlay = document.getElementById('mobileNavOverlay');
+    const menuBtn = document.getElementById('mobileMenuBtn');
+    if (overlay) overlay.classList.remove('open');
+    if (menuBtn) menuBtn.textContent = '☰';
+};
+
+function initMobileUI() {
+    const menuBtn = document.getElementById('mobileMenuBtn');
+    const overlay = document.getElementById('mobileNavOverlay');
+    if (menuBtn && overlay) {
+        menuBtn.addEventListener('click', () => {
+            const isOpen = overlay.classList.toggle('open');
+            menuBtn.textContent = isOpen ? '✕' : '☰';
+        });
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) window.closeMobileMenu();
+        });
+        overlay.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => window.closeMobileMenu());
+        });
+    }
+
+    // Mobile Audio Dock Expandable Controls Toggle
+    const dock = document.getElementById('audioDock');
+    const moreBtn = document.getElementById('dockMoreBtn');
+    if (dock && moreBtn) {
+        moreBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isExp = dock.classList.toggle('expanded');
+            moreBtn.textContent = isExp ? '收合 ▾' : '音韻 ▴';
+        });
+        document.addEventListener('click', (e) => {
+            if (dock.classList.contains('expanded') && !dock.contains(e.target)) {
+                dock.classList.remove('expanded');
+                moreBtn.textContent = '音韻 ▴';
+            }
+        });
+    }
+}
 
 /* ==========================================================================
    1. Ink-Wash Mountain Mist & Golden Bodhi Light Canvas
@@ -22,28 +64,44 @@ function initLatticeCanvas() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
 
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
+    let width = window.innerWidth;
+    let height = window.innerHeight;
 
-    window.addEventListener('resize', () => {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-    });
+    function resizeCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
     const mouse = { x: width * 0.5, y: height * 0.4, radius: 140 };
     const ripples = [];
     let lastRippleTime = 0;
 
-    window.addEventListener('mousemove', (e) => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
+    function addRipple(x, y) {
         const now = performance.now();
         if (now - lastRippleTime > 260) {
             lastRippleTime = now;
-            ripples.push({ x: e.clientX, y: e.clientY, r: 4, alpha: 0.24 });
+            ripples.push({ x, y, r: 4, alpha: 0.24 });
             if (ripples.length > 8) ripples.shift();
         }
+    }
+
+    window.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+        addRipple(e.clientX, e.clientY);
     });
+
+    window.addEventListener('touchstart', (e) => {
+        if (e.touches && e.touches[0]) {
+            addRipple(e.touches[0].clientX, e.touches[0].clientY);
+        }
+    }, { passive: true });
 
     // Drifting mountain mist clouds
     const mists = Array.from({ length: 5 }, (_, i) => ({
@@ -954,15 +1012,15 @@ function initSpecsExplorer() {
                 }
 
                 tableBody.innerHTML = data.items.map((item, idx) => `
-                    <tr>
-                        <td style="color: var(--accent-cinnabar); font-weight:700;">#${(data.page - 1) * 20 + idx + 1}</td>
-                        <td><span style="font-weight:700; color:var(--text-main);">${item.category}</span></td>
-                        <td><span class="chip" style="color:var(--accent-amber); font-weight:700;">${item.material}</span></td>
-                        <td style="font-weight:600; color:var(--text-main);">${item.dimension || '-'}</td>
-                        <td>${item.size || '-'}</td>
-                        <td>
+                    <tr class="spec-row-item">
+                        <td data-label="編號" style="color: var(--accent-cinnabar); font-weight:700;">#${(data.page - 1) * 20 + idx + 1}</td>
+                        <td data-label="類別"><span style="font-weight:700; color:var(--text-main);">${item.category}</span></td>
+                        <td data-label="材質"><span class="chip" style="color:var(--accent-amber); font-weight:700;">${item.material}</span></td>
+                        <td data-label="規格" style="font-weight:600; color:var(--text-main);">${item.dimension || '-'}</td>
+                        <td data-label="尺寸">${item.size || '-'}</td>
+                        <td data-label="庫存" class="spec-action-cell">
                             ${item.note ? `<span class="badge-stock">${item.note}</span>` : '<span class="badge-stock">現貨庫存</span>'}
-                            <button class="btn-outline" style="padding:2px 8px; font-size:0.75rem; margin-left:8px;" onclick="addSpecToQuote('${item.material} ${item.dimension} ${item.size}')">詢價</button>
+                            <button class="btn-outline spec-quote-btn" style="padding:4px 12px; font-size:0.78rem; margin-left:8px; border-radius:6px;" onclick="addSpecToQuote('${item.material} ${item.dimension} ${item.size}')">加入詢價</button>
                         </td>
                     </tr>
                 `).join('');

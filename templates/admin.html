@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>法寶實業有限公司 | 詢價單管理後台 (RFQ Admin CRM)</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪷</text></svg>">
     <style>
@@ -436,9 +436,86 @@
         }
         .toast.show { opacity: 1; transform: translateY(0); }
 
-        @media (max-width: 680px) {
-            .detail-grid { grid-template-columns: 1fr; }
-            .topbar { padding: 12px 16px; }
+        @media (max-width: 768px) {
+            .login-wrap { padding: 16px; }
+            .login-card { padding: 26px 20px; }
+            .topbar { padding: 12px 14px; gap: 10px; }
+            .topbar-actions { width: 100%; gap: 6px; }
+            .topbar-actions .btn { padding: 6px 10px; font-size: 0.8rem; }
+            .smtp-pill { width: 100%; justify-content: center; font-size: 0.78rem; }
+            .container { padding: 16px 14px 48px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+            .stat-card { padding: 14px; }
+            .stat-label { font-size: 0.76rem; }
+            .stat-value { font-size: 1.55rem; }
+            .toolbar { padding: 12px; gap: 10px; }
+            .filter-chips {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                width: 100%;
+                padding-bottom: 4px;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+            .filter-chips::-webkit-scrollbar { display: none; }
+            .chip { flex-shrink: 0; white-space: nowrap; }
+            .search-group {
+                min-width: 0;
+                max-width: none;
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            #branchFilter { width: 100% !important; }
+            .input-control { font-size: 16px; }
+
+            /* Mobile CRM Card Layout for Inquiries */
+            .table-card {
+                background: transparent;
+                border: none;
+                box-shadow: none;
+                overflow-x: visible;
+            }
+            table { min-width: 0; display: block; }
+            thead { display: none; }
+            tbody { display: flex; flex-direction: column; gap: 12px; }
+            tbody tr.inq-row {
+                display: grid;
+                grid-template-columns: 1fr auto;
+                gap: 8px 10px;
+                background: #fffdf8;
+                border: 1px solid var(--border-subtle);
+                border-radius: var(--radius-md);
+                padding: 14px 15px;
+                box-shadow: 0 4px 14px rgba(60, 48, 28, 0.06);
+            }
+            tbody tr.inq-row td {
+                padding: 0;
+                border: none;
+                font-size: 0.88rem;
+            }
+            tbody tr.inq-row td:nth-child(1) { order: 1; }
+            tbody tr.inq-row td:nth-child(6) { order: 2; text-align: right; }
+            tbody tr.inq-row td:nth-child(2) { order: 3; grid-column: 1 / -1; }
+            tbody tr.inq-row td:nth-child(3) { order: 4; grid-column: 1 / -1; }
+            tbody tr.inq-row td:nth-child(4) { order: 5; grid-column: 1 / -1; background: rgba(235, 227, 210, 0.45); padding: 8px 10px; border-radius: 8px; }
+            tbody tr.inq-row td:nth-child(5) { order: 6; align-self: center; }
+            tbody tr.inq-row td:nth-child(7) { order: 7; text-align: right; align-self: center; }
+            tbody tr.inq-row td:nth-child(8) {
+                order: 8;
+                grid-column: 1 / -1;
+                display: flex;
+                justify-content: flex-end;
+                padding-top: 8px;
+                margin-top: 2px;
+                border-top: 1px dashed var(--border-subtle);
+            }
+            .msg-preview { max-width: 100%; }
+
+            .detail-grid { grid-template-columns: 1fr; gap: 10px; }
+            .modal-backdrop { padding: 12px; }
+            .modal-box { padding: 20px 16px; max-height: 92vh; }
+            .toast { left: 14px; right: 14px; bottom: 16px; text-align: center; }
         }
     </style>
 </head>
@@ -540,7 +617,7 @@
             <div>
                 ⚠️ <b>雲端環境提醒：</b>目前運行於 Render 伺服器，免費方案休眠重啟時會重置本地暫存檔。建議點擊右側按鈕設定 <b>Email (SMTP) 即時通知</b>（或於 Render 後台設定環境變數 <code>SMTP_USER</code> / <code>SMTP_PASS</code> / <code>NOTIFY_EMAIL</code>），新單送出即刻寄達業務信箱不漏單！
             </div>
-            <button class="btn btn-sm" style="border-color:#fbbf24;color:#fbbf24;" onclick="openSettingsModal()">立即設定 Email 通知</button>
+            <button class="btn btn-sm" style="border-color:#a85814;color:#8a480d;" onclick="openSettingsModal()">立即設定 Email 通知</button>
         </div>
 
         <!-- KPI Stats -->
@@ -631,15 +708,15 @@
                 </div>
                 <div class="info-block">
                     <div class="lbl">聯絡電話 / 手機</div>
-                    <div class="val"><a id="mPhoneLink" href="#" style="color: #38bdf8; font-weight: 600;"></a></div>
+                    <div class="val"><a id="mPhoneLink" href="#" style="color: #2b547e; font-weight: 700;"></a></div>
                 </div>
                 <div class="info-block">
                     <div class="lbl">電子郵件</div>
-                    <div class="val"><a id="mEmailLink" href="#" style="color: #38bdf8;"></a></div>
+                    <div class="val"><a id="mEmailLink" href="#" style="color: #2b547e; font-weight: 600;"></a></div>
                 </div>
                 <div class="info-block full">
                     <div class="lbl">材料型號與規格需求</div>
-                    <div class="val" id="mMaterial" style="color: #fbbf24; font-weight: 700;"></div>
+                    <div class="val" id="mMaterial" style="color: #a62c22; font-weight: 700;"></div>
                 </div>
                 <div class="info-block full">
                     <div class="lbl">需求數量、加工說明與備註</div>
@@ -846,16 +923,16 @@
             tbody.innerHTML = filtered.map(item => {
                 const st = statusMap[item.status] || statusMap.pending;
                 const emailIcon = item.emailSent
-                    ? '<span style="color:#34d399;font-size:0.82rem;">✓ 已寄出</span>'
+                    ? '<span style="color:#21573f;font-size:0.82rem;font-weight:600;">✓ 已寄出</span>'
                     : (item.emailError
-                        ? `<span style="color:#fb7185;font-size:0.8rem;" title="${escapeHtml(item.emailError)}">⚠ 失敗</span>`
+                        ? `<span style="color:#b42318;font-size:0.8rem;font-weight:600;" title="${escapeHtml(item.emailError)}">⚠ 失敗</span>`
                         : '<span style="color:var(--text-muted);font-size:0.8rem;">—</span>');
                 const noteHtml = item.adminNote
                     ? `<div class="note-preview">📝 ${escapeHtml(item.adminNote)}</div>`
                     : '';
 
                 return `
-                    <tr onclick="openDetailModal('${escapeHtml(item.id)}')">
+                    <tr class="inq-row" onclick="openDetailModal('${escapeHtml(item.id)}')">
                         <td>
                             <div class="ticket-id">${escapeHtml(item.id)}</div>
                             <div class="time-sub">${escapeHtml(item.timestamp)}</div>
@@ -873,7 +950,7 @@
                             <div class="msg-preview">${escapeHtml(item.inquiryMessage || '')}</div>
                             ${noteHtml}
                         </td>
-                        <td><span style="font-size:0.84rem;color:var(--text-dim);">${escapeHtml(item.branch || '未指派')}</span></td>
+                        <td><span style="font-size:0.84rem;color:var(--text-dim);">📍 ${escapeHtml(item.branch || '未指派')}</span></td>
                         <td><span class="badge ${st.cls}">${st.text}</span></td>
                         <td>${emailIcon}</td>
                         <td onclick="event.stopPropagation()">
