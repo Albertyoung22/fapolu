@@ -68,7 +68,7 @@ def main():
     # Check if there is an icon
     icon_path = None
     possible_icons = [
-        os.path.join(os.path.dirname(__file__), 'static', 'img_crawled', 'pro_1.jpg')
+        os.path.join(os.path.dirname(__file__), 'static', 'img_crawled', 'fapo_logo.png')
     ]
     for p in possible_icons:
         if os.path.exists(p):

@@ -222,25 +222,15 @@ button {
   min-width: 0;
 }
 
-/* 傳統朱砂篆刻方印風格 */
-.logo-badge {
-  width: 46px;
-  height: 46px;
-  border-radius: 6px;
-  background: linear-gradient(135deg, #b83227, #8f2118);
-  outline: 1.5px solid rgba(255, 245, 235, 0.7);
-  outline-offset: -4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-serif);
-  font-weight: 900;
-  font-size: 0.94rem;
-  letter-spacing: 1px;
-  color: #fffaf2;
-  box-shadow: 0 4px 14px var(--accent-cinnabar-glow);
+/* 法寶實業官方圓形金框藍底 AL 企業標誌 */
+.logo-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: contain;
+  display: block;
   flex-shrink: 0;
-  white-space: nowrap;
+  filter: drop-shadow(0 3px 8px rgba(45, 34, 16, 0.18));
 }
 
 .logo-text h1 {
@@ -2131,7 +2121,7 @@ button {
   .navbar { height: auto; min-height: 58px; padding: 8px 0; }
   .mobile-nav-overlay { top: 58px; }
   .logo-group { gap: 8px; flex: 1; min-width: 0; }
-  .logo-badge { width: 34px; height: 34px; font-size: 0.76rem; outline-offset: -3px; }
+  .logo-img { width: 36px; height: 36px; }
   .logo-text h1 {
     font-size: clamp(0.92rem, 4.2vw, 1.05rem);
     letter-spacing: 0.5px;

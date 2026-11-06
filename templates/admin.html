@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>法寶實業有限公司 | 詢價單管理後台 (RFQ Admin CRM)</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪷</text></svg>">
+    <link rel="icon" type="image/png" href="/static/img_crawled/favicon.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&display=swap');
         :root {
@@ -102,21 +102,13 @@
             gap: 12px;
             margin-bottom: 24px;
         }
-        .logo-badge {
+        .logo-img {
             width: 46px;
             height: 46px;
-            border-radius: 6px;
-            background: linear-gradient(135deg, #b83227, #8f2118);
-            outline: 1.5px solid rgba(255, 245, 235, 0.7);
-            outline-offset: -4px;
-            color: #fffaf2;
-            font-family: var(--font-serif);
-            font-weight: 900;
-            font-size: 0.94rem;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 50%;
+            object-fit: contain;
+            flex-shrink: 0;
+            filter: drop-shadow(0 3px 8px rgba(45, 34, 16, 0.18));
         }
         .form-group { margin-bottom: 16px; }
         .form-group label {
@@ -528,7 +520,7 @@
     <div class="login-wrap">
         <div class="login-card">
             <div class="brand-row">
-                <div class="logo-badge">法寶</div>
+                <img src="/static/img_crawled/fapo_logo.png" alt="法寶實業 LOGO" class="logo-img">
                 <div>
                     <h2 style="font-size: 1.2rem; font-weight: 800;">法寶實業 · 詢價管理後台</h2>
                     <p style="font-size: 0.78rem; color: var(--text-muted);">FAPO ENTERPRISE RFQ ADMIN</p>
@@ -592,7 +584,7 @@
          ===================================================================== -->
     <header class="topbar">
         <div class="brand-row" style="margin-bottom: 0;">
-            <div class="logo-badge">法寶</div>
+            <img src="/static/img_crawled/fapo_logo.png" alt="法寶實業 LOGO" class="logo-img">
             <div>
                 <h1 style="font-size: 1.1rem; font-weight: 800;">法寶實業 · 客戶詢價管理後台</h1>
                 <p style="font-size: 0.76rem; color: var(--text-muted);">北中南業務報價追蹤與 Email 即時通知中心</p>
