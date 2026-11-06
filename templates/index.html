@@ -122,7 +122,7 @@
                 <li><a href="/specs" data-nav-page="specs" class="nav-item {% if active_page == 'specs' %}active{% endif %}">現貨規格</a></li>
                 <li><a href="/machining" data-nav-page="machining" class="nav-item {% if active_page == 'machining' %}active{% endif %}">精密加工</a></li>
                 <li><a href="/cases" data-nav-page="cases" class="nav-item {% if active_page == 'cases' %}active{% endif %}">代表實績</a></li>
-                <li><a href="/tech" data-nav-page="tech" class="nav-item {% if active_page == 'tech' %}active{% endif %}">技術硬度</a></li>
+                <li><a href="/tech" data-nav-page="tech" class="nav-item {% if active_page == 'tech' %}active{% endif %}">技術知識庫</a></li>
                 <li><a href="/contact" data-nav-page="contact" class="nav-item {% if active_page == 'contact' %}active{% endif %}">聯絡諮詢</a></li>
             </ul>
             <div class="nav-actions">
@@ -149,7 +149,7 @@
                 <a href="/specs" data-nav-page="specs" class="mobile-nav-link {% if active_page == 'specs' %}active{% endif %}">📦 現貨規格檢索</a>
                 <a href="/machining" data-nav-page="machining" class="mobile-nav-link {% if active_page == 'machining' %}active{% endif %}">⚙️ 精密加工能量</a>
                 <a href="/cases" data-nav-page="cases" class="mobile-nav-link {% if active_page == 'cases' %}active{% endif %}">🏆 代表實績案例</a>
-                <a href="/tech" data-nav-page="tech" class="mobile-nav-link {% if active_page == 'tech' %}active{% endif %}">📐 硬度換算辭典</a>
+                <a href="/tech" data-nav-page="tech" class="mobile-nav-link {% if active_page == 'tech' %}active{% endif %}">📚 鋁材工程知識庫</a>
                 <a href="/contact" data-nav-page="contact" class="mobile-nav-link {% if active_page == 'contact' %}active{% endif %}">📋 線上圖面詢價</a>
                 <a href="/admin" class="mobile-nav-link mobile-nav-admin">🔐 進入業務詢價管理後台 (CRM)</a>
             </div>
@@ -784,6 +784,43 @@
                     {% endfor %}
                 </div>
                 {% endif %}
+
+                <!-- 廠內設備加工極限能力與精密公差標註矩陣 (Tolerance & Equipment Capabilities Matrix) -->
+                {% if data.machining_tolerance_matrix %}
+                <div class="tolerance-matrix-block glass-card">
+                    <div class="tech-subhead">
+                        <h3><span>📐</span> 廠內設備加工極限能力與精密公差規範矩陣</h3>
+                        <p>嚴格遵循 DIN ISO 2768-m 精密級公差與航太低應力加工規範，支援大行程鋸切、五軸銑削與表面雙面貼膜保護：</p>
+                    </div>
+                    <div class="tolerance-grid">
+                        {% for eq in data.machining_tolerance_matrix %}
+                        <div class="tolerance-card">
+                            <h4 class="tolerance-title">{{ eq.equipment }}</h4>
+                            <div class="tolerance-specs">
+                                <div class="spec-row">
+                                    <span class="spec-label">最大加工能力：</span>
+                                    <span class="spec-val hl">{{ eq.max_thickness }}</span>
+                                </div>
+                                <div class="spec-row">
+                                    <span class="spec-label">規格行程範圍：</span>
+                                    <span class="spec-val">{{ eq.max_capacity }}</span>
+                                </div>
+                                <div class="spec-row">
+                                    <span class="spec-label">加工保證公差：</span>
+                                    <span class="spec-val hl">{{ eq.tolerance }}</span>
+                                </div>
+                            </div>
+                            <p class="tolerance-desc">{{ eq.features }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div style="margin-top: 24px; text-align: center;">
+                        <a href="/contact" data-nav-page="contact" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
+                            📋 立即上傳圖面 · 評估加工公差與報價
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </section>
 
@@ -839,71 +876,229 @@
         </section>
 
         <!-- ==========================================================================
-             Technical Tools & Hardness Converter Hub
+             Aluminum Metallurgy & Engineering Knowledge Base Hub
              ========================================================================== -->
         <section id="tech" data-page-view="tech" class="section section-alt page-view {% if active_page == 'tech' %}active-page{% endif %}">
             <div class="container">
                 <div class="section-header">
-                    <span class="section-tag">Engineering Tool</span>
-                    <h2 class="section-title">國際標準硬度換算與熱處理辭典</h2>
+                    <span class="section-tag">Engineering Knowledge &amp; Metallurgy Hub</span>
+                    <h2 class="section-title">鋁材工程知識庫 · 特性選用與合金物性表</h2>
                     <p class="section-desc">
-                        即時試算布氏 (HB)、洛氏 (HRC / HRB)、維氏 (HV)、肖氏 (HS) 硬度與抗拉強度對照，並提供鋁合金常見調質度規範解說。
+                        涵蓋鋁合金 15 大材料特性、1000~7000 系列選料原則、常用合金化學成分與機械性能對照表，並整合國際標準硬度試算器與調質辭典。
                     </p>
                 </div>
 
-                <div class="tech-grid">
-                    <!-- Calculator Card -->
-                    <div class="calculator-card glass-card">
-                        <h3 style="font-size: 1.4rem; font-weight:700; margin-bottom: 8px;">金屬硬度即時試算器</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 24px;">請輸入布氏硬度 (HB)，系統將自動對照各項國際硬度與近似抗拉強度：</p>
-                        
-                        <div class="calc-input-group">
-                            <label for="calcHbInput">布氏硬度 (HB / Brinell)：</label>
-                            <input type="number" id="calcHbInput" value="229" min="60" max="700">
-                        </div>
+                <!-- Interactive Tech Knowledge Sub-Tabs -->
+                <div class="product-filters tech-tabs" id="techTabBar">
+                    <button class="filter-btn active" data-tech-tab="all">📚 全部知識庫總覽</button>
+                    <button class="filter-btn" data-tech-tab="chars15">🌟 15 大材料特性</button>
+                    <button class="filter-btn" data-tech-tab="series">🔬 1000~7000 系列選用原則</button>
+                    <button class="filter-btn" data-tech-tab="chemical">📊 化學成分與機械物性表</button>
+                    <button class="filter-btn" data-tech-tab="standards">🌐 國際規範對照 (JIS/ASTM/CNS)</button>
+                    <button class="filter-btn" data-tech-tab="hardness">⚡ 硬度試算與調質辭典</button>
+                </div>
 
-                        <div class="calc-results-grid">
-                            <div class="calc-metric-box">
-                                <div class="metric-label">洛氏硬度 HRC (C標尺)</div>
-                                <div class="metric-value" id="calcHrcVal">20.5 HRC</div>
+                <!-- Panel 1: 15 Characteristics -->
+                <div class="tech-block glass-card" data-tech-panel="chars15">
+                    <div class="tech-subhead">
+                        <h3><span>🌟</span> 鋁合金現代工業 15 大材料特性與優勢</h3>
+                        <p>深入解析鋁金屬在比重、耐蝕、導熱、切削效率及綠色回收等各項關鍵物理與機械性能：</p>
+                    </div>
+                    <div class="chars-grid">
+                        {% for ch in data.aluminum_knowledge.characteristics_15 %}
+                        <div class="char-card">
+                            <div class="char-head">
+                                <span class="char-title">{{ ch.name }}</span>
+                                <span class="char-badge">{{ ch.badge }}</span>
                             </div>
-                            <div class="calc-metric-box">
-                                <div class="metric-label">洛氏硬度 HRB (B標尺)</div>
-                                <div class="metric-value" id="calcHrbVal">98.2 HRB</div>
+                            <p class="char-desc">{{ ch.desc }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Panel 2: 1000~7000 Series Selection Guide -->
+                <div class="tech-block glass-card" data-tech-panel="series">
+                    <div class="tech-subhead">
+                        <h3><span>🔬</span> 1000 ~ 7000 系列鋁合金選料指南與適用情境</h3>
+                        <p>依照耐蝕性、強度需求、成形深度與焊接切削要求，挑選最符合加工效益之合適鋁系：</p>
+                    </div>
+                    <div class="series-grid">
+                        {% for s in data.aluminum_knowledge.series_guide %}
+                        <div class="series-card">
+                            <div class="series-top">
+                                <div>
+                                    <div class="series-name">{{ s.series }}</div>
+                                    <div class="series-system">{{ s.alloy_system }}</div>
+                                </div>
+                                <span class="series-badge {% if '熱處理強化型' in s.heat_treatable %}heat-yes{% else %}heat-no{% endif %}">
+                                    {{ s.heat_treatable }}
+                                </span>
                             </div>
-                            <div class="calc-metric-box">
-                                <div class="metric-label">維氏硬度 HV</div>
-                                <div class="metric-value" id="calcHvVal">241 HV</div>
+                            <div class="series-typical">
+                                <strong>代表牌號：</strong>{{ s.typical_alloys }}
                             </div>
-                            <div class="calc-metric-box">
-                                <div class="metric-label">肖氏硬度 HS</div>
-                                <div class="metric-value" id="calcShoreVal">36 HS</div>
+                            <p class="series-features">{{ s.features }}</p>
+                            <div class="series-apps">
+                                <strong>典型應用領域：</strong>{{ s.applications }}
                             </div>
-                            <div class="calc-metric-box" style="grid-column: 1 / -1; border-color: var(--accent-cyan);">
-                                <div class="metric-label">估算抗拉強度 Tensile Strength</div>
-                                <div class="metric-value" id="calcTensileVal">≈ 775 MPa</div>
-                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Panel 3: Chemical Composition & Mechanical Properties Table -->
+                <div class="tech-block glass-card" data-tech-panel="chemical">
+                    <div class="tech-subhead" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 14px;">
+                        <div>
+                            <h3><span>📊</span> 常用工業鋁合金化學成分與機械性能速查表</h3>
+                            <p>依據 ASTM B209 / JIS H4000 標準彙整之各系列主力合金元素比率與抗拉/降伏/延伸率參考值：</p>
+                        </div>
+                        <div style="min-width: 260px;">
+                            <input type="text" placeholder="🔍 即時過濾牌號 (如 6061, 7075, 4N)..." oninput="filterChemTable(this.value)" class="calc-input" style="padding: 8px 14px; border-radius: 8px; width: 100%; font-size: 0.88rem; background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); color: var(--text-bright);">
                         </div>
                     </div>
+                    <div class="chem-table-wrap">
+                        <table class="chem-table">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2">合金牌號 &amp; 調質</th>
+                                    <th rowspan="2">類型分類</th>
+                                    <th colspan="9">化學成分重量百分比 (Wt %)</th>
+                                    <th colspan="4">機械性能 (Mechanical Properties)</th>
+                                    <th colspan="3">工藝特性評等</th>
+                                </tr>
+                                <tr>
+                                    <th>Si</th>
+                                    <th>Fe</th>
+                                    <th>Cu</th>
+                                    <th>Mn</th>
+                                    <th>Mg</th>
+                                    <th>Cr</th>
+                                    <th>Zn</th>
+                                    <th>Ti</th>
+                                    <th>Al</th>
+                                    <th>抗拉強度 (MPa)</th>
+                                    <th>降伏強度 (MPa)</th>
+                                    <th>延伸率 (%)</th>
+                                    <th>硬度 (HB)</th>
+                                    <th>切削性</th>
+                                    <th>陽極性</th>
+                                    <th>耐蝕性</th>
+                                </tr>
+                            </thead>
+                            <tbody id="chemTableBody">
+                                {% for row in data.aluminum_knowledge.chemical_mechanical_matrix %}
+                                <tr>
+                                    <td class="td-alloy">{{ row.alloy }}</td>
+                                    <td>{{ row.category }}</td>
+                                    <td>{{ row.si }}</td>
+                                    <td>{{ row.fe }}</td>
+                                    <td>{{ row.cu }}</td>
+                                    <td>{{ row.mn }}</td>
+                                    <td>{{ row.mg }}</td>
+                                    <td>{{ row.cr }}</td>
+                                    <td>{{ row.zn }}</td>
+                                    <td>{{ row.ti }}</td>
+                                    <td class="td-hl">{{ row.al }}</td>
+                                    <td class="td-hl">{{ row.tensile }}</td>
+                                    <td>{{ row.yield }}</td>
+                                    <td>{{ row.elongation }}</td>
+                                    <td class="td-hl">{{ row.hardness }}</td>
+                                    <td class="rating-good">{{ row.machinability }}</td>
+                                    <td class="rating-good">{{ row.anodizing }}</td>
+                                    <td class="rating-good">{{ row.corrosion }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">
+                        ※ 註：上表數值依常用規格板材標準厚度測定，實際交付數據以每批原廠出廠檢驗證明書（Mill Sheet / MTR）為準。法寶實業常備庫存皆附材質檢驗證明。
+                    </p>
+                </div>
 
-                    <!-- Temper Designation Card -->
-                    <div class="temper-card glass-card">
-                        <h3 style="font-size: 1.4rem; font-weight:700; margin-bottom: 8px;">熱處理與調質代號辭典</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">鋁合金常見之後綴調質狀態技術定義：</p>
-
-                        <div class="temper-accordion">
-                            {% for t in data.temper_definitions %}
-                            <div class="temper-item">
-                                <div>
-                                    <span class="temper-code">{{ t.code }}</span>
-                                    <span class="temper-name">{{ t.name }}</span>
-                                </div>
-                                <p class="temper-desc">{{ t.desc }}</p>
+                <!-- Panel 4: International Standards Cross-Reference -->
+                <div class="tech-block glass-card" data-tech-panel="standards">
+                    <div class="tech-subhead">
+                        <h3><span>🌐</span> 常用國際金屬標準規範縮寫與對照體系</h3>
+                        <p>快速對照台灣、日本、美國、歐洲各國工程圖面常見之鋁材技術規範：</p>
+                    </div>
+                    <div class="standards-grid">
+                        {% for st in data.aluminum_knowledge.standards_crossref %}
+                        <div class="standard-card">
+                            <div class="standard-top">
+                                <span class="standard-code">{{ st.standard }}</span>
+                                <span class="standard-country">{{ st.country }}</span>
                             </div>
-                            {% endfor %}
+                            <div class="standard-full">{{ st.fullName }}</div>
+                            <div class="standard-ex">常見標準代號：<strong>{{ st.example }}</strong></div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Panel 5: Hardness Calculator & Temper Designation (Existing Tools Enhanced) -->
+                <div class="tech-block glass-card" data-tech-panel="hardness">
+                    <div class="tech-subhead">
+                        <h3><span>⚡</span> 國際標準硬度即時換算器與熱處理調質代號辭典</h3>
+                        <p>即時試算布氏 (HB)、洛氏 (HRC / HRB)、維氏 (HV)、肖氏 (HS) 硬度，並解析調質狀態定義：</p>
+                    </div>
+                    <div class="tech-grid">
+                        <!-- Calculator Card -->
+                        <div class="calculator-card glass-card">
+                            <h4 style="font-size: 1.2rem; font-weight:700; margin-bottom: 8px;">金屬硬度即時試算器</h4>
+                            <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px;">請輸入布氏硬度 (HB)，系統將自動對照各項國際硬度與近似抗拉強度：</p>
+                            
+                            <div class="calc-input-group">
+                                <label for="calcHbInput">布氏硬度 (HB / Brinell)：</label>
+                                <input type="number" id="calcHbInput" value="229" min="60" max="700">
+                            </div>
+
+                            <div class="calc-results-grid">
+                                <div class="calc-metric-box">
+                                    <div class="metric-label">洛氏硬度 HRC (C標尺)</div>
+                                    <div class="metric-value" id="calcHrcVal">20.5 HRC</div>
+                                </div>
+                                <div class="calc-metric-box">
+                                    <div class="metric-label">洛氏硬度 HRB (B標尺)</div>
+                                    <div class="metric-value" id="calcHrbVal">98.2 HRB</div>
+                                </div>
+                                <div class="calc-metric-box">
+                                    <div class="metric-label">維氏硬度 HV</div>
+                                    <div class="metric-value" id="calcHvVal">241 HV</div>
+                                </div>
+                                <div class="calc-metric-box">
+                                    <div class="metric-label">肖氏硬度 HS</div>
+                                    <div class="metric-value" id="calcShoreVal">36 HS</div>
+                                </div>
+                                <div class="calc-metric-box" style="grid-column: 1 / -1; border-color: var(--accent-cyan);">
+                                    <div class="metric-label">估算抗拉強度 Tensile Strength</div>
+                                    <div class="metric-value" id="calcTensileVal">≈ 775 MPa</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Temper Designation Card -->
+                        <div class="temper-card glass-card">
+                            <h4 style="font-size: 1.2rem; font-weight:700; margin-bottom: 8px;">熱處理與調質代號辭典</h4>
+                            <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 16px;">鋁合金常見之後綴調質狀態技術定義：</p>
+
+                            <div class="temper-accordion">
+                                {% for t in data.temper_definitions %}
+                                <div class="temper-item">
+                                    <div>
+                                        <span class="temper-code">{{ t.code }}</span>
+                                        <span class="temper-name">{{ t.name }}</span>
+                                    </div>
+                                    <p class="temper-desc">{{ t.desc }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </section>
 

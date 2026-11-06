@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initContactForm();
     initProductFilters();
     initAboutTabs();
+    initTechTabs();
     initMobileUI();
 });
 
@@ -34,6 +35,35 @@ function initAboutTabs() {
         });
     });
 }
+
+function initTechTabs() {
+    const tabBar = document.getElementById('techTabBar');
+    if (!tabBar) return;
+    const buttons = tabBar.querySelectorAll('[data-tech-tab]');
+    const panels = document.querySelectorAll('[data-tech-panel]');
+
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const target = btn.dataset.techTab;
+            buttons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            panels.forEach(p => {
+                const match = target === 'all' || p.dataset.techPanel === target;
+                p.style.display = match ? '' : 'none';
+            });
+        });
+    });
+}
+
+window.filterChemTable = function(val) {
+    const query = (val || '').toLowerCase().trim();
+    const rows = document.querySelectorAll('#chemTableBody tr');
+    rows.forEach(r => {
+        const text = r.textContent.toLowerCase();
+        r.style.display = text.includes(query) ? '' : 'none';
+    });
+};
 
 window.closeMobileMenu = function() {
     const overlay = document.getElementById('mobileNavOverlay');

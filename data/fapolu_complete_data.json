@@ -848,5 +848,358 @@
       "audio_file": "/static/audio/tour_closing.mp3",
       "script": "感謝您撥冗聆聽法寶實業企業導覽。無論您需要特殊規格調料、現貨精密裁切，或是圖面加工估價，歡迎直接填寫本頁線上估價單，或致電台北總公司、台中廠與台南雙廠區，我們的專業工程團隊將於二十四小時內竭誠為您服務。法寶實業，以鋁為本、服務為先，誠摯期盼與您攜手共創卓越價值，敬祝您事業順心、鴻圖大展，謝謝您！"
     }
+  ],
+  "aluminum_knowledge": {
+    "characteristics_15": [
+      {
+        "id": "lightweight",
+        "name": "極致輕量性",
+        "badge": "比重 2.7 g/cm³",
+        "desc": "鋁之比重約 2.7，僅為鋼鐵（7.85）的 35% 或銅（8.96）的 30%，能大幅減輕車輛、航空與精密自動化設備負載，降低能源損耗與慣性衝擊。"
+      },
+      {
+        "id": "corrosion",
+        "name": "優異耐蝕性",
+        "badge": "自然鈍化 Al₂O₃",
+        "desc": "接觸空氣時表面會自然生成緻密氧化鋁保護膜，阻絕進一步氧化。再經陽極皮膜處理後耐酸鹼及鹽霧腐蝕性能極佳，適用於船舶與嚴苛戶外環境。"
+      },
+      {
+        "id": "machinability",
+        "name": "高效率切削性",
+        "badge": "省高達 70% 加工工時",
+        "desc": "鋁合金之高速銑削與車削加工性特佳，排屑流暢且刀具磨耗低，相較於鋼鐵可大幅節省約 50%~70% 的切削時間與加工成本。"
+      },
+      {
+        "id": "strength",
+        "name": "優良強度重量比",
+        "badge": "最高可達 600 MPa",
+        "desc": "透過添加銅、鎂、鋅、矽等合金元素並實施固溶熱處理與人工時效（如 7075-T651），抗拉強度可媲美結構鋼，兼具極高比剛性與比強度。"
+      },
+      {
+        "id": "surface_finish",
+        "name": "多元表面處理性",
+        "badge": "硬陽 / 噴砂 / 電鍍",
+        "desc": "陽極氧化（硬陽 Hard Anodizing、微弧氧化、本色/黑色陽極）、化學皮膜（無鉻鈍化）、雷射雕刻與鏡面拋光適應性極佳，外觀質感高雅。"
+      },
+      {
+        "id": "thermal_conductivity",
+        "name": "極佳導熱效能",
+        "badge": "約 130~230 W/m·K",
+        "desc": "導熱係數約為低碳鋼的 3 倍，在電子散熱片、半導體晶圓均熱盤、熱交換器與汽機車散熱冷排系統中佔有不可替代之優勢。"
+      },
+      {
+        "id": "electrical_conductivity",
+        "name": "高效導電性",
+        "badge": "約銅之 62% IACS",
+        "desc": "同重量條件下，鋁之導電能力約為純銅的 2 倍，且成本大幅低於銅材，廣泛應用於輸配電母線排（Busbar）、匯流排與變壓器繞組。"
+      },
+      {
+        "id": "formability",
+        "name": "優良成形與延展性",
+        "badge": "O態 / H態多樣調質",
+        "desc": "經退火狀態後具有優異塑性，適合深抽、沖壓、彎折、旋壓及滾輪成形，廣泛用於各型外殼、照明反射罩與異形鈑金沖壓件。"
+      },
+      {
+        "id": "weldability",
+        "name": "良好熔接性",
+        "badge": "TIG / MIG / 摩擦攪拌",
+        "desc": "純鋁（1000系）與鋁鎂合金（5000系如5052、5083）具備極佳氬焊（TIG/MIG）與摩擦攪拌焊接（FSW）性能，廣泛應用於儲槽、車體與船體結構。"
+      },
+      {
+        "id": "no_low_temp_brittle",
+        "name": "無低溫脆性",
+        "badge": "低溫韌性反而提升",
+        "desc": "在超低溫極寒環境下，鋁合金不會像碳鋼發生延性-脆性轉變溫度，強度與韌性反而同步提升，是 LNG 液化天然氣儲槽與極區設備首選材料。"
+      },
+      {
+        "id": "non_magnetic",
+        "name": "完全無磁性",
+        "badge": "不受磁場干擾",
+        "desc": "沒有磁性反應，極適合用於精密儀器、醫療 MRI 磁振造影腔體、雷達導航設備與半導體高敏感電磁干擾屏蔽環境。"
+      },
+      {
+        "id": "reflectivity",
+        "name": "高反射性",
+        "badge": "熱輻射與光反射率 >85%",
+        "desc": "高純度光亮鋁表面能高效反射可見光與紅外線熱輻射，廣泛用於太陽能集熱板、建築隔熱板、高階燈具反射板與光學儀器。"
+      },
+      {
+        "id": "non_toxic",
+        "name": "無毒衛生安全性",
+        "badge": "食品與醫藥級相容",
+        "desc": "鋁材無毒無異味，表面緻密氧化層不會析出有害物質，廣泛用於食品飲料包裝、無菌醫療藥品容器與日用烹調器具。"
+      },
+      {
+        "id": "recyclability",
+        "name": "高度綠色循環再生",
+        "badge": "重熔僅耗原鋁 5% 能耗",
+        "desc": "鋁材回收重熔再利用率高達 95% 以上，且回收重熔所需能耗僅為初煉原鋁的 5%，符合當前國際碳足跡與 ESG 永續製造標準。"
+      },
+      {
+        "id": "cryo_stability",
+        "name": "高精度應力穩定性",
+        "badge": "超平板低殘留內應力",
+        "desc": "法寶特別引進南韓及歐美進口預拉伸 (T651) 與低內應力精銑超平板，大幅掏空銑削後不翹曲、不變形，公差維持微米級。"
+      }
+    ],
+    "series_guide": [
+      {
+        "series": "1000 系列",
+        "alloy_system": "工業純鋁 (Al ≥ 99.0%)",
+        "heat_treatable": "非熱處理強化型",
+        "typical_alloys": "1050, 1070, 1100",
+        "features": "延展性、導電導熱性與耐蝕性極佳，熔接性優良，但強度較低。可藉由冷作硬化（H14/H18）提高硬度。",
+        "applications": "食品包裝箔、電容器外殼、照明反射板、散熱鰭片、建築保溫覆蓋皮、匯流排。"
+      },
+      {
+        "series": "2000 系列",
+        "alloy_system": "鋁銅鎂系 (Al-Cu-Mg)",
+        "heat_treatable": "熱處理強化型",
+        "typical_alloys": "2024, 2017, 2014",
+        "features": "高強度杜拉鋁（Duralumin），切削加工性優，耐熱性能良好。抗蝕性較差，需經包鋁（Alclad）或陽極化保護處理。",
+        "applications": "航太飛機機身骨架、機翼蒙皮、高強度結構螺栓、軍工傳動零件與重型結構件。"
+      },
+      {
+        "series": "3000 系列",
+        "alloy_system": "鋁錳系 (Al-Mn)",
+        "heat_treatable": "非熱處理強化型",
+        "typical_alloys": "3003, 3105",
+        "features": "強度較 1000 系列高約 20%，具極佳成型性、深抽性與高耐蝕性，銲接性能良好。",
+        "applications": "易開罐罐體、廚具金屬、化工管路、彩色塗裝浪板、車輛熱交換器水箱芯體。"
+      },
+      {
+        "series": "5000 系列",
+        "alloy_system": "鋁鎂系 (Al-Mg)",
+        "heat_treatable": "非熱處理強化型",
+        "typical_alloys": "5052, 5083, 5754",
+        "features": "中高強度防鏽鋁，耐海水與海洋大氣腐蝕性特佳，疲勞強度高，冷作硬化與焊接性優良，陽極氧化著色效果佳。",
+        "applications": "半導體自動化治具、工業機箱外殼、船舶甲板艙壁、低溫壓力容器、壓花防滑走道板。"
+      },
+      {
+        "series": "6000 系列",
+        "alloy_system": "鋁鎂矽系 (Al-Mg-Si)",
+        "heat_treatable": "熱處理強化型",
+        "typical_alloys": "6061, 6063, 6082",
+        "features": "工業流通量最大之主力合金！兼具中高強度、優良切削加工性、耐蝕性與極佳擠型成型性，T6/T651 狀態尺寸穩定性高，陽極氧化色彩鮮豔。",
+        "applications": "精密自動化機械架構、CNC 銑削腔體零件、半導體搬運模組、車輛輪圈、結構型材、自行車架。"
+      },
+      {
+        "series": "7000 系列",
+        "alloy_system": "鋁鋅鎂銅系 (Al-Zn-Mg-Cu)",
+        "heat_treatable": "熱處理強化型",
+        "typical_alloys": "7075, 7050, 7475",
+        "features": "鋁合金中強度最高之超硬鋁（航空級超杜拉鋁）！抗拉強度可突破 570~600 MPa，硬度達 150 HB 以上，耐磨耗與高剛性，T651 調質具低殘留應力。",
+        "applications": "飛機起落架結構、高應力模具（吹氣模/注塑模）、國防軍工零件、高階運動器材齒盤、五軸精密主軸夾具。"
+      }
+    ],
+    "chemical_mechanical_matrix": [
+      {
+        "alloy": "1050-H14",
+        "category": "工業純鋁板",
+        "si": "0.25",
+        "fe": "0.40",
+        "cu": "0.05",
+        "mn": "0.05",
+        "mg": "0.05",
+        "cr": "-",
+        "zn": "0.05",
+        "ti": "0.03",
+        "al": "≥ 99.50",
+        "tensile": "105~145",
+        "yield": "≥ 75",
+        "elongation": "≥ 10",
+        "hardness": "30~35 HB",
+        "machinability": "普通 (黏刀)",
+        "anodizing": "優 (高光亮)",
+        "corrosion": "極優"
+      },
+      {
+        "alloy": "5052-H32",
+        "category": "耐蝕鈑金主力",
+        "si": "0.25",
+        "fe": "0.40",
+        "cu": "0.10",
+        "mn": "0.10",
+        "mg": "2.2~2.8",
+        "cr": "0.15~0.35",
+        "zn": "0.10",
+        "ti": "-",
+        "al": "餘量",
+        "tensile": "215~265",
+        "yield": "≥ 130",
+        "elongation": "≥ 12",
+        "hardness": "60~68 HB",
+        "machinability": "良",
+        "anodizing": "優 (霧面銀/黑)",
+        "corrosion": "極優 (耐海水)"
+      },
+      {
+        "alloy": "6061-T651",
+        "category": "精密機械切削主力",
+        "si": "0.40~0.80",
+        "fe": "0.70",
+        "cu": "0.15~0.40",
+        "mn": "0.15",
+        "mg": "0.80~1.20",
+        "cr": "0.04~0.35",
+        "zn": "0.25",
+        "ti": "0.15",
+        "al": "餘量",
+        "tensile": "≥ 290",
+        "yield": "≥ 240",
+        "elongation": "≥ 9",
+        "hardness": "95~105 HB",
+        "machinability": "極優 (斷屑佳)",
+        "anodizing": "極優 (硬陽首選)",
+        "corrosion": "優"
+      },
+      {
+        "alloy": "7075-T651",
+        "category": "航太超硬鋁合金",
+        "si": "0.40",
+        "fe": "0.50",
+        "cu": "1.20~2.00",
+        "mn": "0.30",
+        "mg": "2.10~2.90",
+        "cr": "0.18~0.28",
+        "zn": "5.10~6.10",
+        "ti": "0.20",
+        "al": "餘量",
+        "tensile": "≥ 540",
+        "yield": "≥ 470",
+        "elongation": "≥ 7",
+        "hardness": "150~160 HB",
+        "machinability": "極優 (高光潔度)",
+        "anodizing": "良 (硬陽高耐磨)",
+        "corrosion": "中等 (需防蝕塗層)"
+      },
+      {
+        "alloy": "2024-T351",
+        "category": "航太高疲勞高剛性",
+        "si": "0.50",
+        "fe": "0.50",
+        "cu": "3.80~4.90",
+        "mn": "0.30~0.90",
+        "mg": "1.20~1.80",
+        "cr": "0.10",
+        "zn": "0.25",
+        "ti": "0.15",
+        "al": "餘量",
+        "tensile": "≥ 440",
+        "yield": "≥ 290",
+        "elongation": "≥ 12",
+        "hardness": "120~130 HB",
+        "machinability": "極優",
+        "anodizing": "中 (需特殊封孔)",
+        "corrosion": "中等"
+      },
+      {
+        "alloy": "Korea 4N (超平板)",
+        "category": "半導體高精度超平鋁板",
+        "si": "< 0.003",
+        "fe": "< 0.003",
+        "cu": "< 0.001",
+        "mn": "< 0.001",
+        "mg": "< 0.001",
+        "cr": "< 0.001",
+        "zn": "< 0.001",
+        "ti": "< 0.001",
+        "al": "≥ 99.99",
+        "tensile": "75~105",
+        "yield": "≥ 45",
+        "elongation": "≥ 25",
+        "hardness": "25~30 HB",
+        "machinability": "良 (鏡面拋光佳)",
+        "anodizing": "頂級 (高介電無缺陷)",
+        "corrosion": "最高等級 (超潔淨)"
+      }
+    ],
+    "standards_crossref": [
+      {
+        "standard": "CNS",
+        "country": "台灣",
+        "fullName": "中華民國國家標準 (Chinese National Standards)",
+        "example": "CNS 2253 (鋁及鋁合金棒)"
+      },
+      {
+        "standard": "JIS",
+        "country": "日本",
+        "fullName": "日本工業規格 (Japanese Industrial Standards)",
+        "example": "JIS H4000 (板/捲), JIS H4040 (棒材)"
+      },
+      {
+        "standard": "ASTM",
+        "country": "美國",
+        "fullName": "美國材料與試驗協會 (American Society for Testing and Materials)",
+        "example": "ASTM B209 (板材), ASTM B221 (擠型)"
+      },
+      {
+        "standard": "AA",
+        "country": "美國",
+        "fullName": "美國鋁業協會 (Aluminum Association)",
+        "example": "AA 6061-T651 牌號命名規範"
+      },
+      {
+        "standard": "EN",
+        "country": "歐洲",
+        "fullName": "歐洲標準 (European Norm)",
+        "example": "EN 573 (化學成分), EN 485 (板帶材)"
+      },
+      {
+        "standard": "ISO",
+        "country": "國際",
+        "fullName": "國際標準化組織 (International Organization for Standardization)",
+        "example": "ISO 209 (鋁及鋁合金成分規格)"
+      },
+      {
+        "standard": "GB",
+        "country": "中國",
+        "fullName": "中國國家標準 (Guobiao Standard)",
+        "example": "GB/T 3880 (鋁板帶), GB/T 3190 (牌號成分)"
+      },
+      {
+        "standard": "DIN",
+        "country": "德國",
+        "fullName": "德國標準化學會 (Deutsches Institut für Normung)",
+        "example": "DIN 1725 (鋁合金鑄件與變形合金)"
+      }
+    ]
+  },
+  "machining_tolerance_matrix": [
+    {
+      "equipment": "大型重型立式鋸床 (Vertical Plate Saw)",
+      "max_thickness": "厚度達 600 mm",
+      "max_capacity": "長寬 4000 × 2000 mm",
+      "tolerance": "長寬 ±0.5 mm · 直角度 ≤ 0.2 mm/m",
+      "features": "專切超厚特規格 6061/7075 鋁板與大型模具塊料，垂直斷面平整、低殘留應力。"
+    },
+    {
+      "equipment": "紅外線高精密自動裁板機 (Infrared Precision Saw)",
+      "max_thickness": "厚度 0.5 ~ 150 mm",
+      "max_capacity": "進料長度 4000 mm",
+      "tolerance": "長寬公差 ±0.1 mm · 直角對角線 ≤ 0.05 mm/m",
+      "features": "光學紅外線對刀與氣壓浮動台面，板面零劃傷，直接達到免二次銑邊之精密下料尺寸。"
+    },
+    {
+      "equipment": "全自動精密圓棒鋸床 (Automatic CNC Bar Saw)",
+      "max_thickness": "直徑 φ10 ~ φ450 mm",
+      "max_capacity": "長度 10 ~ 6000 mm",
+      "tolerance": "端面垂直度 ≤ 0.05 mm · 定寸公差 ±0.15 mm",
+      "features": "硬質合金伺服進給圓鋸片，端面鏡面平整無毛邊，切口耗損降至最低。"
+    },
+    {
+      "equipment": "CNC 五軸加工中心與龍門精密銑床",
+      "max_thickness": "行程 3000 × 1500 × 800 mm",
+      "max_capacity": "主軸 15,000 ~ 24,000 RPM",
+      "tolerance": "重複定位精度 ±0.005 mm · 平行度 ≤ 0.01 mm",
+      "features": "半導體微孔真空均流盤、航太複雜曲面掏空、高氣密接頭五面一次裝夾加工。"
+    },
+    {
+      "equipment": "雙面全自動貼膜與保護表面處理線",
+      "max_thickness": "厚度 0.3 ~ 80 mm",
+      "max_capacity": "最大寬度 1650 mm",
+      "tolerance": "氣泡覆蓋率 0% · 邊界對齊公差 ±1 mm",
+      "features": "供應日本進口藍膜、大族雷射切割專用保護膜、無膠靜電吸附膜，防止加工搬運刮擦傷。"
+    }
   ]
 }

@@ -3253,3 +3253,375 @@ button {
     height: 120px;
   }
 }
+
+/* ==========================================================================
+   Aluminum Engineering Knowledge Base & Tolerance Matrix (Peer-Enhanced)
+   ========================================================================== */
+
+.tech-tabs {
+  margin-bottom: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tech-block {
+  margin-bottom: 32px;
+  padding: 28px;
+  border-radius: 14px;
+}
+
+.tech-subhead {
+  margin-bottom: 22px;
+}
+
+.tech-subhead h3 {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: var(--accent-cinnabar);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tech-subhead p {
+  font-size: 0.92rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+/* 15 Characteristics Grid */
+.chars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.char-card {
+  padding: 20px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.char-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-gold);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.5);
+}
+
+.char-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.char-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-bright);
+}
+
+.char-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(200, 160, 90, 0.15);
+  color: var(--accent-gold);
+  border: 1px solid rgba(200, 160, 90, 0.3);
+}
+
+.char-desc {
+  font-size: 0.86rem;
+  color: var(--text-dim);
+  line-height: 1.65;
+  flex-grow: 1;
+}
+
+/* 1000~7000 Series Cards */
+.series-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.series-card {
+  padding: 22px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  transition: all 0.3s ease;
+}
+
+.series-card:hover {
+  border-color: var(--accent-cyan);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.series-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 10px;
+}
+
+.series-name {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--accent-cinnabar);
+}
+
+.series-system {
+  font-size: 0.85rem;
+  color: var(--accent-gold);
+  font-weight: 600;
+}
+
+.series-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.series-badge.heat-yes {
+  background: rgba(220, 80, 50, 0.15);
+  color: #ff7755;
+  border: 1px solid rgba(220, 80, 50, 0.3);
+}
+
+.series-badge.heat-no {
+  background: rgba(80, 180, 240, 0.15);
+  color: #66ccff;
+  border: 1px solid rgba(80, 180, 240, 0.3);
+}
+
+.series-typical {
+  margin-bottom: 8px;
+  font-size: 0.88rem;
+  color: var(--text-bright);
+}
+
+.series-typical strong {
+  color: var(--accent-gold);
+}
+
+.series-features {
+  font-size: 0.86rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.series-apps {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+/* Chemical & Mechanical Table */
+.chem-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  margin-bottom: 14px;
+}
+
+.chem-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.chem-table th {
+  background: rgba(20, 30, 45, 0.95);
+  color: var(--accent-gold);
+  font-weight: 700;
+  padding: 12px 10px;
+  border: 1px solid var(--border-subtle);
+  font-family: var(--font-sans);
+}
+
+.chem-table td {
+  padding: 10px;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-dim);
+}
+
+.chem-table tr:hover td {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-bright);
+}
+
+.chem-table .td-alloy {
+  font-weight: 800;
+  color: var(--accent-cinnabar);
+  text-align: left;
+}
+
+.chem-table .td-hl {
+  font-weight: 700;
+  color: #66ccff;
+}
+
+.chem-table .rating-good {
+  color: #44dd88;
+  font-weight: 700;
+}
+
+/* International Standards Cross-Reference */
+.standards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.standard-card {
+  padding: 18px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  transition: all 0.3s ease;
+}
+
+.standard-card:hover {
+  border-color: var(--accent-gold);
+  transform: translateY(-2px);
+}
+
+.standard-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.standard-code {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--accent-cinnabar);
+}
+
+.standard-country {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(200, 160, 90, 0.15);
+  color: var(--accent-gold);
+}
+
+.standard-full {
+  font-size: 0.84rem;
+  color: var(--text-bright);
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.standard-ex {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* Machining Tolerance Matrix */
+.tolerance-matrix-block {
+  margin-top: 36px;
+  padding: 28px;
+  border-radius: 14px;
+}
+
+.tolerance-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.tolerance-card {
+  padding: 20px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+.tolerance-card:hover {
+  border-color: var(--accent-cyan);
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-3px);
+}
+
+.tolerance-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--accent-cinnabar);
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 8px;
+}
+
+.tolerance-specs {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+}
+
+.spec-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.spec-label {
+  color: var(--text-muted);
+}
+
+.spec-val {
+  font-weight: 700;
+  color: var(--accent-gold);
+}
+
+.spec-val.hl {
+  color: #66ccff;
+}
+
+.tolerance-desc {
+  font-size: 0.83rem;
+  color: var(--text-dim);
+  line-height: 1.55;
+  margin-top: auto;
+}
+
+@media (max-width: 1024px) {
+  .chars-grid { grid-template-columns: repeat(2, 1fr); }
+  .standards-grid { grid-template-columns: repeat(2, 1fr); }
+  .tolerance-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .chars-grid { grid-template-columns: 1fr; }
+  .series-grid { grid-template-columns: 1fr; }
+  .standards-grid { grid-template-columns: 1fr; }
+  .tolerance-grid { grid-template-columns: 1fr; }
+  .tech-block { padding: 18px; }
+  .tolerance-matrix-block { padding: 18px; }
+}
