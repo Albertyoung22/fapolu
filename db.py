@@ -401,3 +401,4 @@ def delete_inquiry(ticket_id):
 
 # Initialize DB on load
 init_db()
+

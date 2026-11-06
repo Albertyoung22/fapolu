@@ -89,62 +89,95 @@
       "business_items": [
         {
           "title": "鋁材供應",
-          "image": "/static/img_crawled/05.jpg",
+          "image": "/static/img/biz_aluminum_stock.jpg",
           "desc": "進口、批發、零售各項純鋁及鋁合金，涵蓋鋁捲片、平片、圓片、鋁箔、鋁線、鋁管、圓棒、擠型材、烤漆鋁捲、金銀色鏡面鋁、浪板、模具用鋁、航空用料、建築企口鋁板、鑽石紋／二爪／三爪／五爪／人字壓花板、鋁帷幕牆、路燈反射鋁片，並進口各國特殊材質規格鋁料。"
         },
         {
           "title": "不鏽鋼材",
-          "image": "/static/img_crawled/458.jpg",
+          "image": "/static/img/biz_stainless_steel.jpg",
           "desc": "常備供應 AISI 304、410、420、430 等各系列工業與精密機構用不鏽鋼板材與捲片。"
         },
         {
           "title": "鎂合金",
-          "image": "/static/img_crawled/p046669256634-item-7a3cxf4x0600x0590-m.jpg",
+          "image": "/static/img/biz_magnesium_alloy.jpg",
           "desc": "供應高比強度、極致輕量化與優良減震吸能特性之工業鎂合金材料，滿足 3C、航太與精密運動器材需求。"
         },
         {
           "title": "銅材",
-          "image": "/static/img_crawled/285.jpg",
+          "image": "/static/img/biz_copper_brass.jpg",
           "desc": "供應高導電導熱之黃銅、紅銅、燐青銅及其他特殊合金銅之捲片、平片、棒材與異型材。"
         },
         {
           "title": "鋼材與保溫工程料",
-          "image": "/static/img_crawled/223.jpg",
+          "image": "/static/img/biz_insulation_steel.jpg",
           "desc": "各項鋼材、保溫工程用不鏽鋼捲片（AISI 304 0.2mm–2.0mm）、不鏽鋼束帶及不鏽鋼扣；烤漆鍍鋅鋼捲 PVC / PVDF（BAND BELT 12.8mm–19.2mm）及鍍鋅鐵皮捲。"
         },
         {
           "title": "加工整合服務",
-          "image": "/static/img_crawled/1114.jpg",
+          "image": "/static/img/biz_machining_service.jpg",
           "desc": "代客開模、銑床、車床、烤漆、陽極處理、分條、裁切、壓花、沖孔、折床、毛絲處理、牛皮紙貼合、焊接、合金硬度處理及相關用料加工服務。"
         },
         {
           "title": "專業技術服務",
-          "image": "/static/img_crawled/3138.jpg",
+          "image": "/static/img/biz_technical_service.jpg",
           "desc": "提供代客估價、材質硬度測定、材料使用效益評估、協助新產品設計與開發，以及國外新技術引進與諮詢。"
         },
         {
           "title": "純金屬錠與鑄造錠料",
-          "image": "/static/img_crawled/918.jpg",
+          "image": "/static/img/biz_metal_ingots.jpg",
           "desc": "供應純鋁錠（99.7%）、鋅錠（99.6%）、鎂錠（99.99%）、鋁合金鑄錠（ADC6、10、12，A356、356.2、357、380.2、413 等），依客戶要求提供所需材質。"
         },
         {
           "title": "材質證明與國際檢驗",
-          "image": "/static/img_crawled/437272-PEBLIK-338.jpg",
+          "image": "/static/img/biz_certifications_testing.jpg",
           "desc": "提供原廠進口證明、材質證明書（Mill Sheet）、材質係數與國內外各項環保無毒檢驗報告（如 RoHS、PFOS 等檢驗）。"
         }
       ],
       "sales_industries": [
-        { "icon": "💻", "name": "電子及電腦資訊業" },
-        { "icon": "🔬", "name": "半導體 3C 高科技產業" },
-        { "icon": "🩺", "name": "醫療級器材使用金屬" },
-        { "icon": "⚙️", "name": "機電及模具業" },
-        { "icon": "🚀", "name": "運輸與航太工業" },
-        { "icon": "🏗️", "name": "建築及一般五金工業" },
-        { "icon": "🧪", "name": "食品、化學工業" },
-        { "icon": "🎁", "name": "禮品、包裝工業" },
-        { "icon": "🔧", "name": "車床、板金、沖床" },
-        { "icon": "📐", "name": "各項工程用料" },
-        { "icon": "🏭", "name": "其他多元製造工業" }
+        {
+          "icon": "💻",
+          "name": "電子及電腦資訊業"
+        },
+        {
+          "icon": "🔬",
+          "name": "半導體 3C 高科技產業"
+        },
+        {
+          "icon": "🩺",
+          "name": "醫療級器材使用金屬"
+        },
+        {
+          "icon": "⚙️",
+          "name": "機電及模具業"
+        },
+        {
+          "icon": "🚀",
+          "name": "運輸與航太工業"
+        },
+        {
+          "icon": "🏗️",
+          "name": "建築及一般五金工業"
+        },
+        {
+          "icon": "🧪",
+          "name": "食品、化學工業"
+        },
+        {
+          "icon": "🎁",
+          "name": "禮品、包裝工業"
+        },
+        {
+          "icon": "🔧",
+          "name": "車床、板金、沖床"
+        },
+        {
+          "icon": "📐",
+          "name": "各項工程用料"
+        },
+        {
+          "icon": "🏭",
+          "name": "其他多元製造工業"
+        }
       ]
     }
   },
@@ -477,32 +510,80 @@
     {
       "group": "CNC 精密銑削結構件",
       "items": [
-        { "title": "精密掏空腔體框架", "image": "/static/img_crawled/pro_1.jpg" },
-        { "title": "高剛性階梯軸承座", "image": "/static/img_crawled/pro_2.jpg" },
-        { "title": "3D 輕量化曲面結構件", "image": "/static/img_crawled/pro_3.jpg" },
-        { "title": "多穴陣列精密治具排", "image": "/static/img_crawled/pro_4.jpg" },
-        { "title": "複合角度精密轉接座", "image": "/static/img_crawled/pro_5.jpg" },
-        { "title": "大型微溝槽散熱基板", "image": "/static/img_crawled/pro_6.jpg" }
+        {
+          "title": "精密掏空腔體框架",
+          "image": "/static/img_crawled/pro_1.jpg"
+        },
+        {
+          "title": "高剛性階梯軸承座",
+          "image": "/static/img_crawled/pro_2.jpg"
+        },
+        {
+          "title": "3D 輕量化曲面結構件",
+          "image": "/static/img_crawled/pro_3.jpg"
+        },
+        {
+          "title": "多穴陣列精密治具排",
+          "image": "/static/img_crawled/pro_4.jpg"
+        },
+        {
+          "title": "複合角度精密轉接座",
+          "image": "/static/img_crawled/pro_5.jpg"
+        },
+        {
+          "title": "大型微溝槽散熱基板",
+          "image": "/static/img_crawled/pro_6.jpg"
+        }
       ]
     },
     {
       "group": "CNC 車銑複合精密小零件",
       "items": [
-        { "title": "精密開槽法蘭軸套", "image": "/static/img_crawled/pro_7.jpg" },
-        { "title": "偏心定位凸輪轉座", "image": "/static/img_crawled/pro_8.jpg" },
-        { "title": "五軸斜向雙嘴流體閥座", "image": "/static/img_crawled/pro_9.jpg" },
-        { "title": "多向分流氣密接頭", "image": "/static/img_crawled/pro_10.jpg" },
-        { "title": "精密外螺紋中空套筒", "image": "/static/img_crawled/pro_11.jpg" },
-        { "title": "多溝槽階梯螺紋傳動軸", "image": "/static/img_crawled/pro_12.jpg" },
-        { "title": "高同心彈性夾頭筒夾", "image": "/static/img_crawled/pro_13.jpg" },
-        { "title": "鏡面車削同心階梯錐盤", "image": "/static/img_crawled/pro_14.jpg" }
+        {
+          "title": "精密開槽法蘭軸套",
+          "image": "/static/img_crawled/pro_7.jpg"
+        },
+        {
+          "title": "偏心定位凸輪轉座",
+          "image": "/static/img_crawled/pro_8.jpg"
+        },
+        {
+          "title": "五軸斜向雙嘴流體閥座",
+          "image": "/static/img_crawled/pro_9.jpg"
+        },
+        {
+          "title": "多向分流氣密接頭",
+          "image": "/static/img_crawled/pro_10.jpg"
+        },
+        {
+          "title": "精密外螺紋中空套筒",
+          "image": "/static/img_crawled/pro_11.jpg"
+        },
+        {
+          "title": "多溝槽階梯螺紋傳動軸",
+          "image": "/static/img_crawled/pro_12.jpg"
+        },
+        {
+          "title": "高同心彈性夾頭筒夾",
+          "image": "/static/img_crawled/pro_13.jpg"
+        },
+        {
+          "title": "鏡面車削同心階梯錐盤",
+          "image": "/static/img_crawled/pro_14.jpg"
+        }
       ]
     },
     {
       "group": "半導體微細孔與真空均流盤加工",
       "items": [
-        { "title": "半導體真空腔體微孔均流盤 (正面)", "image": "/static/img_crawled/pro_15.jpg" },
-        { "title": "高密度陣列細孔噴淋盤 (密封面)", "image": "/static/img_crawled/pro_16.jpg" }
+        {
+          "title": "半導體真空腔體微孔均流盤 (正面)",
+          "image": "/static/img_crawled/pro_15.jpg"
+        },
+        {
+          "title": "高密度陣列細孔噴淋盤 (密封面)",
+          "image": "/static/img_crawled/pro_16.jpg"
+        }
       ]
     }
   ],
