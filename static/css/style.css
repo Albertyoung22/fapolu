@@ -2087,20 +2087,20 @@ button {
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  width: 94%;
-  max-width: 1060px;
+  width: 95%;
+  max-width: 1160px;
   background: rgba(251, 247, 238, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(158, 112, 36, 0.45);
   border-radius: var(--radius-full);
-  padding: 10px 20px;
+  padding: 10px 18px;
   box-shadow: 0 12px 36px rgba(62, 48, 24, 0.18), 0 0 20px rgba(180, 130, 45, 0.15);
   z-index: 200;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 9px;
   transition: all var(--transition-smooth);
 }
 
@@ -2244,7 +2244,7 @@ button {
   box-shadow: 0 4px 12px rgba(180, 130, 45, 0.35);
 }
 
-.dock-chapter-select select, .dock-voice-select select, .dock-speed-select select {
+.dock-chapter-select select, .dock-bgm-select select, .dock-voice-select select, .dock-speed-select select {
   background: #fffdf8;
   border: 1px solid rgba(120, 96, 58, 0.3);
   color: var(--text-main);
@@ -2254,10 +2254,10 @@ button {
   font-weight: 600;
   outline: none;
   cursor: pointer;
-  max-width: 185px;
+  max-width: 172px;
 }
 
-.dock-chapter-select select:focus, .dock-voice-select select:focus, .dock-speed-select select:focus {
+.dock-chapter-select select:focus, .dock-bgm-select select:focus, .dock-voice-select select:focus, .dock-speed-select select:focus {
   border-color: var(--accent-cinnabar);
 }
 
@@ -2436,20 +2436,20 @@ button {
   }
 
   .dock-chapter-select,
+  .dock-bgm-select,
   .dock-voice-select,
   .dock-speed-select {
     width: 100%;
   }
 
-  .dock-voice-select {
-    grid-column: 1 / -1;
-  }
-
+  .dock-bgm-select,
+  .dock-voice-select,
   .dock-speed-select {
     grid-column: 1 / -1;
   }
 
   .dock-chapter-select select,
+  .dock-bgm-select select,
   .dock-voice-select select,
   .dock-speed-select select {
     width: 100%;

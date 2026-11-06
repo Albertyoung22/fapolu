@@ -8,7 +8,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img_crawled/favicon.png', v='10.0') }}">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='13.0') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='14.0') }}">
 </head>
 <body>
 
@@ -967,11 +967,11 @@
     <div id="audioDock" class="audio-dock">
         <div class="dock-main-bar">
             <div class="dock-left">
-                <button id="dockPlayBtn" class="btn-play-dock" title="播放沉浸導覽">
+                <button id="dockPlayBtn" class="btn-play-dock" title="播放語音導覽">
                     ▶
                 </button>
                 <div class="dock-track-info">
-                    <span class="track-badge">🪷 法音導覽</span>
+                    <span class="track-badge">🎙️ 語音導覽</span>
                     <span id="dockTrackTitle" class="track-title">法寶實業 · 企業簡介</span>
                 </div>
             </div>
@@ -981,16 +981,12 @@
             </div>
 
             <div class="dock-quick-actions">
-                <button id="dockZenBgmBtn" class="btn-zen-pill active" title="開關禪風頌缽古琴背景配樂">
-                    🪷 <span class="zen-label-txt">禪樂</span>
+                <button id="dockZenBgmBtn" class="btn-zen-pill active" title="開關真人實錄背景輕音樂">
+                    🎵 <span class="zen-label-txt">輕音樂</span>
                 </button>
 
-                <button id="dockBowlBtn" class="btn-dock-icon btn-bowl-chime" title="敲擊靜心頌缽">
-                    🔔
-                </button>
-
-                <button id="dockMoreBtn" class="btn-dock-more" title="展開音韻與章節設定">
-                    音韻 ▴
+                <button id="dockMoreBtn" class="btn-dock-more" title="展開音訊與章節設定">
+                    音訊 ▴
                 </button>
             </div>
         </div>
@@ -1007,18 +1003,27 @@
                 </select>
             </div>
 
+            <div class="dock-bgm-select">
+                <select id="dockBgmSelect" title="選擇背景輕音樂曲目">
+                    <option value="piano" selected>🎹 典雅鋼琴 · 巴哈前奏曲</option>
+                    <option value="guitar">🎸 溫潤吉他 · 薩提慢板</option>
+                    <option value="guqin">🍵 東方古琴 · 陽關三疊</option>
+                    <option value="off">🔇 關閉配樂 (純語音)</option>
+                </select>
+            </div>
+
             <div class="dock-voice-select">
-                <select id="dockVoiceSelect">
-                    <option value="zen-male" selected>🪷 莊嚴禪韻男聲 (法音)</option>
-                    <option value="zen-female">🙏 慈悲溫婉女聲 (禪心)</option>
-                    <option value="zh-TW-HsiaoChenNeural">🎙️ 現代專業女聲 (原速)</option>
+                <select id="dockVoiceSelect" title="選擇語音導覽人聲">
+                    <option value="zen-male" selected>🎙️ 沉穩專業男聲</option>
+                    <option value="zen-female">🎙️ 溫潤柔和女聲</option>
+                    <option value="zh-TW-HsiaoChenNeural">🎙️ 現代俐落女聲</option>
                 </select>
             </div>
 
             <div class="dock-speed-select">
                 <select id="dockSpeedSelect">
                     <option value="1.0">1.0x 語速</option>
-                    <option value="0.9">0.9x 靜心慢速</option>
+                    <option value="0.9">0.9x 舒緩語速</option>
                     <option value="1.15">1.15x 語速</option>
                 </select>
             </div>
@@ -1083,7 +1088,7 @@
         window.ALL_PAGES_META = {{ (all_pages_meta or {}) | tojson }};
     </script>
     <!-- Main Interactive Script -->
-    <script src="{{ url_for('static', filename='js/main.js', v='13.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v='14.0') }}"></script>
 </body>
 </html>
 
