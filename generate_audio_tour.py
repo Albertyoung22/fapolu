@@ -32,9 +32,9 @@ async def generate():
             root, ext = os.path.splitext(base_path)
             out_path = f"{root}{suffix}{ext}" if suffix else base_path
 
-            # Skip regenerating standard female if already exists
-            if suffix == "" and os.path.exists(out_path) and os.path.getsize(out_path) > 10000:
-                print(f"Skipping existing standard [{ch['title']}] -> {out_path}")
+            # Skip regenerating if file already exists
+            if os.path.exists(out_path) and os.path.getsize(out_path) > 10000:
+                print(f"Skipping existing [{ch['title']}] -> {out_path}")
                 continue
 
             script_text = format_zen_script(ch['script']) if is_zen else ch['script']

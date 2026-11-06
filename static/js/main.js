@@ -11,8 +11,29 @@ document.addEventListener('DOMContentLoaded', () => {
     initContactForm();
     initScrollSpy();
     initProductFilters();
+    initAboutTabs();
     initMobileUI();
 });
+
+function initAboutTabs() {
+    const tabBar = document.getElementById('aboutTabBar');
+    if (!tabBar) return;
+    const buttons = tabBar.querySelectorAll('[data-about-tab]');
+    const panels = document.querySelectorAll('[data-about-panel]');
+
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const target = btn.dataset.aboutTab;
+            buttons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            panels.forEach(p => {
+                const match = target === 'all' || p.dataset.aboutPanel === target;
+                p.style.display = match ? '' : 'none';
+            });
+        });
+    });
+}
 
 window.closeMobileMenu = function() {
     const overlay = document.getElementById('mobileNavOverlay');

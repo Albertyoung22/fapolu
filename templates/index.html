@@ -8,7 +8,7 @@
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪷</text></svg>">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='6.0') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='7.0') }}">
 </head>
 <body>
 
@@ -26,6 +26,7 @@
                 </div>
             </a>
             <ul class="nav-links">
+                <li><a href="#about" class="nav-item">關於我們</a></li>
                 <li><a href="#network" class="nav-item">服務網絡</a></li>
                 <li><a href="#products" class="nav-item">旗艦材料</a></li>
                 <li><a href="#specs" class="nav-item">現貨規格</a></li>
@@ -48,14 +49,15 @@
     <div id="mobileNavOverlay" class="mobile-nav-overlay">
         <nav class="mobile-nav-drawer">
             <div class="mobile-nav-grid">
+                <a href="#about" class="mobile-nav-link">🪷 關於我們沿革</a>
                 <a href="#network" class="mobile-nav-link">📍 全台服務據點</a>
                 <a href="#products" class="mobile-nav-link">✨ 精選旗艦材料</a>
                 <a href="#specs" class="mobile-nav-link">📦 現貨規格檢索</a>
                 <a href="#machining" class="mobile-nav-link">⚙️ 精密加工能量</a>
-                <a href="#cases" class="mobile-nav-link">🏆 半導體航太實績</a>
+                <a href="#cases" class="mobile-nav-link">🏆 代表實績案例</a>
                 <a href="#tech" class="mobile-nav-link">📐 硬度換算辭典</a>
                 <a href="#contact" class="mobile-nav-link">📋 線上圖面詢價</a>
-                <a href="/admin" class="mobile-nav-link">🔐 業務詢價後台</a>
+                <a href="/admin" class="mobile-nav-link" style="grid-column: 1 / -1; justify-content: center;">🔐 業務詢價管理後台</a>
             </div>
             <div class="mobile-nav-footer">
                 <button class="btn btn-outline" style="width:100%; justify-content:center;" onclick="closeMobileMenu(); openTunnelModal();">
@@ -136,6 +138,157 @@
                                 <a href="#specs" class="btn-quote-item">查看庫存規格</a>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             About Us Section (關於我們：成立概要、經營理念願景、九大營業項目、十一大銷售行業)
+             ========================================================================== -->
+        <section id="about" class="section section-alt">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">About FAPO Enterprise · Since 1986</span>
+                    <h2 class="section-title">關於法寶實業 · 深耕台灣四十載</h2>
+                    <p class="section-desc">
+                        {{ data.company.about_us.subheadline }} —— 從國際金屬貿易啟航，穩健轉型為兼具「龐大現貨庫存」與「精密裁切加工」的全方位供應鏈夥伴。
+                    </p>
+                </div>
+
+                <!-- Interactive Sub-Section Filter Pills -->
+                <div class="product-filters about-tabs" id="aboutTabBar">
+                    <button class="filter-btn active" data-about-tab="all">全部總覽</button>
+                    <button class="filter-btn" data-about-tab="overview">成立概要</button>
+                    <button class="filter-btn" data-about-tab="vision">經營理念 &amp; 願景</button>
+                    <button class="filter-btn" data-about-tab="services">九大營業項目</button>
+                    <button class="filter-btn" data-about-tab="industries">銷售應用行業</button>
+                </div>
+
+                <!-- 1. 成立概要 (Company Overview & History) -->
+                <div class="about-block glass-card" data-about-panel="overview">
+                    <div class="about-split-grid">
+                        <div class="about-photo-stack">
+                            <div class="about-main-photo">
+                                <img src="{{ data.company.about_us.hero_image }}" alt="法寶實業成立概要與鋁材儲運實景" loading="lazy">
+                                <span class="about-seal-tag">創立於 1986 年 · 成立概要</span>
+                            </div>
+                            <div class="about-sub-banner">
+                                <img src="{{ data.company.about_us.banner_image }}" alt="法寶實業精密鋁合金材料與加工工藝" loading="lazy">
+                                <div class="about-sub-caption">
+                                    <strong>以鋁為本 · 服務為先</strong>
+                                    <span>全台串連庫存網絡 · 迅速精準調撥送達</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="about-text-col">
+                            <h3 class="about-subtitle">{{ data.company.about_us.headline }}</h3>
+                            <p class="about-kicker">{{ data.company.about_us.subheadline }}</p>
+
+                            <div class="about-article-box">
+                                <h4>【企業沿革與願景】</h4>
+                                <p>{{ data.company.about_us.history }}</p>
+                            </div>
+
+                            <div class="about-article-box">
+                                <h4>【全台服務據點佈局】</h4>
+                                <ul class="about-bullet-list">
+                                    {% for item in data.company.about_us.network_summary %}
+                                    <li>
+                                        <strong>{{ item.title }}：</strong>{{ item.desc }}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+
+                            <div class="about-promise-quote">
+                                <strong>【我們的承諾】</strong> {{ data.company.about_us.promise }}
+                            </div>
+
+                            <div style="margin-top: 18px;">
+                                <button class="btn-read-tts" onclick="readAloudText('成立概要。{{ data.company.about_us.headline }}。{{ data.company.about_us.history }}。我們的承諾：{{ data.company.about_us.promise }}', this)">
+                                    🎙️ 語音聆聽成立概要
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. 經營理念與未來願景 (Philosophy & Vision) -->
+                <div class="about-block glass-card" data-about-panel="vision">
+                    <div class="about-split-grid reverse">
+                        <div class="about-text-col">
+                            <h3 class="about-subtitle">{{ data.company.about_us.philosophy_title }}</h3>
+                            <p class="about-para">{{ data.company.about_us.philosophy_desc }}</p>
+
+                            <hr class="about-divider">
+
+                            <h3 class="about-subtitle">{{ data.company.about_us.vision_title }}</h3>
+                            <p class="about-para">{{ data.company.about_us.vision_intro }}</p>
+
+                            <div class="vision-pillars">
+                                {% for vp in data.company.about_us.vision_points %}
+                                <div class="vision-pillar-item">
+                                    <h5>✦ {{ vp.title }}</h5>
+                                    <p>{{ vp.desc }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            <p class="about-goal-highlight">{{ data.company.about_us.vision_goal }}</p>
+
+                            <div style="margin-top: 16px;">
+                                <button class="btn-read-tts" onclick="readAloudText('{{ data.company.about_us.philosophy_title }}。{{ data.company.about_us.philosophy_desc }}。{{ data.company.about_us.vision_title }}。{{ data.company.about_us.vision_goal }}', this)">
+                                    🎙️ 語音聆聽經營理念與願景
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="about-photo-single">
+                            <img src="{{ data.company.about_us.vision_image }}" alt="法寶實業經營理念與高科技願景" loading="lazy">
+                            <div class="vision-caption-bar">
+                                <span>誠信立基 · 整合共榮</span>
+                                <span>深耕半導體與航太關鍵供應鏈</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. 九大營業項目與實拍圖鑑 (9 Official Business Scope Items) -->
+                <div class="about-sub-section" data-about-panel="services">
+                    <div class="about-sub-heading">
+                        <h3>營業項目總覽 · 九大核心服務範疇</h3>
+                        <p>涵蓋多元金屬材料批發零售、精密機械加工、材料技術顧問與國際環保檢驗證明一貫化支援</p>
+                    </div>
+                    <div class="business-scope-grid">
+                        {% for b in data.company.about_us.business_items %}
+                        <div class="scope-card glass-card">
+                            <div class="scope-img-wrap">
+                                <img src="{{ b.image }}" alt="{{ b.title }}" loading="lazy">
+                            </div>
+                            <div class="scope-info">
+                                <h4>{{ b.title }}</h4>
+                                <p>{{ b.desc }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- 4. 十一大銷售行業 (11 Official Sales Industries) -->
+                <div class="about-sub-section" data-about-panel="industries">
+                    <div class="about-sub-heading">
+                        <h3>銷售與應用行業 · 跨足十一大產業領域</h3>
+                        <p>長期供應全台高科技電子、半導體設備、醫療器材、航太運輸及精密機械產業關鍵金屬材料</p>
+                    </div>
+                    <div class="industries-grid">
+                        {% for ind in data.company.about_us.sales_industries %}
+                        <div class="industry-pill glass-card">
+                            <span class="ind-icon">{{ ind.icon }}</span>
+                            <span class="ind-name">{{ ind.name }}</span>
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -350,16 +503,23 @@
             <div class="container">
                 <div class="section-header">
                     <span class="section-tag">Case Studies</span>
-                    <h2 class="section-title">半導體與航太實績案例</h2>
+                    <h2 class="section-title">代表個案 · 半導體、航太與自動化實績</h2>
                     <p class="section-desc">
-                        法寶實業長期協同各領域設備大廠克服材料加工變形、嚴苛公差與輕量化挑戰，以數據與品質為客戶創造最高效益。
+                        運用日本 UACJ 高階低應力鋁材、7075 航太鋁合金與精密 CNC 五軸／陽極一站式整合技術，協助各領域設備大廠克服應力變形與輕量化挑戰。
                     </p>
                 </div>
 
                 <div class="cases-grid">
                     {% for c in data.cases %}
                     <div class="case-card glass-card">
+                        {% if c.image %}
+                        <div class="case-photo-wrap">
+                            <img src="{{ c.image }}" alt="{{ c.title }}" loading="lazy">
+                            <span class="case-badge">{{ c.tag }}</span>
+                        </div>
+                        {% else %}
                         <span class="case-badge">{{ c.tag }}</span>
+                        {% endif %}
                         <h3 class="case-title">{{ c.title }}</h3>
                         <p class="case-client">產業對象：{{ c.client }}</p>
                         
@@ -556,7 +716,7 @@
                 <div class="footer-col">
                     <h5>快速導覽</h5>
                     <ul>
-                        <li><a href="#hero">首頁概覽</a></li>
+                        <li><a href="#about">關於我們 · 成立概要</a></li>
                         <li><a href="#network">全台服務據點</a></li>
                         <li><a href="#products">旗艦產品系列</a></li>
                         <li><a href="#specs">現貨規格表</a></li>
@@ -691,7 +851,7 @@
         window.SITE_DATA = {{ data | tojson }};
     </script>
     <!-- Main Interactive Script -->
-    <script src="{{ url_for('static', filename='js/main.js', v='6.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v='7.0') }}"></script>
 </body>
 </html>
 
