@@ -109,10 +109,12 @@ def send_inquiry_email(inquiry, custom_cfg=None):
     email = inquiry.get('contactEmail', '未填寫')
     material = inquiry.get('inquiryMaterial') or '（未指定型號）'
     message = inquiry.get('inquiryMessage') or '（無額外備註說明）'
+    drawing_url = inquiry.get('drawingUrl', '').strip()
     timestamp = inquiry.get('timestamp', '')
 
     subject = f"【法寶實業新詢價單】{ticket_id}｜{company} - {material[:35]}"
 
+    drawing_text = f"\n圖面連結/說明：{drawing_url}" if drawing_url else ""
     text_body = (
         f"法寶實業有限公司 - 線上即時詢價通知\n"
         f"========================================\n"
@@ -123,6 +125,7 @@ def send_inquiry_email(inquiry, custom_cfg=None):
         f"聯絡電話：{phone}\n"
         f"電子郵件：{email}\n"
         f"材料規格：{material}\n"
+        f"{drawing_text}"
         f"需求說明：\n{message}\n"
         f"========================================\n"
         f"可直接回覆此郵件與客戶聯繫，或登入 /admin 後台更新報價進度。"
@@ -135,7 +138,21 @@ def send_inquiry_email(inquiry, custom_cfg=None):
     esc_phone = html.escape(str(phone))
     esc_email = html.escape(str(email))
     esc_material = html.escape(str(material))
+    esc_drawing = html.escape(str(drawing_url))
     esc_message = html.escape(str(message))
+
+    drawing_row = ""
+    if drawing_url:
+        if drawing_url.startswith('http://') or drawing_url.startswith('https://'):
+            drawing_val_html = f'<a href="{esc_drawing}" target="_blank" style="color:#38bdf8;font-weight:bold;text-decoration:underline;">🔗 點擊開啟圖面連結</a>'
+        else:
+            drawing_val_html = f'<span style="color:#cbd5e1;">{esc_drawing}</span>'
+        drawing_row = f"""
+                <tr>
+                    <td style="padding:10px 0;color:#94a3b8;border-bottom:1px solid #1e293b;">CAD/圖面說明</td>
+                    <td style="padding:10px 0;border-bottom:1px solid #1e293b;">{drawing_val_html}</td>
+                </tr>
+        """
 
     html_body = f"""
     <div style="font-family:'Microsoft JhengHei',Arial,sans-serif;max-width:640px;margin:0 auto;background:#0b1324;color:#f8fafc;border-radius:14px;overflow:hidden;border:1px solid #1e293b;">
@@ -169,6 +186,7 @@ def send_inquiry_email(inquiry, custom_cfg=None):
                     <td style="padding:10px 0;color:#94a3b8;border-bottom:1px solid #1e293b;">材料型號規格</td>
                     <td style="padding:10px 0;color:#fbbf24;font-weight:bold;border-bottom:1px solid #1e293b;">{esc_material}</td>
                 </tr>
+                {drawing_row}
             </table>
             <div style="margin-top:18px;">
                 <div style="color:#94a3b8;font-size:13px;margin-bottom:8px;">需求數量、加工說明與備註：</div>

@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>法寶實業有限公司 | 詢價單管理後台 (RFQ Admin CRM)</title>
     <link rel="icon" type="image/png" href="/static/img_crawled/favicon.png?v=10.0">
+    <!-- PWA Web App Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#c99b3b">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&display=swap');
         :root {
@@ -781,6 +784,10 @@
                     <div class="lbl">材料型號與規格需求</div>
                     <div class="val" id="mMaterial" style="color: #a62c22; font-weight: 700;"></div>
                 </div>
+                <div class="info-block full" id="mDrawingBlock" style="display:none;">
+                    <div class="lbl">CAD / 加工圖面連結或備註</div>
+                    <div class="val" id="mDrawing"></div>
+                </div>
                 <div class="info-block full">
                     <div class="lbl">需求數量、加工說明與備註</div>
                     <div class="val" id="mMessage"></div>
@@ -1010,6 +1017,7 @@
                         </td>
                         <td>
                             <div class="material-tag">${escapeHtml(item.inquiryMaterial || '（未填寫規格）')}</div>
+                            ${item.drawingUrl ? `<div style="margin-top:4px;"><span class="badge" style="background:rgba(43,84,126,0.12);color:#2b547e;border:1px solid rgba(43,84,126,0.25);font-size:0.75rem;">📎 附圖面/說明</span></div>` : ''}
                             <div class="msg-preview">${escapeHtml(item.inquiryMessage || '')}</div>
                             ${noteHtml}
                         </td>
@@ -1043,6 +1051,21 @@
             emailEl.href = item.contactEmail ? `mailto:${item.contactEmail}` : '#';
 
             document.getElementById('mMaterial').textContent = item.inquiryMaterial || '（未指定材料型號）';
+            
+            const drawingBlock = document.getElementById('mDrawingBlock');
+            const drawingEl = document.getElementById('mDrawing');
+            if (item.drawingUrl) {
+                drawingBlock.style.display = 'block';
+                const dUrl = item.drawingUrl.trim();
+                if (dUrl.startsWith('http://') || dUrl.startsWith('https://')) {
+                    drawingEl.innerHTML = `<a href="${escapeHtml(dUrl)}" target="_blank" rel="noopener" style="color:#2b547e;font-weight:700;text-decoration:underline;">🔗 點擊開啟雲端圖面連結</a>`;
+                } else {
+                    drawingEl.textContent = dUrl;
+                }
+            } else {
+                drawingBlock.style.display = 'none';
+            }
+
             document.getElementById('mMessage').textContent = item.inquiryMessage || '（無額外說明）';
 
             document.getElementById('mStatus').value = item.status || 'pending';

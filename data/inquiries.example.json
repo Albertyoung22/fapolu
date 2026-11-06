@@ -1,0 +1,18 @@
+[
+  {
+    "id": "REQ-1001",
+    "companyName": "先進半導體機械範例",
+    "contactPerson": "張工程師",
+    "contactPhone": "0912-888-999",
+    "contactEmail": "engineer@example.com",
+    "inquiryMaterial": "日本 UACJ 5052 貼膜板 20mm x 4' x 8'",
+    "inquiryMessage": "需雙面平銑真平度0.03mm內，請提供交期與報價",
+    "drawingUrl": "",
+    "timestamp": "2026-11-06 08:58:03",
+    "updatedAt": "2026-11-06 08:58:03",
+    "status": "pending",
+    "branch": "台北總公司",
+    "adminNote": "",
+    "emailSent": false
+  }
+]

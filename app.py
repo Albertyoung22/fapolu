@@ -2,6 +2,7 @@ import os
 import io
 import csv
 import sys
+import time
 import hmac
 import json
 import hashlib
@@ -262,6 +263,31 @@ def api_specs():
         "items": paginated
     })
 
+def _prune_tts_cache_if_needed(max_size_mb=120):
+    try:
+        cache_dir = os.path.join(BASE_DIR, 'static', 'audio', 'cache')
+        if not os.path.exists(cache_dir):
+            return
+        files = [os.path.join(cache_dir, f) for f in os.listdir(cache_dir) if f.endswith('.mp3')]
+        total_size = sum(os.path.getsize(p) for p in files if os.path.exists(p))
+        if total_size > max_size_mb * 1024 * 1024:
+            files.sort(key=lambda p: os.path.getmtime(p) if os.path.exists(p) else 0)
+            while files and total_size > (max_size_mb * 0.7) * 1024 * 1024:
+                oldest = files.pop(0)
+                try:
+                    total_size -= os.path.getsize(oldest)
+                    os.remove(oldest)
+                except OSError:
+                    pass
+    except Exception:
+        pass
+
+
+@app.route('/manifest.json')
+def serve_manifest():
+    return app.send_static_file('manifest.json')
+
+
 @app.route('/api/tts')
 def api_tts():
     text = request.args.get('text', '').strip()
@@ -306,14 +332,32 @@ def api_tts():
             await tts.save(cache_path)
             
         asyncio.run(do_tts())
+        _prune_tts_cache_if_needed()
         return jsonify({"url": audio_url, "cached": False})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+# Rate limiter for RFQ inquiries
+CONTACT_RATE_LIMIT = {}
+CONTACT_RATE_LOCK = threading.Lock()
+
+def _is_contact_rate_limited(client_ip, max_requests=5, window_seconds=60):
+    now = time.time()
+    with CONTACT_RATE_LOCK:
+        history = CONTACT_RATE_LIMIT.get(client_ip, [])
+        history = [t for t in history if now - t < window_seconds]
+        if len(history) >= max_requests:
+            CONTACT_RATE_LIMIT[client_ip] = history
+            return True
+        history.append(now)
+        CONTACT_RATE_LIMIT[client_ip] = history
+        return False
 
 def _normalize_inquiry(item):
     item.setdefault('status', 'pending')      # pending | quoting | closed | archived
     item.setdefault('branch', '未指派')        # 未指派 | 台北總公司 | 台中廠 | 台南雙廠區
     item.setdefault('adminNote', '')
+    item.setdefault('drawingUrl', '')
     item.setdefault('updatedAt', item.get('timestamp', ''))
     item.setdefault('emailSent', False)
     return item
@@ -386,17 +430,50 @@ def admin_required(fn):
 def api_contact():
     try:
         raw = request.json or request.form.to_dict() or {}
+        
+        # 1. Anti-bot Honeypot check: If the hidden honeypot field is filled, silently pretend success
+        if raw.get('website_hp'):
+            return jsonify({
+                "success": True,
+                "message": "感謝您的諮詢！我們的業務工程師將於 24 小時內與您聯繫。",
+                "ticket_id": "REQ-1000"
+            })
+
+        # 2. Rate limiting check (max 5 submissions per 60s per client IP)
+        client_ip = request.headers.get('X-Forwarded-For', request.remote_addr or 'unknown').split(',')[0].strip()
+        if _is_contact_rate_limited(client_ip):
+            return jsonify({
+                "success": False,
+                "error": "您的詢價提交過於頻繁，請稍候 1 分鐘後再送出。"
+            }), 429
+
+        # 3. Input validation
+        company = str(raw.get('companyName', '')).strip()
+        person = str(raw.get('contactPerson', '')).strip()
+        phone = str(raw.get('contactPhone', '')).strip()
+        email = str(raw.get('contactEmail', '')).strip()
+        material = str(raw.get('inquiryMaterial', '')).strip()
+        message = str(raw.get('inquiryMessage', '')).strip()
+        drawing_url = str(raw.get('drawingUrl', '')).strip()
+
+        if not (company or person) and not (phone or email):
+            return jsonify({
+                "success": False,
+                "error": "請填寫您的聯絡人姓名與聯絡電話或電子郵件，以便業務工程師向您回覆報價。"
+            }), 400
+
         now_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         inquiries = load_inquiries()
 
         new_item = {
             "id": _next_ticket_id(inquiries),
-            "companyName": str(raw.get('companyName', '')).strip(),
-            "contactPerson": str(raw.get('contactPerson', '')).strip(),
-            "contactPhone": str(raw.get('contactPhone', '')).strip(),
-            "contactEmail": str(raw.get('contactEmail', '')).strip(),
-            "inquiryMaterial": str(raw.get('inquiryMaterial', '')).strip(),
-            "inquiryMessage": str(raw.get('inquiryMessage', '')).strip(),
+            "companyName": company,
+            "contactPerson": person,
+            "contactPhone": phone,
+            "contactEmail": email,
+            "inquiryMaterial": material,
+            "inquiryMessage": message,
+            "drawingUrl": drawing_url,
             "timestamp": now_str,
             "updatedAt": now_str,
             "status": "pending",
@@ -548,7 +625,7 @@ def api_admin_export_csv():
     writer.writerow([
         '詢價單號', '處理狀態', '指派廠區', '建立時間', '最後更新',
         '公司寶號', '聯絡人', '聯絡電話', '電子郵件',
-        '材料型號與規格需求', '需求數量與加工說明', '內部業務備註', 'Email通知狀態'
+        '材料型號與規格需求', '圖面連結/說明', '需求數量與加工說明', '內部業務備註', 'Email通知狀態'
     ])
     for i in items:
         writer.writerow([
@@ -562,6 +639,7 @@ def api_admin_export_csv():
             i.get('contactPhone', ''),
             i.get('contactEmail', ''),
             i.get('inquiryMaterial', ''),
+            i.get('drawingUrl', ''),
             i.get('inquiryMessage', ''),
             i.get('adminNote', ''),
             '已寄送' if i.get('emailSent') else '未寄送'

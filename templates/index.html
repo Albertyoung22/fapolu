@@ -5,6 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>{{ page_meta.title if page_meta else '法寶實業有限公司 | FAPO ENTERPRISE - 全方位鋁合金材料供應鏈與精密加工整合首選' }}</title>
     <meta name="description" content="{{ page_meta.desc if page_meta else '法寶實業有限公司創立於1986年，深耕台灣近40年。專營日本UACJ 5052貼膜鋁板、7075航太鋁、6061、5083船用鋁板、各式鋁擠型現貨規格與CNC精密加工一站式服務。' }}">
+
+    <!-- Open Graph / LINE / Facebook / Slack Preview -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="法寶實業有限公司 | FAPO ENTERPRISE">
+    <meta property="og:title" content="{{ page_meta.title if page_meta else '法寶實業有限公司 | FAPO ENTERPRISE - 全方位鋁合金材料供應鏈與精密加工整合首選' }}">
+    <meta property="og:description" content="{{ page_meta.desc if page_meta else '法寶實業有限公司創立於1986年，深耕台灣近40年。專營日本UACJ 5052貼膜鋁板、7075航太鋁、6061、5083船用鋁板、3,071項現貨與模具規格及CNC精密加工一站式服務。' }}">
+    <meta property="og:image" content="{{ url_for('static', filename='img_crawled/fapo_logo_hd.png', v='10.0') }}">
+    <meta property="og:locale" content="zh_TW">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ page_meta.title if page_meta else '法寶實業有限公司 | FAPO ENTERPRISE' }}">
+    <meta name="twitter:description" content="{{ page_meta.desc if page_meta else '專營日本UACJ 5052貼膜鋁板、7075航太鋁、3,071項現貨規格及CNC精密加工一站式服務。' }}">
+    <meta name="twitter:image" content="{{ url_for('static', filename='img_crawled/fapo_logo_hd.png', v='10.0') }}">
+
+    <!-- PWA Web App Manifest & Mobile App Meta -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#c99b3b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="法寶實業">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='img_crawled/favicon.png', v='10.0') }}">
+
+    <!-- Structured Data (JSON-LD Organization & Multi-Branch Business) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://fapolu.com.tw/#organization",
+          "name": "法寶實業有限公司",
+          "alternateName": "FAPO ENTERPRISE CO., LTD.",
+          "foundingDate": "1986",
+          "url": "https://fapolu.com.tw",
+          "logo": "https://fapolu.com.tw/static/img_crawled/fapo_logo.png",
+          "description": "創立於1986年，深耕台灣近40年，專營高品質鋁合金材料進口、現貨庫存供應與CNC高階精密加工一貫化服務。"
+        },
+        {
+          "@type": "LocalBusiness",
+          "name": "法寶實業有限公司 台北總公司",
+          "parentOrganization": {"@id": "https://fapolu.com.tw/#organization"},
+          "telephone": "+886-2-2718-3134",
+          "faxNumber": "+886-2-2718-9443",
+          "email": "taipei@fapolu.com.tw",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "民權東路三段136號3樓之5",
+            "addressLocality": "台北市松山區",
+            "addressCountry": "TW"
+          }
+        },
+        {
+          "@type": "LocalBusiness",
+          "name": "法寶實業有限公司 台中物流中心",
+          "parentOrganization": {"@id": "https://fapolu.com.tw/#organization"},
+          "telephone": "+886-4-2258-4931",
+          "faxNumber": "+886-4-2258-8743",
+          "email": "taichung@fapolu.com.tw",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "台灣大道四段五巷167及167-1號",
+            "addressLocality": "台中市西屯區",
+            "addressCountry": "TW"
+          }
+        },
+        {
+          "@type": "LocalBusiness",
+          "name": "法寶實業有限公司 台南雙廠區",
+          "parentOrganization": {"@id": "https://fapolu.com.tw/#organization"},
+          "telephone": "+886-6-726-3666",
+          "faxNumber": "+886-6-726-3888",
+          "email": "fapotnn@ms37.hinet.net",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "佳里區麻佳路三段70巷30號",
+            "addressLocality": "台南市",
+            "addressCountry": "TW"
+          }
+        }
+      ]
+    }
+    </script>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img_crawled/favicon.png', v='10.0') }}">
     <!-- Stylesheet -->
@@ -876,6 +959,9 @@
                     <div class="quote-form-card glass-card" id="quoteFormCard">
                         <h3 style="font-size: 1.4rem; font-weight:700; margin-bottom: 20px;">填寫需求估價單</h3>
                         <form id="quoteForm">
+                            <!-- Anti-spam Honeypot (hidden from human visitors) -->
+                            <input type="text" name="website_hp" id="website_hp" style="display:none !important;" tabindex="-1" autocomplete="off" aria-hidden="true">
+
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label for="companyName">公司寶號 *</label>
@@ -898,8 +984,13 @@
                                     <input type="text" id="inquiryMaterial" name="inquiryMaterial" placeholder="例：UACJ 5052 貼膜板 10mm x 4' x 8' 或 6061-T6 圓棒 Dia.50">
                                 </div>
                                 <div class="form-group full">
+                                    <label for="drawingUrl">CAD / PDF 加工圖面雲端連結或說明（選填）</label>
+                                    <input type="text" id="drawingUrl" name="drawingUrl" placeholder="例：貼上 Google Drive、Dropbox 或 WeTransfer 雲端圖面連結，或註明「將另行以 Email 寄出圖面」">
+                                    <span style="display:block; font-size:0.8rem; color:var(--text-dim); margin-top:5px;">💡 支援 2D DWG/DXF/PDF 或 3D STEP/IGS。送出後亦有專屬業務工程師與您聯繫對圖。</span>
+                                </div>
+                                <div class="form-group full">
                                     <label for="inquiryMessage">需求數量、加工說明與備註</label>
-                                    <textarea id="inquiryMessage" name="inquiryMessage" placeholder="請填寫預計採購數量、裁切尺寸、是否有銑面/CNC加工或陽極需求..."></textarea>
+                                    <textarea id="inquiryMessage" name="inquiryMessage" placeholder="請填寫預計採購數量、裁切尺寸、是否有雙面平銑/CNC加工或表面陽極需求..."></textarea>
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 14px;">
