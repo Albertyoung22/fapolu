@@ -105,6 +105,10 @@ function initLatticeCanvas() {
    ========================================================================== */
 let audioTourState = {
     audio: new Audio(),
+    cardAudio: null,
+    isCardPlaying: false,
+    lastCardText: '',
+    lastCardBtn: null,
     isPlaying: false,
     currentChapter: 0,
     chapters: [],
@@ -114,6 +118,14 @@ let audioTourState = {
     audioCtx: null
 };
 
+function getChapterAudioUrl(ch) {
+    if (!ch || !ch.audio_file) return '';
+    if (audioTourState.voice === 'zh-TW-YunJheNeural') {
+        return ch.audio_file.replace(/\.mp3$/i, '_male.mp3');
+    }
+    return ch.audio_file;
+}
+
 function initAudioTour() {
     const playBtn = document.getElementById('dockPlayBtn');
     const prevBtn = document.getElementById('dockPrevBtn');
@@ -121,7 +133,6 @@ function initAudioTour() {
     const chapterSelect = document.getElementById('dockChapterSelect');
     const voiceSelect = document.getElementById('dockVoiceSelect');
     const speedSelect = document.getElementById('dockSpeedSelect');
-    const trackTitle = document.getElementById('dockTrackTitle');
     
     // Read chapters from embedded data
     if (window.SITE_DATA && window.SITE_DATA.tour_chapters) {
@@ -130,6 +141,14 @@ function initAudioTour() {
 
     if (!audioTourState.chapters.length) return;
 
+    // Sync initial dropdown states (in case browser restores form values on reload)
+    if (voiceSelect && voiceSelect.value) {
+        audioTourState.voice = voiceSelect.value;
+    }
+    if (speedSelect && speedSelect.value) {
+        audioTourState.speed = parseFloat(speedSelect.value) || 1.0;
+    }
+
     // Populate chapters dropdown
     if (chapterSelect) {
         chapterSelect.innerHTML = audioTourState.chapters.map((ch, idx) => 
@@ -137,6 +156,7 @@ function initAudioTour() {
         ).join('');
         
         chapterSelect.addEventListener('change', (e) => {
+            stopCardAudio();
             selectChapter(parseInt(e.target.value), true);
         });
     }
@@ -144,8 +164,17 @@ function initAudioTour() {
     // Voice & Speed change
     if (voiceSelect) {
         voiceSelect.addEventListener('change', (e) => {
+            const wasTourPlaying = audioTourState.isPlaying;
+            const wasCardPlaying = audioTourState.isCardPlaying;
             audioTourState.voice = e.target.value;
-            showToast(`已切換導覽語音：${e.target.options[e.target.selectedIndex].text}`);
+            showToast(`🎙️ 已切換導覽語音：${e.target.options[e.target.selectedIndex].text}`);
+
+            if (wasCardPlaying && audioTourState.lastCardText) {
+                stopCardAudio();
+                window.readAloudText(audioTourState.lastCardText, audioTourState.lastCardBtn);
+            } else {
+                selectChapter(audioTourState.currentChapter, wasTourPlaying);
+            }
         });
     }
 
@@ -153,6 +182,9 @@ function initAudioTour() {
         speedSelect.addEventListener('change', (e) => {
             audioTourState.speed = parseFloat(e.target.value);
             audioTourState.audio.playbackRate = audioTourState.speed;
+            if (audioTourState.cardAudio) {
+                audioTourState.cardAudio.playbackRate = audioTourState.speed;
+            }
         });
     }
 
@@ -214,8 +246,18 @@ function initAudioTour() {
     initAudioVisualizer();
 }
 
+function stopCardAudio() {
+    if (audioTourState.cardAudio) {
+        audioTourState.cardAudio.pause();
+        audioTourState.cardAudio.currentTime = 0;
+        audioTourState.cardAudio = null;
+    }
+    audioTourState.isCardPlaying = false;
+}
+
 function selectChapter(index, autoPlay = false) {
     if (index < 0 || index >= audioTourState.chapters.length) return;
+    stopCardAudio();
     audioTourState.currentChapter = index;
     const ch = audioTourState.chapters[index];
     
@@ -226,28 +268,41 @@ function selectChapter(index, autoPlay = false) {
     const chapterSelect = document.getElementById('dockChapterSelect');
     if (chapterSelect) chapterSelect.value = index;
 
-    // Load audio file
-    audioTourState.audio.src = ch.audio_file;
+    // Load voice-specific audio file (female vs male)
+    const targetSrc = getChapterAudioUrl(ch);
+    audioTourState.audio.pause();
+    audioTourState.audio.src = targetSrc;
     audioTourState.audio.playbackRate = audioTourState.speed;
 
     if (autoPlay) {
         audioTourState.audio.play().then(() => {
             audioTourState.isPlaying = true;
+            audioTourState.audio.playbackRate = audioTourState.speed;
             updatePlayButtonUI();
             // Scroll to the corresponding section with smooth highlight
             highlightAndScrollToSection(ch.section_id);
         }).catch(err => {
             console.warn("Auto-play prevented:", err);
         });
+    } else {
+        audioTourState.isPlaying = false;
+        updatePlayButtonUI();
     }
 }
 
 function togglePlay() {
+    stopCardAudio();
     if (audioTourState.isPlaying) {
         audioTourState.audio.pause();
     } else {
         const ch = audioTourState.chapters[audioTourState.currentChapter];
+        const expectedUrl = getChapterAudioUrl(ch);
+        if (!audioTourState.audio.src || !audioTourState.audio.src.endsWith(expectedUrl)) {
+            audioTourState.audio.src = expectedUrl;
+        }
+        audioTourState.audio.playbackRate = audioTourState.speed;
         audioTourState.audio.play().then(() => {
+            audioTourState.audio.playbackRate = audioTourState.speed;
             highlightAndScrollToSection(ch.section_id);
         }).catch(err => console.error(err));
     }
@@ -299,8 +354,9 @@ function initAudioVisualizer() {
         ctx.beginPath();
         ctx.moveTo(0, mid);
         
-        const amplitude = audioTourState.isPlaying ? 10 : 2;
-        const speed = audioTourState.isPlaying ? 0.15 : 0.03;
+        const activeWave = audioTourState.isPlaying || audioTourState.isCardPlaying;
+        const amplitude = activeWave ? 10 : 2;
+        const speed = activeWave ? 0.15 : 0.03;
         waveOffset += speed;
 
         for (let x = 0; x < width; x++) {
@@ -308,10 +364,10 @@ function initAudioVisualizer() {
             ctx.lineTo(x, y);
         }
         
-        ctx.strokeStyle = audioTourState.isPlaying ? '#00f0ff' : 'rgba(255, 255, 255, 0.2)';
+        ctx.strokeStyle = activeWave ? '#00f0ff' : 'rgba(255, 255, 255, 0.2)';
         ctx.lineWidth = 2;
-        ctx.shadowColor = audioTourState.isPlaying ? '#00f0ff' : 'transparent';
-        ctx.shadowBlur = audioTourState.isPlaying ? 8 : 0;
+        ctx.shadowColor = activeWave ? '#00f0ff' : 'transparent';
+        ctx.shadowBlur = activeWave ? 8 : 0;
         ctx.stroke();
         
         requestAnimationFrame(drawWave);
@@ -323,6 +379,15 @@ function initAudioVisualizer() {
 window.readAloudText = function(text, btnElement) {
     if (!text) return;
     
+    stopCardAudio();
+    audioTourState.lastCardText = text;
+    audioTourState.lastCardBtn = btnElement || null;
+
+    const voiceSelect = document.getElementById('dockVoiceSelect');
+    if (voiceSelect && voiceSelect.value) {
+        audioTourState.voice = voiceSelect.value;
+    }
+
     const originalText = btnElement ? btnElement.innerHTML : '';
     if (btnElement) {
         btnElement.innerHTML = '⏳ 語音生成中...';
@@ -345,6 +410,11 @@ window.readAloudText = function(text, btnElement) {
                     audioTourState.audio.pause();
                 }
                 const speechAudio = new Audio(data.url);
+                speechAudio.playbackRate = audioTourState.speed || 1.0;
+                audioTourState.cardAudio = speechAudio;
+                speechAudio.addEventListener('play', () => { audioTourState.isCardPlaying = true; });
+                speechAudio.addEventListener('ended', () => { audioTourState.isCardPlaying = false; });
+                speechAudio.addEventListener('pause', () => { audioTourState.isCardPlaying = false; });
                 speechAudio.play();
                 showToast("🎙️ 正在為您語音朗讀內容...");
             } else {
