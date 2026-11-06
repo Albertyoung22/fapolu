@@ -998,6 +998,7 @@ window.readAloudText = function(text, btnElement) {
 function initSpecsExplorer() {
     const searchInput = document.getElementById('specsSearchInput');
     const catSelect = document.getElementById('specsCatSelect');
+    const groupTabs = document.getElementById('specsGroupTabs');
     const tableBody = document.getElementById('specsTableBody');
     const totalCountEl = document.getElementById('specsTotalCount');
     const pageNumEl = document.getElementById('specsPageNum');
@@ -1008,16 +1009,26 @@ function initSpecsExplorer() {
 
     let currentPage = 1;
     let totalPages = 1;
+    let currentGroup = 'all';
     let debounceTimer;
+
+    function syncGroupTabUI(grp) {
+        currentGroup = grp;
+        if (groupTabs) {
+            groupTabs.querySelectorAll('[data-spec-group]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.specGroup === grp);
+            });
+        }
+    }
 
     function fetchSpecs(page = 1) {
         currentPage = page;
         const q = searchInput ? searchInput.value.trim() : '';
         const category = catSelect ? catSelect.value : '';
 
-        tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 30px; color: #94a3b8;">🔍 正在檢索庫存現貨規格資料庫...</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 30px; color: #94a3b8;">🔍 正在檢索官網同步規格資料庫...</td></tr>`;
 
-        fetch(`/api/specs?q=${encodeURIComponent(q)}&category=${encodeURIComponent(category)}&page=${page}&per_page=20`)
+        fetch(`/api/specs?q=${encodeURIComponent(q)}&category=${encodeURIComponent(category)}&group=${encodeURIComponent(currentGroup)}&page=${page}&per_page=25`)
             .then(res => res.json())
             .then(data => {
                 totalPages = data.total_pages || 1;
@@ -1028,23 +1039,29 @@ function initSpecsExplorer() {
                 if (nextPageBtn) nextPageBtn.disabled = data.page >= totalPages;
 
                 if (!data.items || data.items.length === 0) {
-                    tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 30px; color: #94a3b8;">找不到符合條件的現貨規格，建議輸入厚度、直徑或合金型號（如 5052、6061、7075）。</td></tr>`;
+                    tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 30px; color: #94a3b8;">找不到符合條件的規格，建議切換上方「全部規格」或輸入厚度、外徑、合金型號（如 5052、6061、7075、FT001、PW5168）。</td></tr>`;
                     return;
                 }
 
-                tableBody.innerHTML = data.items.map((item, idx) => `
+                tableBody.innerHTML = data.items.map((item, idx) => {
+                    const rowNo = item.no || ((data.page - 1) * 25 + idx + 1);
+                    const safeSpec = `${item.category} ${item.material} ${item.dimension} ${item.size}`.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+                    const badgeStyle = item.group === 'mold'
+                        ? 'background:rgba(53,89,122,0.12); color:#2b4c6b; border-color:rgba(53,89,122,0.3);'
+                        : '';
+                    return `
                     <tr class="spec-row-item">
-                        <td data-label="編號" style="color: var(--accent-cinnabar); font-weight:700;">#${(data.page - 1) * 20 + idx + 1}</td>
+                        <td data-label="編號" style="color: var(--accent-cinnabar); font-weight:700;">#${rowNo}</td>
                         <td data-label="類別"><span style="font-weight:700; color:var(--text-main);">${item.category}</span></td>
                         <td data-label="材質"><span class="chip" style="color:var(--accent-amber); font-weight:700;">${item.material}</span></td>
                         <td data-label="規格" style="font-weight:600; color:var(--text-main);">${item.dimension || '-'}</td>
                         <td data-label="尺寸">${item.size || '-'}</td>
-                        <td data-label="庫存" class="spec-action-cell">
-                            ${item.note ? `<span class="badge-stock">${item.note}</span>` : '<span class="badge-stock">現貨庫存</span>'}
-                            <button class="btn-outline spec-quote-btn" style="padding:4px 12px; font-size:0.78rem; margin-left:8px; border-radius:6px;" onclick="addSpecToQuote('${item.material} ${item.dimension} ${item.size}')">加入詢價</button>
+                        <td data-label="狀態" class="spec-action-cell">
+                            <span class="badge-stock" style="${badgeStyle}">${item.note || '現貨庫存'}</span>
+                            <button class="btn-outline spec-quote-btn" style="padding:4px 12px; font-size:0.78rem; margin-left:8px; border-radius:6px;" onclick="addSpecToQuote('${safeSpec}')">加入詢價</button>
                         </td>
-                    </tr>
-                `).join('');
+                    </tr>`;
+                }).join('');
             })
             .catch(err => {
                 console.error(err);
@@ -1052,15 +1069,31 @@ function initSpecsExplorer() {
             });
     }
 
+    if (groupTabs) {
+        groupTabs.querySelectorAll('[data-spec-group]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                syncGroupTabUI(btn.dataset.specGroup);
+                if (catSelect) catSelect.value = '全部';
+                fetchSpecs(1);
+            });
+        });
+    }
+
     if (searchInput) {
         searchInput.addEventListener('input', () => {
             clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => fetchSpecs(1), 300);
+            debounceTimer = setTimeout(() => fetchSpecs(1), 260);
         });
     }
 
     if (catSelect) {
-        catSelect.addEventListener('change', () => fetchSpecs(1));
+        catSelect.addEventListener('change', () => {
+            const val = catSelect.value;
+            if (val !== '全部') {
+                syncGroupTabUI(val.startsWith('現有模具') ? 'mold' : 'stock');
+            }
+            fetchSpecs(1);
+        });
     }
 
     if (prevPageBtn) {
@@ -1075,6 +1108,7 @@ function initSpecsExplorer() {
         });
     }
 
+    window._setSpecsGroupUI = syncGroupTabUI;
     fetchSpecs(1);
 }
 
@@ -1187,17 +1221,18 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-window.quickFilterExtrusion = function(filterCat, searchKw, imgSrc, caption) {
+window.quickFilterExtrusion = function(filterCat) {
     const catSelect = document.getElementById('specsCatSelect');
     const searchInput = document.getElementById('specsSearchInput');
-    if (filterCat && filterCat !== '全部' && catSelect) {
+    const explorerCard = document.getElementById('specsExplorerCard');
+    if (filterCat && catSelect) {
         if (searchInput) searchInput.value = '';
         catSelect.value = filterCat;
         catSelect.dispatchEvent(new Event('change'));
-        showToast(`📐 已篩選「${filterCat}」現貨規格，並開啟斷面標示圖`);
-    }
-    if (imgSrc) {
-        window.openImageLightbox(imgSrc, caption);
+        if (explorerCard) {
+            explorerCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        showToast(`📐 已切換至「${filterCat}」規格表`);
     }
 };
 

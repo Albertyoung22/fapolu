@@ -8,7 +8,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img_crawled/favicon.png', v='10.0') }}">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='10.0') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='11.0') }}">
 </head>
 <body>
 
@@ -91,7 +91,7 @@
                                 🎙️ 啟動沉浸式語音導覽
                             </button>
                             <a href="#specs" class="btn btn-outline">
-                                🔍 查詢現貨規格資料庫 (490+項)
+                                🔍 查詢現貨與模具規格庫 ({{ inventory_count }}項)
                             </a>
                             <a href="#contact" class="btn btn-outline">
                                 📋 線上規格圖面估價
@@ -107,8 +107,8 @@
                                 <p>北中南營運據點</p>
                             </div>
                             <div class="stat-item">
-                                <h3>500+</h3>
-                                <p>型號常備現貨規格</p>
+                                <h3>3,070+</h3>
+                                <p>現貨與免開模規格</p>
                             </div>
                             <div class="stat-item">
                                 <h3>100%</h3>
@@ -432,10 +432,10 @@
         <section id="specs" class="section">
             <div class="container">
                 <div class="section-header">
-                    <span class="section-tag">Inventory Query</span>
-                    <h2 class="section-title">現貨規格即時檢索系統</h2>
+                    <span class="section-tag">Inventory &amp; Mold Specifications</span>
+                    <h2 class="section-title">現貨規格與現有模具即時檢索系統</h2>
                     <p class="section-desc">
-                        即時查詢廠內 490 多種常備鋁合金板材、圓棒、扁條規格。支援以合金型號、厚度、長度快速檢索，可一鍵將規格加入詢價單。
+                        100% 同步官網三大規格總表：涵蓋 <strong>514 項常備鋁板／圓棒／扁條現貨規格</strong>，以及 <strong>2,557 種免開模鋁擠型現有模具規格</strong>（共 {{ inventory_count }} 筆）。支援以材質、厚度、外徑或模具編號（如 FT001、PW5168）即時檢索並一鍵加入詢價單。
                     </p>
                 </div>
 
@@ -444,38 +444,60 @@
                 <div class="extrusion-diagram-strip glass-card">
                     <div class="diagram-strip-head">
                         <strong>📐 鋁擠型現有模具七大標準斷面標示圖</strong>
-                        <span>點擊斷面圖可放大檢視尺寸定義或快速篩選現貨規格</span>
+                        <span>點擊任一斷面直接篩選該規格表，點擊右上 🔍 放大檢視標示圖</span>
                     </div>
                     <div class="extrusion-diagram-grid">
                         {% for ep in data.extrusion_profiles %}
-                        <button type="button" class="diagram-item-btn" onclick="quickFilterExtrusion('{{ ep.filter_cat }}', '{{ ep.search_kw or '' }}', '{{ ep.image }}', '{{ ep.name }} · {{ ep.dim }}')">
+                        <div class="diagram-item-btn" onclick="quickFilterExtrusion('{{ ep.filter_cat }}')">
                             <div class="diagram-img-box">
                                 <img src="{{ ep.image }}" alt="{{ ep.name }}" loading="lazy">
+                                <span class="diagram-zoom-chip" title="放大檢視斷面圖" onclick="event.stopPropagation(); openImageLightbox('{{ ep.image }}', '{{ ep.name }} · {{ ep.dim }}')">🔍</span>
                             </div>
                             <span class="diagram-name">{{ ep.name }}</span>
                             <span class="diagram-dim">{{ ep.dim }}</span>
-                        </button>
+                        </div>
                         {% endfor %}
                     </div>
                 </div>
                 {% endif %}
 
-                <div class="specs-explorer-card glass-card">
+                <div class="specs-explorer-card glass-card" id="specsExplorerCard">
+                    <div class="specs-group-tabs" id="specsGroupTabs">
+                        <button type="button" class="filter-btn active" data-spec-group="all">全部規格總覽 (3,071)</button>
+                        <button type="button" class="filter-btn" data-spec-group="stock">📦 常備現貨規格表 (514)</button>
+                        <button type="button" class="filter-btn" data-spec-group="mold">📐 現有模具規格表 (2,557)</button>
+                    </div>
+
                     <div class="specs-toolbar">
                         <div class="search-box">
                             <span class="search-icon">🔍</span>
-                            <input type="text" id="specsSearchInput" placeholder="搜尋材質或規格（例：5052、6061、7075、4' * 8'、Dia. 50...）">
+                            <input type="text" id="specsSearchInput" placeholder="搜尋材質、尺寸或模號（例：5052、6061、7075、4' * 8'、Dia. 50、PW5168、FT001...）">
                         </div>
                         <div class="category-select">
                             <select id="specsCatSelect">
-                                <option value="全部">全部規格類別</option>
-                                <option value="1050 / 5052 鋁板">1050 / 5052 鋁板</option>
-                                <option value="5083 鋁合金板">5083 鋁合金板</option>
-                                <option value="6061 鋁合金板">6061 鋁合金板</option>
-                                <option value="7075 鋁合金板">7075 航太鋁合金板</option>
-                                <option value="日本進口 5052 貼膜鋁板">日本進口 5052 貼膜鋁板</option>
-                                <option value="鋁擠型圓棒">鋁擠型圓棒</option>
-                                <option value="鋁擠型扁條">鋁擠型扁條</option>
+                                <option value="全部">全部 16 大規格表 (3,071 筆)</option>
+                                <optgroup label="📦 鋁合金板常備現貨規格表">
+                                    <option value="1050 / 5052 鋁板現貨">1050 / 5052 鋁板現貨 (48)</option>
+                                    <option value="5083 鋁合金板現貨">5083 鋁合金板現貨 (57)</option>
+                                    <option value="6061 鋁合金板現貨">6061 鋁合金板現貨 (65)</option>
+                                    <option value="7075 鋁合金板現貨">7075 航太鋁合金板現貨 (35)</option>
+                                    <option value="日本進口 5052 貼膜鋁板現貨">日本進口 5052 貼膜鋁板現貨 (12)</option>
+                                    <option value="壓花鋁板現貨">五爪 / 鑽石 / 人字壓花鋁板現貨 (8)</option>
+                                </optgroup>
+                                <optgroup label="📦 鋁擠型常備現貨規格表">
+                                    <option value="6061 鋁圓棒現貨">6061 鋁圓棒現貨 (129)</option>
+                                    <option value="7075 鋁圓棒現貨">7075 鋁圓棒現貨 (42)</option>
+                                    <option value="6061 鋁扁條現貨">6061 鋁扁條現貨 (118)</option>
+                                </optgroup>
+                                <optgroup label="📐 現有模具規格表（免開模費）">
+                                    <option value="現有模具 · 6061 鋁圓棒">現有模具 · 6061 鋁圓棒 (282)</option>
+                                    <option value="現有模具 · 鋁圓管">現有模具 · 鋁圓管 (823)</option>
+                                    <option value="現有模具 · 鋁扁條">現有模具 · 鋁扁條 (1,041)</option>
+                                    <option value="現有模具 · 鋁四方條">現有模具 · 鋁四方條 (72)</option>
+                                    <option value="現有模具 · 鋁正方管">現有模具 · 鋁正方管 (69)</option>
+                                    <option value="現有模具 · 鋁長方管">現有模具 · 鋁長方管 (152)</option>
+                                    <option value="現有模具 · 鋁六角條">現有模具 · 鋁六角條 (118)</option>
+                                </optgroup>
                             </select>
                         </div>
                     </div>
@@ -485,11 +507,11 @@
                             <thead>
                                 <tr>
                                     <th>編號</th>
-                                    <th>產品類別</th>
-                                    <th>材質 / 煉度</th>
-                                    <th>厚度 / 直徑規格</th>
-                                    <th>尺寸 / 長度</th>
-                                    <th>庫存狀態 / 動作</th>
+                                    <th>規格表類別</th>
+                                    <th>材質 / 模具編號</th>
+                                    <th>厚度 / 直徑 / 斷面規格</th>
+                                    <th>長寬尺寸 / 單米重</th>
+                                    <th>庫存與模具狀態 / 動作</th>
                                 </tr>
                             </thead>
                             <tbody id="specsTableBody">
@@ -935,7 +957,7 @@
         window.SITE_DATA = {{ data | tojson }};
     </script>
     <!-- Main Interactive Script -->
-    <script src="{{ url_for('static', filename='js/main.js', v='9.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v='11.0') }}"></script>
 </body>
 </html>
 

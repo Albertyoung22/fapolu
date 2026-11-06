@@ -107,8 +107,12 @@ def api_site_data():
 def api_specs():
     query = request.args.get('q', '').strip().lower()
     category = request.args.get('category', '').strip()
+    group = request.args.get('group', '').strip()
     
     results = INVENTORY_DATA
+    if group in ('stock', 'mold'):
+        results = [item for item in results if item.get('group') == group]
+        
     if category and category != '全部':
         results = [item for item in results if item.get('category') == category]
         
@@ -120,6 +124,7 @@ def api_specs():
             or query in item.get('size', '').lower()
             or query in item.get('note', '').lower()
             or query in item.get('category', '').lower()
+            or query == str(item.get('no', '')).lower()
         ]
         
     # Categories list for filter dropdown

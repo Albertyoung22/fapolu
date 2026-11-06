@@ -381,47 +381,44 @@
   "extrusion_profiles": [
     {
       "name": "鋁圓棒",
-      "dim": "標示：外徑直徑 (Dia.)",
-      "filter_cat": "鋁擠型圓棒",
+      "dim": "現貨 171 筆 · 模具 282 筆",
+      "filter_cat": "6061 鋁圓棒現貨",
       "image": "/static/img_crawled/ext_round_bar.jpg"
     },
     {
       "name": "鋁圓管",
-      "dim": "標示：外徑 × 內徑 × 管壁厚度",
-      "filter_cat": "全部",
-      "search_kw": "圓管",
+      "dim": "現有模具 823 種規格",
+      "filter_cat": "現有模具 · 鋁圓管",
       "image": "/static/img_crawled/ext_round_tube.jpg"
     },
     {
       "name": "鋁扁條",
-      "dim": "標示：寬度 (W) × 厚度 (T)",
-      "filter_cat": "鋁擠型扁條",
+      "dim": "現貨 118 筆 · 模具 1,041 筆",
+      "filter_cat": "6061 鋁扁條現貨",
       "image": "/static/img_crawled/ext_flat_bar.jpg"
     },
     {
       "name": "鋁四方條",
-      "dim": "標示：四邊等寬度 (W)",
-      "filter_cat": "鋁擠型扁條",
+      "dim": "現有模具 72 種規格",
+      "filter_cat": "現有模具 · 鋁四方條",
       "image": "/static/img_crawled/ext_square_bar.jpg"
     },
     {
       "name": "鋁正方管",
-      "dim": "標示：外寬度 × 管壁厚度",
-      "filter_cat": "全部",
-      "search_kw": "方管",
+      "dim": "現有模具 69 種規格",
+      "filter_cat": "現有模具 · 鋁正方管",
       "image": "/static/img_crawled/ext_square_tube.jpg"
     },
     {
       "name": "鋁長方管",
-      "dim": "標示：長度 × 寬度 × 管壁厚度",
-      "filter_cat": "全部",
-      "search_kw": "管",
+      "dim": "現有模具 152 種規格",
+      "filter_cat": "現有模具 · 鋁長方管",
       "image": "/static/img_crawled/ext_rect_tube.jpg"
     },
     {
       "name": "鋁六角條",
-      "dim": "標示：對邊距離 (D)",
-      "filter_cat": "鋁擠型圓棒",
+      "dim": "現有模具 118 種規格",
+      "filter_cat": "現有模具 · 鋁六角條",
       "image": "/static/img_crawled/ext_hex_bar.jpg"
     }
   ],
