@@ -6,23 +6,23 @@
     <title>法寶實業有限公司 | FAPO ENTERPRISE - 全方位鋁合金材料供應鏈與精密加工整合首選</title>
     <meta name="description" content="法寶實業有限公司創立於1986年，深耕台灣近40年。專營日本UACJ 5052貼膜鋁板、7075航太鋁、6061、5083船用鋁板、各式鋁擠型現貨規格與CNC精密加工、五軸聯動與大型龍門銑削一站式服務。">
     <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪷</text></svg>">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='3.0') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='4.0') }}">
 </head>
 <body>
 
-    <!-- 3D Crystal Lattice Background Canvas -->
+    <!-- Ink-Wash Mountain Mist & Golden Bodhi Light Canvas -->
     <canvas id="latticeCanvas"></canvas>
 
     <!-- Top Navigation Bar -->
     <header class="navbar">
         <div class="container">
             <a href="#hero" class="logo-group">
-                <div class="logo-badge">FP</div>
+                <div class="logo-badge">法寶</div>
                 <div class="logo-text">
                     <h1>法寶實業有限公司</h1>
-                    <p>FAPO ENTERPRISE CO., LTD. · SINCE 1986</p>
+                    <p>FAPO ENTERPRISE CO., LTD. · 創立於 1986</p>
                 </div>
             </a>
             <ul class="nav-links">
@@ -35,7 +35,7 @@
                 <li><a href="#contact" class="nav-item">聯絡諮詢</a></li>
             </ul>
             <div class="nav-actions">
-                <button id="tunnelShareBtn" class="btn btn-audio" style="border-color: #38bdf8; color: #38bdf8;" onclick="openTunnelModal()">
+                <button id="tunnelShareBtn" class="btn btn-audio" onclick="openTunnelModal()">
                     🌐 外網分享
                 </button>
                 <a href="#contact" class="btn btn-primary">立即詢價</a>
@@ -173,7 +173,7 @@
         <!-- ==========================================================================
              Products & Materials Showcase
              ========================================================================== -->
-        <section id="products" class="section" style="background: rgba(13, 21, 39, 0.4);">
+        <section id="products" class="section section-alt">
             <div class="container">
                 <div class="section-header">
                     <span class="section-tag">Flagship Materials</span>
@@ -291,7 +291,7 @@
         <!-- ==========================================================================
              Manufacturing & Capabilities Section
              ========================================================================== -->
-        <section id="machining" class="section" style="background: rgba(13, 21, 39, 0.4);">
+        <section id="machining" class="section section-alt">
             <div class="container">
                 <div class="section-header">
                     <span class="section-tag">High-End Processing</span>
@@ -368,7 +368,7 @@
         <!-- ==========================================================================
              Technical Tools & Hardness Converter Hub
              ========================================================================== -->
-        <section id="tech" class="section" style="background: rgba(13, 21, 39, 0.4);">
+        <section id="tech" class="section section-alt">
             <div class="container">
                 <div class="section-header">
                     <span class="section-tag">Engineering Tool</span>
@@ -521,9 +521,9 @@
             <div class="footer-grid">
                 <div class="footer-brand">
                     <div class="logo-group">
-                        <div class="logo-badge">FP</div>
+                        <div class="logo-badge">法寶</div>
                         <div class="logo-text">
-                            <h2 style="font-size:1.2rem;">法寶實業有限公司</h2>
+                            <h2 style="font-size:1.2rem; font-family: var(--font-serif);">法寶實業有限公司</h2>
                             <p>FAPO ENTERPRISE CO., LTD.</p>
                         </div>
                     </div>
@@ -624,10 +624,10 @@
                 </div>
             </div>
 
-            <div style="background: rgba(0,0,0,0.4); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px; margin-bottom: 20px;">
-                <label style="font-size: 0.8rem; color: var(--text-muted); display:block; margin-bottom: 6px;">trycloudflare.com 公開網址：</label>
+            <div style="background: rgba(235, 227, 210, 0.55); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px; margin-bottom: 20px;">
+                <label style="font-size: 0.8rem; color: var(--text-muted); display:block; margin-bottom: 6px; font-weight: 600;">公開連線網址：</label>
                 <div style="display: flex; gap: 8px;">
-                    <input type="text" id="tunnelUrlInput" readonly value="檢測中..." style="flex:1; background: rgba(0,0,0,0.6); border: 1px solid var(--border-highlight); color: var(--accent-cyan); font-weight:700; padding:10px 14px; border-radius: var(--radius-sm); font-size:0.95rem; outline:none;">
+                    <input type="text" id="tunnelUrlInput" readonly value="檢測中..." style="flex:1; background: #fffdf8; border: 1px solid var(--border-highlight); color: var(--accent-cinnabar); font-weight:700; padding:10px 14px; border-radius: var(--radius-sm); font-size:0.95rem; outline:none;">
                     <button class="btn btn-primary" onclick="copyTunnelUrl()" style="padding: 10px 18px;">複製</button>
                 </div>
             </div>
@@ -659,7 +659,7 @@
         window.SITE_DATA = {{ data | tojson }};
     </script>
     <!-- Main Interactive Script -->
-    <script src="{{ url_for('static', filename='js/main.js', v='3.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v='4.0') }}"></script>
 </body>
 </html>
 

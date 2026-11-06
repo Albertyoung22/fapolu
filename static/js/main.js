@@ -14,87 +14,203 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ==========================================================================
-   1. Interactive 3D Crystal Lattice Canvas (金屬晶格分子背景特效)
+   1. Ink-Wash Mountain Mist & Golden Bodhi Light Canvas
+      (水墨宣紙遠山雲霧 · 蓮華背光暗紋 · 飄落金色菩提微光特效)
    ========================================================================== */
 function initLatticeCanvas() {
     const canvas = document.getElementById('latticeCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    
+
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
-    
+
     window.addEventListener('resize', () => {
         width = canvas.width = window.innerWidth;
         height = canvas.height = window.innerHeight;
     });
-    
-    const mouse = { x: width / 2, y: height / 2, radius: 160 };
+
+    const mouse = { x: width * 0.5, y: height * 0.4, radius: 140 };
+    const ripples = [];
+    let lastRippleTime = 0;
+
     window.addEventListener('mousemove', (e) => {
         mouse.x = e.clientX;
         mouse.y = e.clientY;
+        const now = performance.now();
+        if (now - lastRippleTime > 260) {
+            lastRippleTime = now;
+            ripples.push({ x: e.clientX, y: e.clientY, r: 4, alpha: 0.24 });
+            if (ripples.length > 8) ripples.shift();
+        }
     });
 
-    // Particle nodes
-    const particleCount = Math.min(65, Math.floor((width * height) / 18000));
-    const particles = [];
+    // Drifting mountain mist clouds
+    const mists = Array.from({ length: 5 }, (_, i) => ({
+        x: Math.random() * width,
+        y: height * (0.58 + i * 0.08),
+        rx: width * (0.28 + Math.random() * 0.22),
+        ry: 48 + Math.random() * 42,
+        vx: (i % 2 === 0 ? 1 : -1) * (0.14 + Math.random() * 0.12)
+    }));
 
-    for (let i = 0; i < particleCount; i++) {
-        particles.push({
-            x: Math.random() * width,
-            y: Math.random() * height,
-            vx: (Math.random() - 0.5) * 0.7,
-            vy: (Math.random() - 0.5) * 0.7,
-            radius: Math.random() * 2 + 1.5,
-            baseColor: i % 4 === 0 ? 'rgba(0, 240, 255, 0.8)' : 'rgba(148, 163, 184, 0.5)'
+    // Floating Golden Bodhi Light Motes & Ink Dust
+    const moteCount = Math.min(54, Math.floor((width * height) / 22000));
+    const motes = Array.from({ length: moteCount }, (_, i) => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.28,
+        vy: -0.15 - Math.random() * 0.28,
+        radius: Math.random() * 2.4 + 1.2,
+        phase: Math.random() * Math.PI * 2,
+        isGold: i % 5 !== 0
+    }));
+
+    let lotusAngle = 0;
+    let timeTick = 0;
+
+    function drawSacredLotusWatermark(cx, cy, maxR) {
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(lotusAngle);
+
+        // Subtle concentric Dharma rings
+        ctx.strokeStyle = 'rgba(168, 120, 38, 0.07)';
+        ctx.lineWidth = 1;
+        [maxR * 0.36, maxR * 0.68, maxR * 0.96].forEach(r => {
+            ctx.beginPath();
+            ctx.arc(0, 0, r, 0, Math.PI * 2);
+            ctx.stroke();
         });
+
+        // 12-petal Sacred Lotus geometry
+        const petals = 12;
+        ctx.strokeStyle = 'rgba(168, 118, 34, 0.085)';
+        ctx.lineWidth = 1.15;
+        for (let i = 0; i < petals; i++) {
+            ctx.save();
+            ctx.rotate((Math.PI * 2 * i) / petals);
+            ctx.beginPath();
+            ctx.moveTo(0, maxR * 0.16);
+            ctx.quadraticCurveTo(maxR * 0.28, maxR * 0.54, 0, maxR * 0.92);
+            ctx.quadraticCurveTo(-maxR * 0.28, maxR * 0.54, 0, maxR * 0.16);
+            ctx.stroke();
+            ctx.restore();
+        }
+        ctx.restore();
+    }
+
+    function drawInkMountainLayer(baseYRatio, amp, freq1, freq2, speedOffset, inkRgba) {
+        const baseY = height * baseYRatio;
+        const grad = ctx.createLinearGradient(0, baseY - amp * 1.4, 0, height);
+        grad.addColorStop(0, inkRgba);
+        grad.addColorStop(0.65, 'rgba(232, 224, 206, 0.18)');
+        grad.addColorStop(1, 'rgba(244, 238, 225, 0.02)');
+
+        ctx.beginPath();
+        ctx.moveTo(0, height);
+        for (let x = 0; x <= width + 24; x += 24) {
+            const y = baseY
+                - Math.sin(x * freq1 + speedOffset) * amp * 0.62
+                - Math.cos(x * freq2 - speedOffset * 0.6) * amp * 0.38
+                - Math.sin(x * freq1 * 2.3 + 1.4) * (amp * 0.16);
+            ctx.lineTo(x, y);
+        }
+        ctx.lineTo(width, height);
+        ctx.closePath();
+        ctx.fillStyle = grad;
+        ctx.fill();
     }
 
     function animate() {
         ctx.clearRect(0, 0, width, height);
+        timeTick += 0.004;
+        lotusAngle += 0.0008;
 
-        for (let i = 0; i < particles.length; i++) {
-            const p = particles[i];
-            p.x += p.vx;
+        // 1. Subtle Sacred Lotus halo watermark
+        drawSacredLotusWatermark(width * 0.5, Math.min(height * 0.44, 420), Math.min(width, height) * 0.36);
+
+        // 2. Three layered ink-wash distant mountain silhouettes (遠山淡墨三疊)
+        drawInkMountainLayer(0.73, 68, 0.0019, 0.0033, timeTick * 0.35, 'rgba(96, 92, 82, 0.075)');
+        drawInkMountainLayer(0.82, 54, 0.0026, 0.0044, -timeTick * 0.45 + 2.1, 'rgba(74, 68, 58, 0.095)');
+        drawInkMountainLayer(0.90, 40, 0.0034, 0.0056, timeTick * 0.55 + 4.0, 'rgba(54, 48, 40, 0.115)');
+
+        // 3. Drifting valley mist clouds (山嵐雲氣)
+        for (let i = 0; i < mists.length; i++) {
+            const m = mists[i];
+            m.x += m.vx;
+            if (m.x - m.rx > width) m.x = -m.rx;
+            if (m.x + m.rx < 0) m.x = width + m.rx;
+
+            const g = ctx.createRadialGradient(m.x, m.y, 10, m.x, m.y, m.rx);
+            g.addColorStop(0, 'rgba(253, 250, 243, 0.55)');
+            g.addColorStop(1, 'rgba(253, 250, 243, 0)');
+            ctx.save();
+            ctx.translate(m.x, m.y);
+            ctx.scale(1, m.ry / m.rx);
+            ctx.translate(-m.x, -m.y);
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.arc(m.x, m.y, m.rx, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // 4. Cursor Zen water ripples
+        for (let i = ripples.length - 1; i >= 0; i--) {
+            const rp = ripples[i];
+            rp.r += 0.9;
+            rp.alpha *= 0.965;
+            if (rp.alpha < 0.01) {
+                ripples.splice(i, 1);
+                continue;
+            }
+            ctx.beginPath();
+            ctx.arc(rp.x, rp.y, rp.r, 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(180, 128, 40, ${rp.alpha})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        }
+
+        // 5. Floating Golden Bodhi Light Motes (金色菩提微光與淡墨微塵)
+        for (let i = 0; i < motes.length; i++) {
+            const p = motes[i];
+            p.phase += 0.025;
+            p.x += p.vx + Math.sin(p.phase) * 0.18;
             p.y += p.vy;
 
-            // Bounce off edges
-            if (p.x < 0 || p.x > width) p.vx *= -1;
-            if (p.y < 0 || p.y > height) p.vy *= -1;
+            if (p.y < -12) { p.y = height + 12; p.x = Math.random() * width; }
+            if (p.x < -12) p.x = width + 12;
+            if (p.x > width + 12) p.x = -12;
 
-            // Mouse interaction
+            // Gentle breeze away from cursor
             const dx = mouse.x - p.x;
             const dy = mouse.y - p.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < mouse.radius) {
+            if (dist < mouse.radius && dist > 1) {
                 const force = (mouse.radius - dist) / mouse.radius;
-                p.x -= (dx / dist) * force * 1.5;
-                p.y -= (dy / dist) * force * 1.5;
+                p.x -= (dx / dist) * force * 0.9;
+                p.y -= (dy / dist) * force * 0.9;
             }
 
-            // Draw particle
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            ctx.fillStyle = p.baseColor;
-            ctx.fill();
-
-            // Connect lines
-            for (let j = i + 1; j < particles.length; j++) {
-                const p2 = particles[j];
-                const dxx = p.x - p2.x;
-                const dyy = p.y - p2.y;
-                const distance = Math.sqrt(dxx * dxx + dyy * dyy);
-                if (distance < 130) {
-                    ctx.beginPath();
-                    ctx.moveTo(p.x, p.y);
-                    ctx.lineTo(p2.x, p2.y);
-                    const alpha = (1 - distance / 130) * 0.22;
-                    ctx.strokeStyle = `rgba(0, 240, 255, ${alpha})`;
-                    ctx.lineWidth = 0.8;
-                    ctx.stroke();
-                }
+            const shimmer = 0.35 + (Math.sin(p.phase) + 1) * 0.25;
+            if (p.isGold) {
+                const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius * 3.8);
+                glow.addColorStop(0, `rgba(208, 152, 42, ${shimmer * 0.85})`);
+                glow.addColorStop(0.5, `rgba(218, 168, 62, ${shimmer * 0.3})`);
+                glow.addColorStop(1, 'rgba(218, 168, 62, 0)');
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius * 3.8, 0, Math.PI * 2);
+                ctx.fillStyle = glow;
+                ctx.fill();
+            } else {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius * 0.85, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(92, 82, 68, ${shimmer * 0.32})`;
+                ctx.fill();
             }
         }
+
         requestAnimationFrame(animate);
     }
     animate();
@@ -655,11 +771,11 @@ function updatePlayButtonUI() {
     if (audioTourState.isPlaying) {
         playBtn.innerHTML = '⏸';
         playBtn.title = '暫停導覽';
-        playBtn.style.boxShadow = '0 0 25px #fbbf24';
+        playBtn.style.boxShadow = '0 0 22px rgba(180, 130, 45, 0.55)';
     } else {
         playBtn.innerHTML = '▶';
         playBtn.title = '啟動禪韻語音導覽';
-        playBtn.style.boxShadow = '0 0 15px rgba(0, 240, 255, 0.4)';
+        playBtn.style.boxShadow = '0 4px 16px rgba(166, 44, 34, 0.3)';
     }
 }
 
@@ -715,11 +831,11 @@ function initAudioVisualizer() {
         }
         
         const isZenGolden = ZenSoundEngine.bowlVisualEnergy > 0.15 || (isAmbient && audioTourState.voice.startsWith('zen'));
-        const strokeColor = isZenGolden ? '#fbbf24' : (isSpeaking ? '#00f0ff' : 'rgba(255, 255, 255, 0.22)');
+        const strokeColor = isZenGolden ? '#b07418' : (isSpeaking ? '#a62c22' : 'rgba(120, 96, 58, 0.35)');
         ctx.strokeStyle = strokeColor;
         ctx.lineWidth = 2;
-        ctx.shadowColor = (isSpeaking || isAmbient || bowlBoost > 1) ? strokeColor : 'transparent';
-        ctx.shadowBlur = (isSpeaking || isAmbient || bowlBoost > 1) ? 9 : 0;
+        ctx.shadowColor = (isSpeaking || isAmbient || bowlBoost > 1) ? 'rgba(180, 128, 36, 0.45)' : 'transparent';
+        ctx.shadowBlur = (isSpeaking || isAmbient || bowlBoost > 1) ? 7 : 0;
         ctx.stroke();
         
         requestAnimationFrame(drawWave);
@@ -839,10 +955,10 @@ function initSpecsExplorer() {
 
                 tableBody.innerHTML = data.items.map((item, idx) => `
                     <tr>
-                        <td style="color: var(--accent-cyan); font-weight:700;">#${(data.page - 1) * 20 + idx + 1}</td>
-                        <td><span style="font-weight:700; color:#fff;">${item.category}</span></td>
-                        <td><span class="chip" style="color:var(--accent-amber); font-weight:600;">${item.material}</span></td>
-                        <td style="font-weight:600;">${item.dimension || '-'}</td>
+                        <td style="color: var(--accent-cinnabar); font-weight:700;">#${(data.page - 1) * 20 + idx + 1}</td>
+                        <td><span style="font-weight:700; color:var(--text-main);">${item.category}</span></td>
+                        <td><span class="chip" style="color:var(--accent-amber); font-weight:700;">${item.material}</span></td>
+                        <td style="font-weight:600; color:var(--text-main);">${item.dimension || '-'}</td>
                         <td>${item.size || '-'}</td>
                         <td>
                             ${item.note ? `<span class="badge-stock">${item.note}</span>` : '<span class="badge-stock">現貨庫存</span>'}

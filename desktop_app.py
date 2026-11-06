@@ -84,7 +84,7 @@ def main():
         min_size=(1024, 680),
         text_select=True,
         confirm_close=False,
-        background_color='#070b14'
+        background_color='#f6f1e6'
     )
 
     print("  🚀 正在開啟桌面視窗...")

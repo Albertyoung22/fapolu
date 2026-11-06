@@ -4,22 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>法寶實業有限公司 | 詢價單管理後台 (RFQ Admin CRM)</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪷</text></svg>">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&display=swap');
         :root {
-            --bg-primary: #070b14;
-            --bg-secondary: #0d1527;
-            --bg-tertiary: #131e36;
-            --bg-card: rgba(16, 26, 48, 0.82);
-            --accent-cyan: #00f0ff;
-            --accent-blue: #3b82f6;
-            --accent-amber: #f59e0b;
-            --accent-emerald: #10b981;
-            --accent-rose: #f43f5e;
-            --text-main: #f8fafc;
-            --text-dim: #cbd5e1;
-            --text-muted: #8899b5;
-            --border-subtle: rgba(255, 255, 255, 0.09);
-            --border-highlight: rgba(0, 240, 255, 0.35);
+            --bg-primary: #f6f1e6;
+            --bg-secondary: #eee7d7;
+            --bg-tertiary: #e6ddca;
+            --bg-card: rgba(253, 250, 243, 0.9);
+            --accent-cyan: #a62c22;
+            --accent-blue: #35597a;
+            --accent-amber: #a85814;
+            --accent-emerald: #2d6a4f;
+            --accent-rose: #b42318;
+            --text-main: #1f1b16;
+            --text-dim: #4a4339;
+            --text-muted: #766c5d;
+            --border-subtle: rgba(92, 75, 48, 0.16);
+            --border-highlight: rgba(158, 112, 36, 0.45);
+            --font-serif: 'Noto Serif TC', 'Songti TC', 'PMingLiU', serif;
             --radius-sm: 8px;
             --radius-md: 14px;
             --radius-lg: 20px;
@@ -29,7 +32,9 @@
 
         body {
             font-family: 'PingFang TC', 'Microsoft JhengHei', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: radial-gradient(circle at 50% 0%, #101c38 0%, #070b14 75%);
+            background:
+                radial-gradient(circle at 20% 8%, rgba(218, 190, 130, 0.18) 0%, transparent 48%),
+                linear-gradient(180deg, #faf6ee 0%, #f4eee1 55%, #ede4d2 100%);
             color: var(--text-main);
             min-height: 100vh;
             line-height: 1.6;
@@ -48,28 +53,28 @@
             font-weight: 600;
             cursor: pointer;
             border: 1px solid var(--border-subtle);
-            background: var(--bg-tertiary);
+            background: #fffdf8;
             color: var(--text-main);
             transition: all 0.2s ease;
         }
-        .btn:hover { border-color: var(--accent-cyan); transform: translateY(-1px); }
+        .btn:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); transform: translateY(-1px); }
         .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
         .btn-primary {
-            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            background: linear-gradient(135deg, #a62c22, #851e16);
             border: none;
-            color: #fff;
-            box-shadow: 0 4px 15px rgba(0, 198, 255, 0.25);
+            color: #fffaf2;
+            box-shadow: 0 4px 14px rgba(166, 44, 34, 0.25);
         }
-        .btn-primary:hover { box-shadow: 0 6px 20px rgba(0, 240, 255, 0.4); }
+        .btn-primary:hover { color: #fffaf2; box-shadow: 0 6px 20px rgba(166, 44, 34, 0.38); }
         .btn-emerald {
-            background: rgba(16, 185, 129, 0.16);
-            border-color: rgba(16, 185, 129, 0.45);
-            color: #34d399;
+            background: rgba(45, 106, 79, 0.12);
+            border-color: rgba(45, 106, 79, 0.35);
+            color: #21573f;
         }
         .btn-danger {
-            background: rgba(244, 63, 94, 0.14);
-            border-color: rgba(244, 63, 94, 0.4);
-            color: #fb7185;
+            background: rgba(180, 35, 24, 0.08);
+            border-color: rgba(180, 35, 24, 0.3);
+            color: #b42318;
         }
         .btn-sm { padding: 5px 11px; font-size: 0.8rem; }
 
@@ -89,7 +94,7 @@
             border: 1px solid var(--border-highlight);
             border-radius: var(--radius-lg);
             padding: 38px 32px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), 0 0 30px rgba(0, 240, 255, 0.12);
+            box-shadow: 0 18px 45px rgba(62, 48, 24, 0.14);
         }
         .brand-row {
             display: flex;
@@ -98,13 +103,17 @@
             margin-bottom: 24px;
         }
         .logo-badge {
-            width: 44px;
-            height: 44px;
-            border-radius: 11px;
-            background: linear-gradient(135deg, #00f0ff, #2563eb);
-            color: #04101f;
+            width: 46px;
+            height: 46px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #b83227, #8f2118);
+            outline: 1.5px solid rgba(255, 245, 235, 0.7);
+            outline-offset: -4px;
+            color: #fffaf2;
+            font-family: var(--font-serif);
             font-weight: 900;
-            font-size: 1.15rem;
+            font-size: 0.94rem;
+            letter-spacing: 1px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -115,14 +124,14 @@
             font-size: 0.85rem;
             color: var(--text-dim);
             margin-bottom: 6px;
-            font-weight: 600;
+            font-weight: 700;
         }
         .input-control {
             width: 100%;
             padding: 11px 14px;
             border-radius: var(--radius-sm);
-            border: 1px solid var(--border-subtle);
-            background: rgba(7, 11, 20, 0.75);
+            border: 1px solid rgba(120, 96, 58, 0.3);
+            background: #fffdf8;
             color: var(--text-main);
             font-size: 0.94rem;
             outline: none;
@@ -134,9 +143,9 @@
 
         .error-msg {
             display: none;
-            background: rgba(244, 63, 94, 0.15);
-            border: 1px solid rgba(244, 63, 94, 0.45);
-            color: #fda4af;
+            background: rgba(180, 35, 24, 0.1);
+            border: 1px solid rgba(180, 35, 24, 0.35);
+            color: #b42318;
             padding: 10px 12px;
             border-radius: var(--radius-sm);
             font-size: 0.85rem;
@@ -148,7 +157,7 @@
             position: sticky;
             top: 0;
             z-index: 50;
-            background: rgba(7, 11, 20, 0.88);
+            background: rgba(246, 241, 230, 0.92);
             backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border-subtle);
             padding: 14px 28px;
@@ -171,13 +180,13 @@
             padding: 6px 12px;
             border-radius: 999px;
             font-size: 0.8rem;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             border: 1px solid var(--border-subtle);
-            background: var(--bg-tertiary);
+            background: #fffdf8;
         }
-        .smtp-pill.on { border-color: rgba(16, 185, 129, 0.45); color: #34d399; }
-        .smtp-pill.off { border-color: rgba(245, 158, 11, 0.45); color: #fbbf24; }
+        .smtp-pill.on { border-color: rgba(45, 106, 79, 0.45); color: #21573f; }
+        .smtp-pill.off { border-color: rgba(168, 88, 20, 0.45); color: #8a480d; }
 
         .container {
             max-width: 1380px;
@@ -188,12 +197,12 @@
         /* Alert Banner */
         .cloud-banner {
             display: none;
-            background: rgba(245, 158, 11, 0.12);
-            border: 1px solid rgba(245, 158, 11, 0.4);
+            background: rgba(218, 165, 32, 0.12);
+            border: 1px solid rgba(168, 88, 20, 0.35);
             border-radius: var(--radius-md);
             padding: 14px 18px;
             margin-bottom: 22px;
-            color: #fde68a;
+            color: #6b3c08;
             font-size: 0.88rem;
             align-items: center;
             justify-content: space-between;
@@ -214,13 +223,14 @@
             border-radius: var(--radius-md);
             padding: 20px 22px;
             cursor: pointer;
+            box-shadow: 0 4px 16px rgba(60, 48, 28, 0.05);
             transition: all 0.2s ease;
         }
         .stat-card:hover { border-color: var(--border-highlight); transform: translateY(-2px); }
-        .stat-label { font-size: 0.84rem; color: var(--text-muted); margin-bottom: 6px; }
-        .stat-value { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; }
+        .stat-label { font-size: 0.84rem; color: var(--text-muted); font-weight: 600; margin-bottom: 6px; }
+        .stat-value { font-family: var(--font-serif); font-size: 2rem; font-weight: 900; }
         .stat-card.pending .stat-value { color: var(--accent-amber); }
-        .stat-card.quoting .stat-value { color: #60a5fa; }
+        .stat-card.quoting .stat-value { color: var(--accent-blue); }
         .stat-card.closed .stat-value { color: var(--accent-emerald); }
         .stat-card.total .stat-value { color: var(--accent-cyan); }
 
@@ -243,16 +253,16 @@
             border-radius: 999px;
             font-size: 0.83rem;
             font-weight: 600;
-            background: var(--bg-tertiary);
+            background: #fffdf8;
             border: 1px solid var(--border-subtle);
             color: var(--text-dim);
             cursor: pointer;
             transition: all 0.18s;
         }
         .chip.active, .chip:hover {
-            background: rgba(0, 240, 255, 0.15);
+            background: var(--accent-cyan);
             border-color: var(--accent-cyan);
-            color: var(--accent-cyan);
+            color: #fffaf2;
         }
         .search-group {
             display: flex;
@@ -269,6 +279,7 @@
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-md);
             overflow-x: auto;
+            box-shadow: 0 6px 20px rgba(60, 48, 28, 0.05);
         }
         table {
             width: 100%;
@@ -278,12 +289,11 @@
         th {
             text-align: left;
             padding: 14px 16px;
-            font-size: 0.8rem;
-            text-transform: uppercase;
+            font-size: 0.82rem;
             letter-spacing: 0.5px;
-            color: var(--text-muted);
-            background: rgba(13, 21, 39, 0.9);
-            border-bottom: 1px solid var(--border-subtle);
+            color: #5c3d0e;
+            background: rgba(226, 215, 193, 0.65);
+            border-bottom: 1px solid var(--border-highlight);
         }
         td {
             padding: 15px 16px;
@@ -292,7 +302,7 @@
             vertical-align: top;
         }
         tbody tr { transition: background 0.15s; cursor: pointer; }
-        tbody tr:hover { background: rgba(0, 240, 255, 0.04); }
+        tbody tr:hover { background: rgba(180, 130, 45, 0.08); }
 
         .ticket-id {
             font-family: 'Consolas', monospace;
@@ -305,14 +315,15 @@
         .person-sub { font-size: 0.83rem; color: var(--text-dim); margin-top: 2px; }
         .contact-link {
             display: block;
-            color: #38bdf8;
+            color: #2b547e;
+            font-weight: 600;
             font-size: 0.84rem;
         }
         .contact-link:hover { text-decoration: underline; }
         .material-tag {
             display: inline-block;
-            color: #fbbf24;
-            font-weight: 600;
+            color: #8a4b08;
+            font-weight: 700;
             margin-bottom: 4px;
         }
         .msg-preview {
@@ -327,8 +338,8 @@
         .note-preview {
             margin-top: 5px;
             font-size: 0.78rem;
-            color: #a78bfa;
-            background: rgba(139, 92, 246, 0.12);
+            color: #6b3c08;
+            background: rgba(180, 130, 45, 0.15);
             padding: 3px 8px;
             border-radius: 5px;
             display: inline-block;
@@ -345,10 +356,10 @@
             font-weight: 700;
             white-space: nowrap;
         }
-        .badge-pending { background: rgba(245, 158, 11, 0.16); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
-        .badge-quoting { background: rgba(59, 130, 246, 0.18); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
-        .badge-closed { background: rgba(16, 185, 129, 0.16); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
-        .badge-archived { background: rgba(148, 163, 184, 0.14); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.3); }
+        .badge-pending { background: rgba(180, 110, 20, 0.14); color: #8a4b08; border: 1px solid rgba(180, 110, 20, 0.38); }
+        .badge-quoting { background: rgba(53, 89, 122, 0.14); color: #264a6e; border: 1px solid rgba(53, 89, 122, 0.35); }
+        .badge-closed { background: rgba(45, 106, 79, 0.14); color: #1f543c; border: 1px solid rgba(45, 106, 79, 0.35); }
+        .badge-archived { background: rgba(120, 110, 96, 0.14); color: #5c5449; border: 1px solid rgba(120, 110, 96, 0.3); }
 
         .empty-state {
             text-align: center;
@@ -360,8 +371,8 @@
         .modal-backdrop {
             position: fixed;
             inset: 0;
-            background: rgba(3, 7, 15, 0.78);
-            backdrop-filter: blur(8px);
+            background: rgba(38, 30, 18, 0.5);
+            backdrop-filter: blur(6px);
             z-index: 100;
             display: none;
             align-items: center;
@@ -374,11 +385,11 @@
             max-width: 680px;
             max-height: 90vh;
             overflow-y: auto;
-            background: #0d1629;
+            background: #fbf7ee;
             border: 1px solid var(--border-highlight);
             border-radius: var(--radius-lg);
             padding: 28px;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65);
+            box-shadow: 0 24px 60px rgba(45, 34, 16, 0.25);
         }
         .modal-header {
             display: flex;
@@ -395,25 +406,27 @@
             margin-bottom: 16px;
         }
         .info-block {
-            background: rgba(7, 11, 20, 0.6);
+            background: #fffdf8;
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-sm);
             padding: 11px 14px;
         }
         .info-block.full { grid-column: 1 / -1; }
-        .info-block .lbl { font-size: 0.76rem; color: var(--text-muted); margin-bottom: 3px; }
+        .info-block .lbl { font-size: 0.76rem; color: var(--text-muted); font-weight: 600; margin-bottom: 3px; }
         .info-block .val { font-size: 0.94rem; color: var(--text-main); word-break: break-word; white-space: pre-wrap; }
 
         .toast {
             position: fixed;
             bottom: 24px;
             right: 24px;
-            background: #132342;
+            background: #fbf7ee;
             border: 1px solid var(--accent-cyan);
-            color: #fff;
+            border-left: 4px solid var(--accent-cyan);
+            color: var(--text-main);
+            font-weight: 600;
             padding: 12px 20px;
             border-radius: var(--radius-sm);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 28px rgba(45, 34, 16, 0.18);
             z-index: 200;
             opacity: 0;
             pointer-events: none;
@@ -438,7 +451,7 @@
     <div class="login-wrap">
         <div class="login-card">
             <div class="brand-row">
-                <div class="logo-badge">FP</div>
+                <div class="logo-badge">法寶</div>
                 <div>
                     <h2 style="font-size: 1.2rem; font-weight: 800;">法寶實業 · 詢價管理後台</h2>
                     <p style="font-size: 0.78rem; color: var(--text-muted);">FAPO ENTERPRISE RFQ ADMIN</p>
@@ -502,7 +515,7 @@
          ===================================================================== -->
     <header class="topbar">
         <div class="brand-row" style="margin-bottom: 0;">
-            <div class="logo-badge">FP</div>
+            <div class="logo-badge">法寶</div>
             <div>
                 <h1 style="font-size: 1.1rem; font-weight: 800;">法寶實業 · 客戶詢價管理後台</h1>
                 <p style="font-size: 0.76rem; color: var(--text-muted);">北中南業務報價追蹤與 Email 即時通知中心</p>
