@@ -4535,3 +4535,152 @@ button {
   }
 }
 
+/* ==========================================================================
+   Industry Benchmark: Alloy Matrix & Technical Standards Display
+   ========================================================================== */
+.alloy-matrix-wrapper {
+  margin: 32px 0 44px;
+  padding: 28px 32px;
+  border-radius: 18px;
+  background: var(--card-bg, rgba(255, 255, 255, 0.9));
+  border: 1px solid var(--border-color, rgba(184, 51, 42, 0.15));
+  box-shadow: 0 10px 30px rgba(45, 34, 16, 0.05);
+}
+
+.alloy-matrix-header {
+  margin-bottom: 24px;
+}
+
+.alloy-matrix-tag {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--accent-cinnabar);
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.alloy-matrix-header h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 6px;
+}
+
+.alloy-matrix-sub {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.alloy-matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+
+.alloy-series-card {
+  background: rgba(254, 252, 246, 0.9);
+  border: 1px solid rgba(200, 180, 160, 0.35);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.alloy-series-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-cinnabar);
+  box-shadow: 0 12px 24px rgba(184, 51, 42, 0.12);
+}
+
+.alloy-series-card.featured::before {
+  content: "HOT";
+  position: absolute;
+  top: 10px;
+  right: -24px;
+  background: var(--accent-cinnabar);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 2px 26px;
+  transform: rotate(45deg);
+}
+
+.series-card-top {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.series-num {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--accent-cinnabar);
+  line-height: 1.2;
+}
+
+.series-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.series-ratings {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.rating-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-secondary);
+}
+
+.rating-row .stars {
+  color: #eab308;
+  letter-spacing: 2px;
+  font-size: 0.9rem;
+}
+
+.series-desc {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+  flex-grow: 1;
+}
+
+.series-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(200, 180, 160, 0.4);
+}
+
+.badge-stock {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.btn-matrix-action {
+  font-weight: 700;
+  color: var(--accent-cinnabar);
+}
+
+

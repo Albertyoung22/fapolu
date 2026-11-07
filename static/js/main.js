@@ -1284,6 +1284,24 @@ window.quickFilterExtrusion = function(filterCat) {
     }
 };
 
+window.quickFilterAlloy = function(alloyCode) {
+    const searchInput = document.getElementById('specsSearchInput');
+    const catSelect = document.getElementById('specsCatSelect');
+    const explorerCard = document.getElementById('specsExplorerCard');
+    if (catSelect) {
+        catSelect.value = '';
+        catSelect.dispatchEvent(new Event('change'));
+    }
+    if (searchInput) {
+        searchInput.value = alloyCode;
+        searchInput.dispatchEvent(new Event('input'));
+    }
+    if (explorerCard) {
+        explorerCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    showToast(`🔍 已為您檢索「${alloyCode}」系列現貨與模具規格`);
+};
+
 /* ==========================================================================
    6. Contact Form & Quotation Workflow (附圖面拖曳上傳與估價單)
    ========================================================================== */
