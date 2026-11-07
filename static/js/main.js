@@ -1177,6 +1177,14 @@ window.addSpecToQuote = function(specText) {
 /* ==========================================================================
    4. Hardness Converter (國際標準金屬硬度對照計算器)
    ========================================================================== */
+window.applyHbPreset = function(val) {
+    const hbInput = document.getElementById('calcHbInput');
+    if (hbInput) {
+        hbInput.value = val;
+        hbInput.dispatchEvent(new Event('input'));
+    }
+};
+
 function initHardnessCalculator() {
     const hbInput = document.getElementById('calcHbInput');
     const hrcVal = document.getElementById('calcHrcVal');

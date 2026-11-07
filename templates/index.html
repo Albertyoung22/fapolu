@@ -1283,8 +1283,16 @@
                         <!-- Calculator Card -->
                         <div class="calculator-card glass-card">
                             <h4 style="font-size: 1.2rem; font-weight:700; margin-bottom: 8px;">金屬硬度即時試算器</h4>
-                            <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px;">請輸入布氏硬度 (HB)，系統將自動對照各項國際硬度與近似抗拉強度：</p>
+                            <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 12px;">請輸入布氏硬度 (HB)，系統將自動對照各項國際硬度與近似抗拉強度：</p>
                             
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px;">
+                                <span style="font-size: 0.78rem; color: var(--text-muted); align-self: center;">常用合金硬度快選：</span>
+                                <button type="button" class="cpsat-add-btn" onclick="applyHbPreset(95)">6061-T6 (≈95 HB)</button>
+                                <button type="button" class="cpsat-add-btn" onclick="applyHbPreset(150)">7075-T651 (≈150 HB)</button>
+                                <button type="button" class="cpsat-add-btn" onclick="applyHbPreset(68)">5052-H32 (≈68 HB)</button>
+                                <button type="button" class="cpsat-add-btn" onclick="applyHbPreset(229)">結構鋼 (≈229 HB)</button>
+                            </div>
+
                             <div class="calc-input-group">
                                 <label for="calcHbInput">布氏硬度 (HB / Brinell)：</label>
                                 <input type="number" id="calcHbInput" value="229" min="60" max="700">
