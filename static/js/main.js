@@ -76,7 +76,10 @@ window.closeMobileMenu = function() {
     const overlay = document.getElementById('mobileNavOverlay');
     const menuBtn = document.getElementById('mobileMenuBtn');
     if (overlay) overlay.classList.remove('open');
-    if (menuBtn) menuBtn.textContent = '☰';
+    if (menuBtn) {
+        menuBtn.textContent = '☰';
+        menuBtn.setAttribute('aria-expanded', 'false');
+    }
 };
 
 function initMobileUI() {
@@ -86,6 +89,7 @@ function initMobileUI() {
         menuBtn.addEventListener('click', () => {
             const isOpen = overlay.classList.toggle('open');
             menuBtn.textContent = isOpen ? '✕' : '☰';
+            menuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
         });
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) window.closeMobileMenu();
@@ -1730,6 +1734,7 @@ function showToast(msg) {
 
 window.toggleAiChatWidget = function(forceState) {
     const widget = document.getElementById('aiChatWidget');
+    const launcher = document.getElementById('aiChatLauncher');
     if (!widget) return;
     if (typeof forceState === 'boolean') {
         if (forceState) widget.classList.add('open');
@@ -1737,7 +1742,9 @@ window.toggleAiChatWidget = function(forceState) {
     } else {
         widget.classList.toggle('open');
     }
-    if (widget.classList.contains('open')) {
+    const isOpen = widget.classList.contains('open');
+    if (launcher) launcher.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    if (isOpen) {
         const inp = document.getElementById('aiChatInput');
         if (inp) setTimeout(() => inp.focus(), 150);
         const box = document.getElementById('aiChatMessages');

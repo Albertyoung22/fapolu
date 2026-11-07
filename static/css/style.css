@@ -4758,4 +4758,67 @@ button {
   color: var(--accent-cinnabar);
 }
 
+/* ==========================================================================
+   WCAG 2.1 AA / 台灣無障礙網頁檢測規範 (Accessibility Compliance)
+   ========================================================================== */
+.skip-link {
+  position: absolute;
+  top: -120px;
+  left: 20px;
+  background: #8b261d;
+  color: #ffffff !important;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  z-index: 999999;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: top 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  top: 20px;
+  outline: 3px solid #f59e0b !important;
+}
+
+/* Clear visible keyboard focus indicator */
+:focus-visible {
+  outline: 3px solid rgba(184, 51, 42, 0.9) !important;
+  outline-offset: 2px !important;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #b8332a !important;
+  outline-offset: 2px !important;
+}
+
+/* Screen reader only utility class */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Reduced motion preference fallback */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 
