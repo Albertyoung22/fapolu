@@ -146,19 +146,13 @@ def main():
     if args.tunnel:
         threading.Thread(target=lambda: tunnel.start_tunnel(port=PORT, wait_for_url=True), daemon=True).start()
 
-    # 2. Window Settings
+    # 2. Window Settings & High-Precision Icon Resolution
     window_title = "法寶實業有限公司 | FAPO ENTERPRISE - 全方位鋁合金材料供應鏈與精密加工 (沉浸式互動系統)"
     url = f"http://{HOST}:{PORT}"
     
-    # Check if there is an icon
-    icon_path = None
-    possible_icons = [
-        os.path.join(os.path.dirname(__file__), 'static', 'img_crawled', 'fapo_logo.png')
-    ]
-    for p in possible_icons:
-        if os.path.exists(p):
-            icon_path = p
-            break
+    icon_ico_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'app.ico'))
+    if not os.path.exists(icon_ico_path):
+        icon_ico_path = os.path.abspath('app.ico')
 
     # 3. Create Native Desktop Window with Edge WebView2
     window = webview.create_window(
@@ -172,9 +166,55 @@ def main():
         background_color='#f6f1e6'
     )
 
+    def apply_window_icon():
+        if not sys.platform.startswith('win') or not os.path.exists(icon_ico_path):
+            return
+        import ctypes
+        user32 = ctypes.windll.user32
+        WM_SETICON = 0x0080
+        ICON_SMALL = 0
+        ICON_BIG = 1
+        IMAGE_ICON = 1
+        LR_LOADFROMFILE = 0x0010
+        LR_DEFAULTSIZE = 0x0040
+        try:
+            hIconBig = user32.LoadImageW(None, icon_ico_path, IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE)
+            hIconSmall = user32.LoadImageW(None, icon_ico_path, IMAGE_ICON, 16, 16, LR_LOADFROMFILE)
+
+            # 1. WinForms native Form.Icon
+            if hasattr(window, 'native') and window.native:
+                try:
+                    import clr
+                    clr.AddReference('System.Drawing')
+                    from System.Drawing import Icon
+                    window.native.Icon = Icon(icon_ico_path)
+                except Exception:
+                    pass
+
+            # 2. Win32 HWND WM_SETICON for Taskbar and Titlebar
+            hwnd = None
+            if hasattr(window, 'native') and hasattr(window.native, 'Handle'):
+                hwnd = window.native.Handle.ToInt32()
+            if not hwnd:
+                hwnd = user32.FindWindowW(None, window.title)
+
+            if hwnd:
+                user32.SendMessageW(hwnd, WM_SETICON, ICON_BIG, hIconBig)
+                user32.SendMessageW(hwnd, WM_SETICON, ICON_SMALL, hIconSmall)
+        except Exception as e:
+            pass
+
+    # Background enforcer ensures icon binds cleanly after Edge WebView2 creates its window handle
+    def icon_enforcer():
+        for delay in [0.3, 0.8, 1.8, 3.0]:
+            time.sleep(delay)
+            apply_window_icon()
+
+    threading.Thread(target=icon_enforcer, daemon=True).start()
+
     print("  🚀 正在開啟桌面視窗...")
-    # gui='edgechromium' uses Microsoft Edge Chromium runtime on Windows
-    webview.start(gui='edgechromium', debug=False)
+    # gui='edgechromium' uses Microsoft Edge Chromium runtime on Windows with custom icon
+    webview.start(gui='edgechromium', debug=False, icon=icon_ico_path)
     print("  桌面視窗已關閉，感謝使用！")
 
 if __name__ == '__main__':
