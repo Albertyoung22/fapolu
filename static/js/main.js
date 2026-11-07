@@ -1737,6 +1737,16 @@ window.sendAiChatMessage = function() {
             `;
         }
 
+        const voiceText = data.voice_script || (data.reply || '').replace(/[*`#|•📍✅📦🧮📋💡☎️]/g, '').replace(/\[.*?\]\(.*?\)/g, '').trim().substring(0, 300);
+        const safeVoiceText = voiceText.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
+        html += `
+            <div style="margin-top:8px;">
+                <button type="button" class="ai-bubble-audio-btn" onclick="readAloudText('${safeVoiceText}', this)" title="播放擬人化語音解說">
+                    🔊 聽取 AI 語音解說
+                </button>
+            </div>
+        `;
+
         html += `</div>`;
         botDiv.innerHTML = html;
         box.scrollTop = box.scrollHeight;
@@ -1878,6 +1888,9 @@ window.runInteractiveCpsatSolver = function() {
             plan.bars_plan.map(b => `第${b.bar_no}支(${b.cuts_summary})`).join('；');
         const safeQuote = quoteSummary.replace(/'/g, "\'");
 
+        const speechComm = plan.speech_commentary || `母材 ${plan.stock_length_mm}mm 最少需用 ${plan.total_bars_used} 支，材料利用率達 ${plan.overall_utilization_pct}%。`;
+        const safeCommentary = speechComm.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
+
         resBox.innerHTML = `
             <div style="margin-bottom:10px;border-bottom:1px solid rgba(180,160,120,0.35);padding-bottom:8px;">
                 <div style="font-weight:800;color:var(--accent-cinnabar);font-size:0.86rem;">
@@ -1890,6 +1903,9 @@ window.runInteractiveCpsatSolver = function() {
                     <div>總餘料長度：<strong>${plan.total_remnant_mm} mm</strong></div>
                 </div>
             </div>
+            <button type="button" class="ai-bubble-audio-btn" style="width:100%;justify-content:center;padding:8px;background:var(--accent-cinnabar);color:#ffffff;border-color:var(--accent-cinnabar);font-size:0.8rem;margin-bottom:10px;" onclick="readAloudText('${safeCommentary}', this)">
+                🔊 聽取 AI 工程師解說排版方案
+            </button>
             ${barsHtml}
             <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px;">
                 <button type="button" class="ai-spec-mini-btn" style="width:100%;padding:8px;" onclick="addSpecToQuote('${safeQuote}')">
@@ -1905,6 +1921,74 @@ window.runInteractiveCpsatSolver = function() {
         if (solveBtn) solveBtn.disabled = false;
         resBox.innerHTML = `<div style="color:#b91c1c;">⚠️ 求解器連線異常</div>`;
     });
+};
+
+/* ==========================================================================
+   AI Voice Speech Recognition (語音輸入與對話模式)
+   ========================================================================== */
+let aiSpeechRecognition = null;
+let isAiListening = false;
+
+window.toggleAiVoiceRecognition = function() {
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const btn = document.getElementById('aiVoiceInputBtn');
+    const input = document.getElementById('aiChatInput');
+
+    if (!SpeechRec) {
+        showToast("您的瀏覽器暫未支援語音辨識，請使用文字鍵盤輸入。");
+        return;
+    }
+
+    if (isAiListening && aiSpeechRecognition) {
+        aiSpeechRecognition.stop();
+        return;
+    }
+
+    try {
+        aiSpeechRecognition = new SpeechRec();
+        aiSpeechRecognition.lang = 'zh-TW';
+        aiSpeechRecognition.continuous = false;
+        aiSpeechRecognition.interimResults = true;
+
+        aiSpeechRecognition.onstart = function() {
+            isAiListening = true;
+            if (btn) btn.classList.add('listening');
+            if (input) input.placeholder = '🎙️ 正在聆聽，請說出規格或裁切尺寸...';
+        };
+
+        aiSpeechRecognition.onresult = function(e) {
+            let transcript = '';
+            for (let i = e.resultIndex; i < e.results.length; ++i) {
+                transcript += e.results[i][0].transcript;
+            }
+            if (input) input.value = transcript;
+        };
+
+        aiSpeechRecognition.onerror = function(e) {
+            console.warn('Speech rec error:', e);
+            if (btn) btn.classList.remove('listening');
+            isAiListening = false;
+            if (input) input.placeholder = '輸入或以語音說出規格需求、裁切尺寸...';
+        };
+
+        aiSpeechRecognition.onend = function() {
+            isAiListening = false;
+            if (btn) btn.classList.remove('listening');
+            if (input) {
+                input.placeholder = '輸入或以語音說出規格需求、裁切尺寸...';
+                if (input.value.trim().length > 0) {
+                    sendAiChatMessage();
+                }
+            }
+        };
+
+        aiSpeechRecognition.start();
+    } catch (err) {
+        console.error('Failed to start speech rec:', err);
+        if (btn) btn.classList.remove('listening');
+        isAiListening = false;
+        showToast("啟動麥克風失敗，請確認已授權瀏覽器麥克風權限");
+    }
 };
 
 

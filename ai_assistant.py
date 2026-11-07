@@ -193,6 +193,21 @@ def solve_cutting_stock_cpsat(stock_length_mm=3000, kerf_mm=3, demands=None):
     overall_utilization = round((total_net_cut_mm / total_stock_mm) * 100, 2) if total_stock_mm else 0
     total_remnant_mm = max(0, total_stock_mm - total_net_cut_mm - total_kerf_mm)
 
+    # Generate humanized conversational voice commentary script for Edge-TTS
+    first_bar = bars_plan[0] if bars_plan else None
+    first_cuts_desc = first_bar["cuts_summary"] if first_bar else ""
+    speech_commentary = (
+        f"您好！我是法寶實業的 AI 工程師。透過 Google OR-Tools CP-SAT 運籌學求解器運算，"
+        f"為您規劃出全域最省料的排版方案。這批裁切需求共需使用 {total_bars_used} 支標準 {stock_L} 毫米母材，"
+        f"整體材料利用率達到 {overall_utilization} 百分比。"
+    )
+    if first_bar:
+        speech_commentary += f"第 1 支母材為您裁切 {first_cuts_desc}，扣除鋸縫損耗後，保留了 {first_bar['remnant_mm']} 毫米的可用餘料。"
+    if total_bars_used > 1:
+        speech_commentary += f"其餘母材亦已緊湊排程，將切屑廢料降至最低。您可以直接帶入詢價單，或由我們安排專車裁切配送！"
+    else:
+        speech_commentary += "此方案材料浪費極少，您可以直接帶入詢價單，我們隨時為您備料裁切！"
+
     return {
         "success": True,
         "solver_status": "OPTIMAL (全域最佳解)" if status == cp_model.OPTIMAL else "FEASIBLE (可行優化解)",
@@ -206,7 +221,8 @@ def solve_cutting_stock_cpsat(stock_length_mm=3000, kerf_mm=3, demands=None):
         "total_kerf_mm": total_kerf_mm,
         "total_remnant_mm": total_remnant_mm,
         "demands": valid_demands,
-        "bars_plan": bars_plan
+        "bars_plan": bars_plan,
+        "speech_commentary": speech_commentary
     }
 
 
@@ -422,7 +438,8 @@ def process_ai_chat(message, inventory_data):
                 return {
                     "reply": "\n".join(reply_lines),
                     "specs": [],
-                    "cutting_plan": plan
+                    "cutting_plan": plan,
+                    "voice_script": plan.get("speech_commentary")
                 }
 
     # 2. Check if user asks for Alloy Selection / Recommendation (選料 / 推薦 / 陽極 / 海水 / 航太 / 哪種鋁)
@@ -456,10 +473,15 @@ def process_ai_chat(message, inventory_data):
             f"💡 **次要替代方案**：`{alts[0]['alloy']}`（{alts[0]['desc']}）、`{alts[1]['alloy']}`\n"
             f"下方已為您同步檢索法寶實業現有庫存規格，可一鍵加入詢價單："
         )
+        voice_script = (
+            f"為您推薦首選合金牌號為 {prim['alloy']}，核心特點是：{prim['desc']}。"
+            f"若有其他考量，亦可參考次選 {alts[0]['alloy']}。下方已為您同步檢索庫存規格，歡迎直接加入詢價單！"
+        )
         return {
             "reply": reply,
             "specs": matched_specs[:5],
-            "cutting_plan": None
+            "cutting_plan": None,
+            "voice_script": voice_script
         }
 
     # 3. Check if user asks about company branch / contact / delivery / mill certificate
@@ -471,7 +493,8 @@ def process_ai_chat(message, inventory_data):
             "• **台南雙廠區**：台南市佳里區麻佳路三段70巷30號 ｜ ☎️ `(06) 726-3666`\n\n"
             "✅ **隨貨檢附證明**：每批出廠鋁材皆可提供原廠材質證明書（Mill Sheet / MTR）、RoHS / REACH 國際無毒環保檢驗報告。"
         )
-        return {"reply": reply, "specs": [], "cutting_plan": None}
+        voice_script = "法寶實業在台北、台中、台南皆設有直營倉儲發貨中心，全台專車配送。每批出廠鋁材均可檢附原廠材質分析證明單及環保認證！"
+        return {"reply": reply, "specs": [], "cutting_plan": None, "voice_script": voice_script}
 
     # 4. Inventory / Mold Specification Search with CP-SAT Minimal Machining Allowance Matching
     matched_specs = find_optimal_inventory_specs_cpsat(msg, inventory_data)
@@ -480,10 +503,12 @@ def process_ai_chat(message, inventory_data):
             f"📦 **已為您智慧檢索「`{msg}`」的最佳現貨與模具規格**（優先挑選加工裕度最接近、切削餘料最少之項目）：\n"
             f"您可以直接點擊下方規格旁的 **「＋詢價」** 按鈕帶入詢價單，或切換至 **「🧮 CP-SAT 下料優化」** 計算定寸裁切方案！"
         )
+        voice_script = f"已為您檢索到最接近 {msg} 的現貨庫存與模具規格。您可以直接點選加入詢價單，或切換至排版優化計算！"
         return {
             "reply": reply,
             "specs": matched_specs[:6],
-            "cutting_plan": None
+            "cutting_plan": None,
+            "voice_script": voice_script
         }
 
     return {
@@ -494,5 +519,6 @@ def process_ai_chat(message, inventory_data):
             "3️⃣ **工程選料建議**：「`推薦適合硬陽與高強度的鋁合金`」、「`海水耐蝕鈑金用哪種鋁？`」"
         ),
         "specs": [],
-        "cutting_plan": None
+        "cutting_plan": None,
+        "voice_script": "您好！我是法寶實業 AI 智慧工程客服。您可以透過語音或文字向我查詢現貨庫存、工程選料，或是使用 Google OR-Tools CP-SAT 進行母材下料裁切最佳化計算！"
     }

@@ -1497,7 +1497,10 @@
                         您可以直接詢問：<br>
                         • <strong>現貨與模具查詢</strong>：「6061 圓棒 50mm」、「7075 厚 20mm 鋁板」<br>
                         • <strong>智慧裁切排料</strong>：「母材 3000mm 切 800*3, 550*4, 420*5」<br>
-                        • <strong>工程選料顧問</strong>：「推薦適合硬陽極與高強度的鋁材」
+                        • <strong>工程選料顧問</strong>：「推薦適合硬陽極與高強度的鋁材」<br>
+                        <button type="button" class="ai-bubble-audio-btn" onclick="readAloudText('您好！我是法寶實業 AI 智慧工程客服。您可以透過語音或文字向我查詢現貨庫存、工程選料，或是使用 Google OR-Tools CP-SAT 進行母材下料裁切最佳化計算！', this)">
+                            🔊 語音朗讀介紹
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1510,7 +1513,10 @@
             </div>
 
             <form class="ai-chat-input-bar" onsubmit="event.preventDefault(); sendAiChatMessage();">
-                <input type="text" id="aiChatInput" placeholder="輸入規格需求、選料問題或裁切尺寸..." autocomplete="off">
+                <button type="button" id="aiVoiceInputBtn" class="ai-voice-input-btn" title="按一下開始語音對話輸入（支援中文辨識）" onclick="toggleAiVoiceRecognition()">
+                    🎙️
+                </button>
+                <input type="text" id="aiChatInput" placeholder="輸入或以語音說出規格需求、裁切尺寸..." autocomplete="off">
                 <button type="submit" id="aiChatSendBtn" class="btn btn-primary">發送</button>
             </form>
         </div>
@@ -1632,7 +1638,7 @@
         window.ALL_PAGES_META = {{ (all_pages_meta or {}) | tojson }};
     </script>
     <!-- Main Interactive Script -->
-    <script src="{{ url_for('static', filename='js/main.js', v='17.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v='18.0') }}"></script>
 </body>
 </html>
 
