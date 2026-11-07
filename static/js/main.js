@@ -513,6 +513,83 @@ let audioTourState = {
     audioCtx: null
 };
 
+const TOUR_CHAPTERS_I18N = {
+    'zh-TW': [
+        { title: "法寶實業 · 企業簡介", script: "歡迎蒞臨法寶實業有限公司。法寶實業創立於 1986 年，深耕台灣近四十載。我們致力於建構全方位、彈性且強大的鋁合金材料供應鏈與精密加工一站式平台，秉持以鋁為本、服務為先的理念，是全台高科技產業最堅實的後盾。" },
+        { title: "關於我們 · 沿革與願景", script: "法寶實業自 1986 年創立以來，由早期進出口貿易穩健轉型為具備龐大現貨庫存與精密裁切加工能力的綜合材料供應商。我們秉持誠信立基、整合共榮的經營理念，橫跨鋁材、不鏽鋼、鎂合金、銅材與精密加工九大營業範疇，服務涵蓋半導體、航太、醫療與機電等十一大產業，矢志讓台灣精密製造實力在世界舞台發光。" },
+        { title: "北中南服務網絡佈局", script: "為了滿足全台客戶即時調料與加工需求，法寶實業建立了綿密的北中南服務網。包括台北松山總公司、鄰近沙鹿交流道的台中物流裁切中心、以及台南佳里一廠與麻豆二廠雙廠區編制，龐大現貨與專屬車隊，提供最快速的材料調撥與配送。" },
+        { title: "精選旗艦鋁材介紹", script: "在材料供應方面，我們主力引進日本原裝 UACJ 5052 貼膜鋁板，其獨特壓延工藝有效降低內部殘留應力，切削後絕不翹曲；同時常備 7075 航太級超硬鋁合金、6061 結構鋁板、5083 耐蝕船用板，以及兩千、五千、六千與七千系列鋁擠型型材，現貨規格全台最齊全。" },
+        { title: "現貨與模具規格檢索", script: "在現貨與模具規格方面，法寶實業為您建置了超過三千零七十項的即時檢索資料庫，完整涵蓋五百一十四項常備鋁板、圓棒與扁條現貨，以及兩千五百五十七種免開模費的鋁擠型標準斷面模具。您只需輸入材質、尺寸或模具編號，即可即時查詢並一鍵帶入詢價單。" },
+        { title: "高階加工與製程實力", script: "法寶實業不僅供應材料，更具備強大的精密加工能量。廠內整合 CNC 高速銑床、精密車床、航太級五軸同動加工、大型龍門銑床、沖剪折床以及表面陽極與拋光拉絲工藝，能從 3D 繪圖開模到微米級精密加工，為您一貫化高效完成。" },
+        { title: "半導體與航太實績", script: "我們深度參與半導體設備真空腔體底座、蝕刻機台部件以及航太高強度結構件的開發與製造，以優異的真平度控制與原廠材質證明，徹底解決客戶應力變形與輕量化挑戰，深獲國際級設備大廠的肯定與長期指名。" },
+        { title: "國際硬度換算與技術辭典", script: "為了協助研發與採購工程師快速比對材料規範，我們特別整理了國際標準金屬硬度即時試算器，支援布氏、洛氏、維氏與肖氏硬度對照，並提供鋁合金熱處理與調質代號辭典，成為您日常選材的得力助手。" },
+        { title: "即時諮詢與圓滿結語", script: "感謝您撥冗聆聽法寶實業企業導覽。無論您需要特殊規格調料、現貨精密裁切，或是圖面加工估價，歡迎直接填寫本頁線上估價單，或致電台北總公司、台中廠與台南雙廠區，我們的專業工程團隊將於二十四小時內竭誠為您服務。法寶實業，以鋁為本、服務為先，誠摯期盼與您攜手共創卓越價值，敬祝您事業順心、鴻圖大展，謝謝您！" }
+    ],
+    'en': [
+        { title: "FAPO Enterprise · Corporate Overview", script: "Welcome to FAPO Enterprise Co., Ltd. Founded in 1986 and rooted in Taiwan for nearly four decades, we are dedicated to building a comprehensive, resilient aluminum alloy supply chain and high-precision CNC machining platform. Embracing our core philosophy of alloy excellence and customer service, FAPO is a trusted partner for aerospace, semiconductor, and advanced precision manufacturing." },
+        { title: "About Us · History & Vision", script: "Since its establishment in 1986, FAPO Enterprise has steadily evolved from international metals trading into an integrated materials supplier boasting extensive stock inventory and precision CNC machining capabilities. Guided by integrity and mutual growth, we cover nine core service domains across aluminum, stainless steel, and copper alloys, serving eleven major industrial sectors worldwide." },
+        { title: "Nationwide Logistics & Branches", script: "To promptly meet customer demands across Taiwan, FAPO has built an expansive logistics network. This includes our Taipei Songshan Headquarters, the Taichung Logistics and Precision Cutting Center near Shalu Interchange, and our dual plants in Tainan (Jiali and Madou). With extensive stock and dedicated fleet delivery, we ensure the fastest material dispatch." },
+        { title: "Flagship Aluminum & Specialty Alloys", script: "In material supply, we specialize in genuine Japanese UACJ 5052 masked aluminum plates, renowned for low residual stress and distortion-free CNC machining. We also maintain extensive stock of 7075 aerospace-grade ultra-hard alloys, 6061 structural plates, 5083 marine corrosion-resistant plates, and a comprehensive range of custom extrusions." },
+        { title: "Real-Time Stock & Mold Specs", script: "For inventory specifications, FAPO provides a real-time database of over 3,070 items, including 514 stock plates, rods, and flat bars, alongside 2,557 standard extrusion mold profiles requiring zero tooling fees. Search by alloy, dimension, or mold number to add items directly to your RFQ inquiry." },
+        { title: "High-End Precision Machining", script: "Beyond raw materials, FAPO delivers robust manufacturing power. Our facilities integrate high-speed CNC milling, multi-axis lathes, aerospace 5-axis simultaneous machining, large gantry milling, and automated anodizing surface treatments, achieving micron-level precision from 3D drawings to final parts." },
+        { title: "Semiconductor & Aerospace Track Record", script: "We collaborate closely in developing semiconductor vacuum chamber bases, etching equipment parts, and aerospace structural components. Through strict flatness control and certified mill sheets, we resolve stress deformation and lightweighting challenges for global technology leaders." },
+        { title: "Hardness Conversion & Metallurgy Dict", script: "To assist R&D and procurement engineers in cross-referencing metal specifications, we provide an interactive hardness calculator supporting Brinell, Rockwell, Vickers, and Shore scales, along with a comprehensive metallurgical temper designation dictionary." },
+        { title: "Direct Inquiry & Closing Remarks", script: "Thank you for taking the time to listen to the FAPO Enterprise audio guide. Whether you require custom dimensions, on-demand sawing, or online CAD drawing quotation, feel free to submit an RFQ or contact our Taipei, Taichung, and Tainan logistics hubs. Our professional team will gladly respond within 24 hours. FAPO Enterprise — aluminum rooted, service foremost. We look forward to partnering with you for mutual success!" }
+    ],
+    'ja': [
+        { title: "法宝実業 · 企業概要", script: "法宝実業有限公司の音声ガイドへようこそ。1986年創立以来、台湾で40年近くの信頼と実績を築いてまいりました。私たちは総合アルミニウム材料サプライチェーンと高度精密加工の一貫体制を確立し、「アルミを原点とし、顧客第一主義」をモットーに、最先端ハイテク産業の確かなパートナーとして貢献しています。" },
+        { title: "会社概要 · 沿革と将来ビジョン", script: "1986年の設立以来、法宝実業は国際貿易からスタートし、豊富な常備在庫と高精度CNC切断加工力を兼ね備えた総合材料サプライヤーへと進化しました。誠実と共栄を胸に、アルミニウム、ステンレス、銅、精密加工など9大事業を展開し、半導体・航空宇宙・医療機器など11大産業を力強くサポートしています。" },
+        { title: "台湾全域サービス物流拠点", script: "お客様の緊急な素材需要に応えるため、法宝実業は台湾全土に直営拠点を整備しています。台北本社、台中物流切断センター、そして台南二大工場を連携させ、豊富な常備在庫と自社配送トラック便により、迅速な調達と配送を実現しています。" },
+        { title: "旗艦アルミニウム材料紹介", script: "材料供給において、当社は日本原装のUACJ 5052貼合アルミ厚板を主力展開。独自の圧延技術により残留応力を極小化し、切削後の反りを防ぎます。さらに7075航空宇宙用超硬合金、6061構造用厚板、5083耐食海洋板、各種アルミ押出形材を常備しています。" },
+        { title: "常備在庫・金型スペック検索", script: "在庫と金型仕様において、法宝実業は3,070件を超えるリアルタイム検索データベースを構築。514項目の常備在庫アルミ板・丸棒・平角棒と、金型代無料の2,557種類の押出型材を網羅。材質や寸法、型番を入力するだけで即座に検索し、お見積もりに追加いただけます。" },
+        { title: "高度精密加工と製造技術", script: "材料の供給にとどまらず、法宝実業は高度な精密加工設備を完備。CNC高速フライス盤、精密旋盤、航空機規格の5軸マシニングセンタ、大型門型機、そして表面アルマイト処理までの一貫体制により、3D図面からミクロン単位の精密部品を高効率に仕上げます。" },
+        { title: "半導体・航空宇宙主要実績", script: "半導体真空チャンバーベース、エッチング装置構造部品、航空宇宙高強度部品の製造に深く携わり、卓越した平面度管理と原廠ミルシートにより、残留応力による変形や軽量化の課題を解決。世界的大手装置メーカーから高い信頼を得ています。" },
+        { title: "国際硬度換算と調質記号辞書", script: "研究開発および購買エンジニアをサポートするため、ブリネル、ロックウェル、ビッカース、ショア硬度に対応した国際標準リアルタイム硬度換算ツールと、アルミニウム調質記号辞典を完備。材料選定の信頼できるツールとしてご活用いただけます。" },
+        { title: "お問い合わせと結びの挨拶", script: "法宝実業の企業音声ガイドをお聞きいただき、誠にありがとうございました。特注寸法の手配、高精度切断、図面お見積もりなど、本ページのオンライン見積りフォームまたは各拠点へお気軽にお問い合わせください。専門エンジニアが24時間以内に迅速に対応いたします。法宝実業はアルミを礎に、お客様と共に卓越した価値を創造してまいります。" }
+    ],
+    'ko': [
+        { title: "법보실업 · 기업 개요", script: "법보실업 유한회사에 오신 것을 환영합니다. 1986년 설립 이래 40여 년간 대만에서 신뢰를 쌓아온 법보실업은 종합 알루미늄 소재 공급망과 초정밀 가공 플랫폼을 구축해 왔습니다. 알루미늄의 기본, 고객 최우선의 신념으로 반도체와 항공우주 등 첨단 정밀 산업의 든든한 파트너가 되겠습니다." },
+        { title: "회사소개 · 연혁 및 비전", script: "1986년 설립 이래 법보실업은 비철금속 무역을 시작으로 방대한 상시 재고와 정밀 CNC 절단 가공 기술을 갖춘 종합 소재 기업으로 발전했습니다. 신뢰와 상생을 바탕으로 알루미늄, 스테인리스, 특수 동합금 및 정밀 가공 등 9대 핵심 사업을 운영하며 반도체와 항공우주를 비롯한 11대 첨단 산업에 필수 소재를 공급합니다." },
+        { title: "대만 전국 물류 거점망", script: "신속한 자재 수급과 가공 수요에 대응하기 위해 법보실업은 타이베이 본사, 타이중 물류 절단 센터, 타이난 자리 및 마두 2대 공장을 연결하는 전국 물류망을 구축했습니다. 상시 보유 재고와 전용 직영 운송 시스템으로 신속한 전국 배송을 보장합니다." },
+        { title: "주요 알루미늄 소재 소개", script: "소재 공급에 있어 일본 정품 UACJ 5052 필름 알루미늄 판재를 주력으로 공급합니다. 내부 잔류 응력을 제거하여 가공 후 뒤틀림이 없으며, 7075 항공우주용 초경질 알루미늄, 6061 구조용 판재, 5083 내식 해양용 판재 및 다양한 압출 형재를 전국 최대 규모로 보유하고 있습니다." },
+        { title: "실시간 재고 및 금형 규격", script: "재고 및 금형 규격 시스템을 통해 3,070개 이상의 실시간 데이터베이스를 제공합니다. 514종의 상시 보유 판재/환봉/평철 규격과 금형비가 들지 않는 2,557종의 알루미늄 압출 금형을 손쉽게 검색하여 견적서에 바로 추가할 수 있습니다." },
+        { title: "초정밀 가공 및 제조 역량", script: "단순 소재 공급을 넘어 초정밀 가공 역량을 자랑합니다. 고속 CNC 밀링, 정밀 선반, 항공우주용 5축 동시 가공기, 대형 갠트리 밀링 및 아노다이징 표면처리까지 원스톱으로 연동하여 3D 도면 기반의 마이크론 단위 정밀 가공을 신속하게 완수합니다." },
+        { title: "반도체 및 항공우주 주요 실적", script: "반도체 진공 챔버 베이스, 식각 장비 핵심 부품 및 항공우주 구조 부품 개발에 참여하고 있습니다. 탁월한 진평도 제어와 정품 밀시트를 통해 가공 변형과 경량화 과제를 완벽히 해결하여 글로벌 장비 제조사들의 오랜 신뢰를 받고 있습니다." },
+        { title: "국제 경도 환산 및 기술 사전", script: "연구개발 및 구매 엔지니어를 위해 브리넬, 로크웰, 비커스, 쇼어 경도를 실시간으로 상호 환산할 수 있는 국제 표준 경도 계산기와 알루미늄 조질 열처리 기호 사전을 구축하여 일상적인 소재 선정을 돕습니다." },
+        { title: "실시간 문의 및 맺음말", script: "법보실업 기업 음성 가이드 투어를 경청해 주셔서 대단히 감사합니다. 특수 규격 자재 수급, 정밀 절단 또는 도면 견적 문의는 온라인 견적서를 작성하시거나 타이베이, 타이중, 타이난 거점으로 문의해 주시면 24시간 이내에 신속히 답변드리겠습니다. 법보실업은 고객사와 함께 미래를 열어가겠습니다. 감사합니다!" }
+    ]
+};
+
+function getLocalizedChapter(index, lang) {
+    if (!lang) lang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
+    const langDict = TOUR_CHAPTERS_I18N[lang] || TOUR_CHAPTERS_I18N['zh-TW'];
+    if (langDict && langDict[index]) {
+        return langDict[index];
+    }
+    const defaultCh = (audioTourState.chapters && audioTourState.chapters[index]) || {};
+    return {
+        title: defaultCh.title || `Chapter ${index + 1}`,
+        script: defaultCh.script || ''
+    };
+}
+
+function updateTourChaptersDropdown(lang) {
+    const chapterSelect = document.getElementById('dockChapterSelect');
+    if (!chapterSelect || !audioTourState.chapters.length) return;
+    if (!lang) lang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
+
+    chapterSelect.innerHTML = audioTourState.chapters.map((ch, idx) => {
+        const loc = getLocalizedChapter(idx, lang);
+        return `<option value="${idx}">${idx + 1}. ${loc.title}</option>`;
+    }).join('');
+
+    chapterSelect.value = audioTourState.currentChapter;
+    const trackTitle = document.getElementById('dockTrackTitle');
+    if (trackTitle) {
+        trackTitle.textContent = getLocalizedChapter(audioTourState.currentChapter, lang).title;
+    }
+}
+
 function getChapterAudioUrl(ch) {
     if (!ch || !ch.audio_file) return '';
     if (audioTourState.voice === 'zen-male' || audioTourState.voice === 'zh-TW-YunJheNeural') {
@@ -556,11 +633,10 @@ function initAudioTour() {
         audioTourState.speed = parseFloat(speedSelect.value) || 1.0;
     }
 
-    // Populate chapters dropdown
+    // Populate chapters dropdown with localized titles
     if (chapterSelect) {
-        chapterSelect.innerHTML = audioTourState.chapters.map((ch, idx) => 
-            `<option value="${idx}">${idx + 1}. ${ch.title}</option>`
-        ).join('');
+        const initLang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
+        updateTourChaptersDropdown(initLang);
         
         chapterSelect.addEventListener('change', (e) => {
             clearChimeTimer();
@@ -752,32 +828,71 @@ function selectChapter(index, autoPlay = false) {
     stopCardAudio();
     audioTourState.currentChapter = index;
     const ch = audioTourState.chapters[index];
-    
+    const curLang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
+    const localizedCh = getLocalizedChapter(index, curLang);
+
     // Update UI title
     const trackTitle = document.getElementById('dockTrackTitle');
-    if (trackTitle) trackTitle.textContent = ch.title;
-    
+    if (trackTitle) trackTitle.textContent = localizedCh.title;
+
     const chapterSelect = document.getElementById('dockChapterSelect');
     if (chapterSelect) chapterSelect.value = index;
 
-    // Load voice-specific audio file (Zen male / Zen female / Standard)
-    const targetSrc = getChapterAudioUrl(ch);
-    audioTourState.audio.pause();
-    audioTourState.audio.src = targetSrc;
-    audioTourState.audio.playbackRate = audioTourState.speed;
+    if (curLang === 'zh-TW') {
+        const targetSrc = getChapterAudioUrl(ch);
+        audioTourState.audio.pause();
+        audioTourState.audio.src = targetSrc;
+        audioTourState.audio.playbackRate = audioTourState.speed || 1.0;
 
-    if (autoPlay) {
-        audioTourState.audio.play().then(() => {
+        if (autoPlay) {
+            audioTourState.audio.play().then(() => {
+                audioTourState.isPlaying = true;
+                audioTourState.audio.playbackRate = audioTourState.speed || 1.0;
+                updatePlayButtonUI();
+                highlightAndScrollToSection(ch.section_id);
+            }).catch(err => {
+                console.warn("Auto-play prevented:", err);
+            });
+        } else {
+            audioTourState.isPlaying = false;
+            updatePlayButtonUI();
+        }
+    } else {
+        // Multi-language Neural TTS synthesis
+        let voice = audioTourState.voice;
+        if (!voice || (curLang === 'en' && !voice.startsWith('en-')) || (curLang === 'ja' && !voice.startsWith('ja-')) || (curLang === 'ko' && !voice.startsWith('ko-'))) {
+            if (curLang === 'en') voice = 'en-US-JennyNeural';
+            else if (curLang === 'ja') voice = 'ja-JP-NanamiNeural';
+            else if (curLang === 'ko') voice = 'ko-KR-SunHiNeural';
+            audioTourState.voice = voice;
+        }
+
+        audioTourState.audio.pause();
+        if (autoPlay) {
             audioTourState.isPlaying = true;
-            audioTourState.audio.playbackRate = audioTourState.speed;
             updatePlayButtonUI();
             highlightAndScrollToSection(ch.section_id);
-        }).catch(err => {
-            console.warn("Auto-play prevented:", err);
-        });
-    } else {
-        audioTourState.isPlaying = false;
-        updatePlayButtonUI();
+        }
+
+        const url = `/api/tts?text=${encodeURIComponent(localizedCh.script)}&voice=${encodeURIComponent(voice)}`;
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.url) {
+                    audioTourState.audio.src = data.url;
+                    audioTourState.audio.playbackRate = audioTourState.speed || 1.0;
+                    if (autoPlay) {
+                        audioTourState.audio.play().then(() => {
+                            audioTourState.isPlaying = true;
+                            audioTourState.audio.playbackRate = audioTourState.speed || 1.0;
+                            updatePlayButtonUI();
+                        }).catch(err => console.warn("Auto-play prevented:", err));
+                    }
+                }
+            })
+            .catch(err => {
+                console.error("Failed to load localized audio tour:", err);
+            });
     }
 }
 
@@ -791,16 +906,25 @@ function togglePlay() {
         if (StudioBgmEngine.bgmEnabled && StudioBgmEngine.currentTrack !== 'off') {
             StudioBgmEngine.startAmbient(true);
         }
-        const ch = audioTourState.chapters[audioTourState.currentChapter];
-        const expectedUrl = getChapterAudioUrl(ch);
-        if (!audioTourState.audio.src || !audioTourState.audio.src.endsWith(expectedUrl)) {
-            audioTourState.audio.src = expectedUrl;
+        const curLang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
+        if (curLang !== 'zh-TW' && (!audioTourState.audio.src || !audioTourState.audio.src.includes('tts_'))) {
+            selectChapter(audioTourState.currentChapter, true);
+        } else {
+            const ch = audioTourState.chapters[audioTourState.currentChapter];
+            if (curLang === 'zh-TW') {
+                const expectedUrl = getChapterAudioUrl(ch);
+                if (!audioTourState.audio.src || !audioTourState.audio.src.endsWith(expectedUrl)) {
+                    audioTourState.audio.src = expectedUrl;
+                }
+            }
+            audioTourState.audio.playbackRate = audioTourState.speed || 1.0;
+            audioTourState.audio.play().then(() => {
+                audioTourState.audio.playbackRate = audioTourState.speed || 1.0;
+                highlightAndScrollToSection(ch.section_id);
+            }).catch(err => {
+                selectChapter(audioTourState.currentChapter, true);
+            });
         }
-        audioTourState.audio.playbackRate = audioTourState.speed;
-        audioTourState.audio.play().then(() => {
-            audioTourState.audio.playbackRate = audioTourState.speed;
-            highlightAndScrollToSection(ch.section_id);
-        }).catch(err => console.error(err));
     }
 }
 
@@ -937,6 +1061,47 @@ if ('speechSynthesis' in window) {
     window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
 }
 
+window.getLocalizedSpeech = function(text, lang) {
+    if (!lang || lang === 'zh-TW') return text;
+    // Map common card narrations
+    if (text.includes('成立概要') || text.includes('企業沿革')) {
+        if (lang === 'en') return "Company Overview: Founded in 1986, FAPO Enterprise has grown into an integrated aluminum supply chain provider with vast on-hand inventory and precision CNC machining capabilities. We are dedicated to supporting high-tech manufacturing with certified mill sheets and swift delivery.";
+        if (lang === 'ja') return "設立概要：1986年創立以来、法宝実業は豊富な常備在庫と高精度CNC切断加工力を兼ね備えた総合材料サプライヤーとして成長しました。全ロットに原廠ミルシートを添付し、迅速で確実な供給体制をお約束します。";
+        if (lang === 'ko') return "회사 개요: 1986년 설립된 법보실업은 방대한 상시 재고와 정밀 CNC 절단 가공 기술을 갖춘 종합 알루미늄 전문 기업입니다. 전 품목 정품 밀시트 발행과 신속한 전국 배송으로 고객사의 든든한 파트너가 되겠습니다.";
+    }
+    if (text.includes('經營理念') || text.includes('未來願景') || text.includes('誠信立基')) {
+        if (lang === 'en') return "Philosophy & Vision: Integrity First and Mutual Growth. FAPO expands automated warehousing and high-speed CNC centers to supply specialized aerospace and semiconductor alloys while establishing sustainable green recycling supply chains.";
+        if (lang === 'ja') return "経営理念とビジョン：誠実と共栄。スマート物流倉庫と高速CNC加工機への設備投資を強化し、半導体真空チャンバーや航空宇宙専用合金のラインナップを拡充。持続可能なリサイクル供給体制を推進します。";
+        if (lang === 'ko') return "경영 이념 및 비전: 신뢰 기반과 동반 성장. 스마트 물류 창고와 초고속 CNC 가공 장비 투자를 확대하여 반도체 및 항공우주 전용 합금을 공급하고 지속 가능한 친환경 순환 공급망을 구축합니다.";
+    }
+    if (text.includes('台北總公司') || text.includes('台北市松山區')) {
+        if (lang === 'en') return "Taipei Headquarters: International trade hub, import and export customs clearance, and northern administrative center. Telephone: +886-2-2718-3134.";
+        if (lang === 'ja') return "台北本社：国際貿易ハブ、輸出入通関および北部営業管理センター。電話番号：(02) 2718-3134。";
+        if (lang === 'ko') return "타이베이 본사: 국제 무역 허브, 수출입 통관 및 북부 영업 관리 센터. 전화: (02) 2718-3134.";
+    }
+    if (text.includes('台中物流中心') || text.includes('台中廠')) {
+        if (lang === 'en') return "Taichung Logistics Center: Located near National Highway 1, maintaining extensive inventory of alloy plates, rods, and pipes with large-scale precision sawing. Telephone: +886-4-2258-4931.";
+        if (lang === 'ja') return "台中物流センター：国道1号に隣接し、常備在庫の厚板・棒・パイプと大径精密切断加工を完備。電話番号：(04) 2258-4931。";
+        if (lang === 'ko') return "타이중 물류센터: 국도 1호선 인근, 판재/환봉/파이프 상시 보유 및 대형 정밀 절단 설비 완비. 전화: (04) 2258-4931.";
+    }
+    if (text.includes('佳里') || text.includes('麻豆') || text.includes('台南')) {
+        if (lang === 'en') return "Tainan Logistics and Manufacturing Plants (Jiali and Madou): Deeply rooted in southern Taiwan's semiconductor corridor, equipped with automated cutting equipment and spacious storage. Telephone: +886-6-726-3666.";
+        if (lang === 'ja') return "台南物流・二大工場（佳里・麻豆）：南部半導体・先端産業クラスターに密着し、最新自動化設備と広大な倉庫を配備。電話番号：(06) 726-3666。";
+        if (lang === 'ko') return "타이난 물류 및 제조 거점 (자리/마두 2대 공장): 남부 반도체 및 첨단 기술 산업단지 지원, 최신 자동화 절단 설비와 대규모 물류 창고 보유. 전화: (06) 726-3666.";
+    }
+    if (text.includes('UACJ') || text.includes('5052') || text.includes('貼膜')) {
+        if (lang === 'en') return "Genuine Japanese UACJ 5052 masked aluminum plates: Minimized residual stress through unique rolling process, preventing warpage after extensive CNC milling. Designed for semiconductor vacuum chambers and optoelectronics.";
+        if (lang === 'ja') return "日本原装 UACJ 5052 貼合アルミ板：独自の圧延技術により残留応力を極小化し、大量の精密フライス加工後も反りが発生しません。半導体真空チャンバーや光電装置の指定材料です。";
+        if (lang === 'ko') return "일본 정품 UACJ 5052 필름 알루미늄 판재: 독자적인 압연 공정으로 잔류 응력을 제거하여 대량 절삭 가공 후에도 뒤틀림이 없습니다. 반도체 진공 챔버 및 광전자 장비의 필수 소재입니다.";
+    }
+    if (text.includes('AI 智慧工程客服') || text.includes('智能工程客服')) {
+        if (lang === 'en') return "Hello! I am the FAPO AI Engineering Assistant. You can inquire via voice or text for stock specifications, alloy selection, or use Google OR-Tools CP-SAT for cutting stock optimization!";
+        if (lang === 'ja') return "こんにちは！法宝実業 AI 営業技術アシスタントです。在庫規格の検索や合金選定、グーグル OR-Tools CP-SAT による定寸切断の最適化計算をご案内いたします！";
+        if (lang === 'ko') return "안녕하십니까! 법보실업 AI 엔지니어링 챗봇입니다. 재고 규격 검색과 소재 추천, 구글 OR-Tools CP-SAT 모재 절단 최적화 솔루션을 제공합니다!";
+    }
+    return text;
+};
+
 // On-demand dynamic TTS read-aloud for cards
 window.readAloudText = function(text, btnElement) {
     if (!text) return;
@@ -972,15 +1137,17 @@ window.readAloudText = function(text, btnElement) {
         audioTourState.audio.pause();
     }
     
+    const curLang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
+    const speechText = window.getLocalizedSpeech(text, curLang);
     let voice = audioTourState.voice;
-    if (!voice) {
-        const curLang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
+    if (!voice || (curLang === 'en' && !voice.startsWith('en-')) || (curLang === 'ja' && !voice.startsWith('ja-')) || (curLang === 'ko' && !voice.startsWith('ko-')) || (curLang === 'zh-TW' && !voice.startsWith('zh-') && !voice.startsWith('zen-'))) {
         if (curLang === 'en') voice = 'en-US-JennyNeural';
         else if (curLang === 'ja') voice = 'ja-JP-NanamiNeural';
         else if (curLang === 'ko') voice = 'ko-KR-SunHiNeural';
         else voice = 'zen-male';
+        audioTourState.voice = voice;
     }
-    const url = `/api/tts?text=${encodeURIComponent(text)}&voice=${encodeURIComponent(voice)}`;
+    const url = `/api/tts?text=${encodeURIComponent(speechText)}&voice=${encodeURIComponent(voice)}`;
 
     const controller = ('AbortController' in window) ? new AbortController() : null;
     const timeoutId = setTimeout(() => { if (controller) controller.abort(); }, 25000);
@@ -2694,5 +2861,13 @@ window.addEventListener('fapo-language-changed', (e) => {
 
     if (window.updateSubpageCrumbAndPager) {
         window.updateSubpageCrumbAndPager(window.CURRENT_PAGE_ID || 'hero');
+    }
+
+    if (typeof updateTourChaptersDropdown === 'function') {
+        updateTourChaptersDropdown(lang);
+    }
+
+    if (audioTourState.isPlaying) {
+        selectChapter(audioTourState.currentChapter, true);
     }
 });

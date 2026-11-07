@@ -543,9 +543,9 @@
         <section id="network" data-page-view="network" class="section page-view {% if active_page == 'network' %}active-page{% endif %}">
             <div class="container">
                 <div class="section-header">
-                    <span class="section-tag">Logistics & Branches</span>
-                    <h2 class="section-title">全台北中南服務網絡佈局</h2>
-                    <p class="section-desc">
+                    <span class="section-tag" data-i18n="section.network_tag">Logistics & Branches</span>
+                    <h2 class="section-title" data-i18n="section.network_title">全台北中南服務網絡佈局</h2>
+                    <p class="section-desc" data-i18n="network.desc">
                         為即時回應全台客戶的材料需求，法寶實業於台北、台中、台南雙廠區打造緊密服務網，專屬物流車隊與大尺寸自動化裁切設備，實現最迅速的材料調撥與送達。
                     </p>
                 </div>
@@ -554,27 +554,27 @@
                     <div class="location-card glass-card" id="loc-{{ loc.id }}">
                         <div class="loc-header">
                             <span class="loc-badge">{{ loc.id | upper }}</span>
-                            <h3 class="loc-title">{{ loc.name }}</h3>
-                            <p class="loc-role">{{ loc.role }}</p>
+                            <h3 class="loc-title" data-i18n="loc.{{ loc.id }}.name">{{ loc.name }}</h3>
+                            <p class="loc-role" data-i18n="loc.{{ loc.id }}.role">{{ loc.role }}</p>
                         </div>
                         <div class="loc-body">
                             <div class="loc-detail">
                                 <span class="icon">📍</span>
-                                <span>{{ loc.address }}</span>
+                                <span data-i18n="loc.{{ loc.id }}.addr">{{ loc.address }}</span>
                             </div>
                             <div class="loc-detail">
                                 <span class="icon">📞</span>
-                                <span>電話：<strong>{{ loc.tel }}</strong></span>
+                                <span><span data-i18n="loc.lbl_tel">電話：</span><strong>{{ loc.tel }}</strong></span>
                             </div>
                             <div class="loc-detail">
                                 <span class="icon">📠</span>
-                                <span>傳真：{{ loc.fax }}</span>
+                                <span><span data-i18n="loc.lbl_fax">傳真：</span>{{ loc.fax }}</span>
                             </div>
                             <div class="loc-detail">
                                 <span class="icon">✉️</span>
-                                <span>信箱：{{ loc.email }}</span>
+                                <span><span data-i18n="loc.lbl_email">信箱：</span>{{ loc.email }}</span>
                             </div>
-                            <div class="loc-highlights">
+                            <div class="loc-highlights" data-i18n="loc.{{ loc.id }}.highlights">
                                 {{ loc.highlights }}
                             </div>
                         </div>
@@ -1946,9 +1946,9 @@
         window.ALL_PAGES_META = {{ (all_pages_meta or {}) | tojson }};
     </script>
     <!-- Internationalization (i18n) Multi-Language Engine -->
-    <script src="{{ url_for('static', filename='js/i18n.js', v='2.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/i18n.js', v='3.0') }}"></script>
     <!-- Main Interactive Script -->
-    <script src="{{ url_for('static', filename='js/main.js', v='24.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v='25.0') }}"></script>
 </body>
 </html>
 

@@ -8,6 +8,26 @@
 
     const TRANSLATIONS = {
         'zh-TW': {
+            'loc.lbl_tel': '電話：',
+            'loc.lbl_fax': '傳真：',
+            'loc.lbl_email': '信箱：',
+            'loc.taipei.name': '台北總公司',
+            'loc.taipei.role': '國際貿易與行政核心 · 北部服務調度樞紐',
+            'loc.taipei.addr': '台北市民權東路三段136號3樓之5',
+            'loc.taipei.highlights': '鄰近松山機場，統籌全台進出口貿易、訂單調度與高科技客戶即時服務。',
+            'loc.taichung.name': '台中物流中心 (台中廠)',
+            'loc.taichung.role': '中部樞紐 · 龐大常備現貨與大型精密裁切中心',
+            'loc.taichung.addr': '台中市西屯區台灣大道四段五巷167及167-1號',
+            'loc.taichung.highlights': '緊鄰國1台中沙鹿交流道，備有各式大型鋁合金裁切機具，1000/5000/6000/7000系列鋁板、擠型圓棒扁條常備庫存。',
+            'loc.tainan-1.name': '台南營運中心 (台南一廠・佳里倉)',
+            'loc.tainan-1.role': '南部核心發貨倉庫 · 快速調撥樞紐',
+            'loc.tainan-1.addr': '台南市佳里區子良里子龍廟40-23號（麻佳路三段70巷30號）',
+            'loc.tainan-1.highlights': '鄰近麻豆交流道，長期作為南部核心發貨倉庫，深耕南部產業聚落即時調撥。',
+            'loc.tainan-2.name': '台南營運中心 (台南二廠・麻豆新廠)',
+            'loc.tainan-2.role': '最新擴充據點 · 特殊大規格材料精密裁切與物流',
+            'loc.tainan-2.addr': '台南市麻豆區麻柚路446號',
+            'loc.tainan-2.highlights': '具備更寬敞儲運空間與新型自動鋸切設備，專責處理大型訂單與特殊規格材料精密裁切。',
+
             // Site & Global
             'site.title': '法寶實業有限公司 | FAPO ENTERPRISE - 全方位鋁合金材料供應鏈與精密加工',
             'site.company': '法寶實業有限公司',
@@ -142,6 +162,26 @@
         },
 
         'en': {
+            'loc.lbl_tel': 'Tel: ',
+            'loc.lbl_fax': 'Fax: ',
+            'loc.lbl_email': 'Email: ',
+            'loc.taipei.name': 'Taipei Headquarters',
+            'loc.taipei.role': 'International Trade & Executive Hub · Northern Dispatch Center',
+            'loc.taipei.addr': '3F-5, No. 136, Sec. 3, Minquan E. Rd., Songshan Dist., Taipei City',
+            'loc.taipei.highlights': 'Adjacent to Songshan Airport; orchestrates nationwide import/export, order dispatch, and high-tech client support.',
+            'loc.taichung.name': 'Taichung Logistics Center (Taichung Plant)',
+            'loc.taichung.role': 'Central Hub · Massive Stock & Precision Cutting Center',
+            'loc.taichung.addr': 'No. 167 & 167-1, Ln. 5, Sec. 4, Taiwan Blvd., Xitun Dist., Taichung City',
+            'loc.taichung.highlights': 'Adjacent to National Hwy 1 Shalu Interchange; fully equipped with heavy-duty aluminum sawing machinery and vast 1000/5000/6000/7000 series inventory.',
+            'loc.tainan-1.name': 'Tainan Operations Center (Plant 1 · Jiali Warehouse)',
+            'loc.tainan-1.role': 'Southern Distribution Hub · Rapid Logistics',
+            'loc.tainan-1.addr': 'No. 40-23, Zilongmiao, Ziliang Li, Jiali Dist., Tainan City',
+            'loc.tainan-1.highlights': 'Close to Madou Interchange; serves as our southern dispatch hub providing immediate fulfillment to southern tech clusters.',
+            'loc.tainan-2.name': 'Tainan Operations Center (Plant 2 · Madou New Plant)',
+            'loc.tainan-2.role': 'Expansion Facility · Heavy-Duty Precision Cutting & Storage',
+            'loc.tainan-2.addr': 'No. 446, Mayou Rd., Madou Dist., Tainan City',
+            'loc.tainan-2.highlights': 'Equipped with expansive warehouse storage and advanced automatic band saws for large-scale orders and extra-large alloy plate processing.',
+
             // Site & Global
             'site.title': 'FAPO ENTERPRISE CO., LTD. | Integrated Aluminum Supply Chain & Precision Machining',
             'site.company': 'FAPO ENTERPRISE CO., LTD.',
@@ -276,6 +316,26 @@
         },
 
         'ja': {
+            'loc.lbl_tel': '電話：',
+            'loc.lbl_fax': 'FAX：',
+            'loc.lbl_email': 'メール：',
+            'loc.taipei.name': '台北本社',
+            'loc.taipei.role': '国際貿易・総括拠点・北部サービスディスパッチ',
+            'loc.taipei.addr': '台湾台北市民権東路三段136号3階之5',
+            'loc.taipei.highlights': '松山空港至近。台湾全土の輸出入貿易、受注管理、先端産業向け迅速サポートを統括。',
+            'loc.taichung.name': '台中物流センター（台中工場）',
+            'loc.taichung.role': '中部中核・大規模常備在庫＆精密切断加工拠点',
+            'loc.taichung.addr': '台湾台中市西屯区台湾大道四段5巷167・167-1号',
+            'loc.taichung.highlights': '国道1号沙鹿IC至近。大型アルミ切断機を完備し、1000/5000/6000/7000系板・棒・パイプを常時ストック。',
+            'loc.tainan-1.name': '台南オペレーションセンター（台南第1工場・佳里倉庫）',
+            'loc.tainan-1.role': '南部中核出荷倉庫・迅速調達拠点',
+            'loc.tainan-1.addr': '台湾台南市佳里区子良里子龍廟40-23号',
+            'loc.tainan-1.highlights': '麻豆IC至近。南部産業集積地に密着した基幹倉庫として、即納体制を実現。',
+            'loc.tainan-2.name': '台南オペレーションセンター（台南第2工場・麻豆新工場）',
+            'loc.tainan-2.role': '最新拡張拠点・特殊大型材精密切断＆物流',
+            'loc.tainan-2.addr': '台湾台南市麻豆区麻柚路446号',
+            'loc.tainan-2.highlights': '広大な保管スペースと最新の自動帯鋸切断機を配備。大型ロットおよび特殊寸法材の加工に対応。',
+
             // Site & Global
             'site.title': '法宝実業有限公司 | FAPO ENTERPRISE - アルミニウム総合材料サプライチェーンと超精密加工',
             'site.company': '法宝実業有限公司',
@@ -410,6 +470,26 @@
         },
 
         'ko': {
+            'loc.lbl_tel': '전화: ',
+            'loc.lbl_fax': '팩스: ',
+            'loc.lbl_email': '이메일: ',
+            'loc.taipei.name': '타이베이 본사',
+            'loc.taipei.role': '국제 무역 및 행정 본부 · 북부 서비스 디스패치',
+            'loc.taipei.addr': '타이베이시 쑹산구 민취안둥로 3단 136호 3층의 5',
+            'loc.taipei.highlights': '쑹산공항 인근, 전 대만 수출입 무역 총괄, 주문 배송 및 첨단 하이테크 고객 지원 허브.',
+            'loc.taichung.name': '타이중 물류센터 (타이중 공장)',
+            'loc.taichung.role': '중부 허브 · 대규모 상시 재고 및 정밀 절단 가공 센터',
+            'loc.taichung.addr': '타이중시 시툰구 타이완대로 4단 5항 167 및 167-1호',
+            'loc.taichung.highlights': '국도 1호선 사루 IC 인근, 대형 알루미늄 정밀 절단 설비 완비, 1000/5000/6000/7000 계열 상시 보유.',
+            'loc.tainan-1.name': '타이난 운영센터 (타이난 제1공장 · 자리 창고)',
+            'loc.tainan-1.role': '남부 핵심 출하 창고 · 신속 조달 허브',
+            'loc.tainan-1.addr': '타이난시 자리구 쯔량리 쯔룽먀오 40-23호',
+            'loc.tainan-1.highlights': '마두 IC 인근, 남부 핵심 출하 창고로서 남부 하이테크 클러스터 대상 즉각 조달 지원.',
+            'loc.tainan-2.name': '타이난 운영센터 (타이난 제2공장 · 마두 신공장)',
+            'loc.tainan-2.role': '최신 확장 거점 · 특수 대형 규격 정밀 절단 및 물류',
+            'loc.tainan-2.addr': '타이난시 마두구 마유로 446호',
+            'loc.tainan-2.highlights': '넓은 물류 공간과 최신 자동 밴드쏘 절단 설비 보유, 대형 주문 및 특수 규격재 정밀 절단 특화.',
+
             // Site & Global
             'site.title': '법보실업 유한회사 | FAPO ENTERPRISE - 종합 알루미늄 소재 공급망 및 초정밀 가공',
             'site.company': '법보실업 유한회사',
