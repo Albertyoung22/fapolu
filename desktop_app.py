@@ -9,6 +9,11 @@ import argparse
 # Ensure standard output supports UTF-8 on Windows command prompts
 if sys.platform.startswith('win'):
     try:
+        import ctypes
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('fapo.enterprise.desktop.app')
+    except Exception:
+        pass
+    try:
         if hasattr(sys.stdout, 'reconfigure'):
             sys.stdout.reconfigure(encoding='utf-8', errors='replace')
         if hasattr(sys.stderr, 'reconfigure'):
