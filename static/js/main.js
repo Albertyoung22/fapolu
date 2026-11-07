@@ -1415,6 +1415,11 @@ const PORTAL_PAGES = [
 ];
 
 function initPageRouter() {
+    // Disable browser aggressive scroll restoration on refresh so user always starts cleanly from page top
+    if ('scrollRestoration' in history) {
+        try { history.scrollRestoration = 'manual'; } catch (e) {}
+    }
+
     function resolveFromUrl() {
         const hashId = (window.location.hash || '').replace(/^#/, '').trim();
         if (hashId && PORTAL_PAGES.some(p => p.id === hashId)) {
@@ -1540,7 +1545,7 @@ function initPageRouter() {
     window.navigateToPage(initial.pageId, {
         replace: initial.replaceUrl,
         skipHistory: !initial.replaceUrl,
-        preserveScroll: !initial.replaceUrl
+        preserveScroll: false
     });
 }
 
