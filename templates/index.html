@@ -92,7 +92,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img_crawled/favicon.png', v='10.0') }}">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='24.0') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='25.0') }}">
 </head>
 <body>
     <!-- WCAG 2.1 AA: Skip to Main Content Link (無障礙快速跳至主要內容區) -->
@@ -207,22 +207,22 @@
             <div class="container">
                 <div class="subpage-crumb-row">
                     <div class="subpage-crumbs">
-                        <a href="/" data-nav-page="hero" class="crumb-home">🏠 首頁總覽</a>
+                        <a href="/" data-nav-page="hero" class="crumb-home" data-i18n="crumb.home">🏠 首頁總覽</a>
                         <span class="crumb-sep">›</span>
                         <strong id="subpageCrumbLabel" class="crumb-current">{{ page_meta.label if page_meta else '專區內容' }}</strong>
                     </div>
-                    <a href="/contact" data-nav-page="contact" class="subpage-quick-rfq">📋 線上圖面估價 →</a>
+                    <a href="/contact" data-nav-page="contact" class="subpage-quick-rfq" data-i18n="crumb.rfq">📋 線上圖面估價 →</a>
                 </div>
                 <div class="subpage-pill-strip" id="subpagePillStrip">
-                    <a href="/" data-nav-page="hero" class="subpage-pill {% if (active_page or 'hero') == 'hero' %}active{% endif %}">🏠 首頁</a>
-                    <a href="/about" data-nav-page="about" class="subpage-pill {% if active_page == 'about' %}active{% endif %}">關於我們</a>
-                    <a href="/network" data-nav-page="network" class="subpage-pill {% if active_page == 'network' %}active{% endif %}">服務網絡</a>
-                    <a href="/products" data-nav-page="products" class="subpage-pill {% if active_page == 'products' %}active{% endif %}">旗艦材料</a>
-                    <a href="/specs" data-nav-page="specs" class="subpage-pill {% if active_page == 'specs' %}active{% endif %}">現貨規格</a>
-                    <a href="/machining" data-nav-page="machining" class="subpage-pill {% if active_page == 'machining' %}active{% endif %}">精密加工</a>
-                    <a href="/cases" data-nav-page="cases" class="subpage-pill {% if active_page == 'cases' %}active{% endif %}">代表實績</a>
-                    <a href="/tech" data-nav-page="tech" class="subpage-pill {% if active_page == 'tech' %}active{% endif %}">技術硬度</a>
-                    <a href="/contact" data-nav-page="contact" class="subpage-pill {% if active_page == 'contact' %}active{% endif %}">聯絡諮詢</a>
+                    <a href="/" data-nav-page="hero" class="subpage-pill {% if (active_page or 'hero') == 'hero' %}active{% endif %}" data-i18n="nav.home">🏠 首頁</a>
+                    <a href="/about" data-nav-page="about" class="subpage-pill {% if active_page == 'about' %}active{% endif %}" data-i18n="nav.about">關於我們</a>
+                    <a href="/network" data-nav-page="network" class="subpage-pill {% if active_page == 'network' %}active{% endif %}" data-i18n="nav.network">服務網絡</a>
+                    <a href="/products" data-nav-page="products" class="subpage-pill {% if active_page == 'products' %}active{% endif %}" data-i18n="nav.products">旗艦材料</a>
+                    <a href="/specs" data-nav-page="specs" class="subpage-pill {% if active_page == 'specs' %}active{% endif %}" data-i18n="nav.specs">現貨規格</a>
+                    <a href="/machining" data-nav-page="machining" class="subpage-pill {% if active_page == 'machining' %}active{% endif %}" data-i18n="nav.machining">精密加工</a>
+                    <a href="/cases" data-nav-page="cases" class="subpage-pill {% if active_page == 'cases' %}active{% endif %}" data-i18n="nav.cases">代表實績</a>
+                    <a href="/tech" data-nav-page="tech" class="subpage-pill {% if active_page == 'tech' %}active{% endif %}" data-i18n="nav.tech">技術硬度</a>
+                    <a href="/contact" data-nav-page="contact" class="subpage-pill {% if active_page == 'contact' %}active{% endif %}" data-i18n="nav.contact">聯絡諮詢</a>
                 </div>
             </div>
         </div>
@@ -382,20 +382,20 @@
         <section id="about" data-page-view="about" class="section section-alt page-view {% if active_page == 'about' %}active-page{% endif %}">
             <div class="container">
                 <div class="section-header">
-                    <span class="section-tag">About FAPO Enterprise · Since 1986</span>
-                    <h2 class="section-title">關於法寶實業 · 深耕台灣四十載</h2>
-                    <p class="section-desc">
+                    <span class="section-tag" data-i18n="about.tag">About FAPO Enterprise · Since 1986</span>
+                    <h2 class="section-title" data-i18n="about.title">關於法寶實業 · 深耕台灣四十載</h2>
+                    <p class="section-desc" data-i18n="about.desc">
                         {{ data.company.about_us.subheadline }} —— 從國際金屬貿易啟航，穩健轉型為兼具「龐大現貨庫存」與「精密裁切加工」的全方位供應鏈夥伴。
                     </p>
                 </div>
 
                 <!-- Interactive Sub-Section Filter Pills -->
                 <div class="product-filters about-tabs" id="aboutTabBar">
-                    <button class="filter-btn active" data-about-tab="all">全部總覽</button>
-                    <button class="filter-btn" data-about-tab="overview">成立概要</button>
-                    <button class="filter-btn" data-about-tab="vision">經營理念 &amp; 願景</button>
-                    <button class="filter-btn" data-about-tab="services">九大營業項目</button>
-                    <button class="filter-btn" data-about-tab="industries">銷售應用行業</button>
+                    <button class="filter-btn active" data-about-tab="all" data-i18n="about.tab_all">全部總覽</button>
+                    <button class="filter-btn" data-about-tab="overview" data-i18n="about.tab_overview">成立概要</button>
+                    <button class="filter-btn" data-about-tab="vision" data-i18n="about.tab_vision">經營理念 &amp; 願景</button>
+                    <button class="filter-btn" data-about-tab="services" data-i18n="about.tab_services">九大營業項目</button>
+                    <button class="filter-btn" data-about-tab="industries" data-i18n="about.tab_industries">銷售應用行業</button>
                 </div>
 
                 <!-- 1. 成立概要 (Company Overview & History) -->
@@ -404,43 +404,47 @@
                         <div class="about-photo-stack">
                             <div class="about-main-photo">
                                 <img src="{{ data.company.about_us.hero_image }}" alt="法寶實業有限公司成立概要" loading="lazy">
-                                <span class="about-seal-tag">創立於 1986 年 · 成立概要</span>
+                                <span class="about-seal-tag" data-i18n="about.seal_tag">創立於 1986 年 · 成立概要</span>
                             </div>
                             <div class="about-sub-banner">
                                 <img src="{{ data.company.about_us.banner_image }}" alt="法寶實業精密鋁合金材料與加工工藝" loading="lazy">
                                 <div class="about-sub-caption">
-                                    <strong>以鋁為本 · 服務為先</strong>
-                                    <span>全台串連庫存網絡 · 迅速精準調撥送達</span>
+                                    <strong data-i18n="about.caption_title">以鋁為本 · 服務為先</strong>
+                                    <span data-i18n="about.caption_sub">全台串連庫存網絡 · 迅速精準調撥送達</span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="about-text-col">
-                            <h3 class="about-subtitle">{{ data.company.about_us.headline }}</h3>
-                            <p class="about-kicker">{{ data.company.about_us.subheadline }}</p>
+                            <h3 class="about-subtitle" data-i18n="about.headline">{{ data.company.about_us.headline }}</h3>
+                            <p class="about-kicker" data-i18n="about.subheadline">{{ data.company.about_us.subheadline }}</p>
 
                             <div class="about-article-box">
-                                <h4>【企業沿革與願景】</h4>
-                                <p>{{ data.company.about_us.history }}</p>
+                                <h4 data-i18n="about.h_history">【企業沿革與願景】</h4>
+                                <p data-i18n="about.history">{{ data.company.about_us.history }}</p>
                             </div>
 
                             <div class="about-article-box">
-                                <h4>【全台服務據點佈局】</h4>
+                                <h4 data-i18n="about.h_network">【全台服務據點佈局】</h4>
                                 <ul class="about-bullet-list">
-                                    {% for item in data.company.about_us.network_summary %}
                                     <li>
-                                        <strong>{{ item.title }}：</strong>{{ item.desc }}
+                                        <strong data-i18n="about.net1_title">台北總公司：</strong><span data-i18n="about.net1_desc">國際貿易樞紐、進出口報關與北部業務行政中心。</span>
                                     </li>
-                                    {% endfor %}
+                                    <li>
+                                        <strong data-i18n="about.net2_title">台中物流中心：</strong><span data-i18n="about.net2_desc">緊鄰國道1號，常備各式工業鋁板棒管與大尺寸精準裁切。</span>
+                                    </li>
+                                    <li>
+                                        <strong data-i18n="about.net3_title">台南營運中心：</strong><span data-i18n="about.net3_desc">深耕南部半導體與高科技廊道，配備全新自動化設備與龐大倉儲空間。</span>
+                                    </li>
                                 </ul>
                             </div>
 
                             <div class="about-promise-quote">
-                                <strong>【我們的承諾】</strong> {{ data.company.about_us.promise }}
+                                <strong data-i18n="about.h_promise">【我們的承諾】</strong> <span data-i18n="about.promise">{{ data.company.about_us.promise }}</span>
                             </div>
 
                             <div style="margin-top: 18px;">
-                                <button class="btn-read-tts" onclick="readAloudText('成立概要。{{ data.company.about_us.headline }}。{{ data.company.about_us.history }}。我們的承諾：{{ data.company.about_us.promise }}', this)">
+                                <button class="btn-read-tts" onclick="readAloudText('成立概要。{{ data.company.about_us.headline }}。{{ data.company.about_us.history }}。我們的承諾：{{ data.company.about_us.promise }}', this)" data-i18n="about.btn_listen">
                                     🎙️ 語音聆聽成立概要
                                 </button>
                             </div>
@@ -452,27 +456,33 @@
                 <div class="about-block glass-card" data-about-panel="vision">
                     <div class="about-split-grid reverse">
                         <div class="about-text-col">
-                            <h3 class="about-subtitle">{{ data.company.about_us.philosophy_title }}</h3>
-                            <p class="about-para">{{ data.company.about_us.philosophy_desc }}</p>
+                            <h3 class="about-subtitle" data-i18n="about.philo_title">{{ data.company.about_us.philosophy_title }}</h3>
+                            <p class="about-para" data-i18n="about.philo_desc">{{ data.company.about_us.philosophy_desc }}</p>
 
                             <hr class="about-divider">
 
-                            <h3 class="about-subtitle">{{ data.company.about_us.vision_title }}</h3>
-                            <p class="about-para">{{ data.company.about_us.vision_intro }}</p>
+                            <h3 class="about-subtitle" data-i18n="about.vision_title">{{ data.company.about_us.vision_title }}</h3>
+                            <p class="about-para" data-i18n="about.vision_intro">{{ data.company.about_us.vision_intro }}</p>
 
                             <div class="vision-pillars">
-                                {% for vp in data.company.about_us.vision_points %}
                                 <div class="vision-pillar-item">
-                                    <h5>✦ {{ vp.title }}</h5>
-                                    <p>{{ vp.desc }}</p>
+                                    <h5 data-i18n="about.vp1_title">✦ 擴大高精度裁切與精密加工能量</h5>
+                                    <p data-i18n="about.vp1_desc">引進高速大型龍門銑削與多軸鋸切設備，提供公差極小化之毛胚客製加工服務。</p>
                                 </div>
-                                {% endfor %}
+                                <div class="vision-pillar-item">
+                                    <h5 data-i18n="about.vp2_title">✦ 建立全台綠色永續回收與減碳供應鏈</h5>
+                                    <p data-i18n="about.vp2_desc">落實下料餘料分類回收與循環再生機制，符合國際綠色環保製造標準規範。</p>
+                                </div>
+                                <div class="vision-pillar-item">
+                                    <h5 data-i18n="about.vp3_title">✦ 深化航太與半導體高階合金認證</h5>
+                                    <p data-i18n="about.vp3_desc">每批材料均隨貨附原廠出廠檢驗證明（Mill Sheet），符合 AS9100 與 RoHS 嚴格品質體系。</p>
+                                </div>
                             </div>
 
-                            <p class="about-goal-highlight">{{ data.company.about_us.vision_goal }}</p>
+                            <p class="about-goal-highlight" data-i18n="about.vision_goal">{{ data.company.about_us.vision_goal }}</p>
 
                             <div style="margin-top: 16px;">
-                                <button class="btn-read-tts" onclick="readAloudText('{{ data.company.about_us.philosophy_title }}。{{ data.company.about_us.philosophy_desc }}。{{ data.company.about_us.vision_title }}。{{ data.company.about_us.vision_goal }}', this)">
+                                <button class="btn-read-tts" onclick="readAloudText('{{ data.company.about_us.philosophy_title }}。{{ data.company.about_us.philosophy_desc }}。{{ data.company.about_us.vision_title }}。{{ data.company.about_us.vision_goal }}', this)" data-i18n="about.btn_listen_vision">
                                     🎙️ 語音聆聽經營理念與願景
                                 </button>
                             </div>
@@ -481,8 +491,8 @@
                         <div class="about-photo-single">
                             <img src="{{ data.company.about_us.vision_image }}" alt="法寶實業經營理念與高科技願景" loading="lazy">
                             <div class="vision-caption-bar">
-                                <span>誠信立基 · 整合共榮</span>
-                                <span>深耕半導體與航太關鍵供應鏈</span>
+                                <span data-i18n="about.vis_tag1">誠信立基 · 整合共榮</span>
+                                <span data-i18n="about.vis_tag2">深耕半導體與航太關鍵供應鏈</span>
                             </div>
                         </div>
                     </div>
@@ -491,8 +501,8 @@
                 <!-- 3. 九大營業項目與實拍圖鑑 (9 Official Business Scope Items) -->
                 <div class="about-sub-section" data-about-panel="services">
                     <div class="about-sub-heading">
-                        <h3>營業項目總覽 · 九大核心服務範疇</h3>
-                        <p>涵蓋多元金屬材料批發零售、精密機械加工、材料技術顧問與國際環保檢驗證明一貫化支援</p>
+                        <h3 data-i18n="about.services_heading">營業項目總覽 · 九大核心服務範疇</h3>
+                        <p data-i18n="about.services_desc">涵蓋多元金屬材料批發零售、精密機械加工、材料技術顧問與國際環保檢驗證明一貫化支援</p>
                     </div>
                     <div class="business-scope-grid">
                         {% for b in data.company.about_us.business_items %}
@@ -1936,9 +1946,9 @@
         window.ALL_PAGES_META = {{ (all_pages_meta or {}) | tojson }};
     </script>
     <!-- Internationalization (i18n) Multi-Language Engine -->
-    <script src="{{ url_for('static', filename='js/i18n.js', v='1.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/i18n.js', v='2.0') }}"></script>
     <!-- Main Interactive Script -->
-    <script src="{{ url_for('static', filename='js/main.js', v='23.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v='24.0') }}"></script>
 </body>
 </html>
 

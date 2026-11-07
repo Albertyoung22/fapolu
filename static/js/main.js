@@ -1484,6 +1484,95 @@ const PORTAL_PAGES = [
     { id: 'contact', path: '/contact', short: '聯絡諮詢', label: '即時諮詢與線上圖面估價' }
 ];
 
+window.CURRENT_PAGE_ID = 'hero';
+
+window.getPageLabel = function(pageId, type = 'label') {
+    const lang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
+    const dict = {
+        'zh-TW': {
+            'hero': { short: '首頁', label: '首頁總覽' },
+            'about': { short: '關於我們', label: '關於我們 · 成立概要與願景' },
+            'network': { short: '服務網絡', label: '全台北中南服務網絡' },
+            'products': { short: '旗艦材料', label: '精選旗艦材料與壓花板圖鑑' },
+            'specs': { short: '現貨規格', label: '現貨規格與現有模具檢索' },
+            'machining': { short: '精密加工', label: '高階精密加工與實品圖鑑' },
+            'cases': { short: '代表實績', label: '半導體與航太代表實績' },
+            'tech': { short: '技術硬度', label: '國際硬度換算與熱處理辭典' },
+            'contact': { short: '聯絡諮詢', label: '即時諮詢與線上圖面估價' }
+        },
+        'en': {
+            'hero': { short: 'Home', label: 'Home Overview' },
+            'about': { short: 'About Us', label: 'About FAPO · History & Vision' },
+            'network': { short: 'Network', label: 'Nationwide Logistics & Branches' },
+            'products': { short: 'Materials', label: 'Flagship Aluminum & Alloys' },
+            'specs': { short: 'Stock Specs', label: 'Inventory & Mold Specs Explorer' },
+            'machining': { short: 'Machining', label: 'High-End Precision Machining' },
+            'cases': { short: 'Case Studies', label: 'Track Record & Industry Cases' },
+            'tech': { short: 'Tech Hub', label: 'Hardness Conversion & Temper Dict' },
+            'contact': { short: 'Contact Us', label: 'Direct Inquiry & Online RFQ' }
+        },
+        'ja': {
+            'hero': { short: 'ホーム', label: 'ホーム概要' },
+            'about': { short: '会社概要', label: '会社概要 · 沿革と将来ビジョン' },
+            'network': { short: '拠点網', label: '台湾全域サービス物流拠点' },
+            'products': { short: '旗艦材料', label: '厳選旗艦アルミニウム材料' },
+            'specs': { short: '在庫規格', label: '常備在庫・金型スペック検索' },
+            'machining': { short: '精密加工', label: '高度精密加工・表面エンジニアリング' },
+            'cases': { short: '実績紹介', label: '半導体・航空宇宙主要実績' },
+            'tech': { short: '技術硬度', label: '国際硬度換算と調質記号辞書' },
+            'contact': { short: 'お問い合わせ', label: 'お問い合わせ・オンライン見積り' }
+        },
+        'ko': {
+            'hero': { short: '홈', label: '홈 개요' },
+            'about': { short: '회사소개', label: '회사소개 · 연혁 및 비전' },
+            'network': { short: '거점망', label: '대만 전국 물류 및 서비스 거점' },
+            'products': { short: '주요소재', label: '엄선된 주요 알루미늄 합금' },
+            'specs': { short: '재고규격', label: '재고 규격 및 보유 금형 검색' },
+            'machining': { short: '정밀가공', label: '초정밀 가공 및 표면처리' },
+            'cases': { short: '대표실적', label: '반도체 및 항공우주 주요실적' },
+            'tech': { short: '기술지식', label: '국제 경도 환산 및 조질 기호 사전' },
+            'contact': { short: '문의하기', label: '실시간 상담 및 온라인 견적' }
+        }
+    };
+    const langDict = dict[lang] || dict['zh-TW'];
+    return (langDict[pageId] && langDict[pageId][type]) || pageId;
+};
+
+window.updateSubpageCrumbAndPager = function(pageId) {
+    const crumbLabel = document.getElementById('subpageCrumbLabel');
+    const prevBtn = document.getElementById('pagerPrevBtn');
+    const nextBtn = document.getElementById('pagerNextBtn');
+    const curLang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
+
+    const idx = PORTAL_PAGES.findIndex(p => p.id === pageId);
+    const safeIdx = idx >= 0 ? idx : 0;
+    const page = PORTAL_PAGES[safeIdx];
+
+    if (crumbLabel) {
+        crumbLabel.textContent = window.getPageLabel(pageId, 'label');
+    }
+
+    if (prevBtn && nextBtn) {
+        const prevPage = PORTAL_PAGES[safeIdx - 1] || PORTAL_PAGES[0];
+        const nextPage = PORTAL_PAGES[safeIdx + 1] || PORTAL_PAGES[3];
+
+        const prevShort = window.getPageLabel(prevPage.id, 'short');
+        const nextShort = window.getPageLabel(nextPage.id, 'short');
+
+        prevBtn.href = prevPage.path;
+        prevBtn.setAttribute('data-nav-page', prevPage.id);
+        if (prevPage.id === 'hero') {
+            prevBtn.textContent = curLang === 'en' ? '← Back to Home' : curLang === 'ja' ? '← ホーム概要に戻る' : curLang === 'ko' ? '← 홈으로 돌아가기' : '← 返回首頁總覽';
+        } else {
+            prevBtn.textContent = curLang === 'en' ? `← Previous: ${prevShort}` : curLang === 'ja' ? `← 前へ：${prevShort}` : curLang === 'ko' ? `← 이전：${prevShort}` : `← 上一頁：${prevPage.short}`;
+        }
+
+        nextBtn.href = nextPage.path;
+        nextBtn.setAttribute('data-nav-page', nextPage.id);
+        nextBtn.textContent = curLang === 'en' ? `Next: ${nextShort} →` : curLang === 'ja' ? `次へ：${nextShort} →` : curLang === 'ko' ? `다음：${nextShort} →` : `下一頁：${nextPage.short} →`;
+    }
+};
+
 function initPageRouter() {
     // Disable browser aggressive scroll restoration on refresh so user always starts cleanly from page top
     if ('scrollRestoration' in history) {
@@ -1532,34 +1621,12 @@ function initPageRouter() {
         const isSubpage = pageId !== 'hero';
         const topBar = document.getElementById('subpageTopBar');
         const pagerBar = document.getElementById('subpagePagerBar');
-        const crumbLabel = document.getElementById('subpageCrumbLabel');
-        const prevBtn = document.getElementById('pagerPrevBtn');
-        const nextBtn = document.getElementById('pagerNextBtn');
 
         if (topBar) topBar.classList.toggle('visible', isSubpage);
         if (pagerBar) pagerBar.classList.toggle('visible', isSubpage);
 
-        const metaObj = (window.ALL_PAGES_META && window.ALL_PAGES_META[pageId]) || null;
-        if (crumbLabel) {
-            crumbLabel.textContent = (metaObj && metaObj.label) ? metaObj.label : page.label;
-        }
-        if (metaObj && metaObj.title) {
-            document.title = metaObj.title;
-        }
-
-        if (isSubpage && prevBtn && nextBtn) {
-            const prevPage = PORTAL_PAGES[safeIdx - 1] || PORTAL_PAGES[0];
-            const nextPage = PORTAL_PAGES[safeIdx + 1] || PORTAL_PAGES[3]; // Wrap after contact to products
-            prevBtn.href = prevPage.path;
-            prevBtn.setAttribute('data-nav-page', prevPage.id);
-            prevBtn.textContent = prevPage.id === 'hero'
-                ? '← 返回首頁總覽'
-                : `← 上一頁：${prevPage.short}`;
-
-            nextBtn.href = nextPage.path;
-            nextBtn.setAttribute('data-nav-page', nextPage.id);
-            nextBtn.textContent = `下一頁：${nextPage.short} →`;
-        }
+        window.CURRENT_PAGE_ID = pageId;
+        window.updateSubpageCrumbAndPager(pageId);
 
         // 5. Push or replace clean URL in browser history
         if (!opts.skipHistory) {
@@ -2623,5 +2690,9 @@ window.addEventListener('fapo-language-changed', (e) => {
             <option value="zh-TW-HsiaoChenNeural">🎙️ 現代俐落女聲</option>
         `;
         audioTourState.voice = 'zen-male';
+    }
+
+    if (window.updateSubpageCrumbAndPager) {
+        window.updateSubpageCrumbAndPager(window.CURRENT_PAGE_ID || 'hero');
     }
 });
