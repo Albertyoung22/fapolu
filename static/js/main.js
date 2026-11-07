@@ -1675,15 +1675,32 @@ function showToast(msg) {
    FAPO AI Customer Service & Google OR-Tools CP-SAT Interactive Client
    ========================================================================== */
 
-window.toggleAiChatWidget = function() {
+window.toggleAiChatWidget = function(forceState) {
     const widget = document.getElementById('aiChatWidget');
     if (!widget) return;
-    widget.classList.toggle('open');
+    if (typeof forceState === 'boolean') {
+        if (forceState) widget.classList.add('open');
+        else widget.classList.remove('open');
+    } else {
+        widget.classList.toggle('open');
+    }
     if (widget.classList.contains('open')) {
         const inp = document.getElementById('aiChatInput');
-        if (inp) setTimeout(() => inp.focus(), 120);
+        if (inp) setTimeout(() => inp.focus(), 150);
+        const box = document.getElementById('aiChatMessages');
+        if (box) setTimeout(() => { box.scrollTop = box.scrollHeight; }, 100);
     }
 };
+
+// Global escape key listener to close AI Chat Widget gracefully
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' || e.keyCode === 27) {
+        const widget = document.getElementById('aiChatWidget');
+        if (widget && widget.classList.contains('open')) {
+            window.toggleAiChatWidget(false);
+        }
+    }
+});
 
 window.switchAiMode = function(mode) {
     const btnChat = document.getElementById('aiTabBtnChat');

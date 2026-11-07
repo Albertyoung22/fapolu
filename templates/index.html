@@ -1479,9 +1479,15 @@
                 <span class="ai-avatar">🤖</span>
                 <div>
                     <h4>法寶 AI 智能工程客服</h4>
+                    <span class="ai-online-status" style="font-size: 0.72rem; color: #4ade80; display: flex; align-items: center; gap: 4px; font-weight: 500;">
+                        <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#4ade80; box-shadow:0 0 6px #4ade80;"></span>
+                        即時連線 (3,071 筆現貨/模具規格庫)
+                    </span>
                 </div>
             </div>
-            <button class="ai-close-btn" onclick="toggleAiChatWidget()" title="縮小視窗">✕</button>
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <button class="ai-close-btn" onclick="toggleAiChatWidget(false)" title="最小化視窗 (Esc)" style="font-size: 1rem; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px;">✕</button>
+            </div>
         </div>
 
         <div class="ai-mode-tabs">
