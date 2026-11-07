@@ -324,8 +324,38 @@ def api_tts():
     if not clean_text:
         return jsonify({"error": "No speakable text"}), 400
 
-    # Map Zen / Buddhist Dharma prosody presets
-    if voice_key in ('zen-male', 'zh-TW-YunJheNeural'):
+    # Map multi-language and Zen prosody presets
+    if voice_key in ('en', 'en-US', 'en-US-JennyNeural', 'en-female'):
+        actual_voice = 'en-US-JennyNeural'
+        rate = '+0%'
+        pitch = '+0Hz'
+        speak_text = clean_text
+    elif voice_key in ('en-male', 'en-US-GuyNeural'):
+        actual_voice = 'en-US-GuyNeural'
+        rate = '+0%'
+        pitch = '+0Hz'
+        speak_text = clean_text
+    elif voice_key in ('ja', 'ja-JP', 'ja-JP-NanamiNeural', 'ja-female'):
+        actual_voice = 'ja-JP-NanamiNeural'
+        rate = '+0%'
+        pitch = '+0Hz'
+        speak_text = clean_text
+    elif voice_key in ('ja-male', 'ja-JP-KeitaNeural'):
+        actual_voice = 'ja-JP-KeitaNeural'
+        rate = '+0%'
+        pitch = '+0Hz'
+        speak_text = clean_text
+    elif voice_key in ('ko', 'ko-KR', 'ko-KR-SunHiNeural', 'ko-female'):
+        actual_voice = 'ko-KR-SunHiNeural'
+        rate = '+0%'
+        pitch = '+0Hz'
+        speak_text = clean_text
+    elif voice_key in ('ko-male', 'ko-KR-InJoonNeural'):
+        actual_voice = 'ko-KR-InJoonNeural'
+        rate = '+0%'
+        pitch = '+0Hz'
+        speak_text = clean_text
+    elif voice_key in ('zen-male', 'zh-TW-YunJheNeural'):
         actual_voice = 'zh-TW-YunJheNeural'
         rate = '-18%'
         pitch = '-10Hz'
@@ -353,7 +383,15 @@ def api_tts():
         return jsonify({"url": audio_url, "cached": True})
 
     # Fallback chain: preferred prosody -> neutral prosody -> plain text -> alternate voice
-    alt_voice = 'zh-TW-HsiaoChenNeural' if actual_voice == 'zh-TW-YunJheNeural' else 'zh-TW-YunJheNeural'
+    if actual_voice.startswith('en-'):
+        alt_voice = 'en-US-GuyNeural' if actual_voice == 'en-US-JennyNeural' else 'en-US-JennyNeural'
+    elif actual_voice.startswith('ja-'):
+        alt_voice = 'ja-JP-KeitaNeural' if actual_voice == 'ja-JP-NanamiNeural' else 'ja-JP-NanamiNeural'
+    elif actual_voice.startswith('ko-'):
+        alt_voice = 'ko-KR-InJoonNeural' if actual_voice == 'ko-KR-SunHiNeural' else 'ko-KR-SunHiNeural'
+    else:
+        alt_voice = 'zh-TW-HsiaoChenNeural' if actual_voice == 'zh-TW-YunJheNeural' else 'zh-TW-YunJheNeural'
+
     attempts = [
         (speak_text, actual_voice, rate, pitch),
         (clean_text, actual_voice, '+0%', '+0Hz'),
@@ -1025,7 +1063,8 @@ import ai_assistant
 def api_ai_chat():
     body = request.json or {}
     msg = str(body.get('message', '')).strip()
-    result = ai_assistant.process_ai_chat(msg, INVENTORY_DATA)
+    lang = str(body.get('lang', 'zh-TW')).strip()
+    result = ai_assistant.process_ai_chat(msg, INVENTORY_DATA, lang=lang)
     return jsonify({"success": True, **result})
 
 

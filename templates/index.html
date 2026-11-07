@@ -92,7 +92,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img_crawled/favicon.png', v='10.0') }}">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='23.0') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='24.0') }}">
 </head>
 <body>
     <!-- WCAG 2.1 AA: Skip to Main Content Link (無障礙快速跳至主要內容區) -->
@@ -122,44 +122,75 @@
             </a>
             <nav role="navigation" aria-label="全站主要導覽選單">
                 <ul class="nav-links" id="navLinks">
-                    <li><a href="/" data-nav-page="hero" class="nav-item {% if (active_page or 'hero') == 'hero' %}active{% endif %}">首頁</a></li>
-                    <li><a href="/about" data-nav-page="about" class="nav-item {% if active_page == 'about' %}active{% endif %}">關於我們</a></li>
-                    <li><a href="/network" data-nav-page="network" class="nav-item {% if active_page == 'network' %}active{% endif %}">服務網絡</a></li>
-                    <li><a href="/products" data-nav-page="products" class="nav-item {% if active_page == 'products' %}active{% endif %}">旗艦材料</a></li>
-                    <li><a href="/specs" data-nav-page="specs" class="nav-item {% if active_page == 'specs' %}active{% endif %}">現貨規格</a></li>
-                    <li><a href="/machining" data-nav-page="machining" class="nav-item {% if active_page == 'machining' %}active{% endif %}">精密加工</a></li>
-                    <li><a href="/cases" data-nav-page="cases" class="nav-item {% if active_page == 'cases' %}active{% endif %}">代表實績</a></li>
-                    <li><a href="/tech" data-nav-page="tech" class="nav-item {% if active_page == 'tech' %}active{% endif %}">技術知識庫</a></li>
-                    <li><a href="/contact" data-nav-page="contact" class="nav-item {% if active_page == 'contact' %}active{% endif %}">聯絡諮詢</a></li>
+                    <li><a href="/" data-nav-page="hero" class="nav-item {% if (active_page or 'hero') == 'hero' %}active{% endif %}" data-i18n="nav.home">首頁</a></li>
+                    <li><a href="/about" data-nav-page="about" class="nav-item {% if active_page == 'about' %}active{% endif %}" data-i18n="nav.about">關於我們</a></li>
+                    <li><a href="/network" data-nav-page="network" class="nav-item {% if active_page == 'network' %}active{% endif %}" data-i18n="nav.network">服務網絡</a></li>
+                    <li><a href="/products" data-nav-page="products" class="nav-item {% if active_page == 'products' %}active{% endif %}" data-i18n="nav.products">旗艦材料</a></li>
+                    <li><a href="/specs" data-nav-page="specs" class="nav-item {% if active_page == 'specs' %}active{% endif %}" data-i18n="nav.specs">現貨規格</a></li>
+                    <li><a href="/machining" data-nav-page="machining" class="nav-item {% if active_page == 'machining' %}active{% endif %}" data-i18n="nav.machining">精密加工</a></li>
+                    <li><a href="/cases" data-nav-page="cases" class="nav-item {% if active_page == 'cases' %}active{% endif %}" data-i18n="nav.cases">代表實績</a></li>
+                    <li><a href="/tech" data-nav-page="tech" class="nav-item {% if active_page == 'tech' %}active{% endif %}" data-i18n="nav.tech">技術知識庫</a></li>
+                    <li><a href="/contact" data-nav-page="contact" class="nav-item {% if active_page == 'contact' %}active{% endif %}" data-i18n="nav.contact">聯絡諮詢</a></li>
                 </ul>
             </nav>
             <div class="nav-actions">
-                <button id="tunnelShareBtn" class="btn btn-audio nav-share-desktop" onclick="openTunnelModal()">
+                <!-- Multi-Language Selector Dropdown (多國語言切換：繁中、英、日、韓) -->
+                <div class="lang-selector-wrap" id="langSelectorWrap">
+                    <button type="button" class="lang-current-btn" id="langCurrentBtn" aria-expanded="false" aria-haspopup="listbox" title="切換語言 / Language / 言語 / 언어">
+                        <span class="lang-icon" aria-hidden="true">🌐</span>
+                        <span class="lang-label" id="langCurrentLabel">繁體中文</span>
+                        <span class="lang-arrow" aria-hidden="true">▾</span>
+                    </button>
+                    <ul class="lang-dropdown-menu" id="langDropdownMenu" role="listbox">
+                        <li role="option" data-lang="zh-TW" class="lang-opt active" onclick="switchLanguage('zh-TW')">
+                            <span>🇹🇼</span> 繁體中文
+                        </li>
+                        <li role="option" data-lang="en" class="lang-opt" onclick="switchLanguage('en')">
+                            <span>🇺🇸</span> English
+                        </li>
+                        <li role="option" data-lang="ja" class="lang-opt" onclick="switchLanguage('ja')">
+                            <span>🇯🇵</span> 日本語
+                        </li>
+                        <li role="option" data-lang="ko" class="lang-opt" onclick="switchLanguage('ko')">
+                            <span>🇰🇷</span> 한국어
+                        </li>
+                    </ul>
+                </div>
+
+                <button id="tunnelShareBtn" class="btn btn-audio nav-share-desktop" onclick="openTunnelModal()" data-i18n="nav.share">
                     🌐 外網分享
                 </button>
-                <a href="/admin" class="btn btn-admin-nav nav-admin-desktop" title="進入業務詢價管理後台 (CRM)">
+                <a href="/admin" class="btn btn-admin-nav nav-admin-desktop" title="進入業務詢價管理後台 (CRM)" data-i18n="nav.admin">
                     🔐 後台管理
                 </a>
-                <a href="/contact" data-nav-page="contact" class="btn btn-primary nav-cta-btn">立即詢價</a>
+                <a href="/contact" data-nav-page="contact" class="btn btn-primary nav-cta-btn" data-i18n="nav.quote">立即詢價</a>
                 <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="開啟導覽選單">☰</button>
             </div>
         </div>
     </header>
 
     <!-- Mobile Slide-Down Navigation Drawer -->
-    <div id="mobileNavOverlay" class="mobile-nav-overlay">
+    <div id="mobileNavOverlay" class="mobile-nav-overlay" role="dialog" aria-modal="true" aria-label="行動版導覽選單">
         <nav class="mobile-nav-drawer">
+            <!-- Mobile Multi-Language Strip -->
+            <div class="mobile-lang-strip">
+                <button type="button" class="mobile-lang-btn active" data-lang="zh-TW" onclick="switchLanguage('zh-TW')">🇹🇼 繁中</button>
+                <button type="button" class="mobile-lang-btn" data-lang="en" onclick="switchLanguage('en')">🇺🇸 EN</button>
+                <button type="button" class="mobile-lang-btn" data-lang="ja" onclick="switchLanguage('ja')">🇯🇵 日本語</button>
+                <button type="button" class="mobile-lang-btn" data-lang="ko" onclick="switchLanguage('ko')">🇰🇷 한국어</button>
+            </div>
+
             <div class="mobile-nav-grid">
-                <a href="/" data-nav-page="hero" class="mobile-nav-link {% if (active_page or 'hero') == 'hero' %}active{% endif %}" style="grid-column: 1 / -1; justify-content: center;">🏠 首頁總覽</a>
-                <a href="/about" data-nav-page="about" class="mobile-nav-link {% if active_page == 'about' %}active{% endif %}">🪷 關於我們沿革</a>
-                <a href="/network" data-nav-page="network" class="mobile-nav-link {% if active_page == 'network' %}active{% endif %}">📍 全台服務據點</a>
-                <a href="/products" data-nav-page="products" class="mobile-nav-link {% if active_page == 'products' %}active{% endif %}">✨ 精選旗艦材料</a>
-                <a href="/specs" data-nav-page="specs" class="mobile-nav-link {% if active_page == 'specs' %}active{% endif %}">📦 現貨規格檢索</a>
-                <a href="/machining" data-nav-page="machining" class="mobile-nav-link {% if active_page == 'machining' %}active{% endif %}">⚙️ 精密加工能量</a>
-                <a href="/cases" data-nav-page="cases" class="mobile-nav-link {% if active_page == 'cases' %}active{% endif %}">🏆 代表實績案例</a>
-                <a href="/tech" data-nav-page="tech" class="mobile-nav-link {% if active_page == 'tech' %}active{% endif %}">📚 鋁材工程知識庫</a>
-                <a href="/contact" data-nav-page="contact" class="mobile-nav-link {% if active_page == 'contact' %}active{% endif %}">📋 線上圖面詢價</a>
-                <a href="/admin" class="mobile-nav-link mobile-nav-admin">🔐 進入業務詢價管理後台 (CRM)</a>
+                <a href="/" data-nav-page="hero" class="mobile-nav-link {% if (active_page or 'hero') == 'hero' %}active{% endif %}" style="grid-column: 1 / -1; justify-content: center;" data-i18n="nav.home">🏠 首頁總覽</a>
+                <a href="/about" data-nav-page="about" class="mobile-nav-link {% if active_page == 'about' %}active{% endif %}" data-i18n="nav.about">🪷 關於我們沿革</a>
+                <a href="/network" data-nav-page="network" class="mobile-nav-link {% if active_page == 'network' %}active{% endif %}" data-i18n="nav.network">📍 全台服務據點</a>
+                <a href="/products" data-nav-page="products" class="mobile-nav-link {% if active_page == 'products' %}active{% endif %}" data-i18n="nav.products">✨ 精選旗艦材料</a>
+                <a href="/specs" data-nav-page="specs" class="mobile-nav-link {% if active_page == 'specs' %}active{% endif %}" data-i18n="nav.specs">📦 現貨規格檢索</a>
+                <a href="/machining" data-nav-page="machining" class="mobile-nav-link {% if active_page == 'machining' %}active{% endif %}" data-i18n="nav.machining">⚙️ 精密加工能量</a>
+                <a href="/cases" data-nav-page="cases" class="mobile-nav-link {% if active_page == 'cases' %}active{% endif %}" data-i18n="nav.cases">🏆 代表實績案例</a>
+                <a href="/tech" data-nav-page="tech" class="mobile-nav-link {% if active_page == 'tech' %}active{% endif %}" data-i18n="nav.tech">📚 鋁材工程知識庫</a>
+                <a href="/contact" data-nav-page="contact" class="mobile-nav-link {% if active_page == 'contact' %}active{% endif %}" data-i18n="nav.contact">📋 線上圖面詢價</a>
+                <a href="/admin" class="mobile-nav-link mobile-nav-admin" data-i18n="nav.admin">🔐 進入業務詢價管理後台 (CRM)</a>
             </div>
             <div class="mobile-nav-footer">
                 <button class="btn btn-outline" style="width:100%; justify-content:center;" onclick="closeMobileMenu(); openTunnelModal();">
@@ -204,25 +235,24 @@
                 <div class="hero-grid">
                     <div class="hero-content">
                         <div class="hero-badge">
-                            <span>⭐ 深耕台灣近 40 載 · 卓越材料與工藝標竿</span>
+                            <span data-i18n="hero.badge">⭐ 深耕台灣近 40 載 · 卓越材料與工藝標竿</span>
                         </div>
-                        <h2 class="hero-title">
+                        <h2 class="hero-title" data-i18n="hero.title">
                             全方位鋁合金材料供應鏈
                             <span class="highlight">高階精密加工一站整合</span>
                         </h2>
-                        <p class="hero-lead">
-                            法寶實業建構強大且彈性的金屬供應鏈平台。台北、台中、台南四重營運據點，常備上千噸現貨庫存；引進日本原裝 UACJ 貼膜鋁板與 7075 航太級鋁合金，整合 CNC 五軸與龍門銑削，為台灣半導體與高科技製造業提供堅實後盾。
+                        <p class="hero-lead" data-i18n="hero.lead">
+                            結合深厚金屬冶金專業與先進 CNC 精密銑削、大尺寸鋸切及原廠出廠證明，為航太、半導體及精密工業客戶提供可靠夥伴級服務。
                         </p>
                         <div class="hero-actions">
-                            <button id="startTourHeroBtn" class="btn btn-primary">
+                            <button id="startTourHeroBtn" class="btn btn-primary" data-i18n="hero.btn_tour">
                                 🎙️ 啟動沉浸式語音導覽
-                                <span class="audio-equalizer-bars" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
                             </button>
-                            <a href="/specs" data-nav-page="specs" class="btn btn-outline">
-                                🔍 查詢現貨與模具規格庫 ({{ inventory_count }}項)
+                            <a href="/specs" data-nav-page="specs" class="btn btn-outline" data-i18n="hero.btn_specs">
+                                🔍 檢索現貨庫存規格
                             </a>
-                            <a href="/contact" data-nav-page="contact" class="btn btn-outline">
-                                📋 線上規格圖面估價
+                            <a href="/contact" data-nav-page="contact" class="btn btn-outline" data-i18n="hero.btn_quote">
+                                📋 立即線上圖面估價
                             </a>
                         </div>
                         <div class="hero-stats">
@@ -539,9 +569,9 @@
                             </div>
                         </div>
                         <div class="loc-actions">
-                            <a href="tel:{{ loc.tel }}" class="btn-primary" style="display:inline-flex; align-items:center; gap:4px;">📞 直接通話</a>
-                            <a href="https://www.google.com/maps/search/?api=1&query={{ loc.address | urlencode }}" target="_blank" rel="noopener noreferrer" class="btn-outline" style="display:inline-flex; align-items:center; gap:4px;" title="開啟 Google 地圖導航">🗺️ 地圖導航</a>
-                            <button class="btn-outline" onclick="readAloudText('{{ loc.name }}。{{ loc.role }}。地址位於{{ loc.address }}。電話{{ loc.tel }}。{{ loc.highlights }}', this)">🎙️ 介紹</button>
+                            <a href="tel:{{ loc.tel }}" class="btn-primary" style="display:inline-flex; align-items:center; gap:4px;" data-i18n="action.call">📞 直接通話</a>
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ loc.address | urlencode }}" target="_blank" rel="noopener noreferrer" class="btn-outline" style="display:inline-flex; align-items:center; gap:4px;" title="開啟 Google 地圖導航" data-i18n="action.map">🗺️ 地圖導航</a>
+                            <button class="btn-outline" onclick="readAloudText('{{ loc.name }}。{{ loc.role }}。地址位於{{ loc.address }}。電話{{ loc.tel }}。{{ loc.highlights }}', this)" data-i18n="action.intro">🎙️ 語音導覽與特色介紹</button>
                         </div>
                     </div>
                     {% endfor %}
@@ -1592,32 +1622,32 @@
                             <p>FAPO ENTERPRISE CO., LTD.</p>
                         </div>
                     </div>
-                    <p>
+                    <p data-i18n="footer.desc">
                         深耕台灣近四十載，以鋁為本、服務為先。全方位供應純鋁、鋁合金板、擠型材、特殊合金與精密 CNC 加工、表面陽極一貫化整合服務。
                     </p>
                 </div>
                 <div class="footer-col">
-                    <h5>快速導覽</h5>
+                    <h5 data-i18n="footer.col_nav">快速導覽</h5>
                     <ul>
-                        <li><a href="/" data-nav-page="hero">首頁總覽</a></li>
-                        <li><a href="/about" data-nav-page="about">關於我們 · 沿革</a></li>
-                        <li><a href="/network" data-nav-page="network">全台服務據點</a></li>
-                        <li><a href="/products" data-nav-page="products">旗艦材料系列</a></li>
-                        <li><a href="/specs" data-nav-page="specs">現貨庫存規格</a></li>
+                        <li><a href="/" data-nav-page="hero" data-i18n="nav.home">首頁總覽</a></li>
+                        <li><a href="/about" data-nav-page="about" data-i18n="nav.about">關於我們 · 沿革</a></li>
+                        <li><a href="/network" data-nav-page="network" data-i18n="nav.network">全台服務據點</a></li>
+                        <li><a href="/products" data-nav-page="products" data-i18n="nav.products">旗艦材料系列</a></li>
+                        <li><a href="/specs" data-nav-page="specs" data-i18n="nav.specs">現貨庫存規格</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
-                    <h5>技術與加工</h5>
+                    <h5 data-i18n="footer.col_tech">技術與加工</h5>
                     <ul>
-                        <li><a href="/machining" data-nav-page="machining">精密加工能量</a></li>
-                        <li><a href="/cases" data-nav-page="cases">半導體航太實績</a></li>
+                        <li><a href="/machining" data-nav-page="machining" data-i18n="nav.machining">精密加工能量</a></li>
+                        <li><a href="/cases" data-nav-page="cases" data-i18n="nav.cases">半導體航太實績</a></li>
                         <li><a href="/tech" data-nav-page="tech">金屬硬度換算</a></li>
                         <li><a href="/tech" data-nav-page="tech">調質代號辭典</a></li>
-                        <li><a href="/contact" data-nav-page="contact">線上圖面估價</a></li>
+                        <li><a href="/contact" data-nav-page="contact" data-i18n="nav.quote">線上圖面估價</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
-                    <h5>品質與認證</h5>
+                    <h5 data-i18n="footer.col_quality">品質與認證</h5>
                     <ul>
                         <li><a href="/tech" data-nav-page="tech">ISO 9001:2015 體系</a></li>
                         <li><a href="/tech" data-nav-page="tech">AS9100D 航太規範</a></li>
@@ -1715,8 +1745,8 @@
     <button id="aiChatLauncher" class="ai-chat-launcher" onclick="toggleAiChatWidget()" title="開啟法寶 AI 智能工程客服與智慧下料計算">
         <span class="ai-launcher-icon">🤖</span>
         <span class="ai-launcher-text">
-            <strong>AI 智能客服</strong>
-            <small>現貨查詢 · 智慧算料</small>
+            <strong data-i18n="ai.launcher">AI 智能客服</strong>
+            <small data-i18n="ai.launcher_sub">現貨查詢 · 智慧算料</small>
         </span>
         <span class="ai-pulse-dot"></span>
     </button>
@@ -1726,10 +1756,10 @@
             <div class="ai-header-title">
                 <span class="ai-avatar">🤖</span>
                 <div>
-                    <h4>法寶 AI 智能工程客服</h4>
+                    <h4 data-i18n="ai.header_title">法寶 AI 智能工程客服</h4>
                     <span class="ai-online-status" style="font-size: 0.72rem; color: #4ade80; display: flex; align-items: center; gap: 4px; font-weight: 500;">
                         <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#4ade80; box-shadow:0 0 6px #4ade80;"></span>
-                        即時連線 (3,071 筆現貨/模具規格庫)
+                        <span data-i18n="ai.online_status">即時連線 (3,071 筆現貨/模具規格庫)</span>
                     </span>
                 </div>
             </div>
@@ -1739,10 +1769,10 @@
         </div>
 
         <div class="ai-mode-tabs">
-            <button type="button" class="ai-mode-btn active" id="aiTabBtnChat" onclick="switchAiMode('chat')">
+            <button type="button" class="ai-mode-btn active" id="aiTabBtnChat" onclick="switchAiMode('chat')" data-i18n="ai.tab_chat">
                 💬 智能規格與選料對答
             </button>
-            <button type="button" class="ai-mode-btn" id="aiTabBtnCpsat" onclick="switchAiMode('cpsat')">
+            <button type="button" class="ai-mode-btn" id="aiTabBtnCpsat" onclick="switchAiMode('cpsat')" data-i18n="ai.tab_cpsat">
                 🧮 母材裁切最佳化
             </button>
         </div>
@@ -1751,7 +1781,7 @@
         <div id="aiPanelChat" class="ai-panel-body">
             <div id="aiChatMessages" class="ai-chat-messages">
                 <div class="ai-msg ai-msg-bot">
-                    <div class="ai-msg-bubble">
+                    <div class="ai-msg-bubble" id="aiDefaultGreeting">
                         您好！我是 <strong>法寶實業 AI 智能工程客服</strong>（即時串聯 3,071 筆現貨與模具規格資料庫）。<br><br>
                         您可以直接詢問：<br>
                         • <strong>現貨與模具查詢</strong>：「6061 圓棒 50mm」、「7075 厚 20mm 鋁板」<br>
@@ -1765,18 +1795,18 @@
             </div>
 
             <div class="ai-quick-chips">
-                <button type="button" onclick="sendAiQuickPrompt('查詢 6061 圓棒 直徑 50mm 現貨')">📦 6061圓棒 50mm</button>
-                <button type="button" onclick="sendAiQuickPrompt('推薦適合陽極處理與高強度的鋁材')">🔬 陽極高強選料</button>
-                <button type="button" onclick="sendAiQuickPrompt('母材 3000mm 切 800*3, 550*4, 420*5')">🧮 智慧下料範例</button>
-                <button type="button" onclick="sendAiQuickPrompt('全台服務據點與原廠材質證明')">📍 據點與證明</button>
+                <button type="button" onclick="sendAiQuickPrompt('查詢 6061 圓棒 直徑 50mm 現貨')" data-i18n="ai.chip1">📦 6061圓棒 50mm</button>
+                <button type="button" onclick="sendAiQuickPrompt('推薦適合陽極處理與高強度的鋁材')" data-i18n="ai.chip2">🔬 陽極高強選料</button>
+                <button type="button" onclick="sendAiQuickPrompt('母材 3000mm 切 800*3, 550*4, 420*5')" data-i18n="ai.chip3">🧮 智慧下料範例</button>
+                <button type="button" onclick="sendAiQuickPrompt('全台服務據點與原廠材質證明')" data-i18n="ai.chip4">📍 據點與證明</button>
             </div>
 
             <form class="ai-chat-input-bar" onsubmit="event.preventDefault(); sendAiChatMessage();">
                 <button type="button" id="aiVoiceInputBtn" class="ai-voice-input-btn" title="按一下開始語音對話輸入（支援中文辨識）" onclick="toggleAiVoiceRecognition()">
                     🎙️
                 </button>
-                <input type="text" id="aiChatInput" placeholder="輸入或以語音說出規格需求、裁切尺寸..." autocomplete="off">
-                <button type="submit" id="aiChatSendBtn" class="btn btn-primary">發送</button>
+                <input type="text" id="aiChatInput" data-i18n="ai.placeholder" placeholder="輸入或以語音說出規格需求、裁切尺寸..." autocomplete="off">
+                <button type="submit" id="aiChatSendBtn" class="btn btn-primary" data-i18n="ai.send">發送</button>
             </form>
         </div>
 
@@ -1905,8 +1935,10 @@
         window.INITIAL_PAGE = {{ (active_page or 'hero') | tojson }};
         window.ALL_PAGES_META = {{ (all_pages_meta or {}) | tojson }};
     </script>
+    <!-- Internationalization (i18n) Multi-Language Engine -->
+    <script src="{{ url_for('static', filename='js/i18n.js', v='1.0') }}"></script>
     <!-- Main Interactive Script -->
-    <script src="{{ url_for('static', filename='js/main.js', v='22.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v='23.0') }}"></script>
 </body>
 </html>
 

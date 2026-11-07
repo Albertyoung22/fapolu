@@ -389,27 +389,34 @@ def find_optimal_inventory_specs_cpsat(query_text, inventory_data):
 # ==============================================================================
 #  3. Main Conversational AI Handler (AI 客服對話大腦)
 # ==============================================================================
-def process_ai_chat(message, inventory_data):
+def process_ai_chat(message, inventory_data, lang='zh-TW'):
     """
     Processes user message and returns an AI response with structured cards,
-    CP-SAT optimization results, and quick RFQ actions.
+    CP-SAT optimization results, and quick RFQ actions in the user's selected language.
     """
     msg = (message or "").strip()
-    if not msg:
+    low = msg.lower()
+    is_en = lang == 'en' or any(k in low for k in ['hello', 'hi', 'cut', 'cutting', 'stock', 'quote', 'recommend', 'alloy', 'mtr'])
+    is_ja = lang == 'ja' or any(k in low for k in ['こんにちは', '見積', '切断', '歩留', '合金', '規格', 'アルミニウム'])
+    is_ko = lang == 'ko' or any(k in low for k in ['안녕', '견적', '절단', '규격', '합금', '알루미늄', '재고'])
+
+    if not msg or low in ["hello", "hi", "hey", "help", "你好", "您好", "哈囉", "嗨", "こんにちは", "안녕", "안녕하세요"]:
+        if is_en:
+            return {"reply": "Hello! I am the **FAPO AI Engineering Assistant**. Would you like to check current stock specifications, get alloy recommendations, or calculate 1D cutting stock optimization?", "specs": [], "cutting_plan": None}
+        elif is_ja:
+            return {"reply": "こんにちは！**法宝実業 AI 営業技術アシスタント**です。在庫規格の検索、材料選定のご相談、または定寸切断の最適化計算をご案内いたします。", "specs": [], "cutting_plan": None}
+        elif is_ko:
+            return {"reply": "안녕하십니까! **법보실업 AI 엔지니어링 챗봇**입니다. 재고 규격 검색, 소재 추천, 또는 모재 절단 최적화 계산을 도와드릴까요?", "specs": [], "cutting_plan": None}
         return {
             "reply": "您好！我是 **法寶實業 AI 智能工程客服**。請問今天需要查詢現貨規格、鋁合金選料建議，還是進行母材定寸裁切下料最佳化計算呢？",
             "specs": [],
             "cutting_plan": None
         }
 
-    low = msg.lower()
-
     # 1. Check if the user is asking for Cutting Stock Optimization (下料 / 裁切 / CP-SAT 算料)
-    if any(k in low for k in ["下料", "排料", "裁切優化", "裁切最佳化", "cp-sat", "ortools", "餘料", "幾支母材", "切"]):
-        # Try to parse pattern like: 800*3, 550*4 or 800mm 3支
-        pairs = re.findall(r'(\d{2,4})\s*(?:mm|公厘)?\s*[x*×,，:：\s]\s*(\d{1,3})\s*(?:支|件|段|片)?', low)
-        # Filter out stock length if user wrote "母材 3000mm"
-        stock_match = re.search(r'(?:母材|總長|標準長|原料)\s*(\d{3,5})', low)
+    if any(k in low for k in ["下料", "排料", "裁切優化", "裁切最佳化", "cp-sat", "ortools", "餘料", "幾支母材", "切", "cut", "cutting", "stock len", "切断", "歩留", "절단", "모재"]):
+        pairs = re.findall(r'(\d{2,4})\s*(?:mm|公厘)?\s*[x*×,，:：\s]\s*(\d{1,3})\s*(?:支|件|段|片|pcs|ea)?', low)
+        stock_match = re.search(r'(?:母材|總長|標準長|原料|stock|raw|定尺)\s*(\d{3,5})', low)
         stock_len = int(stock_match.group(1)) if stock_match else 3000
 
         demands = []
@@ -422,41 +429,89 @@ def process_ai_chat(message, inventory_data):
         if demands:
             plan = solve_cutting_stock_cpsat(stock_length_mm=stock_len, kerf_mm=3, demands=demands)
             if plan.get("success"):
-                reply_lines = [
-                    f"🧮 **智慧母材下料最佳化計算完成！**",
-                    f"• **求解狀態**：`{plan['solver_status']}`（耗時 `{plan['solve_time_ms']} ms`）",
-                    f"• **母材長度**：`{plan['stock_length_mm']} mm`（含每刀鋸縫損耗 `{plan['kerf_mm']} mm`）",
-                    f"• **最少需用母材**：**`{plan['total_bars_used']} 支`**（共裁切 `{plan['total_pieces_cut']} 段`）",
-                    f"• **材料總利用率**：**`{plan['overall_utilization_pct']}%`**（總餘料 `{plan['total_remnant_mm']} mm`）",
-                    "",
-                    "📋 **最佳裁切排程明細**："
-                ]
-                for b in plan["bars_plan"]:
-                    reply_lines.append(
-                        f"  - **第 {b['bar_no']} 支**：裁切 `{b['cuts_summary']}` ｜ 實耗 `{b['net_used_mm']}mm` ｜ 餘料 `{b['remnant_mm']}mm` (利用率 {b['utilization_pct']}%)"
-                    )
+                if is_en:
+                    reply_lines = [
+                        f"🧮 **Cutting Stock Optimization Solved!**",
+                        f"• **Solver Status**: `{plan['solver_status']}` (computed in `{plan['solve_time_ms']} ms`)",
+                        f"• **Stock Length**: `{plan['stock_length_mm']} mm` (Kerf blade width `{plan['kerf_mm']} mm`)",
+                        f"• **Total Stock Bars Needed**: **`{plan['total_bars_used']} bars`** (Total `{plan['total_pieces_cut']} cut segments`)",
+                        f"• **Overall Utilization**: **`{plan['overall_utilization_pct']}%`** (Total Scrap `{plan['total_remnant_mm']} mm`)",
+                        "",
+                        "📋 **Optimal Cutting Schedule Detail**:"
+                    ]
+                    for b in plan["bars_plan"]:
+                        reply_lines.append(
+                            f"  - **Bar #{b['bar_no']}**: Cuts `{b['cuts_summary']}` ｜ Net `{b['net_used_mm']}mm` ｜ Remnant `{b['remnant_mm']}mm` (Yield {b['utilization_pct']}%)"
+                        )
+                    voice_script = f"Cutting stock calculation completed. A total of {plan['total_bars_used']} stock bars are needed with an overall utilization of {plan['overall_utilization_pct']} percent."
+                elif is_ja:
+                    reply_lines = [
+                        f"🧮 **定寸切断最適化計算が完了しました！**",
+                        f"• **求解状態**：`{plan['solver_status']}`（計算時間 `{plan['solve_time_ms']} ms`）",
+                        f"• **母材定尺**：`{plan['stock_length_mm']} mm`（鋸刃切り代 `{plan['kerf_mm']} mm`）",
+                        f"• **必要母材本数**：**`{plan['total_bars_used']} 本`**（合計切断 `{plan['total_pieces_cut']} 点`）",
+                        f"• **総合歩留まり率**：**`{plan['overall_utilization_pct']}%`**（総端材 `{plan['total_remnant_mm']} mm`）",
+                        "",
+                        "📋 **最適切断スケジュール詳細**："
+                    ]
+                    for b in plan["bars_plan"]:
+                        reply_lines.append(
+                            f"  - **第 {b['bar_no']} 本目**：切断 `{b['cuts_summary']}` ｜ 実消費 `{b['net_used_mm']}mm` ｜ 残材 `{b['remnant_mm']}mm` (歩留まり {b['utilization_pct']}%)"
+                        )
+                    voice_script = f"定寸切断の最適化が完了しました。必要な母材は合計{plan['total_bars_used']}本、歩留まり率は{plan['overall_utilization_pct']}パーセントです。"
+                elif is_ko:
+                    reply_lines = [
+                        f"🧮 **모재 절단 최적화 계산 완료!**",
+                        f"• **해결 상태**：`{plan['solver_status']}`（소요 시간 `{plan['solve_time_ms']} ms`）",
+                        f"• **원자재 규격**：`{plan['stock_length_mm']} mm`（톱날 손실 `{plan['kerf_mm']} mm` 포함）",
+                        f"• **최소 필요 모재**：**`{plan['total_bars_used']} 본`**（총 절단 `{plan['total_pieces_cut']} 개`）",
+                        f"• **종합 수율(이용률)**：**`{plan['overall_utilization_pct']}%`**（총 잔재 `{plan['total_remnant_mm']} mm`）",
+                        "",
+                        "📋 **최적 절단 스케줄 상세**："
+                    ]
+                    for b in plan["bars_plan"]:
+                        reply_lines.append(
+                            f"  - **제 {b['bar_no']} 본**：절단 `{b['cuts_summary']}` ｜ 실사용 `{b['net_used_mm']}mm` ｜ 잔여 `{b['remnant_mm']}mm` (수율 {b['utilization_pct']}%)"
+                        )
+                    voice_script = f"모재 절단 최적화 계산이 완료되었습니다. 최소 {plan['total_bars_used']}본의 원자재가 필요하며 종합 수율은 {plan['overall_utilization_pct']}퍼센트입니다."
+                else:
+                    reply_lines = [
+                        f"🧮 **智慧母材下料最佳化計算完成！**",
+                        f"• **求解狀態**：`{plan['solver_status']}`（耗時 `{plan['solve_time_ms']} ms`）",
+                        f"• **母材長度**：`{plan['stock_length_mm']} mm`（含每刀鋸縫損耗 `{plan['kerf_mm']} mm`）",
+                        f"• **最少需用母材**：**`{plan['total_bars_used']} 支`**（共裁切 `{plan['total_pieces_cut']} 段`）",
+                        f"• **材料總利用率**：**`{plan['overall_utilization_pct']}%`**（總餘料 `{plan['total_remnant_mm']} mm`）",
+                        "",
+                        "📋 **最佳裁切排程明細**："
+                    ]
+                    for b in plan["bars_plan"]:
+                        reply_lines.append(
+                            f"  - **第 {b['bar_no']} 支**：裁切 `{b['cuts_summary']}` ｜ 實耗 `{b['net_used_mm']}mm` ｜ 餘料 `{b['remnant_mm']}mm` (利用率 {b['utilization_pct']}%)"
+                        )
+                    voice_script = plan.get("speech_commentary")
+
                 return {
                     "reply": "\n".join(reply_lines),
                     "specs": [],
                     "cutting_plan": plan,
-                    "voice_script": plan.get("speech_commentary")
+                    "voice_script": voice_script
                 }
 
     # 2. Check if user asks for Alloy Selection / Recommendation (選料 / 推薦 / 陽極 / 海水 / 航太 / 哪種鋁)
-    if any(k in low for k in ["推薦", "選料", "適合", "哪種", "差在哪", "比較", "陽極", "海水", "耐蝕", "航太", "高強度", "超平板", "變形"]):
+    if any(k in low for k in ["推薦", "選料", "適合", "哪種", "差在哪", "比較", "陽極", "海水", "耐蝕", "航太", "高強度", "超平板", "變形", "recommend", "alloy", "anodiz", "strength", "corrosion", "アルマイト", "強度", "耐食", "추천", "합금", "아노다이징", "내식"]):
         weights = {"strength": 5, "corrosion": 5, "machinability": 5, "anodizing": 5, "weldability": 3, "cost_efficiency": 5}
         min_cons = {}
-        if any(k in low for k in ["陽極", "外觀", "染色", "硬陽"]):
+        if any(k in low for k in ["陽極", "外觀", "染色", "硬陽", "anodiz", "アルマイト", "아노다이징"]):
             weights["anodizing"] = 15
             min_cons["anodizing"] = 85
-        if any(k in low for k in ["高強", "航太", "超硬", "模具", "剛性"]):
+        if any(k in low for k in ["高強", "航太", "超硬", "模具", "剛性", "strength", "aerospace", "強度", "강도", "항공"]):
             weights["strength"] = 18
             min_cons["strength"] = 85
-        if any(k in low for k in ["海水", "船舶", "耐蝕", "防鏽", "折彎", "鈑金"]):
+        if any(k in low for k in ["海水", "船舶", "耐蝕", "防鏽", "折彎", "鈑金", "corrosion", "marine", "耐食", "내식", "해수"]):
             weights["corrosion"] = 16
             weights["weldability"] = 12
             min_cons["corrosion"] = 90
-        if any(k in low for k in ["超平", "不變形", "低應力", "半導體", "真空腔"]):
+        if any(k in low for k in ["超平", "不變形", "低應力", "半導體", "真空腔", "semiconductor", "半導体", "반도체"]):
             weights["anodizing"] = 15
             weights["corrosion"] = 15
 
@@ -465,18 +520,50 @@ def process_ai_chat(message, inventory_data):
         alts = rec["alternatives"]
         matched_specs = find_optimal_inventory_specs_cpsat(prim["alloy"][:4], inventory_data)
 
-        reply = (
-            f"🔬 **智慧工程材質選型建議**：\n\n"
-            f"🏆 **首選推薦牌號：`{prim['alloy']}`**\n"
-            f"• **核心優勢**：{prim['desc']}\n"
-            f"• **工程指標**：強度評分 `{prim['strength']}` ｜ 耐蝕性 `{prim['corrosion']}` ｜ 切削性 `{prim['machinability']}` ｜ 陽極效果 `{prim['anodizing']}`\n\n"
-            f"💡 **次要替代方案**：`{alts[0]['alloy']}`（{alts[0]['desc']}）、`{alts[1]['alloy']}`\n"
-            f"下方已為您同步檢索法寶實業現有庫存規格，可一鍵加入詢價單："
-        )
-        voice_script = (
-            f"為您推薦首選合金牌號為 {prim['alloy']}，核心特點是：{prim['desc']}。"
-            f"若有其他考量，亦可參考次選 {alts[0]['alloy']}。下方已為您同步檢索庫存規格，歡迎直接加入詢價單！"
-        )
+        if is_en:
+            reply = (
+                f"🔬 **Engineering Alloy Selection Recommendation**:\n\n"
+                f"🏆 **Top Recommended Alloy: `{prim['alloy']}`**\n"
+                f"• **Key Advantage**: {prim['desc']}\n"
+                f"• **Performance**: Strength `{prim['strength']}` ｜ Corrosion `{prim['corrosion']}` ｜ Machinability `{prim['machinability']}` ｜ Anodizing `{prim['anodizing']}`\n\n"
+                f"💡 **Secondary Alternatives**: `{alts[0]['alloy']}`, `{alts[1]['alloy']}`\n"
+                f"Real-time stock specs from FAPO have been retrieved below for quick quotation:"
+            )
+            voice_script = f"Our top recommended alloy is {prim['alloy']}. Matching stock inventory is listed below."
+        elif is_ja:
+            reply = (
+                f"🔬 **材料選定・合金エンジニアリング推奨**：\n\n"
+                f"🏆 **第一推奨合金：`{prim['alloy']}`**\n"
+                f"• **主な特徴**：{prim['desc']}\n"
+                f"• **評価指標**：強度スコア `{prim['strength']}` ｜ 耐食性 `{prim['corrosion']}` ｜ 切削性 `{prim['machinability']}` ｜ アルマイト適性 `{prim['anodizing']}`\n\n"
+                f"💡 **代替候補合金**：`{alts[0]['alloy']}`、`{alts[1]['alloy']}`\n"
+                f"現在庫の規格を下に一覧表示しました。ワンクリックで見積りに追加可能です："
+            )
+            voice_script = f"最適な推奨合金は {prim['alloy']} です。該当する在庫規格を下に表示しました。"
+        elif is_ko:
+            reply = (
+                f"🔬 **엔지니어링 소재 선정 추천**：\n\n"
+                f"🏆 **1순위 추천 합금：`{prim['alloy']}`**\n"
+                f"• **핵심 장점**：{prim['desc']}\n"
+                f"• **성능 지표**：강도 점수 `{prim['strength']}` ｜ 내식성 `{prim['corrosion']}` ｜ 절삭성 `{prim['machinability']}` ｜ 아노다이징 `{prim['anodizing']}`\n\n"
+                f"💡 **대체 후보 합금**：`{alts[0]['alloy']}`、`{alts[1]['alloy']}`\n"
+                f"법보실업 보유 실시간 재고 규격을 아래에 연동했습니다. 바로 견적에 추가하실 수 있습니다："
+            )
+            voice_script = f"가장 추천하는 합금은 {prim['alloy']}입니다. 아래에서 보유 재고를 확인해 보세요."
+        else:
+            reply = (
+                f"🔬 **智慧工程材質選型建議**：\n\n"
+                f"🏆 **首選推薦牌號：`{prim['alloy']}`**\n"
+                f"• **核心優勢**：{prim['desc']}\n"
+                f"• **工程指標**：強度評分 `{prim['strength']}` ｜ 耐蝕性 `{prim['corrosion']}` ｜ 切削性 `{prim['machinability']}` ｜ 陽極效果 `{prim['anodizing']}`\n\n"
+                f"💡 **次要替代方案**：`{alts[0]['alloy']}`（{alts[0]['desc']}）、`{alts[1]['alloy']}`\n"
+                f"下方已為您同步檢索法寶實業現有庫存規格，可一鍵加入詢價單："
+            )
+            voice_script = (
+                f"為您推薦首選合金牌號為 {prim['alloy']}，核心特點是：{prim['desc']}。"
+                f"若有其他考量，亦可參考次選 {alts[0]['alloy']}。下方已為您同步檢索庫存規格，歡迎直接加入詢價單！"
+            )
+
         return {
             "reply": reply,
             "specs": matched_specs[:5],
@@ -485,30 +572,113 @@ def process_ai_chat(message, inventory_data):
         }
 
     # 3. Check if user asks about company branch / contact / delivery / mill certificate
-    if any(k in low for k in ["據點", "電話", "地址", "台北", "台中", "台南", "聯絡", "配送", "送貨", "材質證明", "檢驗", "rohs"]):
-        reply = (
-            "📍 **法寶實業全台三大直營樞紐與品質保證**：\n\n"
-            "• **台北總公司**：台北市松山區民權東路三段136號3樓之5 ｜ ☎️ `(02) 2718-3134`\n"
-            "• **台中物流中心**：台中市西屯區台灣大道四段五巷167及167-1號 ｜ ☎️ `(04) 2258-4931`\n"
-            "• **台南雙廠區**：台南市佳里區麻佳路三段70巷30號 ｜ ☎️ `(06) 726-3666`\n\n"
-            "✅ **隨貨檢附證明**：每批出廠鋁材皆可提供原廠材質證明書（Mill Sheet / MTR）、RoHS / REACH 國際無毒環保檢驗報告。"
-        )
-        voice_script = "法寶實業在台北、台中、台南皆設有直營倉儲發貨中心，全台專車配送。每批出廠鋁材均可檢附原廠材質分析證明單及環保認證！"
+    if any(k in low for k in ["據點", "電話", "地址", "台北", "台中", "台南", "聯絡", "配送", "送貨", "材質證明", "檢驗", "rohs", "branch", "taipei", "phone", "address", "mtr", "cert", "拠点", "ミルシート", "전화", "주소", "밀시트"]):
+        if is_en:
+            reply = (
+                "📍 **FAPO Enterprise Logistics Hubs & Quality Certifications**:\n\n"
+                "• **Taipei Headquarters**: 3F-5, No. 136, Sec. 3, Minquan E. Rd., Taipei ｜ ☎️ `+886-2-2718-3134`\n"
+                "• **Taichung Logistics**: No. 167, Ln. 5, Sec. 4, Taiwan Blvd., Taichung ｜ ☎️ `+886-4-2258-4931`\n"
+                "• **Tainan Dual Plants**: No. 30, Ln. 70, Sec. 3, Majia Rd., Tainan ｜ ☎️ `+886-6-726-3666`\n\n"
+                "✅ **Certified Quality Assurance**: Original Mill Test Sheets (MTR), RoHS 2.0, and REACH SVHC conformity declarations are supplied with all shipments."
+            )
+            voice_script = "FAPO operates logistics hubs in Taipei, Taichung, and Tainan with dedicated delivery fleets and certified mill sheets."
+        elif is_ja:
+            reply = (
+                "📍 **法宝実業 台湾3大物流拠点と品質保証体制**：\n\n"
+                "• **台北本社**：台北市松山区民権東路三段136号3階之5 ｜ ☎️ `+886-2-2718-3134`\n"
+                "• **台中物流センター**：台中市西屯区台湾大道四段五巷167号 ｜ ☎️ `+886-4-2258-4931`\n"
+                "• **台南二大工場**：台南市佳里区麻佳路三段70巷30号 ｜ ☎️ `+886-6-726-3666`\n\n"
+                "✅ **品質保証と検査証明書**：全出荷材に対して原廠ミルシート（MTR）、RoHS 2.0 / REACH 国際環境基準の適合証明を発行いたします。"
+            )
+            voice_script = "法宝実業は台北、台中、台南に直営拠点を構え、全品に原廠ミルシートと環境証明書を添付しております。"
+        elif is_ko:
+            reply = (
+                "📍 **법보실업 전국 3대 직영 물류 거점 및 품질 보증**：\n\n"
+                "• **타이베이 본사**：타이베이시 쑹산구 민취안동로 3단 136호 3층의 5 ｜ ☎️ `+886-2-2718-3134`\n"
+                "• **타이중 물류센터**：타이중시 시툰구 대만대로 4단 5항 167호 ｜ ☎️ `+886-4-2258-4931`\n"
+                "• **타이난 2대 공장**：타이난시 자리구 마자리 3단 70항 30호 ｜ ☎️ `+886-6-726-3666`\n\n"
+                "✅ **품질 검사 및 인증서 제공**：모든 출하 소재에 대해 정품 밀시트(MTR) 및 RoHS 2.0, REACH 환경 인증서가 동봉됩니다."
+            )
+            voice_script = "법보실업은 타이베이, 타이중, 타이난 거점을 통해 정품 밀시트와 함께 신속한 전국 배송을 제공합니다."
+        else:
+            reply = (
+                "📍 **法寶實業全台三大直營樞紐與品質保證**：\n\n"
+                "• **台北總公司**：台北市松山區民權東路三段136號3樓之5 ｜ ☎️ `(02) 2718-3134`\n"
+                "• **台中物流中心**：台中市西屯區台灣大道四段五巷167及167-1號 ｜ ☎️ `(04) 2258-4931`\n"
+                "• **台南雙廠區**：台南市佳里區麻佳路三段70巷30號 ｜ ☎️ `(06) 726-3666`\n\n"
+                "✅ **隨貨檢附證明**：每批出廠鋁材皆可提供原廠材質證明書（Mill Sheet / MTR）、RoHS / REACH 國際無毒環保檢驗報告。"
+            )
+            voice_script = "法寶實業在台北、台中、台南皆設有直營倉儲發貨中心，全台專車配送。每批出廠鋁材均可檢附原廠材質分析證明單及環保認證！"
+
         return {"reply": reply, "specs": [], "cutting_plan": None, "voice_script": voice_script}
 
     # 4. Inventory / Mold Specification Search with CP-SAT Minimal Machining Allowance Matching
     matched_specs = find_optimal_inventory_specs_cpsat(msg, inventory_data)
     if matched_specs:
-        reply = (
-            f"📦 **已為您智慧檢索「`{msg}`」的最佳現貨與模具規格**（優先挑選加工裕度最接近、切削餘料最少之項目）：\n"
-            f"您可以直接點擊下方規格旁的 **「＋詢價」** 按鈕帶入詢價單，或切換至 **「🧮 CP-SAT 下料優化」** 計算定寸裁切方案！"
-        )
-        voice_script = f"已為您檢索到最接近 {msg} 的現貨庫存與模具規格。您可以直接點選加入詢價單，或切換至排版優化計算！"
+        if is_en:
+            reply = (
+                f"📦 **Optimal Stock & Mold Specifications for \"`{msg}`\"**:\n"
+                f"Click **\"＋RFQ\"** below to add items to your inquiry, or switch to **\"🧮 Cutting Stock Optimizer\"** for 1D bar optimization!"
+            )
+            voice_script = f"Found stock specifications matching {msg}. You can add them directly to your quote."
+        elif is_ja:
+            reply = (
+                f"📦 **「`{msg}`」に最適な在庫および金型スペックを検索しました**：\n"
+                f"下の **「＋見積り」** をクリックして見積一覧に追加するか、**「🧮 定寸切断最適化」** で歩留り計算を行えます！"
+            )
+            voice_script = f"{msg} に該当する在庫規格が見つかりました。見積りに追加可能です。"
+        elif is_ko:
+            reply = (
+                f"📦 **\"`{msg}`\" 최적 재고 및 금형 규격을 검색했습니다**：\n"
+                f"아래 **\"＋견적\"** 버튼을 클릭해 견적서에 추가하거나, **\"🧮 절단 최적화\"** 탭에서 수율 계산을 진행하세요!"
+            )
+            voice_script = f"{msg} 에 해당하는 재고 규격을 검색했습니다. 견적서에 바로 추가하실 수 있습니다."
+        else:
+            reply = (
+                f"📦 **已為您智慧檢索「`{msg}`」的最佳現貨與模具規格**（優先挑選加工裕度最接近、切削餘料最少之項目）：\n"
+                f"您可以直接點擊下方規格旁的 **「＋詢價」** 按鈕帶入詢價單，或切換至 **「🧮 CP-SAT 下料優化」** 計算定寸裁切方案！"
+            )
+            voice_script = f"已為您檢索到最接近 {msg} 的現貨庫存與模具規格。您可以直接點選加入詢價單，或切換至排版優化計算！"
+
         return {
             "reply": reply,
             "specs": matched_specs[:6],
             "cutting_plan": None,
             "voice_script": voice_script
+        }
+
+    if is_en:
+        return {
+            "reply": (
+                "Hello! I am the FAPO AI Engineering Assistant. You can try asking:\n"
+                "1️⃣ **Stock & Mold Specs**: \"`6061 Round Bar Dia 50mm`\", \"`7075 Plate Thk 20mm`\", \"`Flat Bar`\"\n"
+                "2️⃣ **Cutting Stock Optimizer**: \"`Raw stock 3000mm cut 800*3, 550*4, 420*5`\" or open the **\"🧮 Cutting Stock Optimizer\"** tab\n"
+                "3️⃣ **Alloy Advice**: \"`Recommend aluminum for hard anodizing & aerospace`\""
+            ),
+            "specs": [],
+            "cutting_plan": None
+        }
+    elif is_ja:
+        return {
+            "reply": (
+                "こんにちは！法宝実業 AI 営業技術アシスタントです。以下のようなご質問にお答えできます：\n"
+                "1️⃣ **在庫・金型検索**：「`6061 丸棒 直径 50mm`」、「`7075 アルミ板 厚さ 20mm`」\n"
+                "2️⃣ **定寸切断最適化**：「`母材 3000mm 切断 800*3, 550*4, 420*5`」または上部の **「🧮 定寸切断最適化」** タブ\n"
+                "3️⃣ **合金選定相談**：「`硬質アルマイトと高強度に適したアルミ材`」"
+            ),
+            "specs": [],
+            "cutting_plan": None
+        }
+    elif is_ko:
+        return {
+            "reply": (
+                "안녕하십니까! 법보실업 AI 엔지니어링 챗봇입니다. 다음과 같이 질문해 보세요：\n"
+                "1️⃣ **재고/금형 검색**：「`6061 환봉 직경 50mm`」、「`7075 알루미늄 판재 20mm`」\n"
+                "2️⃣ **모재 절단 최적화**：「`원자재 3000mm 절단 800*3, 550*4, 420*5`」 또는 상단 **「🧮 절단 최적화」** 탭\n"
+                "3️⃣ **합금 소재 추천**：「`하드 아노다이징 및 고강도에 적합한 알루미늄`」"
+            ),
+            "specs": [],
+            "cutting_plan": None
         }
 
     return {

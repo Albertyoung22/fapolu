@@ -972,7 +972,14 @@ window.readAloudText = function(text, btnElement) {
         audioTourState.audio.pause();
     }
     
-    const voice = audioTourState.voice || 'zen-male';
+    let voice = audioTourState.voice;
+    if (!voice) {
+        const curLang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
+        if (curLang === 'en') voice = 'en-US-JennyNeural';
+        else if (curLang === 'ja') voice = 'ja-JP-NanamiNeural';
+        else if (curLang === 'ko') voice = 'ko-KR-SunHiNeural';
+        else voice = 'zen-male';
+    }
     const url = `/api/tts?text=${encodeURIComponent(text)}&voice=${encodeURIComponent(voice)}`;
 
     const controller = ('AbortController' in window) ? new AbortController() : null;
@@ -1823,10 +1830,11 @@ window.sendAiChatMessage = function() {
     box.appendChild(botDiv);
     box.scrollTop = box.scrollHeight;
 
+    const currentLang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
     fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text })
+        body: JSON.stringify({ message: text, lang: currentLang })
     })
     .then(r => r.json())
     .then(data => {
@@ -2072,7 +2080,9 @@ window.toggleAiVoiceRecognition = function() {
 
     try {
         aiSpeechRecognition = new SpeechRec();
-        aiSpeechRecognition.lang = 'zh-TW';
+        const curLang = (window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW');
+        const langMap = { 'zh-TW': 'zh-TW', 'en': 'en-US', 'ja': 'ja-JP', 'ko': 'ko-KR' };
+        aiSpeechRecognition.lang = langMap[curLang] || 'zh-TW';
         aiSpeechRecognition.continuous = false;
         aiSpeechRecognition.interimResults = true;
 
@@ -2581,3 +2591,37 @@ function initButtonRipple() {
         }, 650);
     });
 }
+
+// Multi-Language Dynamic Dock Voice Adaptation
+window.addEventListener('fapo-language-changed', (e) => {
+    const lang = (e.detail && e.detail.lang) || 'zh-TW';
+    const voiceSelect = document.getElementById('dockVoiceSelect');
+    if (!voiceSelect) return;
+
+    if (lang === 'en') {
+        voiceSelect.innerHTML = `
+            <option value="en-US-JennyNeural" selected>🎙️ Jenny (Clear Female)</option>
+            <option value="en-US-GuyNeural">🎙️ Guy (Professional Male)</option>
+        `;
+        audioTourState.voice = 'en-US-JennyNeural';
+    } else if (lang === 'ja') {
+        voiceSelect.innerHTML = `
+            <option value="ja-JP-NanamiNeural" selected>🎙️ 七海 (落ち着いた女性)</option>
+            <option value="ja-JP-KeitaNeural">🎙️ 圭太 (信頼の男性)</option>
+        `;
+        audioTourState.voice = 'ja-JP-NanamiNeural';
+    } else if (lang === 'ko') {
+        voiceSelect.innerHTML = `
+            <option value="ko-KR-SunHiNeural" selected>🎙️ 선희 (차분한 여성)</option>
+            <option value="ko-KR-InJoonNeural">🎙️ 인준 (신뢰의 남성)</option>
+        `;
+        audioTourState.voice = 'ko-KR-SunHiNeural';
+    } else {
+        voiceSelect.innerHTML = `
+            <option value="zen-male" selected>🎙️ 沉穩專業男聲</option>
+            <option value="zen-female">🎙️ 溫潤柔和女聲</option>
+            <option value="zh-TW-HsiaoChenNeural">🎙️ 現代俐落女聲</option>
+        `;
+        audioTourState.voice = 'zen-male';
+    }
+});
