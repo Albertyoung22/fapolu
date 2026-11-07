@@ -4246,3 +4246,278 @@ button {
   color: #ffffff;
   border-color: #a83327;
 }
+
+/* ==========================================================================
+   精美動態風格 (Dynamic Aesthetics, Micro-Interactions & Motion Design)
+   ========================================================================== */
+
+/* 1. Dynamic Top Reading & Scroll Progress Indicator */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3.5px;
+  background: linear-gradient(90deg, #c99b3b 0%, #b8332a 50%, #f59e0b 100%);
+  box-shadow: 0 0 12px rgba(201, 155, 59, 0.75), 0 0 4px rgba(184, 51, 42, 0.55);
+  z-index: 10001;
+  pointer-events: none;
+  transition: width 0.1s cubic-bezier(0.1, 0.8, 0.25, 1);
+}
+
+/* 2. Scroll-Reveal Viewport Entrance Animations */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(28px) scale(0.985);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Stagger reveal delays for child grids */
+.reveal-stagger > *:nth-child(1) { transition-delay: 0.04s; }
+.reveal-stagger > *:nth-child(2) { transition-delay: 0.10s; }
+.reveal-stagger > *:nth-child(3) { transition-delay: 0.16s; }
+.reveal-stagger > *:nth-child(4) { transition-delay: 0.22s; }
+.reveal-stagger > *:nth-child(5) { transition-delay: 0.28s; }
+.reveal-stagger > *:nth-child(6) { transition-delay: 0.34s; }
+
+/* 3. Metallic Light Shimmer Sweep (金屬質感高光掠影) */
+.glass-card,
+.product-card,
+.hero-preview-card,
+.case-card,
+.network-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::after,
+.product-card::after,
+.hero-preview-card::after,
+.case-card::after,
+.network-card::after {
+  content: '';
+  position: absolute;
+  top: -60%;
+  left: -70%;
+  width: 50%;
+  height: 220%;
+  background: linear-gradient(
+    70deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.08) 35%,
+    rgba(255, 255, 255, 0.32) 50%,
+    rgba(201, 155, 59, 0.24) 55%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(26deg);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.glass-card:hover::after,
+.product-card:hover::after,
+.hero-preview-card:hover::after,
+.case-card:hover::after,
+.network-card:hover::after {
+  opacity: 1;
+  animation: metallicLightSweep 0.95s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes metallicLightSweep {
+  0% {
+    left: -70%;
+  }
+  100% {
+    left: 155%;
+  }
+}
+
+/* 4. Animated Equalizer Wave Bars (互動語音音頻波形) */
+.audio-equalizer-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2.5px;
+  height: 15px;
+  vertical-align: middle;
+  margin-left: 6px;
+  padding-bottom: 1px;
+}
+
+.audio-equalizer-bars span {
+  display: block;
+  width: 3px;
+  background: currentColor;
+  border-radius: 2px;
+  height: 4px;
+  min-height: 3px;
+  transition: height 0.15s ease, background-color 0.2s ease;
+}
+
+.audio-equalizer-bars.playing span {
+  animation: audioEqBounce 1s ease-in-out infinite alternate;
+}
+
+.audio-equalizer-bars.playing span:nth-child(1) {
+  animation-duration: 0.72s;
+  animation-delay: 0.08s;
+}
+
+.audio-equalizer-bars.playing span:nth-child(2) {
+  animation-duration: 1.05s;
+  animation-delay: 0.24s;
+}
+
+.audio-equalizer-bars.playing span:nth-child(3) {
+  animation-duration: 0.65s;
+  animation-delay: 0.12s;
+}
+
+.audio-equalizer-bars.playing span:nth-child(4) {
+  animation-duration: 0.88s;
+  animation-delay: 0.32s;
+}
+
+@keyframes audioEqBounce {
+  0% {
+    height: 3px;
+    opacity: 0.65;
+  }
+  50% {
+    height: 14px;
+    opacity: 1;
+  }
+  100% {
+    height: 6px;
+    opacity: 0.85;
+  }
+}
+
+/* 5. Material Wave Ripple on Interactive Buttons */
+.btn,
+.btn-primary,
+.btn-outline,
+.btn-read-tts,
+.chip,
+.subpage-pill {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-ripple-wave {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.42);
+  transform: scale(0);
+  animation: rippleSpreadOut 0.65s cubic-bezier(0.12, 0.8, 0.3, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes rippleSpreadOut {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* 6. Floating Back-to-Top Button with Scroll Progress Dial */
+.back-to-top-btn {
+  position: fixed;
+  bottom: 26px;
+  right: 26px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(254, 252, 246, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-subtle);
+  color: var(--accent-cinnabar);
+  box-shadow: 0 6px 20px rgba(45, 34, 16, 0.14), 0 2px 6px rgba(201, 155, 59, 0.12);
+  cursor: pointer;
+  z-index: 890;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(18px) scale(0.85);
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.35s,
+              background-color 0.2s,
+              box-shadow 0.2s;
+}
+
+.back-to-top-btn.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.back-to-top-btn:hover {
+  background: #ffffff;
+  color: var(--accent-cinnabar);
+  transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 10px 28px rgba(184, 51, 42, 0.26), 0 0 14px rgba(201, 155, 59, 0.35);
+}
+
+.back-to-top-btn .progress-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+
+.back-to-top-btn .progress-ring-bg {
+  stroke: rgba(201, 155, 59, 0.16);
+}
+
+.back-to-top-btn .progress-ring-fill {
+  stroke: var(--accent-cinnabar);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.1s linear;
+}
+
+.back-to-top-btn .back-to-top-arrow {
+  font-size: 1.25rem;
+  font-weight: 900;
+  line-height: 1;
+  transform: translateY(-1px);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.back-to-top-btn:hover .back-to-top-arrow {
+  transform: translateY(-3.5px);
+}
+
+/* 7. Subtle 3D Depth Card Perspective for Industrial High-Tech feel */
+.hero-preview-card,
+.product-card,
+.calc-card {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* Reduced motion preference fallback */
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .scroll-progress-bar {
+    display: none;
+  }
+  .audio-equalizer-bars.playing span {
+    animation: none;
+  }
+}
+

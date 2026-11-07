@@ -92,9 +92,12 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img_crawled/favicon.png', v='10.0') }}">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='15.0') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='16.0') }}">
 </head>
 <body>
+
+    <!-- Dynamic Reading & Scroll Progress Indicator -->
+    <div id="scrollProgressBar" class="scroll-progress-bar" aria-hidden="true"></div>
 
     <!-- Ink-Wash Mountain Mist & Golden Bodhi Light Canvas -->
     <canvas id="latticeCanvas"></canvas>
@@ -209,6 +212,7 @@
                         <div class="hero-actions">
                             <button id="startTourHeroBtn" class="btn btn-primary">
                                 🎙️ 啟動沉浸式語音導覽
+                                <span class="audio-equalizer-bars" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
                             </button>
                             <a href="/specs" data-nav-page="specs" class="btn btn-outline">
                                 🔍 查詢現貨與模具規格庫 ({{ inventory_count }}項)
@@ -218,20 +222,20 @@
                             </a>
                         </div>
                         <div class="hero-stats">
-                            <div class="stat-item">
-                                <h3>38+</h3>
+                            <div class="stat-item reveal-on-scroll">
+                                <h3 data-counter-target="38" data-counter-suffix="+">38+</h3>
                                 <p>年專業誠信商譽</p>
                             </div>
-                            <div class="stat-item">
-                                <h3>4 大</h3>
+                            <div class="stat-item reveal-on-scroll">
+                                <h3 data-counter-target="4" data-counter-suffix=" 大">4 大</h3>
                                 <p>北中南營運據點</p>
                             </div>
-                            <div class="stat-item">
-                                <h3>3,070+</h3>
+                            <div class="stat-item reveal-on-scroll">
+                                <h3 data-counter-target="3070" data-counter-suffix="+">3,070+</h3>
                                 <p>現貨與免開模規格</p>
                             </div>
-                            <div class="stat-item">
-                                <h3>100%</h3>
+                            <div class="stat-item reveal-on-scroll">
+                                <h3 data-counter-target="100" data-counter-suffix="%">100%</h3>
                                 <p>原廠材質證明保證</p>
                             </div>
                         </div>
@@ -1632,6 +1636,15 @@
         </div>
     </div>
 
+    <!-- Floating Back-to-Top Button with Scroll Progress Dial -->
+    <button id="backToTopBtn" class="back-to-top-btn" aria-label="回到頁面頂端" title="回到頁面頂端">
+        <svg class="progress-ring" width="48" height="48" viewBox="0 0 48 48">
+            <circle class="progress-ring-bg" cx="24" cy="24" r="20" stroke-width="3" fill="none"/>
+            <circle id="backToTopCircle" class="progress-ring-fill" cx="24" cy="24" r="20" stroke-width="3" fill="none" stroke-dasharray="125.66" stroke-dashoffset="125.66"/>
+        </svg>
+        <span class="back-to-top-arrow">↑</span>
+    </button>
+
     <!-- Embedded Data for Instant Client Interaction -->
     <script>
         window.SITE_DATA = {{ data | tojson }};
@@ -1639,7 +1652,7 @@
         window.ALL_PAGES_META = {{ (all_pages_meta or {}) | tojson }};
     </script>
     <!-- Main Interactive Script -->
-    <script src="{{ url_for('static', filename='js/main.js', v='18.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v='19.0') }}"></script>
 </body>
 </html>
 

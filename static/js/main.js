@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initAboutTabs();
     initTechTabs();
     initMobileUI();
+    initDynamicInteractions();
 });
 
 function initAboutTabs() {
@@ -729,6 +730,11 @@ function stopCardAudio() {
         window.speechSynthesis.cancel();
     }
     audioTourState.isCardPlaying = false;
+    document.querySelectorAll('.btn-read-tts.playing, .ai-bubble-audio-btn.playing').forEach(b => {
+        b.classList.remove('playing');
+        const eq = b.querySelector('.audio-equalizer-bars');
+        if (eq) eq.classList.remove('playing');
+    });
 }
 
 function selectChapter(index, autoPlay = false) {
@@ -790,15 +796,26 @@ function togglePlay() {
 
 function updatePlayButtonUI() {
     const playBtn = document.getElementById('dockPlayBtn');
+    const heroBtn = document.getElementById('startTourHeroBtn');
     if (!playBtn) return;
     if (audioTourState.isPlaying) {
         playBtn.innerHTML = '⏸';
         playBtn.title = '暫停導覽';
         playBtn.style.boxShadow = '0 0 22px rgba(180, 130, 45, 0.55)';
+        if (heroBtn) {
+            heroBtn.classList.add('playing');
+            const eq = heroBtn.querySelector('.audio-equalizer-bars');
+            if (eq) eq.classList.add('playing');
+        }
     } else {
         playBtn.innerHTML = '▶';
         playBtn.title = '啟動語音導覽';
         playBtn.style.boxShadow = '0 4px 16px rgba(166, 44, 34, 0.3)';
+        if (heroBtn) {
+            heroBtn.classList.remove('playing');
+            const eq = heroBtn.querySelector('.audio-equalizer-bars');
+            if (eq) eq.classList.remove('playing');
+        }
     }
 }
 
@@ -966,14 +983,35 @@ window.readAloudText = function(text, btnElement) {
             speechAudio.addEventListener('play', () => {
                 audioTourState.isCardPlaying = true;
                 StudioBgmEngine.setDucking(true);
+                if (btnElement) {
+                    btnElement.classList.add('playing');
+                    let eq = btnElement.querySelector('.audio-equalizer-bars');
+                    if (!eq) {
+                        eq = document.createElement('span');
+                        eq.className = 'audio-equalizer-bars';
+                        eq.innerHTML = '<span></span><span></span><span></span><span></span>';
+                        btnElement.appendChild(eq);
+                    }
+                    eq.classList.add('playing');
+                }
             });
             speechAudio.addEventListener('ended', () => {
                 audioTourState.isCardPlaying = false;
                 StudioBgmEngine.setDucking(false);
+                if (btnElement) {
+                    btnElement.classList.remove('playing');
+                    const eq = btnElement.querySelector('.audio-equalizer-bars');
+                    if (eq) eq.classList.remove('playing');
+                }
             });
             speechAudio.addEventListener('pause', () => {
                 audioTourState.isCardPlaying = false;
                 StudioBgmEngine.setDucking(false);
+                if (btnElement) {
+                    btnElement.classList.remove('playing');
+                    const eq = btnElement.querySelector('.audio-equalizer-bars');
+                    if (eq) eq.classList.remove('playing');
+                }
             });
             speechAudio.addEventListener('error', () => {
                 audioTourState.cardAudio = null;
@@ -2173,3 +2211,225 @@ window.exportCalculatedWeightToPdf = function() {
     const url = `/quotation/preview?material=${encodeURIComponent(mat)}&message=${encodeURIComponent(msg)}&qty=${encodeURIComponent(qty)}&weight=${encodeURIComponent(totalTxt)}&alloy=${encodeURIComponent(alloyName)}`;
     window.open(url, '_blank');
 };
+
+/* ==========================================================================
+   精美動態風格與微互動 (Dynamic Styling & Micro-Interactions)
+   ========================================================================== */
+
+function initDynamicInteractions() {
+    initScrollProgressAndBackToTop();
+    initStatCounters();
+    initScrollReveal();
+    initInteractiveTilt();
+    initButtonRipple();
+}
+
+/**
+ * 1. 頂部閱讀進度條與圓環返回頂端按鈕
+ */
+function initScrollProgressAndBackToTop() {
+    const progressBar = document.getElementById('scrollProgressBar');
+    const backBtn = document.getElementById('backToTopBtn');
+    const ringCircle = document.getElementById('backToTopCircle');
+    const circumference = 2 * Math.PI * 20; // ~125.66
+
+    if (ringCircle) {
+        ringCircle.style.strokeDasharray = `${circumference}`;
+        ringCircle.style.strokeDashoffset = `${circumference}`;
+    }
+
+    function handleScroll() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const progress = scrollHeight > 0 ? Math.min(Math.max(scrollTop / scrollHeight, 0), 1) : 0;
+
+        if (progressBar) {
+            progressBar.style.width = `${(progress * 100).toFixed(2)}%`;
+        }
+
+        if (ringCircle) {
+            const offset = circumference - (progress * circumference);
+            ringCircle.style.strokeDashoffset = offset;
+        }
+
+        if (backBtn) {
+            if (scrollTop > 260) {
+                backBtn.classList.add('visible');
+            } else {
+                backBtn.classList.remove('visible');
+            }
+        }
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    if (backBtn) {
+        backBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+}
+
+/**
+ * 2. 數據指標動態跳動計數器 (Hero Stat Number Counters)
+ */
+function initStatCounters() {
+    const counterElements = document.querySelectorAll('[data-counter-target]');
+    if (!counterElements.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+        counterElements.forEach(el => animateSingleCounter(el));
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !entry.target.dataset.counted) {
+                entry.target.dataset.counted = "true";
+                animateSingleCounter(entry.target);
+            }
+        });
+    }, { threshold: 0.25 });
+
+    counterElements.forEach(el => observer.observe(el));
+}
+
+function animateSingleCounter(el) {
+    const target = parseFloat(el.getAttribute('data-counter-target')) || 0;
+    const suffix = el.getAttribute('data-counter-suffix') || '';
+    const prefix = el.getAttribute('data-counter-prefix') || '';
+    const duration = 1600; // ms
+    const startTime = performance.now();
+
+    function update(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Smooth ease-out cubic
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const currentVal = Math.round(target * ease);
+
+        const formatted = currentVal >= 1000 ? currentVal.toLocaleString('en-US') : currentVal;
+        el.textContent = `${prefix}${formatted}${suffix}`;
+
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        } else {
+            const finalVal = target >= 1000 ? target.toLocaleString('en-US') : target;
+            el.textContent = `${prefix}${finalVal}${suffix}`;
+        }
+    }
+
+    requestAnimationFrame(update);
+}
+
+/**
+ * 3. 視窗滾動平滑淡入 (Scroll-Reveal Stagger Animation)
+ */
+function initScrollReveal() {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => el.classList.add('is-revealed'));
+        return;
+    }
+
+    // Auto mark cards and headers if not marked
+    const revealTargets = document.querySelectorAll(
+        '.reveal-on-scroll, .section-header, .glass-card:not(.hero-preview-card), .product-card, .network-card, .case-card, .calc-card'
+    );
+
+    revealTargets.forEach(el => {
+        if (!el.classList.contains('reveal-on-scroll')) {
+            el.classList.add('reveal-on-scroll');
+        }
+    });
+
+    if (!('IntersectionObserver' in window)) {
+        revealTargets.forEach(el => el.classList.add('is-revealed'));
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-revealed');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.08,
+        rootMargin: '0px 0px -30px 0px'
+    });
+
+    revealTargets.forEach(el => observer.observe(el));
+}
+
+/**
+ * 4. 3D 擬真鋁合金卡片微傾斜 (Interactive 3D Card Tilt)
+ */
+function initInteractiveTilt() {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (window.innerWidth < 992) return; // Desktop only for smooth performance
+
+    const tiltTargets = document.querySelectorAll('.hero-preview-card, .product-card, .calc-card');
+    tiltTargets.forEach(card => {
+        let bounds = null;
+        let rafId = null;
+
+        card.addEventListener('mouseenter', () => {
+            bounds = card.getBoundingClientRect();
+            card.style.transition = 'transform 0.12s ease-out, box-shadow 0.25s ease';
+        });
+
+        card.addEventListener('mousemove', (e) => {
+            if (!bounds) bounds = card.getBoundingClientRect();
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(() => {
+                const mouseX = e.clientX - bounds.left;
+                const mouseY = e.clientY - bounds.top;
+                const pctX = (mouseX / bounds.width) - 0.5;
+                const pctY = (mouseY / bounds.height) - 0.5;
+                const tiltX = (pctY * -8).toFixed(2);
+                const tiltY = (pctX * 8).toFixed(2);
+                card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(-4px) scale3d(1.012, 1.012, 1.012)`;
+            });
+        });
+
+        card.addEventListener('mouseleave', () => {
+            if (rafId) cancelAnimationFrame(rafId);
+            bounds = null;
+            card.style.transition = 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease';
+            card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0) scale3d(1, 1, 1)';
+        });
+    });
+}
+
+/**
+ * 5. 按鈕點擊材質水波光暈 (Button Click Ripple Wave)
+ */
+function initButtonRipple() {
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn, .btn-primary, .btn-outline, .btn-read-tts, .chip, .subpage-pill');
+        if (!btn) return;
+
+        const rect = btn.getBoundingClientRect();
+        const diameter = Math.max(rect.width, rect.height);
+        const radius = diameter / 2;
+
+        const ripple = document.createElement('span');
+        ripple.className = 'btn-ripple-wave';
+        ripple.style.width = ripple.style.height = `${diameter}px`;
+        ripple.style.left = `${e.clientX - rect.left - radius}px`;
+        ripple.style.top = `${e.clientY - rect.top - radius}px`;
+
+        const prevRipple = btn.querySelector('.btn-ripple-wave');
+        if (prevRipple) prevRipple.remove();
+
+        btn.appendChild(ripple);
+        setTimeout(() => {
+            ripple.remove();
+        }, 650);
+    });
+}
