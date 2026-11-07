@@ -24,6 +24,18 @@ app = Flask(
     static_folder=os.path.join(BASE_DIR, 'static')
 )
 
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
+@app.after_request
+def add_no_cache_headers(response):
+    # Ensure client browsers always get fresh dynamic rendering and styles without stale caching
+    if 'text/css' in response.headers.get('Content-Type', '') or 'javascript' in response.headers.get('Content-Type', '') or 'text/html' in response.headers.get('Content-Type', ''):
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+    return response
+
 # Deterministic secret key across multi-worker Gunicorn instances unless overridden
 _raw_secret = os.environ.get('SECRET_KEY') or f"fapolu-rfq-admin-{mailer.get_admin_password()}"
 app.secret_key = hashlib.sha256(_raw_secret.encode('utf-8')).hexdigest()

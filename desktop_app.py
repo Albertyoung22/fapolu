@@ -166,6 +166,15 @@ def main():
         background_color='#f6f1e6'
     )
 
+    def on_window_ready():
+        # Ensure desktop window always initializes from top hero section
+        try:
+            window.evaluate_js("window.scrollTo(0, 0);")
+        except Exception:
+            pass
+
+    window.events.loaded += on_window_ready
+
     def apply_window_icon():
         if not sys.platform.startswith('win') or not os.path.exists(icon_ico_path):
             return

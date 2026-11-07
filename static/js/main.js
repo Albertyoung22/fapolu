@@ -4,6 +4,12 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Force view to top on fresh launch or reload to guarantee hero section appears upfront
+    if (!window.location.hash) {
+        window.scrollTo(0, 0);
+        setTimeout(() => window.scrollTo(0, 0), 60);
+        setTimeout(() => window.scrollTo(0, 0), 240);
+    }
     initLatticeCanvas();
     initPageRouter();
     initAudioTour();
