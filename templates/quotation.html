@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>產品需求估價單 - 法寶實業有限公司 FAPO ENTERPRISE</title>
+    <title data-i18n="quote.title">產品需求估價單 - 法寶實業有限公司 FAPO ENTERPRISE</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img_crawled/favicon.png') }}">
     <link rel="apple-touch-icon" href="{{ url_for('static', filename='img_crawled/fapo_logo.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -329,7 +329,7 @@
     <!-- Top Action Bar (Hidden when printing) -->
     <div class="action-bar">
         <div>
-            <span style="font-weight:700; color:#1e293b;">📄 正式需求估價單據預覽</span>
+            <span style="font-weight:700; color:#1e293b;" data-i18n="quote.sheet_title">📄 正式需求估價單據預覽</span>
             <span style="font-size:12px; color:#64748b; margin-left:8px;">單號：{{ inquiry.id }}</span>
         </div>
         <div style="display:flex; gap:10px;">
@@ -366,7 +366,7 @@
 
         <!-- Document Title -->
         <div class="doc-title-row">
-            <div class="doc-title">產 品 需 求 估 價 單</div>
+            <div class="doc-title" data-i18n="quote.sheet_title">產 品 需 求 估 價 單</div>
             <div class="doc-subtitle">Commercial Product Inquiry & Quotation</div>
         </div>
 
@@ -374,7 +374,7 @@
         <div class="info-grid">
             <!-- Client Info -->
             <div class="info-card">
-                <div class="info-card-title">客戶資料 / Client Information</div>
+                <div class="info-card-title" data-i18n="quote.sec_customer">客戶資料 / Client Information</div>
                 <div class="info-row">
                     <span class="info-label">客戶寶號：</span>
                     <span class="info-val" style="font-weight:700;">{{ inquiry.companyName or '—' }}</span>
@@ -399,7 +399,7 @@
 
             <!-- Quotation Meta -->
             <div class="info-card">
-                <div class="info-card-title">單據資訊 / Quotation Details</div>
+                <div class="info-card-title" data-i18n="quote.sec_info">單據資訊 / Quotation Details</div>
                 <div class="info-row">
                     <span class="info-label">報價單號：</span>
                     <span class="info-val highlight">{{ inquiry.id }}</span>
@@ -433,12 +433,12 @@
         <table class="items-table">
             <thead>
                 <tr>
-                    <th style="width: 45px;" class="text-center">項次</th>
-                    <th>材料規格 / 型號說明</th>
-                    <th style="width: 140px;">材質合金牌號</th>
-                    <th style="width: 80px;" class="text-center">數量/單位</th>
-                    <th style="width: 100px;" class="text-right">試算重量</th>
-                    <th style="width: 130px;">加工與表面需求</th>
+                    <th style="width: 45px;" class="text-center" data-i18n="quote.th_index">項次</th>
+                    <th data-i18n="quote.th_spec">材料規格 / 型號說明</th>
+                    <th style="width: 140px;" data-i18n="quote.th_alloy">材質合金牌號</th>
+                    <th style="width: 80px;" class="text-center" data-i18n="quote.th_qty">數量/單位</th>
+                    <th style="width: 100px;" class="text-right" data-i18n="quote.th_weight">試算重量</th>
+                    <th style="width: 130px;" data-i18n="quote.th_machining">加工與表面需求</th>
                 </tr>
             </thead>
             <tbody>
@@ -526,6 +526,20 @@
         </footer>
     </div>
 
+
+    <!-- Internationalization (i18n) Engine -->
+    <script src="{{ url_for('static', filename='js/i18n.js', v='4.0') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var curLang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
+            var sel = document.getElementById('quoteLangSelect');
+            if (sel) sel.value = curLang;
+        });
+        window.addEventListener('fapo-language-changed', function(e) {
+            var sel = document.getElementById('quoteLangSelect');
+            if (sel) sel.value = e.detail.language;
+        });
+    </script>
 </body>
 </html>
 
