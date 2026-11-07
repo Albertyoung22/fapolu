@@ -535,7 +535,8 @@
                             </div>
                         </div>
                         <div class="loc-actions">
-                            <a href="tel:{{ loc.tel }}" class="btn-primary">直接通話</a>
+                            <a href="tel:{{ loc.tel }}" class="btn-primary" style="display:inline-flex; align-items:center; gap:4px;">📞 直接通話</a>
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ loc.address | urlencode }}" target="_blank" rel="noopener noreferrer" class="btn-outline" style="display:inline-flex; align-items:center; gap:4px;" title="開啟 Google 地圖導航">🗺️ 地圖導航</a>
                             <button class="btn-outline" onclick="readAloudText('{{ loc.name }}。{{ loc.role }}。地址位於{{ loc.address }}。電話{{ loc.tel }}。{{ loc.highlights }}', this)">🎙️ 介紹</button>
                         </div>
                     </div>
@@ -1368,21 +1369,21 @@
                         <div class="info-branch-list">
                             <div class="info-branch-item">
                                 <h4>🏢 台北總公司 (貿易與行政樞紐)</h4>
-                                <p>地址：台北市民權東路三段136號3樓之5</p>
-                                <p>電話：(02) 2718-3134 ｜ 傳真：(02) 2718-9443</p>
-                                <p>信箱：taipei@fapolu.com.tw</p>
+                                <p>地址：<a href="https://www.google.com/maps/search/?api=1&query=台北市民權東路三段136號" target="_blank" rel="noopener" style="color:inherit; text-decoration:underline;">台北市民權東路三段136號3樓之5 🗺️</a></p>
+                                <p>電話：<a href="tel:0227183134" style="color:var(--accent-cinnabar); font-weight:700;">(02) 2718-3134</a> ｜ 傳真：(02) 2718-9443</p>
+                                <p>信箱：<a href="mailto:taipei@fapolu.com.tw" style="color:inherit;">taipei@fapolu.com.tw</a></p>
                             </div>
                             <div class="info-branch-item">
                                 <h4>🏭 台中廠 (物流與精密裁切中心)</h4>
-                                <p>地址：台中市西屯區台灣大道四段五巷167及167-1號</p>
-                                <p>電話：(04) 2258-4931 ｜ 傳真：(04) 2258-8743</p>
-                                <p>信箱：taichung@fapolu.com.tw</p>
+                                <p>地址：<a href="https://www.google.com/maps/search/?api=1&query=台中市西屯區台灣大道四段五巷167號" target="_blank" rel="noopener" style="color:inherit; text-decoration:underline;">台中市西屯區台灣大道四段五巷167及167-1號 🗺️</a></p>
+                                <p>電話：<a href="tel:0422584931" style="color:var(--accent-cinnabar); font-weight:700;">(04) 2258-4931</a> ｜ 傳真：(04) 2258-8743</p>
+                                <p>信箱：<a href="mailto:taichung@fapolu.com.tw" style="color:inherit;">taichung@fapolu.com.tw</a></p>
                             </div>
                             <div class="info-branch-item">
                                 <h4>🏭 台南雙廠區 (佳里一廠 · 麻豆二廠)</h4>
-                                <p>地址：台南市佳里區麻佳路三段70巷30號 / 麻豆區麻柚路446號</p>
-                                <p>電話：(06) 726-3666 ｜ 傳真：(06) 726-3888</p>
-                                <p>信箱：fapotnn@ms37.hinet.net</p>
+                                <p>地址：<a href="https://www.google.com/maps/search/?api=1&query=台南市佳里區麻佳路三段70巷30號" target="_blank" rel="noopener" style="color:inherit; text-decoration:underline;">台南市佳里區麻佳路三段70巷30號 / 麻豆區麻柚路446號 🗺️</a></p>
+                                <p>電話：<a href="tel:067263666" style="color:var(--accent-cinnabar); font-weight:700;">(06) 726-3666</a> ｜ 傳真：(06) 726-3888</p>
+                                <p>信箱：<a href="mailto:fapotnn@ms37.hinet.net" style="color:inherit;">fapotnn@ms37.hinet.net</a></p>
                             </div>
                         </div>
 
