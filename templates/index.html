@@ -92,7 +92,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img_crawled/favicon.png', v='10.0') }}">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='17.0') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='18.0') }}">
 </head>
 <body>
 
@@ -1473,7 +1473,7 @@
         <span class="ai-pulse-dot"></span>
     </button>
 
-    <div id="aiChatWidget" class="ai-chat-widget glass-card">
+    <div id="aiChatWidget" class="ai-chat-widget">
         <div class="ai-widget-header">
             <div class="ai-header-title">
                 <span class="ai-avatar">🤖</span>
@@ -1652,7 +1652,7 @@
         window.ALL_PAGES_META = {{ (all_pages_meta or {}) | tojson }};
     </script>
     <!-- Main Interactive Script -->
-    <script src="{{ url_for('static', filename='js/main.js', v='21.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v='22.0') }}"></script>
 </body>
 </html>
 

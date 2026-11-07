@@ -2348,7 +2348,7 @@ function initScrollReveal() {
 
     // Auto mark cards and headers if not marked
     const revealTargets = document.querySelectorAll(
-        '.reveal-on-scroll, .section-header, .glass-card:not(.hero-preview-card), .product-card, .network-card, .case-card, .calc-card'
+        '.reveal-on-scroll, .section-header, .glass-card:not(.hero-preview-card):not(.ai-chat-widget):not(.modal-content), .product-card, .network-card, .case-card, .calc-card'
     );
 
     revealTargets.forEach(el => {
