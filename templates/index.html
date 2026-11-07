@@ -92,7 +92,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img_crawled/favicon.png', v='10.0') }}">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='20.0') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='21.0') }}">
 </head>
 <body>
     <!-- WCAG 2.1 AA: Skip to Main Content Link (無障礙快速跳至主要內容區) -->
@@ -1619,7 +1619,28 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 1986 - 2026 法寶實業有限公司 FAPO ENTERPRISE CO., LTD. 版權所有</p>
+                <div class="footer-cert-badges">
+                    <span class="cert-badge-item">
+                        <span class="badge-icon" aria-hidden="true">🏅</span>
+                        <span>依循 <strong>ISO 9001:2015</strong> 品質管理體系與 100% 爐號追溯</span>
+                    </span>
+                    <span class="cert-badge-sep" aria-hidden="true">｜</span>
+                    <span class="cert-badge-item">
+                        <span class="badge-icon" aria-hidden="true">🛡️</span>
+                        <span>符合 <strong>EU RoHS 2.0 / REACH</strong> 綠色環保規範</span>
+                    </span>
+                    <span class="cert-badge-sep" aria-hidden="true">｜</span>
+                    <span class="cert-badge-item">
+                        <span class="badge-icon" aria-hidden="true">📑</span>
+                        <span>檢附<strong>原廠出廠檢驗證明書 (Mill Sheet)</strong></span>
+                    </span>
+                    <span class="cert-badge-sep" aria-hidden="true">｜</span>
+                    <span class="cert-badge-item">
+                        <span class="badge-icon" aria-hidden="true">♿</span>
+                        <span>遵循 <strong>W3C WCAG 2.1 AA</strong> 無障礙友善規範設計</span>
+                    </span>
+                </div>
+                <p class="footer-copy">&copy; 1986 - 2026 法寶實業有限公司 FAPO ENTERPRISE CO., LTD. 版權所有</p>
             </div>
         </div>
     </footer>
