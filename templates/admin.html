@@ -944,6 +944,7 @@
             <!-- Quick Reply Actions -->
             <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px;">
                 <a id="mMailtoReply" href="#" class="btn btn-emerald btn-sm">✉️ 開啟郵件軟體回覆客戶報價</a>
+                <a id="mQuotationPdfBtn" href="#" target="_blank" class="btn btn-sm" style="background:#1e293b; color:#fff; display:inline-flex; align-items:center; gap:6px;">📄 產出正式報價單 (PDF / 列印)</a>
                 <button class="btn btn-sm" onclick="resendEmailCurrent()">📨 補寄內部通知信</button>
             </div>
 
@@ -1234,7 +1235,10 @@
                         <td><span class="badge ${st.cls}">${st.text}</span></td>
                         <td>${emailIcon}</td>
                         <td onclick="event.stopPropagation()">
-                            <button class="btn btn-sm" onclick="openDetailModal('${escapeHtml(item.id)}')">檢視 / 處理</button>
+                            <div style="display:flex; gap:6px;">
+                                <button class="btn btn-sm" onclick="openDetailModal('${escapeHtml(item.id)}')">檢視 / 處理</button>
+                                <a class="btn btn-sm" href="/quotation/${encodeURIComponent(item.id)}" target="_blank" style="background:#1e293b; color:#ffffff; display:inline-flex; align-items:center;" title="產出正式報價單 (PDF)">📄 報價單</a>
+                            </div>
                         </td>
                     </tr>
                 `;
@@ -1251,6 +1255,11 @@
             document.getElementById('mCompany').textContent = item.companyName || '—';
             document.getElementById('mPerson').textContent = item.contactPerson || '—';
 
+            const quotePdfBtn = document.getElementById('mQuotationPdfBtn');
+            if (quotePdfBtn) {
+                quotePdfBtn.href = '/quotation/' + encodeURIComponent(item.id);
+            }
+
             const phoneEl = document.getElementById('mPhoneLink');
             phoneEl.textContent = item.contactPhone || '—';
             phoneEl.href = item.contactPhone ? `tel:${item.contactPhone}` : '#';
@@ -1266,7 +1275,18 @@
             if (item.drawingUrl) {
                 drawingBlock.style.display = 'block';
                 const dUrl = item.drawingUrl.trim();
-                if (dUrl.startsWith('http://') || dUrl.startsWith('https://')) {
+                if (dUrl.includes('/static/uploads/drawings/')) {
+                    const match = dUrl.match(/\/static\/uploads\/drawings\/[^\s|]+/);
+                    const fileUrl = match ? match[0] : dUrl;
+                    const fname = fileUrl.split('/').pop();
+                    drawingEl.innerHTML = `
+                        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:4px;">
+                            <a href="${escapeHtml(fileUrl)}" target="_blank" download class="btn btn-sm btn-emerald" style="text-decoration:none;">📥 下載工程圖面 (${escapeHtml(fname)})</a>
+                            <a href="${escapeHtml(fileUrl)}" target="_blank" class="btn btn-sm" style="text-decoration:none;">👁️ 線上開啟預覽</a>
+                        </div>
+                        ${dUrl.includes('雲端連結') ? `<div style="font-size:0.8rem; color:#475569; margin-top:4px;">${escapeHtml(dUrl)}</div>` : ''}
+                    `;
+                } else if (dUrl.startsWith('http://') || dUrl.startsWith('https://')) {
                     drawingEl.innerHTML = `<a href="${escapeHtml(dUrl)}" target="_blank" rel="noopener" style="color:#2b547e;font-weight:700;text-decoration:underline;">🔗 點擊開啟雲端圖面連結</a>`;
                 } else {
                     drawingEl.textContent = dUrl;

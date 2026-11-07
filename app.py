@@ -34,6 +34,9 @@ INQUIRIES_FILE = os.path.join(BASE_DIR, 'data', 'inquiries.json')
 # Ensure required directories exist in working directory
 os.makedirs(os.path.join(BASE_DIR, 'static', 'audio', 'cache'), exist_ok=True)
 os.makedirs(os.path.join(BASE_DIR, 'data'), exist_ok=True)
+DRAWINGS_DIR = os.path.join(BASE_DIR, 'static', 'uploads', 'drawings')
+os.makedirs(DRAWINGS_DIR, exist_ok=True)
+app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
 
 # Load data
 DATA_PATH = os.path.join(BASE_DIR, 'data', 'fapolu_complete_data.json')
@@ -503,7 +506,7 @@ def admin_required(fn):
 @app.route('/api/contact', methods=['POST'])
 def api_contact():
     try:
-        raw = request.json or request.form.to_dict() or {}
+        raw = request.get_json(silent=True) or request.form.to_dict() or {}
         
         # 1. Anti-bot Honeypot check: If the hidden honeypot field is filled, silently pretend success
         if raw.get('website_hp'):
@@ -538,9 +541,28 @@ def api_contact():
 
         now_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         inquiries = load_inquiries()
+        ticket_id = _next_ticket_id(inquiries)
+
+        # Handle optional CAD/PDF/DXF drawing file upload
+        drawing_file = request.files.get('drawing_file')
+        if drawing_file and drawing_file.filename:
+            orig_name = drawing_file.filename
+            ext = os.path.splitext(orig_name)[1].lower()
+            allowed = {'.pdf', '.dxf', '.dwg', '.step', '.stp', '.iges', '.igs', '.png', '.jpg', '.jpeg', '.zip', '.rar', '.7z'}
+            if ext in allowed:
+                os.makedirs(DRAWINGS_DIR, exist_ok=True)
+                clean_name = re.sub(r'[^\w\.-]', '_', os.path.basename(orig_name))
+                saved_filename = f"{ticket_id}_{int(time.time())}_{clean_name}"
+                dest_path = os.path.join(DRAWINGS_DIR, saved_filename)
+                drawing_file.save(dest_path)
+                file_rel_url = f"/static/uploads/drawings/{saved_filename}"
+                if drawing_url:
+                    drawing_url = f"{file_rel_url} | 雲端連結: {drawing_url}"
+                else:
+                    drawing_url = file_rel_url
 
         new_item = {
-            "id": _next_ticket_id(inquiries),
+            "id": ticket_id,
             "companyName": company,
             "contactPerson": person,
             "contactPhone": phone,
@@ -564,10 +586,70 @@ def api_contact():
         return jsonify({
             "success": True,
             "message": "感謝您的諮詢！我們的業務工程師將於 24 小時內與您聯繫。",
-            "ticket_id": new_item['id']
+            "ticket_id": new_item['id'],
+            "drawing_url": drawing_url
         })
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
+
+
+# ==========================================================================
+#  Official Quotation & Printable PDF Export Routes
+# ==========================================================================
+
+@app.route('/quotation/<ticket_id>')
+def view_quotation(ticket_id):
+    ticket_id = ticket_id.strip()
+    inquiry = None
+    try:
+        inquiry = db.get_inquiry_by_id(ticket_id)
+    except Exception:
+        pass
+    if not inquiry:
+        # Fallback to inquiries file/cache
+        for item in load_inquiries():
+            if str(item.get('id', '')).upper() == ticket_id.upper():
+                inquiry = item
+                break
+    if not inquiry:
+        inquiry = {
+            "id": ticket_id,
+            "companyName": "貴客戶",
+            "contactPerson": "採購專員",
+            "contactPhone": "—",
+            "contactEmail": "—",
+            "inquiryMaterial": "客製鋁合金規格材料",
+            "inquiryMessage": "請聯繫法寶實業業務工程師進行細部圖面與精密切割規格確認。",
+            "drawingUrl": "",
+            "timestamp": datetime.datetime.now().strftime("%Y-%m-%d"),
+            "status": "pending",
+            "branch": "台北總部 / 龜山發貨中心"
+        }
+    return render_template('quotation.html', inquiry=inquiry)
+
+
+@app.route('/quotation/preview', methods=['GET', 'POST'])
+def preview_quotation():
+    raw = request.get_json(silent=True) or request.form.to_dict() or request.args.to_dict() or {}
+    ticket_id = f"QPREV-{datetime.datetime.now().strftime('%Y%m%d%H%M')}"
+    inquiry = {
+        "id": raw.get('id') or ticket_id,
+        "companyName": raw.get('companyName') or raw.get('company') or "貴客戶",
+        "contactPerson": raw.get('contactPerson') or raw.get('person') or "採購主管 / 工程師",
+        "contactPhone": raw.get('contactPhone') or raw.get('phone') or "—",
+        "contactEmail": raw.get('contactEmail') or raw.get('email') or "—",
+        "inquiryMaterial": raw.get('material') or raw.get('inquiryMaterial') or "客製鋁合金規格材料",
+        "inquiryMessage": raw.get('message') or raw.get('inquiryMessage') or "依據線上工程計算機試算結果產出之估價意向明細。",
+        "detectedAlloy": raw.get('alloy') or "AL 鋁合金",
+        "itemQty": raw.get('qty') or "1",
+        "calcWeight": raw.get('weight') or "依試算",
+        "machiningReq": raw.get('machining') or "精密切割 / 表面保護",
+        "drawingUrl": raw.get('drawingUrl') or "",
+        "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "status": "pending",
+        "branch": "台北總部 / 龜山發貨中心"
+    }
+    return render_template('quotation.html', inquiry=inquiry)
 
 
 # ==========================================================================

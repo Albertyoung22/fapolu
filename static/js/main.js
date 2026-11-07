@@ -1241,11 +1241,71 @@ window.quickFilterExtrusion = function(filterCat) {
 };
 
 /* ==========================================================================
-   6. Contact Form Submission
+   6. Contact Form & Quotation Workflow (附圖面拖曳上傳與估價單)
    ========================================================================== */
 function initContactForm() {
     const form = document.getElementById('quoteForm');
     if (!form) return;
+
+    // Drawing drag & drop setup
+    const dropzone = document.getElementById('drawingDropzone');
+    const fileInput = document.getElementById('drawingFileInput');
+    const badge = document.getElementById('fileSelectedBadge');
+    const fileNameEl = document.getElementById('fileSelectedName');
+    const fileSizeEl = document.getElementById('fileSelectedSize');
+    const removeBtn = document.getElementById('fileRemoveBtn');
+
+    function updateFileDisplay(file) {
+        if (!file) {
+            if (badge) badge.style.display = 'none';
+            if (fileInput) fileInput.value = '';
+            return;
+        }
+        if (badge) badge.style.display = 'flex';
+        if (fileNameEl) fileNameEl.textContent = file.name;
+        if (fileSizeEl) {
+            const kb = (file.size / 1024).toFixed(1);
+            fileSizeEl.textContent = file.size > 1048576 ? `(${(file.size / 1048576).toFixed(2)} MB)` : `(${kb} KB)`;
+        }
+    }
+
+    if (fileInput) {
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files && fileInput.files[0]) {
+                updateFileDisplay(fileInput.files[0]);
+            }
+        });
+    }
+
+    if (removeBtn) {
+        removeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            updateFileDisplay(null);
+        });
+    }
+
+    if (dropzone) {
+        ['dragenter', 'dragover'].forEach(evt => {
+            dropzone.addEventListener(evt, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.add('dragover');
+            });
+        });
+        ['dragleave', 'drop'].forEach(evt => {
+            dropzone.addEventListener(evt, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.remove('dragover');
+            });
+        });
+        dropzone.addEventListener('drop', (e) => {
+            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+                fileInput.files = e.dataTransfer.files;
+                updateFileDisplay(e.dataTransfer.files[0]);
+            }
+        });
+    }
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -1255,13 +1315,10 @@ function initContactForm() {
         submitBtn.disabled = true;
 
         const formData = new FormData(form);
-        const jsonBody = {};
-        formData.forEach((val, key) => jsonBody[key] = val);
 
         fetch('/api/contact', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(jsonBody)
+            body: formData
         })
         .then(res => res.json())
         .then(data => {
@@ -1270,8 +1327,9 @@ function initContactForm() {
             if (data.success) {
                 showSuccessModal(data.ticket_id, data.message);
                 form.reset();
+                updateFileDisplay(null);
             } else {
-                showToast("送出失敗：" + data.error);
+                showToast("送出失敗：" + (data.error || '未預期錯誤'));
             }
         })
         .catch(err => {
@@ -1287,9 +1345,13 @@ function showSuccessModal(ticketId, message) {
     const modal = document.getElementById('successModal');
     const modalMsg = document.getElementById('modalMessage');
     const modalTicket = document.getElementById('modalTicket');
+    const pdfBtn = document.getElementById('modalPrintPdfBtn');
     if (modal) {
         if (modalMsg) modalMsg.textContent = message;
         if (modalTicket) modalTicket.textContent = `諮詢單號：${ticketId}`;
+        if (pdfBtn) {
+            pdfBtn.href = `/quotation/${encodeURIComponent(ticketId)}`;
+        }
         modal.classList.add('open');
     }
 }
@@ -1736,26 +1798,78 @@ window.runInteractiveCpsatSolver = function() {
         }
 
         let barsHtml = '';
+        const colorPalette = ['#b83b26', '#1d4ed8', '#059669', '#d97706', '#7c3aed', '#0891b2', '#c026d3'];
+
         plan.bars_plan.forEach(b => {
-            let segsHtml = '';
-            b.cuts.forEach((c, idx) => {
-                const pct = Math.max(8, Math.round(((c.length * c.count) / plan.stock_length_mm) * 100));
-                const bgColors = ['#a83327', '#b87b28', '#2b5b84', '#3d7a5a'];
-                const bg = bgColors[idx % bgColors.length];
-                segsHtml += `<div class="cpsat-seg" style="width:${pct}%;background:${bg};" title="${c.label}">${c.length}×${c.count}</div>`;
-            });
-            if (b.remnant_mm > 0) {
-                const remPct = Math.max(6, Math.round((b.remnant_mm / plan.stock_length_mm) * 100));
-                segsHtml += `<div class="cpsat-seg-rem" style="width:${remPct}%;" title="餘料 ${b.remnant_mm}mm">餘${b.remnant_mm}</div>`;
+            const stockL = plan.stock_length_mm;
+            let svgElements = '';
+            
+            // Background track representing the mother standard bar
+            svgElements += `<rect x="0" y="2" width="1000" height="38" rx="4" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />`;
+
+            if (b.segments && b.segments.length > 0) {
+                b.segments.forEach(seg => {
+                    const x = (seg.start_mm / stockL) * 1000;
+                    const w = Math.max(1.2, (seg.length_mm / stockL) * 1000);
+                    if (seg.type === 'piece') {
+                        const col = colorPalette[Math.abs(seg.length_mm * 11 + seg.index) % colorPalette.length];
+                        svgElements += `
+                            <g class="cpsat-svg-piece">
+                                <rect x="${x.toFixed(1)}" y="4" width="${w.toFixed(1)}" height="34" rx="2" fill="${col}">
+                                    <title>工件 #${seg.index}：長度 ${seg.length_mm} mm (位置 ${seg.start_mm} ~ ${seg.end_mm} mm)</title>
+                                </rect>
+                                ${w > 36 ? `<text x="${(x + w/2).toFixed(1)}" y="25" fill="#ffffff" font-size="11" font-weight="700" text-anchor="middle" pointer-events="none">${seg.length_mm}</text>` : ''}
+                            </g>
+                        `;
+                    } else if (seg.type === 'kerf') {
+                        const kw = Math.max(1.8, w);
+                        svgElements += `
+                            <rect x="${x.toFixed(1)}" y="2" width="${kw.toFixed(1)}" height="38" fill="#ef4444">
+                                <title>鋸縫損耗：${seg.length_mm} mm</title>
+                            </rect>
+                        `;
+                    } else if (seg.type === 'remnant') {
+                        svgElements += `
+                            <g class="cpsat-svg-remnant">
+                                <rect x="${x.toFixed(1)}" y="4" width="${w.toFixed(1)}" height="34" rx="2" fill="rgba(148,163,184,0.2)" stroke="#94a3b8" stroke-dasharray="3,2">
+                                    <title>可用餘料：${seg.length_mm} mm (${((seg.length_mm / stockL) * 100).toFixed(1)}%)</title>
+                                </rect>
+                                ${w > 45 ? `<text x="${(x + w/2).toFixed(1)}" y="25" fill="#475569" font-size="10" font-weight="700" text-anchor="middle" pointer-events="none">餘 ${seg.length_mm}mm</text>` : ''}
+                            </g>
+                        `;
+                    }
+                });
+            } else {
+                let segsHtml = '';
+                b.cuts.forEach((c, idx) => {
+                    const pct = Math.max(8, Math.round(((c.length * c.count) / plan.stock_length_mm) * 100));
+                    const bgColors = ['#a83327', '#b87b28', '#2b5b84', '#3d7a5a'];
+                    const bg = bgColors[idx % bgColors.length];
+                    segsHtml += `<div class="cpsat-seg" style="width:${pct}%;background:${bg};" title="${c.label}">${c.length}×${c.count}</div>`;
+                });
+                if (b.remnant_mm > 0) {
+                    const remPct = Math.max(6, Math.round((b.remnant_mm / plan.stock_length_mm) * 100));
+                    segsHtml += `<div class="cpsat-seg-rem" style="width:${remPct}%;" title="餘料 ${b.remnant_mm}mm">餘${b.remnant_mm}</div>`;
+                }
+                svgElements = segsHtml;
             }
 
             barsHtml += `
-                <div style="margin-bottom:8px;">
-                    <div style="display:flex;justify-content:space-between;font-weight:700;font-size:0.76rem;">
-                        <span>第 ${b.bar_no} 支母材：${b.cuts_summary}</span>
-                        <span style="color:var(--accent-cinnabar);">利用率 ${b.utilization_pct}% (餘 ${b.remnant_mm}mm)</span>
+                <div style="margin-bottom:12px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:0.78rem;margin-bottom:3px;">
+                        <span>母材 #${b.bar_no}：${b.cuts_summary}</span>
+                        <span style="color:var(--accent-cinnabar);background:rgba(182,59,46,0.08);padding:2px 6px;border-radius:4px;">利用率 ${b.utilization_pct}% (餘 ${b.remnant_mm}mm)</span>
                     </div>
-                    <div class="cpsat-bar-visual">${segsHtml}</div>
+                    <div class="cpsat-svg-wrap">
+                        <svg class="cpsat-svg-bar" viewBox="0 0 1000 44" preserveAspectRatio="none">
+                            ${svgElements}
+                        </svg>
+                        <div style="display:flex;justify-content:space-between;font-size:9px;color:#94a3b8;font-family:monospace;margin-top:2px;padding:0 2px;">
+                            <span>0 mm</span>
+                            <span style="color:#ef4444;">紅線: 鋸縫 ${plan.kerf_mm}mm</span>
+                            <span>${stockL} mm (滿料)</span>
+                        </div>
+                    </div>
                 </div>
             `;
         });
@@ -1777,9 +1891,14 @@ window.runInteractiveCpsatSolver = function() {
                 </div>
             </div>
             ${barsHtml}
-            <button type="button" class="ai-spec-mini-btn" style="width:100%;padding:8px;margin-top:6px;" onclick="addSpecToQuote('${safeQuote}')">
-                📋 將此最佳裁切明細帶入詢價單
-            </button>
+            <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px;">
+                <button type="button" class="ai-spec-mini-btn" style="width:100%;padding:8px;" onclick="addSpecToQuote('${safeQuote}')">
+                    📋 將此最佳裁切明細帶入詢價單
+                </button>
+                <button type="button" class="ai-spec-mini-btn" style="width:100%;padding:8px;background:#1e293b;color:#ffffff;" onclick="window.open('/quotation/preview?material=' + encodeURIComponent('母材 ${plan.stock_length_mm}mm 定寸最佳化裁切方案 (${plan.total_bars_used} 支)') + '&message=' + encodeURIComponent('${safeQuote}') + '&qty=${plan.total_bars_used}', '_blank')">
+                    📄 匯出此裁切工單 (PDF / 列印)
+                </button>
+            </div>
         `;
     })
     .catch(() => {
@@ -1943,4 +2062,30 @@ window.addCalculatedWeightToQuote = function() {
     if (typeof window.addSpecToQuote === 'function') {
         window.addSpecToQuote(summary);
     }
+};
+
+window.exportCalculatedWeightToPdf = function() {
+    const alloyRaw = document.getElementById('wtAlloySelect')?.value || '2.70|6061 鋁合金';
+    const alloyName = alloyRaw.split('|')[1] || '6061 鋁合金';
+    const shape = document.getElementById('wtShapeSelect')?.value || 'plate';
+    const d1 = document.getElementById('wtDim1')?.value || '0';
+    const d2 = document.getElementById('wtDim2')?.value || '0';
+    const d3 = document.getElementById('wtDim3')?.value || '0';
+    const length = document.getElementById('wtLength')?.value || '0';
+    const qty = document.getElementById('wtQty')?.value || '1';
+    const singleTxt = document.getElementById('wtSingleKg')?.textContent || '—';
+    const totalTxt = document.getElementById('wtTotalKg')?.textContent || '—';
+
+    let dimStr = '';
+    if (shape === 'plate') dimStr = `厚 ${d1}mm × 寬 ${d2}mm × 長 ${length}mm`;
+    else if (shape === 'round_bar') dimStr = `圓棒 φ${d1}mm × 長 ${length}mm`;
+    else if (shape === 'round_tube') dimStr = `圓管 外徑φ${d1}mm × 壁厚${d3}mm × 長 ${length}mm`;
+    else if (shape === 'square_bar') dimStr = `四方條 ${d1}×${d1}mm × 長 ${length}mm`;
+    else if (shape === 'hex_bar') dimStr = `六角條 對邊${d1}mm × 長 ${length}mm`;
+    else if (shape === 'rect_tube') dimStr = `方矩管 ${d1}×${d2}mm × 壁厚${d3}mm × 長 ${length}mm`;
+
+    const mat = `${alloyName} · ${dimStr}`;
+    const msg = `需求數量 ${qty} 件，單件重量約 ${singleTxt}，整批預估總重約 ${totalTxt}。`;
+    const url = `/quotation/preview?material=${encodeURIComponent(mat)}&message=${encodeURIComponent(msg)}&qty=${encodeURIComponent(qty)}&weight=${encodeURIComponent(totalTxt)}&alloy=${encodeURIComponent(alloyName)}`;
+    window.open(url, '_blank');
 };

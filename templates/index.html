@@ -995,9 +995,12 @@
                                 </div>
                             </div>
 
-                            <div style="margin-top: 20px;">
+                            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 8px;">
                                 <button type="button" class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="addCalculatedWeightToQuote()">
                                     📋 將此算料規格與總重加入詢價單
+                                </button>
+                                <button type="button" class="btn btn-secondary" style="width: 100%; justify-content: center; background: #ffffff; color: var(--accent-cinnabar); border-color: rgba(182, 59, 46, 0.4);" onclick="exportCalculatedWeightToPdf()">
+                                    📄 產出正式試算報價單 (PDF / 列印)
                                 </button>
                             </div>
                         </div>
@@ -1285,9 +1288,28 @@
                                     <input type="text" id="inquiryMaterial" name="inquiryMaterial" placeholder="例：UACJ 5052 貼膜板 10mm x 4' x 8' 或 6061-T6 圓棒 Dia.50">
                                 </div>
                                 <div class="form-group full">
-                                    <label for="drawingUrl">CAD / PDF 加工圖面雲端連結或說明（選填）</label>
-                                    <input type="text" id="drawingUrl" name="drawingUrl" placeholder="例：貼上 Google Drive、Dropbox 或 WeTransfer 雲端圖面連結，或註明「將另行以 Email 寄出圖面」">
-                                    <span style="display:block; font-size:0.8rem; color:var(--text-dim); margin-top:5px;">💡 支援 2D DWG/DXF/PDF 或 3D STEP/IGS。送出後亦有專屬業務工程師與您聯繫對圖。</span>
+                                    <label>CAD / PDF 工程圖面（選填）</label>
+                                    <div class="drawing-dropzone" id="drawingDropzone">
+                                        <input type="file" id="drawingFileInput" name="drawing_file" accept=".pdf,.dxf,.dwg,.step,.stp,.iges,.igs,.png,.jpg,.jpeg,.zip,.rar,.7z" style="display:none;">
+                                        <div class="dropzone-inner" onclick="document.getElementById('drawingFileInput').click()">
+                                            <div class="dropzone-icon">📐</div>
+                                            <div class="dropzone-text">
+                                                <strong>點擊選取或拖曳圖檔至此</strong>
+                                                <span>支援 2D (.DXF, .DWG, .PDF) 及 3D 實體模型 (.STEP, .STP, .IGES, .ZIP)，單檔最大 50MB</span>
+                                            </div>
+                                            <button type="button" class="btn btn-secondary btn-sm" style="pointer-events:none; padding: 6px 12px; font-size: 0.8rem;">瀏覽檔案</button>
+                                        </div>
+                                        <div id="fileSelectedBadge" class="file-badge" style="display:none;">
+                                            <span class="file-icon">📎</span>
+                                            <span id="fileSelectedName" class="file-name"></span>
+                                            <span id="fileSelectedSize" class="file-size"></span>
+                                            <button type="button" class="file-remove-btn" id="fileRemoveBtn" title="移除圖檔">✕</button>
+                                        </div>
+                                    </div>
+                                    <div style="margin-top:8px;">
+                                        <input type="text" id="drawingUrl" name="drawingUrl" placeholder="或貼上 Google Drive、Dropbox 或 WeTransfer 雲端圖面連結...">
+                                    </div>
+                                    <span style="display:block; font-size:0.8rem; color:var(--text-dim); margin-top:5px;">💡 上傳圖面後，本公司專業業務工程師將立即為您進行 DFM 可加工性評估與精確估價。</span>
                                 </div>
                                 <div class="form-group full">
                                     <label for="inquiryMessage">需求數量、加工說明與備註</label>
@@ -1585,7 +1607,12 @@
             <h3 style="font-size: 1.5rem; color: var(--accent-cyan); margin-bottom: 12px;">🎉 需求已成功送達</h3>
             <p id="modalTicket" style="color: var(--accent-amber); font-weight: 700; margin-bottom: 12px;"></p>
             <p id="modalMessage" style="color: var(--text-dim); line-height: 1.7; margin-bottom: 24px;"></p>
-            <button class="btn btn-primary" onclick="closeModal()" style="width: 100%; justify-content: center;">好，我知道了</button>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <a id="modalPrintPdfBtn" href="#" target="_blank" class="btn btn-secondary" style="width: 100%; justify-content: center; background:#1e293b; color:#fff; border-color:#334155; text-decoration:none;">
+                    📄 檢視 / 下載正式估價意向單 (PDF / 列印)
+                </a>
+                <button class="btn btn-primary" onclick="closeModal()" style="width: 100%; justify-content: center;">好，我知道了</button>
+            </div>
         </div>
     </div>
 
@@ -1605,7 +1632,7 @@
         window.ALL_PAGES_META = {{ (all_pages_meta or {}) | tojson }};
     </script>
     <!-- Main Interactive Script -->
-    <script src="{{ url_for('static', filename='js/main.js', v='16.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v='17.0') }}"></script>
 </body>
 </html>
 

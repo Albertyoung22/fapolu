@@ -20,12 +20,77 @@ from waitress import serve
 from app import app
 import webview
 import tunnel
+import subprocess
+import db
 
 # Silence verbose waitress logs in desktop mode
 logging.getLogger('waitress').setLevel(logging.ERROR)
 
 HOST = '127.0.0.1'
 PORT = 5000
+
+def send_windows_toast(title, message):
+    """
+    Sends a native Windows 10/11 Toast notification via PowerShell.
+    Safe against quotes and special characters.
+    """
+    if not sys.platform.startswith('win'):
+        return
+    safe_title = str(title).replace('"', '`"').replace('$', '`$')
+    safe_message = str(message).replace('"', '`"').replace('$', '`$')
+    ps_cmd = f'''
+[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] | Out-Null
+$template = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent([Windows.UI.Notifications.ToastTemplateType]::ToastText02)
+$xml = [xml]$template.GetXml()
+$nodes = $xml.GetElementsByTagName('text')
+$nodes.Item(0).AppendChild($xml.CreateTextNode("{safe_title}")) | Out-Null
+$nodes.Item(1).AppendChild($xml.CreateTextNode("{safe_message}")) | Out-Null
+$toastXml = [Windows.Data.Xml.Dom.XmlDocument]::new()
+$toastXml.LoadXml($xml.OuterXml)
+$toast = [Windows.UI.Notifications.ToastNotification]::new($toastXml)
+[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("法寶實業有限公司").Show($toast)
+'''
+    try:
+        subprocess.run(
+            ['powershell', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', ps_cmd],
+            capture_output=True,
+            timeout=5
+        )
+    except Exception:
+        pass
+
+def start_inquiry_monitor():
+    """
+    Background daemon thread that periodically checks for incoming customer inquiries
+    and displays native Windows Toast Notifications to company sales engineers.
+    """
+    seen_ids = set()
+    first_run = True
+
+    while True:
+        try:
+            items = db.get_all_inquiries()
+            current_ids = {item.get('id') for item in items if item.get('id')}
+            if first_run:
+                seen_ids = current_ids
+                first_run = False
+            else:
+                new_ids = current_ids - seen_ids
+                if new_ids:
+                    for item in items:
+                        if item.get('id') in new_ids:
+                            cust = item.get('companyName') or item.get('contactPerson') or '新客戶'
+                            mat = item.get('inquiryMaterial') or '客製鋁合金精密規格'
+                            if len(mat) > 35:
+                                mat = mat[:35] + '...'
+                            send_windows_toast(
+                                f"🔔 法寶實業 - 收到新詢價單！",
+                                f"[{item.get('id')}] {cust}：{mat}"
+                            )
+                            seen_ids.add(item.get('id'))
+        except Exception:
+            pass
+        time.sleep(5)
 
 def wait_for_server(host, port, timeout=10.0):
     start_time = time.time()
@@ -52,6 +117,7 @@ def main():
     print("  🖥️  法寶實業有限公司 - 沉浸式桌面應用程式 (Desktop App)")
     print(f"  ⚡ 引擎核心: Windows WebView2 (Chromium) + Waitress + Flask")
     print(f"  ⚡ 語音引擎: Microsoft Edge-TTS 台灣神經網路語音")
+    print(f"  ⚡ 桌面推播: Windows 原生 Toast 氣泡通知 (即時監控新詢價單)")
     if args.tunnel:
         print(f"  🌐 外網穿透: 已啟用 Cloudflare Tunnel")
     print("=" * 65)
@@ -68,6 +134,9 @@ def main():
         print("  ✓ 本機伺服器連線就緒！")
     else:
         print("  ✓ 偵測到本機伺服器已在運行中，直接連線！")
+
+    # Start background inquiry monitor for desktop toast notifications
+    threading.Thread(target=start_inquiry_monitor, daemon=True).start()
 
     if args.tunnel:
         threading.Thread(target=lambda: tunnel.start_tunnel(port=PORT, wait_for_url=True), daemon=True).start()

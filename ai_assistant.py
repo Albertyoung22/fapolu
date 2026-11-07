@@ -142,6 +142,41 @@ def solve_cutting_stock_cpsat(stock_length_mm=3000, kerf_mm=3, demands=None):
             total_net_cut_mm += net_mm
             total_kerf_mm += kerf_used
 
+            # Build exact linear cut segments for SVG CAD visualization
+            linear_segments = []
+            curr_pos = 0
+            piece_idx = 1
+            for c in cuts_on_bar:
+                for _ in range(c["count"]):
+                    linear_segments.append({
+                        "type": "piece",
+                        "index": piece_idx,
+                        "start_mm": curr_pos,
+                        "length_mm": c["length"],
+                        "end_mm": curr_pos + c["length"],
+                        "label": f"{c['length']}mm"
+                    })
+                    curr_pos += c["length"]
+                    piece_idx += 1
+                    if kerf > 0 and (curr_pos + kerf <= stock_L):
+                        linear_segments.append({
+                            "type": "kerf",
+                            "start_mm": curr_pos,
+                            "length_mm": kerf,
+                            "end_mm": curr_pos + kerf,
+                            "label": f"鋸縫 {kerf}mm"
+                        })
+                        curr_pos += kerf
+
+            if rem_mm > 0:
+                linear_segments.append({
+                    "type": "remnant",
+                    "start_mm": curr_pos,
+                    "length_mm": rem_mm,
+                    "end_mm": stock_L,
+                    "label": f"餘料 {rem_mm}mm"
+                })
+
             bars_plan.append({
                 "bar_no": len(bars_plan) + 1,
                 "cuts": cuts_on_bar,
@@ -149,7 +184,8 @@ def solve_cutting_stock_cpsat(stock_length_mm=3000, kerf_mm=3, demands=None):
                 "net_used_mm": net_mm,
                 "kerf_loss_mm": kerf_used,
                 "remnant_mm": rem_mm,
-                "utilization_pct": utilization
+                "utilization_pct": utilization,
+                "segments": linear_segments
             })
 
     total_bars_used = len(bars_plan)
