@@ -1444,15 +1444,27 @@
                                         <input type="text" id="drawingUrl" name="drawingUrl" placeholder="或貼上 Google Drive、Dropbox 或 WeTransfer 雲端圖面連結...">
                                     </div>
                                     <span style="display:block; font-size:0.8rem; color:var(--text-dim); margin-top:5px;">💡 上傳圖面後，本公司專業業務工程師將立即為您進行 DFM 可加工性評估與精確估價。</span>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px;">
+                                        <span class="badge-stock" style="font-size:0.7rem; padding: 2px 7px; background: rgba(0,0,0,0.05); border-radius: 4px;">.STEP / .STP (3D實體)</span>
+                                        <span class="badge-stock" style="font-size:0.7rem; padding: 2px 7px; background: rgba(0,0,0,0.05); border-radius: 4px;">.IGES (曲面模型)</span>
+                                        <span class="badge-stock" style="font-size:0.7rem; padding: 2px 7px; background: rgba(0,0,0,0.05); border-radius: 4px;">.DXF / .DWG (2D工程圖)</span>
+                                        <span class="badge-stock" style="font-size:0.7rem; padding: 2px 7px; background: rgba(0,0,0,0.05); border-radius: 4px;">.PDF (標準標註)</span>
+                                        <span class="badge-stock" style="font-size:0.7rem; padding: 2px 7px; background: rgba(0,0,0,0.05); border-radius: 4px;">.SLDPRT / .ZIP</span>
+                                    </div>
                                 </div>
                                 <div class="form-group full">
                                     <label for="inquiryMessage">需求數量、加工說明與備註</label>
                                     <textarea id="inquiryMessage" name="inquiryMessage" placeholder="請填寫預計採購數量、裁切尺寸、是否有雙面平銑/CNC加工或表面陽極需求..."></textarea>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 14px;">
-                                🚀 送出詢價需求單
-                            </button>
+                            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                <button type="submit" class="btn btn-primary" style="flex: 2; justify-content: center; padding: 14px;">
+                                    🚀 送出詢價需求單
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="copyRfqDraft()" style="flex: 1; justify-content: center; padding: 14px; background: #fff; border-color: rgba(184, 51, 42, 0.35); color: var(--accent-cinnabar);" title="複製目前所填寫之詢價草稿">
+                                    📋 複製草稿
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>

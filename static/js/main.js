@@ -1165,13 +1165,40 @@ window.addSpecToQuote = function(specText) {
     const inquiryMaterial = document.getElementById('inquiryMaterial');
     const inquiryMessage = document.getElementById('inquiryMessage');
     
-    if (inquiryMaterial) inquiryMaterial.value = specText;
-    if (inquiryMessage) inquiryMessage.value = `您好，我需要詢問以下現貨規格的報價與交期：\n【規格】${specText}\n【預計採購數量】\n【加工需求】`;
+    if (inquiryMaterial) {
+        if (!inquiryMaterial.value.trim()) {
+            inquiryMaterial.value = specText;
+        } else if (!inquiryMaterial.value.includes(specText)) {
+            inquiryMaterial.value += '、' + specText;
+        }
+    }
+    if (inquiryMessage) {
+        if (!inquiryMessage.value.trim()) {
+            inquiryMessage.value = `您好，我需要詢問以下現貨規格的報價與交期：\n1. 【規格】${specText}\n   【預計數量】1 件\n   【加工需求】精密切割/依指定尺寸`;
+        } else {
+            inquiryMessage.value += `\n\n+ 【規格】${specText}\n   【預計數量】1 件\n   【加工需求】依指定尺寸`;
+        }
+    }
     
     if (window.navigateToPage) {
         window.navigateToPage('contact', { scrollTarget: 'quoteFormCard' });
     }
-    showToast(`📋 已切換至詢價分頁並帶入規格「${specText}」`);
+    showToast(`📋 已帶入規格「${specText}」至詢價清單`);
+};
+
+window.copyRfqDraft = function() {
+    const mat = document.getElementById('inquiryMaterial')?.value || '';
+    const msg = document.getElementById('inquiryMessage')?.value || '';
+    const comp = document.getElementById('companyName')?.value || '';
+    const contact = document.getElementById('contactPerson')?.value || '';
+    const phone = document.getElementById('contactPhone')?.value || '';
+
+    const textToCopy = `【法寶實業 RFQ 詢價需求草稿】\n公司：${comp || '未填'}\n聯絡人：${contact || '未填'} (${phone || '未填'})\n材料規格：${mat || '未填'}\n備註與需求：\n${msg || '無'}`;
+    navigator.clipboard.writeText(textToCopy).then(() => {
+        showToast('📋 已複製詢價需求草稿至剪貼簿！可直接貼至 LINE 或採購單');
+    }).catch(() => {
+        showToast('請手動選取並複製內容');
+    });
 };
 
 /* ==========================================================================
