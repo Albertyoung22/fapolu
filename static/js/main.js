@@ -1276,16 +1276,19 @@ function initSpecsExplorer() {
                     const badgeStyle = item.group === 'mold'
                         ? 'background:rgba(53,89,122,0.12); color:#2b4c6b; border-color:rgba(53,89,122,0.3);'
                         : '';
+                    const curLang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
+                    const addQuoteText = curLang === 'en' ? 'Add to RFQ' : curLang === 'ja' ? '見積り追加' : curLang === 'ko' ? '견적 추가' : '加入詢價';
+                    const stockNote = item.note ? item.note : (curLang === 'en' ? 'In Stock' : curLang === 'ja' ? '在庫あり' : curLang === 'ko' ? '상시 재고' : '現貨庫存');
                     return `
                     <tr class="spec-row-item">
-                        <td data-label="編號" style="color: var(--accent-cinnabar); font-weight:700;">#${rowNo}</td>
-                        <td data-label="類別"><span style="font-weight:700; color:var(--text-main);">${item.category}</span></td>
-                        <td data-label="材質"><span class="chip" style="color:var(--accent-amber); font-weight:700;">${item.material}</span></td>
-                        <td data-label="規格" style="font-weight:600; color:var(--text-main);">${item.dimension || '-'}</td>
-                        <td data-label="尺寸">${item.size || '-'}</td>
-                        <td data-label="狀態" class="spec-action-cell">
-                            <span class="badge-stock" style="${badgeStyle}">${item.note || '現貨庫存'}</span>
-                            <button class="btn-outline spec-quote-btn" style="padding:4px 12px; font-size:0.78rem; margin-left:8px; border-radius:6px;" onclick="addSpecToQuote('${safeSpec}')">加入詢價</button>
+                        <td style="color: var(--accent-cinnabar); font-weight:700;">#${rowNo}</td>
+                        <td><span style="font-weight:700; color:var(--text-main);">${item.category}</span></td>
+                        <td><span class="chip" style="color:var(--accent-amber); font-weight:700;">${item.material}</span></td>
+                        <td style="font-weight:600; color:var(--text-main);">${item.dimension || '-'}</td>
+                        <td>${item.size || '-'}</td>
+                        <td class="spec-action-cell">
+                            <span class="badge-stock" style="${badgeStyle}">${stockNote}</span>
+                            <button class="btn-outline spec-quote-btn" style="padding:4px 12px; font-size:0.78rem; margin-left:8px; border-radius:6px;" onclick="addSpecToQuote('${safeSpec}')">${addQuoteText}</button>
                         </td>
                     </tr>`;
                 }).join('');
