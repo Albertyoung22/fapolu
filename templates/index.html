@@ -92,7 +92,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img_crawled/favicon.png', v='10.0') }}">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='22.0') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='23.0') }}">
 </head>
 <body>
     <!-- WCAG 2.1 AA: Skip to Main Content Link (無障礙快速跳至主要內容區) -->
@@ -1600,45 +1600,40 @@
                     <h5>快速導覽</h5>
                     <ul>
                         <li><a href="/" data-nav-page="hero">首頁總覽</a></li>
-                        <li><a href="/about" data-nav-page="about">關於我們 · 成立概要</a></li>
+                        <li><a href="/about" data-nav-page="about">關於我們 · 沿革</a></li>
                         <li><a href="/network" data-nav-page="network">全台服務據點</a></li>
-                        <li><a href="/products" data-nav-page="products">旗艦產品系列</a></li>
-                        <li><a href="/specs" data-nav-page="specs">現貨規格表</a></li>
-                        <li><a href="/machining" data-nav-page="machining">精密加工能量</a></li>
+                        <li><a href="/products" data-nav-page="products">旗艦材料系列</a></li>
+                        <li><a href="/specs" data-nav-page="specs">現貨庫存規格</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
-                    <h5>技術與服務</h5>
+                    <h5>技術與加工</h5>
                     <ul>
-                        <li><a href="/cases" data-nav-page="cases">半導體與航太實績</a></li>
-                        <li><a href="/tech" data-nav-page="tech">國際硬度換算</a></li>
-                        <li><a href="/tech" data-nav-page="tech">熱處理代號辭典</a></li>
+                        <li><a href="/machining" data-nav-page="machining">精密加工能量</a></li>
+                        <li><a href="/cases" data-nav-page="cases">半導體航太實績</a></li>
+                        <li><a href="/tech" data-nav-page="tech">金屬硬度換算</a></li>
+                        <li><a href="/tech" data-nav-page="tech">調質代號辭典</a></li>
                         <li><a href="/contact" data-nav-page="contact">線上圖面估價</a></li>
-                        <li style="margin-top: 10px;"><a href="/admin" class="footer-admin-btn">🔐 業務詢價管理後台</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>品質與認證</h5>
+                    <ul>
+                        <li><a href="/tech" data-nav-page="tech">ISO 9001:2015 體系</a></li>
+                        <li><a href="/tech" data-nav-page="tech">AS9100D 航太規範</a></li>
+                        <li><a href="/tech" data-nav-page="tech">RoHS / REACH 宣告</a></li>
+                        <li><a href="/tech" data-nav-page="tech">Mill Sheet 原廠證明</a></li>
+                        <li style="margin-top: 8px;"><a href="/admin" class="footer-admin-btn">🔐 業務詢價後台</a></li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <div class="footer-cert-badges">
-                    <span class="cert-badge-item">
-                        <span class="badge-icon" aria-hidden="true">🏅</span>
-                        <span>依循 <strong>ISO 9001:2015</strong> 品質管理體系與 100% 爐號追溯</span>
-                    </span>
-                    <span class="cert-badge-sep" aria-hidden="true">｜</span>
-                    <span class="cert-badge-item">
-                        <span class="badge-icon" aria-hidden="true">🛡️</span>
-                        <span>符合 <strong>EU RoHS 2.0 / REACH</strong> 綠色環保規範</span>
-                    </span>
-                    <span class="cert-badge-sep" aria-hidden="true">｜</span>
-                    <span class="cert-badge-item">
-                        <span class="badge-icon" aria-hidden="true">📑</span>
-                        <span>檢附<strong>原廠出廠檢驗證明書 (Mill Sheet)</strong></span>
-                    </span>
-                    <span class="cert-badge-sep" aria-hidden="true">｜</span>
-                    <span class="cert-badge-item">
-                        <span class="badge-icon" aria-hidden="true">♿</span>
-                        <span>遵循 <strong>W3C WCAG 2.1 AA</strong> 無障礙友善規範設計</span>
-                    </span>
+                <div class="footer-standards-strip">
+                    <span class="std-chip" title="ISO 9001:2015 品質管理系統規範">ISO 9001:2015</span>
+                    <span class="std-chip" title="AS9100D 航太材料品質管理標準">AS9100D</span>
+                    <span class="std-chip" title="EU RoHS 2.0 綠色環保有害物質限用指令">RoHS 2.0</span>
+                    <span class="std-chip" title="EU REACH 高關注度物質合規登錄">REACH SVHC</span>
+                    <span class="std-chip" title="W3C WCAG 2.1 AA 友善無障礙設計規範">WCAG 2.1 AA</span>
                 </div>
                 <p class="footer-copy">&copy; 1986 - 2026 法寶實業有限公司 FAPO ENTERPRISE CO., LTD. 版權所有</p>
             </div>
