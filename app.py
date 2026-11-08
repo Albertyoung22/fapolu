@@ -202,6 +202,7 @@ def page_network():
 
 
 @app.route('/products', strict_slashes=False)
+@app.route('/materials', strict_slashes=False)
 def page_products():
     return _render_portal_page('products')
 

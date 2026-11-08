@@ -3075,3 +3075,237 @@ window.addEventListener('fapo-language-changed', (e) => {
         selectChapter(audioTourState.currentChapter, true);
     }
 });
+
+/* ==========================================================================
+   Google OR-Tools CP-SAT Cutting Stock Optimization Engineering Workbench
+   ========================================================================== */
+window.applyCpsatPreset = function(type) {
+    const stockInput = document.getElementById('wbStockLen');
+    const kerfInput = document.getElementById('wbKerf');
+    const list = document.getElementById('wbDemandList');
+    if (!stockInput || !kerfInput || !list) return;
+
+    let stock = 3000;
+    let kerf = 3;
+    let rows = [];
+
+    if (type === 'aerospace') {
+        stock = 3000;
+        kerf = 3;
+        rows = [
+            { len: 800, qty: 3 },
+            { len: 550, qty: 4 },
+            { len: 420, qty: 5 }
+        ];
+    } else if (type === 'long_bar') {
+        stock = 6000;
+        kerf = 3;
+        rows = [
+            { len: 1250, qty: 4 },
+            { len: 850, qty: 3 },
+            { len: 400, qty: 6 }
+        ];
+    } else if (type === 'custom') {
+        stock = 4000;
+        kerf = 2.5;
+        rows = [
+            { len: 950, qty: 3 },
+            { len: 620, qty: 4 },
+            { len: 310, qty: 5 }
+        ];
+    }
+
+    stockInput.value = stock;
+    kerfInput.value = kerf;
+    list.innerHTML = '';
+    rows.forEach(r => window.addWbDemandRow(r.len, r.qty));
+
+    // Automatically trigger calculation for real-time responsiveness
+    window.runWorkbenchCpsatSolver();
+};
+
+window.addWbDemandRow = function(len = 600, qty = 2) {
+    const list = document.getElementById('wbDemandList');
+    if (!list) return;
+    const row = document.createElement('div');
+    row.className = 'wb-demand-row';
+    row.style.cssText = 'display: flex; gap: 10px; align-items: center;';
+    row.innerHTML = `
+        <input type="number" class="wb-len-input" value="${len}" min="10" placeholder="長度 mm" style="flex: 2; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border-subtle); font-weight: 600;">
+        <input type="number" class="wb-qty-input" value="${qty}" min="1" placeholder="支數" style="flex: 1; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border-subtle); font-weight: 600;">
+        <button type="button" class="btn-outline" onclick="this.parentElement.remove()" style="padding: 8px 12px; border-color: #ef4444; color: #ef4444; border-radius: 8px; cursor: pointer;" title="刪除此列">✕</button>
+    `;
+    list.appendChild(row);
+};
+
+window.runWorkbenchCpsatSolver = function() {
+    const stockLen = parseInt(document.getElementById('wbStockLen')?.value || '3000', 10);
+    const kerf = parseFloat(document.getElementById('wbKerf')?.value || '3');
+    const rows = document.querySelectorAll('#wbDemandList .wb-demand-row');
+    const resBox = document.getElementById('wbResultBox');
+    const solveBtn = document.getElementById('wbSolveBtn');
+
+    if (!resBox) return;
+
+    const demands = [];
+    rows.forEach(r => {
+        const l = parseInt(r.querySelector('.wb-len-input')?.value || '0', 10);
+        const q = parseInt(r.querySelector('.wb-qty-input')?.value || '0', 10);
+        if (l > 0 && q > 0) demands.push({ length: l, qty: q });
+    });
+
+    if (demands.length === 0) {
+        resBox.style.display = 'block';
+        resBox.innerHTML = `<div style="color:#b91c1c;font-weight:700;padding:12px;background:#fef2f2;border-radius:8px;">⚠️ 請至少填寫一組有效的裁切尺寸與數量！</div>`;
+        return;
+    }
+
+    resBox.style.display = 'block';
+    resBox.innerHTML = `
+        <div style="text-align: center; padding: 24px; color: var(--text-secondary);">
+            <div style="font-size: 2rem; margin-bottom: 8px; animation: spin 1s infinite linear;">⚙️</div>
+            <strong style="color: var(--text-primary); font-size: 1rem;">Google OR-Tools CP-SAT 求解器運算中...</strong>
+            <p style="font-size: 0.85rem; margin-top: 4px;">正在建立整數線性約束模型，計算全局最少母材數與餘料最小化排版...</p>
+        </div>
+    `;
+    if (solveBtn) solveBtn.disabled = true;
+
+    fetch('/api/ai/cutting-stock', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            stock_length_mm: stockLen,
+            kerf_mm: kerf,
+            demands: demands
+        })
+    })
+    .then(r => r.json())
+    .then(plan => {
+        if (solveBtn) solveBtn.disabled = false;
+        if (!plan.success) {
+            resBox.innerHTML = `<div style="color:#b91c1c;font-weight:700;padding:14px;background:#fef2f2;border-radius:8px;">❌ 求解失敗：${plan.error || '無可行解或參數超出邊界'}</div>`;
+            return;
+        }
+
+        let barsHtml = '';
+        const colorPalette = ['#b83b26', '#1d4ed8', '#059669', '#d97706', '#7c3aed', '#0891b2', '#c026d3', '#2563eb', '#0d9488'];
+
+        plan.bars_plan.forEach(b => {
+            const stockL = plan.stock_length_mm;
+            let svgElements = '';
+            
+            // Background track representing the mother standard bar
+            svgElements += `<rect x="0" y="2" width="1000" height="38" rx="4" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />`;
+
+            if (b.segments && b.segments.length > 0) {
+                b.segments.forEach(seg => {
+                    const x = (seg.start_mm / stockL) * 1000;
+                    const w = Math.max(1.2, (seg.length_mm / stockL) * 1000);
+                    if (seg.type === 'piece') {
+                        const col = colorPalette[Math.abs(seg.length_mm * 11 + seg.index) % colorPalette.length];
+                        svgElements += `
+                            <g class="cpsat-svg-piece">
+                                <rect x="${x.toFixed(1)}" y="4" width="${w.toFixed(1)}" height="34" rx="2" fill="${col}">
+                                    <title>工件 #${seg.index}：長度 ${seg.length_mm} mm (位置 ${seg.start_mm} ~ ${seg.end_mm} mm)</title>
+                                </rect>
+                                ${w > 36 ? `<text x="${(x + w/2).toFixed(1)}" y="25" fill="#ffffff" font-size="11" font-weight="700" text-anchor="middle" pointer-events="none">${seg.length_mm}</text>` : ''}
+                            </g>
+                        `;
+                    } else if (seg.type === 'kerf') {
+                        const kw = Math.max(1.8, w);
+                        svgElements += `
+                            <rect x="${x.toFixed(1)}" y="2" width="${kw.toFixed(1)}" height="38" fill="#ef4444">
+                                <title>鋸縫損耗：${seg.length_mm} mm</title>
+                            </rect>
+                        `;
+                    } else if (seg.type === 'remnant') {
+                        svgElements += `
+                            <g class="cpsat-svg-remnant">
+                                <rect x="${x.toFixed(1)}" y="4" width="${w.toFixed(1)}" height="34" rx="2" fill="rgba(148,163,184,0.2)" stroke="#94a3b8" stroke-dasharray="3,2">
+                                    <title>可用餘料：${seg.length_mm} mm (${((seg.length_mm / stockL) * 100).toFixed(1)}%)</title>
+                                </rect>
+                                ${w > 45 ? `<text x="${(x + w/2).toFixed(1)}" y="25" fill="#475569" font-size="10" font-weight="700" text-anchor="middle" pointer-events="none">餘 ${seg.length_mm}mm</text>` : ''}
+                            </g>
+                        `;
+                    }
+                });
+            }
+
+            barsHtml += `
+                <div style="margin-bottom: 16px; background: #ffffff; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border-subtle); box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-weight:700; font-size:0.86rem; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                        <span style="color: var(--text-primary);">🔩 母材 #${b.bar_no}：${b.cuts_summary}</span>
+                        <span style="color:var(--accent-cinnabar); background:rgba(182,59,46,0.08); padding:3px 8px; border-radius:6px; font-size:0.8rem;">利用率 <strong>${b.utilization_pct}%</strong> (可用餘料 ${b.remnant_mm}mm)</span>
+                    </div>
+                    <div class="cpsat-svg-wrap" style="position: relative; width: 100%;">
+                        <svg class="cpsat-svg-bar" viewBox="0 0 1000 44" preserveAspectRatio="none" style="width: 100%; height: 42px; display: block; border-radius: 6px; overflow: hidden;">
+                            ${svgElements}
+                        </svg>
+                        <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b; font-family:monospace; margin-top:4px; padding:0 2px;">
+                            <span>0 mm</span>
+                            <span style="color:#ef4444; font-weight: 600;">刀縫損耗: ${plan.kerf_mm}mm</span>
+                            <span>${stockL} mm (滿料定寸)</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        const quoteSummary = `[Google OR-Tools CP-SAT 最佳化裁切] 母材規格 ${plan.stock_length_mm}mm 共需 ${plan.total_bars_used} 支 (綜合利用率 ${plan.overall_utilization_pct}%): ` +
+            plan.bars_plan.map(b => `第${b.bar_no}支(${b.cuts_summary}, 餘${b.remnant_mm}mm)`).join('；');
+        const safeQuote = quoteSummary.replace(/'/g, "\\'");
+
+        const speechComm = plan.speech_commentary || `Google OR-Tools CP-SAT 求解完成：母材 ${plan.stock_length_mm}mm 最少僅需 ${plan.total_bars_used} 支，總材料利用率達 ${plan.overall_utilization_pct}%，有效消除裁切浪費。`;
+        const safeCommentary = speechComm.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
+
+        resBox.innerHTML = `
+            <div style="margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border-subtle);">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+                    <span style="font-weight: 800; color: #166534; background: #dcfce7; padding: 4px 10px; border-radius: 6px; font-size: 0.88rem;">
+                        ✅ ${plan.solver_status} · 耗時僅 ${plan.solve_time_ms} ms (Google CP-SAT 求解器)
+                    </span>
+                    <button type="button" class="btn btn-outline btn-sm" onclick="readAloudText('${safeCommentary}', this)" style="font-size: 0.82rem; padding: 4px 10px;">
+                        🔊 語音解說此排料方案
+                    </button>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; text-align: center;">
+                    <div style="padding: 10px; background: #ffffff; border-radius: 8px; border: 1px solid var(--border-subtle);">
+                        <div style="font-size: 0.76rem; color: var(--text-secondary);">最少需用母材</div>
+                        <div style="font-size: 1.25rem; font-weight: 800; color: var(--accent-cinnabar);">${plan.total_bars_used} <span style="font-size: 0.8rem;">支</span></div>
+                    </div>
+                    <div style="padding: 10px; background: #ffffff; border-radius: 8px; border: 1px solid var(--border-subtle);">
+                        <div style="font-size: 0.76rem; color: var(--text-secondary);">綜合材料利用率</div>
+                        <div style="font-size: 1.25rem; font-weight: 800; color: #166534;">${plan.overall_utilization_pct}%</div>
+                    </div>
+                    <div style="padding: 10px; background: #ffffff; border-radius: 8px; border: 1px solid var(--border-subtle);">
+                        <div style="font-size: 0.76rem; color: var(--text-secondary);">總產出工件</div>
+                        <div style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary);">${plan.total_pieces_cut} <span style="font-size: 0.8rem;">段</span></div>
+                    </div>
+                    <div style="padding: 10px; background: #ffffff; border-radius: 8px; border: 1px solid var(--border-subtle);">
+                        <div style="font-size: 0.76rem; color: var(--text-secondary);">總剩餘料長度</div>
+                        <div style="font-size: 1.25rem; font-weight: 800; color: #475569;">${plan.total_remnant_mm} <span style="font-size: 0.8rem;">mm</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 16px;">
+                <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin: 0 0 10px 0;">📊 各母材定寸裁切排版圖 (SVG 視覺化)：</h4>
+                ${barsHtml}
+            </div>
+
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button type="button" class="btn btn-primary" style="flex: 2; justify-content: center; padding: 12px; font-weight: 700;" onclick="addSpecToQuote('${safeQuote}')">
+                    📋 將此最佳排料明細一鍵帶入詢價單
+                </button>
+                <button type="button" class="btn btn-outline" style="flex: 1; justify-content: center; padding: 12px; font-weight: 700; background: #1e293b; color: #ffffff; border-color: #1e293b;" onclick="window.open('/quotation/preview?material=' + encodeURIComponent('母材 ${plan.stock_length_mm}mm 定寸裁切方案 (${plan.total_bars_used} 支)') + '&message=' + encodeURIComponent('${safeQuote}') + '&qty=${plan.total_bars_used}', '_blank')">
+                    📄 匯出工單 / 列印 PDF
+                </button>
+            </div>
+        `;
+    })
+    .catch(err => {
+        if (solveBtn) solveBtn.disabled = false;
+        resBox.innerHTML = `<div style="color:#b91c1c;font-weight:700;padding:12px;background:#fef2f2;border-radius:8px;">❌ 網路或後端求解器連線異常，請稍後重試。</div>`;
+        console.error('CP-SAT solve error:', err);
+    });
+};
