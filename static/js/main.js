@@ -1095,9 +1095,9 @@ window.getLocalizedSpeech = function(text, lang) {
         if (lang === 'ko') return "일본 정품 UACJ 5052 필름 알루미늄 판재: 독자적인 압연 공정으로 잔류 응력을 제거하여 대량 절삭 가공 후에도 뒤틀림이 없습니다. 반도체 진공 챔버 및 광전자 장비의 필수 소재입니다.";
     }
     if (text.includes('AI 智慧工程客服') || text.includes('智能工程客服')) {
-        if (lang === 'en') return "Hello! I am the FAPO AI Engineering Assistant. You can inquire via voice or text for stock specifications, alloy selection, or use Google OR-Tools CP-SAT for cutting stock optimization!";
-        if (lang === 'ja') return "こんにちは！法宝実業 AI 営業技術アシスタントです。在庫規格の検索や合金選定、グーグル OR-Tools CP-SAT による定寸切断の最適化計算をご案内いたします！";
-        if (lang === 'ko') return "안녕하십니까! 법보실업 AI 엔지니어링 챗봇입니다. 재고 규격 검색과 소재 추천, 구글 OR-Tools CP-SAT 모재 절단 최적화 솔루션을 제공합니다!";
+        if (lang === 'en') return "Hello! I am the FAPO AI Engineering Assistant. You can inquire via voice or text for stock specifications, alloy selection, or use AI for cutting stock optimization!";
+        if (lang === 'ja') return "こんにちは！法宝実業 AI 営業技術アシスタントです。在庫規格の検索や合金選定、AI による定寸切断の最適化計算をご案内いたします！";
+        if (lang === 'ko') return "안녕하십니까! 법보실업 AI 엔지니어링 챗봇입니다. 재고 규격 검색과 소재 추천, AI 모재 절단 최적화 솔루션을 제공합니다!";
     }
     return text;
 };
@@ -3164,7 +3164,7 @@ window.runWorkbenchCpsatSolver = function() {
     resBox.innerHTML = `
         <div style="text-align: center; padding: 24px; color: var(--text-secondary);">
             <div style="font-size: 2rem; margin-bottom: 8px; animation: spin 1s infinite linear;">⚙️</div>
-            <strong style="color: var(--text-primary); font-size: 1rem;">Google OR-Tools CP-SAT 求解器運算中...</strong>
+            <strong style="color: var(--text-primary); font-size: 1rem;">AI 求解器運算中...</strong>
             <p style="font-size: 0.85rem; margin-top: 4px;">正在建立整數線性約束模型，計算全局最少母材數與餘料最小化排版...</p>
         </div>
     `;
@@ -3251,18 +3251,18 @@ window.runWorkbenchCpsatSolver = function() {
             `;
         });
 
-        const quoteSummary = `[Google OR-Tools CP-SAT 最佳化裁切] 母材規格 ${plan.stock_length_mm}mm 共需 ${plan.total_bars_used} 支 (綜合利用率 ${plan.overall_utilization_pct}%): ` +
+        const quoteSummary = `[AI 最佳化裁切] 母材規格 ${plan.stock_length_mm}mm 共需 ${plan.total_bars_used} 支 (綜合利用率 ${plan.overall_utilization_pct}%): ` +
             plan.bars_plan.map(b => `第${b.bar_no}支(${b.cuts_summary}, 餘${b.remnant_mm}mm)`).join('；');
         const safeQuote = quoteSummary.replace(/'/g, "\\'");
 
-        const speechComm = plan.speech_commentary || `Google OR-Tools CP-SAT 求解完成：母材 ${plan.stock_length_mm}mm 最少僅需 ${plan.total_bars_used} 支，總材料利用率達 ${plan.overall_utilization_pct}%，有效消除裁切浪費。`;
+        const speechComm = plan.speech_commentary || `AI 求解完成：母材 ${plan.stock_length_mm}mm 最少僅需 ${plan.total_bars_used} 支，總材料利用率達 ${plan.overall_utilization_pct}%，有效消除裁切浪費。`;
         const safeCommentary = speechComm.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
 
         resBox.innerHTML = `
             <div style="margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border-subtle);">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
                     <span style="font-weight: 800; color: #166534; background: #dcfce7; padding: 4px 10px; border-radius: 6px; font-size: 0.88rem;">
-                        ✅ ${plan.solver_status} · 耗時僅 ${plan.solve_time_ms} ms (Google CP-SAT 求解器)
+                        ✅ ${plan.solver_status} · 耗時僅 ${plan.solve_time_ms} ms (AI 求解器)
                     </span>
                     <button type="button" class="btn btn-outline btn-sm" onclick="readAloudText('${safeCommentary}', this)" style="font-size: 0.82rem; padding: 4px 10px;">
                         🔊 語音解說此排料方案

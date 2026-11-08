@@ -8,9 +8,9 @@
 
     const TRANSLATIONS = {
         'zh-TW': {
-            'cpsat.badge': 'Google OR-Tools CP-SAT · 數學規劃全局最優解',
+            'cpsat.badge': 'AI · 數學規劃全局最優解',
             'cpsat.workbench_title': '⚡ 智慧母材定寸裁切排料與餘料最小化工程工作台',
-            'cpsat.workbench_desc': '隨時依訂單需求動態調整母材長度、鋸縫損耗與裁切尺寸清單，後端 Google OR-Tools CP-SAT 求解器於 0.1 秒內算出全局最少母材數、最高利用率排料圖與精準餘料。',
+            'cpsat.workbench_desc': '隨時依訂單需求動態調整母材長度、鋸縫損耗與裁切尺寸清單，後端 AI 求解器於 0.1 秒內算出全局最少母材數、最高利用率排料圖與精準餘料。',
             'cpsat.preset_aero': '✈️ 範例一：航太結構件 (3000mm)',
             'cpsat.preset_long': '🏭 範例二：長尺寸圓棒 (6000mm)',
             'cpsat.preset_plate': '📐 範例三：大尺寸扁條 (4000mm)',
@@ -19,11 +19,11 @@
             'cpsat.kerf_hint': '💡 建議：標準圓鋸片損耗約 3mm；大尺寸帶鋸約 2mm；精密水刀約 1.2mm。',
             'cpsat.demands_title': '3. 隨時可變更的裁切工件清單 (長度 mm × 需求數量 支)：',
             'cpsat.btn_add_row': '＋ 新增裁切尺寸',
-            'cpsat.btn_solve': '🚀 啟動 Google OR-Tools CP-SAT 最佳化求解',
+            'cpsat.btn_solve': '🚀 啟動 AI 最佳化求解',
             'cpsat.btn_add_rfq': '📋 一鍵將此最佳化排料方案帶入線上詢價單',
             'specs.cpsat_callout_title': '⚡ 需要特定長度下料裁切或多規格定寸組合？',
-            'specs.cpsat_callout_desc': '使用 Google OR-Tools CP-SAT 智慧排料工作台，隨時輸入工件長度與數量，0.1 秒精算全局最少母材數與餘料最小化排版。',
-            'specs.cpsat_callout_btn': '進入 CP-SAT 排料工作台 →',
+            'specs.cpsat_callout_desc': '使用 AI 智慧排料工作台，隨時輸入工件長度與數量，0.1 秒精算全局最少母材數與餘料最小化排版。',
+            'specs.cpsat_callout_btn': '進入 AI 排料工作台 →',
             'contact.addr_taipei': '台北市民權東路三段136號3樓之5 🗺️',
             'contact.addr_taichung': '台中市西屯區台灣大道四段五巷167及167-1號 🗺️',
             'contact.addr_tainan': '台南市佳里區麻佳路三段70巷30號 / 麻豆區麻柚路446號 🗺️',
@@ -783,13 +783,13 @@
             'ai.chip2': '🔬 陽極高強選料',
             'ai.chip3': '🧮 智慧下料範例',
             'ai.chip4': '📍 據點與證明',
-            'ai.greeting_text': '您好！我是 <strong>法寶實業 AI 智能工程客服</strong>（即時串聯 3,071 筆現貨與模具規格資料庫）。<br><br>您可以直接詢問：<br>• <strong>現貨與模具查詢</strong>：「6061 圓棒 50mm」、「7075 厚 20mm 鋁板」<br>• <strong>智慧裁切排料</strong>：「母材 3000mm 切 800*3, 550*4, 420*5」<br>• <strong>工程選料顧問</strong>：「推薦適合硬陽極與高強度的鋁材」<br><button type="button" class="ai-bubble-audio-btn" onclick="readAloudText(\'您好！我是法寶實業 AI 智慧工程客服。您可以透過語音或文字向我查詢現貨庫存、工程選料，或是使用 Google OR-Tools CP-SAT 進行母材下料裁切最佳化計算！\', this)">🔊 語音朗讀介紹</button>'
+            'ai.greeting_text': '您好！我是 <strong>法寶實業 AI 智能工程客服</strong>（即時串聯 3,071 筆現貨與模具規格資料庫）。<br><br>您可以直接詢問：<br>• <strong>現貨與模具查詢</strong>：「6061 圓棒 50mm」、「7075 厚 20mm 鋁板」<br>• <strong>智慧裁切排料</strong>：「母材 3000mm 切 800*3, 550*4, 420*5」<br>• <strong>工程選料顧問</strong>：「推薦適合硬陽極與高強度的鋁材」<br><button type="button" class="ai-bubble-audio-btn" onclick="readAloudText(\'您好！我是法寶實業 AI 智慧工程客服。您可以透過語音或文字向我查詢現貨庫存、工程選料，或是使用 AI 進行母材下料裁切最佳化計算！\', this)">🔊 語音朗讀介紹</button>'
         },
 
         'en': {
-            'cpsat.badge': 'Google OR-Tools CP-SAT · Global Constraint Optimum',
+            'cpsat.badge': 'AI · Global Constraint Optimum',
             'cpsat.workbench_title': '⚡ Smart Mother Bar Cutting & Waste Minimization Workbench',
-            'cpsat.workbench_desc': 'Dynamically adjust mother bar length, blade kerf, and cutting demand items anytime. The backend Google OR-Tools CP-SAT solver computes the minimum mother bars, maximum utilization SVG cutting diagram, and remnant analytics in under 0.1s.',
+            'cpsat.workbench_desc': 'Dynamically adjust mother bar length, blade kerf, and cutting demand items anytime. The backend AI solver computes the minimum mother bars, maximum utilization SVG cutting diagram, and remnant analytics in under 0.1s.',
             'cpsat.preset_aero': '✈️ Preset 1: Aerospace Structures (3000mm)',
             'cpsat.preset_long': '🏭 Preset 2: Long Round Bar (6000mm)',
             'cpsat.preset_plate': '📐 Preset 3: Large Flat Bar (4000mm)',
@@ -798,11 +798,11 @@
             'cpsat.kerf_hint': '💡 Guide: Circular saw kerf ≈ 3mm; Band saw ≈ 2mm; Waterjet ≈ 1.2mm.',
             'cpsat.demands_title': '3. Dynamic Cutting Demand List (Length mm × Quantity pcs):',
             'cpsat.btn_add_row': '＋ Add Cutting Size',
-            'cpsat.btn_solve': '🚀 Run Google OR-Tools CP-SAT Solver',
+            'cpsat.btn_solve': '🚀 Run AI Solver',
             'cpsat.btn_add_rfq': '📋 Add Optimized Plan to Online RFQ Form',
             'specs.cpsat_callout_title': '⚡ Need Custom Length Cutting or Multi-Dimension Combinations?',
-            'specs.cpsat_callout_desc': 'Use the Google OR-Tools CP-SAT Workbench to input lengths and quantities anytime, calculating global minimum stock bars and scrap minimization in 0.1s.',
-            'specs.cpsat_callout_btn': 'Launch CP-SAT Workbench →',
+            'specs.cpsat_callout_desc': 'Use the AI Workbench to input lengths and quantities anytime, calculating global minimum stock bars and scrap minimization in 0.1s.',
+            'specs.cpsat_callout_btn': 'Launch AI Workbench →',
             'contact.addr_taipei': '3F-5, No. 136, Sec. 3, Minquan E. Rd., Taipei City 🗺️',
             'contact.addr_taichung': 'No. 167 & 167-1, Ln. 5, Sec. 4, Taiwan Blvd., Xitun Dist., Taichung City 🗺️',
             'contact.addr_tainan': 'No. 30, Ln. 70, Sec. 3, Majia Rd., Jiali Dist. / No. 446, Mayou Rd., Madou Dist., Tainan City 🗺️',
@@ -1253,8 +1253,8 @@
             'opt_speed_10': '1.0x Speed',
             'opt_speed_09': '0.9x Gentle',
             'opt_speed_115': '1.15x Fast',
-            'cpsat_head_title': '⚡ Cutting Stock & Kerf Optimization (CP-SAT)',
-            'cpsat_head_desc': 'Minimizes parent stock usage and kerf losses via Google OR-Tools CP-SAT',
+            'cpsat_head_title': '⚡ Cutting Stock & Kerf Optimization (AI)',
+            'cpsat_head_desc': 'Minimizes parent stock usage and kerf losses via AI',
             'cpsat_lbl_stock_len': 'Parent Stock Length (mm)',
             'cpsat_lbl_kerf': 'Saw Kerf Loss (mm)',
             'cpsat_lbl_items': 'Cut Length (mm) × Quantity (pcs)',
@@ -1562,13 +1562,13 @@
             'ai.chip2': '🔬 High-Strength & Anodizing',
             'ai.chip3': '🧮 Cutting Demo',
             'ai.chip4': '📍 Hubs & MTR Cert',
-            'ai.greeting_text': 'Hello! I am the <strong>FAPO AI Engineering Assistant</strong>, connected in real-time to our database of 3,071 stock items and mold specs.<br><br>Feel free to ask me:<br>• <strong>Stock & Mold Specs</strong>: "6061 Round Bar 50mm", "7075 Aluminum Plate 20mm"<br>• <strong>Smart Cutting Stock</strong>: "Raw stock 3000mm cut 800*3, 550*4, 420*5"<br>• <strong>Alloy Engineering</strong>: "Recommend aluminum for hard anodizing & high strength"<br><button type="button" class="ai-bubble-audio-btn" onclick="readAloudText(\'Hello! I am the FAPO AI Engineering Assistant. You can inquire about our stock inventory, alloy recommendations, or run 1D cutting stock optimization using Google OR-Tools CP-SAT.\', this)">🔊 Audio Introduction</button>'
+            'ai.greeting_text': 'Hello! I am the <strong>FAPO AI Engineering Assistant</strong>, connected in real-time to our database of 3,071 stock items and mold specs.<br><br>Feel free to ask me:<br>• <strong>Stock & Mold Specs</strong>: "6061 Round Bar 50mm", "7075 Aluminum Plate 20mm"<br>• <strong>Smart Cutting Stock</strong>: "Raw stock 3000mm cut 800*3, 550*4, 420*5"<br>• <strong>Alloy Engineering</strong>: "Recommend aluminum for hard anodizing & high strength"<br><button type="button" class="ai-bubble-audio-btn" onclick="readAloudText(\'Hello! I am the FAPO AI Engineering Assistant. You can inquire about our stock inventory, alloy recommendations, or run 1D cutting stock optimization using AI.\', this)">🔊 Audio Introduction</button>'
         },
 
         'ja': {
-            'cpsat.badge': 'Google OR-Tools CP-SAT · 大域的数理最適化求解',
+            'cpsat.badge': 'AI · 大域的数理最適化求解',
             'cpsat.workbench_title': '⚡ 母材定寸切断・歩留り最大化エンジニアリングワークベンチ',
-            'cpsat.workbench_desc': '注文要件に応じて母材長、ノコ刃ロス、切断リストを随時変更可能。バックエンドの Google OR-Tools CP-SAT ソルバーが0.1秒以内に最少母材本数、最高歩留まり切断図、残材解析を算出します。',
+            'cpsat.workbench_desc': '注文要件に応じて母材長、ノコ刃ロス、切断リストを随時変更可能。バックエンドの AI ソルバーが0.1秒以内に最少母材本数、最高歩留まり切断図、残材解析を算出します。',
             'cpsat.preset_aero': '✈️ 例1：航空宇宙構造部品 (3000mm)',
             'cpsat.preset_long': '🏭 例2：長尺アルミ丸棒 (6000mm)',
             'cpsat.preset_plate': '📐 例3：大寸法平角棒 (4000mm)',
@@ -1577,11 +1577,11 @@
             'cpsat.kerf_hint': '💡 目安：丸ノコ刃代 ≈ 3mm、帯ノコ ≈ 2mm、精密ウォータージェット ≈ 1.2mm。',
             'cpsat.demands_title': '3. 随時変更可能な切断リスト (長さ mm × 数量 本)：',
             'cpsat.btn_add_row': '＋ 切断サイズ追加',
-            'cpsat.btn_solve': '🚀 Google OR-Tools CP-SAT 最適化求解を実行',
+            'cpsat.btn_solve': '🚀 AI 最適化求解を実行',
             'cpsat.btn_add_rfq': '📋 この最適切断プランをオンライン見積りに追加',
             'specs.cpsat_callout_title': '⚡ 指定寸法の切断加工や多品目取り合わせが必要ですか？',
-            'specs.cpsat_callout_desc': 'Google OR-Tools CP-SAT 歩留まり最適化ワークベンチで部材寸法と数量を入力。0.1秒で母材本数最少化と端材極小化をグローバル求解。',
-            'specs.cpsat_callout_btn': 'CP-SAT 最適化台を開く →',
+            'specs.cpsat_callout_desc': 'AI 歩留まり最適化ワークベンチで部材寸法と数量を入力。0.1秒で母材本数最少化と端材極小化をグローバル求解。',
+            'specs.cpsat_callout_btn': 'AI 最適化台を開く →',
             'contact.addr_taipei': '台北市松山区民権東路三段136号3階之5 🗺️',
             'contact.addr_taichung': '台中市西屯区台湾大道四段5巷167および167-1号 🗺️',
             'contact.addr_tainan': '台南市佳里区麻佳路三段70巷30号 / 麻豆区麻柚路446号 🗺️',
@@ -2341,13 +2341,13 @@
             'ai.chip2': '🔬 高強度・陽極酸化選定',
             'ai.chip3': '🧮 定寸切断サンプル',
             'ai.chip4': '📍 拠点とミルシート',
-            'ai.greeting_text': 'こんにちは！<strong>法宝実業 AI 営業技術アシスタント</strong>です（3,071件の常備在庫および金型仕様データベースとリアルタイム連携）。<br><br>お気軽にお尋ねください：<br>• <strong>在庫・金型スペック検索</strong>：「6061 丸棒 50mm」、「7075 板厚 20mm」<br>• <strong>スマート定寸切断・歩留り計算</strong>：「母材 3000mm 切断 800*3, 550*4, 420*5」<br>• <strong>材料選定・技術相談</strong>：「硬質アルマイトおよび高強度に適したアルミ材」<br><button type="button" class="ai-bubble-audio-btn" onclick="readAloudText(\'こんにちは！法宝実業 AI 営業技術アシスタントです。在庫規格の検索や合金選定、グーグル OR-Tools CP-SAT による定寸切断の最適化計算をご案内いたします。\', this)">🔊 音声で案内を聞く</button>'
+            'ai.greeting_text': 'こんにちは！<strong>法宝実業 AI 営業技術アシスタント</strong>です（3,071件の常備在庫および金型仕様データベースとリアルタイム連携）。<br><br>お気軽にお尋ねください：<br>• <strong>在庫・金型スペック検索</strong>：「6061 丸棒 50mm」、「7075 板厚 20mm」<br>• <strong>スマート定寸切断・歩留り計算</strong>：「母材 3000mm 切断 800*3, 550*4, 420*5」<br>• <strong>材料選定・技術相談</strong>：「硬質アルマイトおよび高強度に適したアルミ材」<br><button type="button" class="ai-bubble-audio-btn" onclick="readAloudText(\'こんにちは！法宝実業 AI 営業技術アシスタントです。在庫規格の検索や合金選定、AI による定寸切断の最適化計算をご案内いたします。\', this)">🔊 音声で案内を聞く</button>'
         },
 
         'ko': {
-            'cpsat.badge': 'Google OR-Tools CP-SAT · 글로벌 수리 최적화 솔버',
+            'cpsat.badge': 'AI · 글로벌 수리 최적화 솔버',
             'cpsat.workbench_title': '⚡ 스마트 모재 정촌 절단 및 잔재 최소화 최적화 워크벤치',
-            'cpsat.workbench_desc': '주문 요건에 따라 모재 길이, 톱날 손실, 절단 목록을 실시간으로 자유롭게 변경 가능합니다. 백엔드의 Google OR-Tools CP-SAT 솔버가 0.1초 내에 최소 모재 수량, 최고 수율의 절단 레이아웃 및 정밀 잔재를 산출합니다.',
+            'cpsat.workbench_desc': '주문 요건에 따라 모재 길이, 톱날 손실, 절단 목록을 실시간으로 자유롭게 변경 가능합니다. 백엔드의 AI 솔버가 0.1초 내에 최소 모재 수량, 최고 수율의 절단 레이아웃 및 정밀 잔재를 산출합니다.',
             'cpsat.preset_aero': '✈️ 예시 1: 항공우주 구조재 (3000mm)',
             'cpsat.preset_long': '🏭 예시 2: 장척 원형봉 (6000mm)',
             'cpsat.preset_plate': '📐 예시 3: 대형 평각봉 (4000mm)',
@@ -2356,11 +2356,11 @@
             'cpsat.kerf_hint': '💡 참고: 원형톱 손실 ≈ 3mm, 띠톱 ≈ 2mm, 정밀 워터젯 ≈ 1.2mm.',
             'cpsat.demands_title': '3. 실시간 변경 가능한 절단 목록 (길이 mm × 수량 개):',
             'cpsat.btn_add_row': '＋ 절단 규격 추가',
-            'cpsat.btn_solve': '🚀 Google OR-Tools CP-SAT 최적화 솔버 실행',
+            'cpsat.btn_solve': '🚀 AI 최적화 솔버 실행',
             'cpsat.btn_add_rfq': '📋 최적화된 절단 계획을 온라인 견적서에 바로 추가',
             'specs.cpsat_callout_title': '⚡ 맞춤 길이 절단 또는 다양한 규격의 조합이 필요하십니까?',
-            'specs.cpsat_callout_desc': 'Google OR-Tools CP-SAT 최적화 워크벤치를 통해 가공 길이와 수량을 입력하면 0.1초 만에 모재 절감 및 잔재 최소화 레이아웃을 계산합니다.',
-            'specs.cpsat_callout_btn': 'CP-SAT 최적화 작업대 바로가기 →',
+            'specs.cpsat_callout_desc': 'AI 최적화 워크벤치를 통해 가공 길이와 수량을 입력하면 0.1초 만에 모재 절감 및 잔재 최소화 레이아웃을 계산합니다.',
+            'specs.cpsat_callout_btn': 'AI 최적화 작업대 바로가기 →',
             'contact.addr_taipei': '대만 타이베이시 민취안둥로 3단 136호 3층의 5 🗺️',
             'contact.addr_taichung': '대만 타이중시 시툰구 타이완대로 4단 5골목 167 및 167-1호 🗺️',
             'contact.addr_tainan': '대만 타이난시 자리구 마자료 3단 70골목 30호 / 마두구 마유로 446호 🗺️',
@@ -3120,7 +3120,7 @@
             'ai.chip2': '🔬 아노다이징 고강도 소재',
             'ai.chip3': '🧮 절단 계산 예시',
             'ai.chip4': '📍 거점 및 밀시트',
-            'ai.greeting_text': '안녕하십니까! <strong>법보실업 AI 엔지니어링 챗봇</strong>입니다 (3,071건의 상시 보유 재고 및 금형 규격 DB 실시간 연동).<br><br>편하게 문의해 주세요:<br>• <strong>재고 및 금형 규격 조회</strong>: "6061 환봉 50mm", "7075 판재 두께 20mm"<br>• <strong>스마트 모재 절단 최적화</strong>: "원자재 3000mm 절단 800*3, 550*4, 420*5"<br>• <strong>엔지니어링 소재 추천</strong>: "하드 아노다이징 및 고강도에 적합한 알루미늄 추천"<br><button type="button" class="ai-bubble-audio-btn" onclick="readAloudText(\'안녕하십니까! 법보실업 AI 엔지니어링 챗봇입니다. 재고 규격 검색과 소재 추천, 구글 OR-Tools CP-SAT 모재 절단 최적화 솔루션을 제공합니다.\', this)">🔊 음성 안내 듣기</button>'
+            'ai.greeting_text': '안녕하십니까! <strong>법보실업 AI 엔지니어링 챗봇</strong>입니다 (3,071건의 상시 보유 재고 및 금형 규격 DB 실시간 연동).<br><br>편하게 문의해 주세요:<br>• <strong>재고 및 금형 규격 조회</strong>: "6061 환봉 50mm", "7075 판재 두께 20mm"<br>• <strong>스마트 모재 절단 최적화</strong>: "원자재 3000mm 절단 800*3, 550*4, 420*5"<br>• <strong>엔지니어링 소재 추천</strong>: "하드 아노다이징 및 고강도에 적합한 알루미늄 추천"<br><button type="button" class="ai-bubble-audio-btn" onclick="readAloudText(\'안녕하십니까! 법보실업 AI 엔지니어링 챗봇입니다. 재고 규격 검색과 소재 추천, AI 모재 절단 최적화 솔루션을 제공합니다.\', this)">🔊 음성 안내 듣기</button>'
         }
     };
 

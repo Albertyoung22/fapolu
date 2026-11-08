@@ -197,7 +197,7 @@ def solve_cutting_stock_cpsat(stock_length_mm=3000, kerf_mm=3, demands=None):
     first_bar = bars_plan[0] if bars_plan else None
     first_cuts_desc = first_bar["cuts_summary"] if first_bar else ""
     speech_commentary = (
-        f"您好！我是法寶實業的 AI 工程師。透過 Google OR-Tools CP-SAT 運籌學求解器運算，"
+        f"您好！我是法寶實業的 AI 工程師。透過 AI 運籌學求解器運算，"
         f"為您規劃出全域最省料的排版方案。這批裁切需求共需使用 {total_bars_used} 支標準 {stock_L} 毫米母材，"
         f"整體材料利用率達到 {overall_utilization} 百分比。"
     )
@@ -690,5 +690,5 @@ def process_ai_chat(message, inventory_data, lang='zh-TW'):
         ),
         "specs": [],
         "cutting_plan": None,
-        "voice_script": "您好！我是法寶實業 AI 智慧工程客服。您可以透過語音或文字向我查詢現貨庫存、工程選料，或是使用 Google OR-Tools CP-SAT 進行母材下料裁切最佳化計算！"
+        "voice_script": "您好！我是法寶實業 AI 智慧工程客服。您可以透過語音或文字向我查詢現貨庫存、工程選料，或是使用 AI 進行母材下料裁切最佳化計算！"
     }
