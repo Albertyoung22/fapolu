@@ -194,29 +194,82 @@ function initLatticeCanvas() {
         ctx.translate(cx, cy);
         ctx.rotate(lotusAngle);
 
-        // Subtle concentric Dharma rings
-        ctx.strokeStyle = 'rgba(168, 120, 38, 0.07)';
-        ctx.lineWidth = 1;
-        [maxR * 0.36, maxR * 0.68, maxR * 0.96].forEach(r => {
+        // 1. Concentric Dharma Circles (法輪同心圓輪 - 明顯強化線條與色澤)
+        ctx.strokeStyle = 'rgba(175, 128, 42, 0.20)';
+        ctx.lineWidth = 1.4;
+        [maxR * 0.22, maxR * 0.52, maxR * 0.78].forEach(r => {
             ctx.beginPath();
             ctx.arc(0, 0, r, 0, Math.PI * 2);
             ctx.stroke();
         });
 
-        // 12-petal Sacred Lotus geometry
+        // 2. Outer Celestial dotted Dharma perimeter ring (外圍吉祥珠輪)
+        ctx.save();
+        ctx.strokeStyle = 'rgba(180, 132, 45, 0.24)';
+        ctx.lineWidth = 1.6;
+        ctx.setLineDash([4, 6]);
+        ctx.beginPath();
+        ctx.arc(0, 0, maxR * 0.98, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+
+        // 3. Central 8-Spoke Dharmachakra (八吉祥 · 八正道法輪輻條)
+        const spokes = 8;
+        ctx.strokeStyle = 'rgba(180, 128, 40, 0.22)';
+        ctx.lineWidth = 1.6;
+        for (let s = 0; s < spokes; s++) {
+            ctx.save();
+            ctx.rotate((Math.PI * 2 * s) / spokes);
+            ctx.beginPath();
+            ctx.moveTo(0, maxR * 0.06);
+            ctx.lineTo(0, maxR * 0.52);
+            ctx.stroke();
+            // Spoke tip jewel
+            ctx.beginPath();
+            ctx.arc(0, maxR * 0.52, 2.5, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(180, 128, 40, 0.28)';
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // 4. Outer 12-Petal Sacred Lotus Geometry (外層十二瓣金蓮華)
         const petals = 12;
-        ctx.strokeStyle = 'rgba(168, 118, 34, 0.085)';
-        ctx.lineWidth = 1.15;
+        ctx.strokeStyle = 'rgba(178, 124, 38, 0.24)';
+        ctx.lineWidth = 1.8;
         for (let i = 0; i < petals; i++) {
             ctx.save();
             ctx.rotate((Math.PI * 2 * i) / petals);
             ctx.beginPath();
-            ctx.moveTo(0, maxR * 0.16);
-            ctx.quadraticCurveTo(maxR * 0.28, maxR * 0.54, 0, maxR * 0.92);
-            ctx.quadraticCurveTo(-maxR * 0.28, maxR * 0.54, 0, maxR * 0.16);
+            ctx.moveTo(0, maxR * 0.18);
+            ctx.quadraticCurveTo(maxR * 0.30, maxR * 0.58, 0, maxR * 0.96);
+            ctx.quadraticCurveTo(-maxR * 0.30, maxR * 0.58, 0, maxR * 0.18);
             ctx.stroke();
             ctx.restore();
         }
+
+        // 5. Inner 12 Interlaced Petals (內層交疊蓮瓣，增強立體層次)
+        ctx.strokeStyle = 'rgba(195, 142, 48, 0.20)';
+        ctx.lineWidth = 1.4;
+        const innerPetals = 12;
+        const offsetAngle = Math.PI / innerPetals;
+        for (let j = 0; j < innerPetals; j++) {
+            ctx.save();
+            ctx.rotate((Math.PI * 2 * j) / innerPetals + offsetAngle);
+            ctx.beginPath();
+            ctx.moveTo(0, maxR * 0.12);
+            ctx.quadraticCurveTo(maxR * 0.20, maxR * 0.42, 0, maxR * 0.68);
+            ctx.quadraticCurveTo(-maxR * 0.20, maxR * 0.42, 0, maxR * 0.12);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // 6. Center Bindu / Golden Core (蓮心金光種子)
+        ctx.beginPath();
+        ctx.arc(0, 0, maxR * 0.07, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(185, 130, 40, 0.30)';
+        ctx.lineWidth = 1.8;
+        ctx.stroke();
+
         ctx.restore();
     }
 
@@ -247,8 +300,10 @@ function initLatticeCanvas() {
         timeTick += 0.004;
         lotusAngle += 0.0008;
 
-        // 1. Subtle Sacred Lotus halo watermark
-        drawSacredLotusWatermark(width * 0.5, Math.min(height * 0.44, 420), Math.min(width, height) * 0.36);
+        // 1. Sacred Lotus & Dharmachakra halo watermark (佛教神聖蓮華法輪圖騰 · 莊嚴清澈)
+        const lotusCenterY = Math.min(height * 0.48, 480);
+        const lotusRadius = Math.min(width * 0.42, Math.min(height * 0.48, 520));
+        drawSacredLotusWatermark(width * 0.5, lotusCenterY, lotusRadius);
 
         // 2. Three layered ink-wash distant mountain silhouettes (遠山淡墨三疊)
         drawInkMountainLayer(0.73, 68, 0.0019, 0.0033, timeTick * 0.35, 'rgba(96, 92, 82, 0.075)');
