@@ -1222,6 +1222,187 @@ window.readAloudText = function(text, btnElement) {
 /* ==========================================================================
    3. Stock Specs Explorer (現貨規格即時篩選查詢)
    ========================================================================== */
+const SPEC_CATEGORY_I18N = {
+    '1050 / 5052 鋁板現貨': {
+        'en': '1050 / 5052 Aluminum Plate Stock',
+        'ja': '1050 / 5052 アルミ板在庫',
+        'ko': '1050 / 5052 알루미늄 판재 재고'
+    },
+    '5083 鋁合金板現貨': {
+        'en': '5083 Aluminum Alloy Plate Stock',
+        'ja': '5083 アルミ合金板在庫',
+        'ko': '5083 알루미늄 합금판재 재고'
+    },
+    '6061 鋁合金板現貨': {
+        'en': '6061 Aluminum Alloy Plate Stock',
+        'ja': '6061 アルミ合金板在庫',
+        'ko': '6061 알루미늄 합금판재 재고'
+    },
+    '6061 鋁圓棒現貨': {
+        'en': '6061 Aluminum Round Bar Stock',
+        'ja': '6061 アルミ丸棒在庫',
+        'ko': '6061 알루미늄 환봉 재고'
+    },
+    '6061 鋁扁條現貨': {
+        'en': '6061 Aluminum Flat Bar Stock',
+        'ja': '6061 アルミ平角棒在庫',
+        'ko': '6061 알루미늄 평각봉 재고'
+    },
+    '7075 鋁合金板現貨': {
+        'en': '7075 Aerospace Aluminum Plate Stock',
+        'ja': '7075 航空宇宙用アルミ板在庫',
+        'ko': '7075 항공 알루미늄 판재 재고'
+    },
+    '7075 鋁圓棒現貨': {
+        'en': '7075 Aluminum Round Bar Stock',
+        'ja': '7075 アルミ丸棒在庫',
+        'ko': '7075 알루미늄 환봉 재고'
+    },
+    '壓花鋁板現貨': {
+        'en': 'Embossed Aluminum Tread Plate Stock',
+        'ja': 'アルミ縞板・チェッカープレート在庫',
+        'ko': '체크/무늬 알루미늄 판재 재고'
+    },
+    '日本進口 5052 貼膜鋁板現貨': {
+        'en': 'Japan UACJ 5052 Masked Plate Stock',
+        'ja': '日本直輸入 5052 貼合アルミ板在庫',
+        'ko': '일본 수입 5052 필름 판재 재고'
+    },
+    '現有模具 · 6061 鋁圓棒': {
+        'en': 'Tooling Available · 6061 Round Bar',
+        'ja': '保有金型 · 6061 丸棒',
+        'ko': '보유 금형 · 6061 환봉'
+    },
+    '現有模具 · 鋁六角條': {
+        'en': 'Tooling Available · Hex Bar',
+        'ja': '保有金型 · 六角棒',
+        'ko': '보유 금형 · 육각봉'
+    },
+    '現有模具 · 鋁四方條': {
+        'en': 'Tooling Available · Square Bar',
+        'ja': '保有金型 · 角棒',
+        'ko': '보유 금형 · 사각봉'
+    },
+    '現有模具 · 鋁圓管': {
+        'en': 'Tooling Available · Round Tube',
+        'ja': '保有金型 · 丸管',
+        'ko': '보유 금型 · 원형관'
+    },
+    '現有模具 · 鋁扁條': {
+        'en': 'Tooling Available · Flat Bar',
+        'ja': '保有金型 · 平角棒',
+        'ko': '보유 금형 · 평각봉'
+    },
+    '現有模具 · 鋁正方管': {
+        'en': 'Tooling Available · Square Tube',
+        'ja': '保有金型 · 正方形管',
+        'ko': '보유 금형 · 정사각형관'
+    },
+    '現有模具 · 鋁長方管': {
+        'en': 'Tooling Available · Rectangular Tube',
+        'ja': '保有金型 · 長方形管',
+        'ko': '보유 금형 · 직사각형관'
+    }
+};
+
+function formatSpecCategory(cat, lang) {
+    if (!cat) return '-';
+    if (!lang || lang === 'zh-TW') return cat;
+    const trans = SPEC_CATEGORY_I18N[cat];
+    return (trans && trans[lang]) || cat;
+}
+
+function formatSpecDimension(dim, lang) {
+    if (!dim) return '-';
+    if (!lang || lang === 'zh-TW') return dim;
+    let s = dim;
+    if (lang === 'en') {
+        s = s.replace(/^厚\s*/, 'Thick ')
+             .replace(/^(直徑|外徑)\s*/, 'Dia. ')
+             .replace(/^方寬\s*/, 'Sq. ')
+             .replace(/^對邊\s*/, 'AF ')
+             .replace(/^寬\s*/, 'Width ')
+             .replace(/^規格\s*/, 'Spec ');
+    } else if (lang === 'ja') {
+        s = s.replace(/^厚\s*/, '厚み ')
+             .replace(/^(直徑|外徑)\s*/, '外径 ')
+             .replace(/^方寬\s*/, '正方形幅 ')
+             .replace(/^對邊\s*/, '対辺 ')
+             .replace(/^寬\s*/, '幅 ')
+             .replace(/^規格\s*/, '規格 ');
+    } else if (lang === 'ko') {
+        s = s.replace(/^厚\s*/, '두께 ')
+             .replace(/^(直徑|外徑)\s*/, '외경 ')
+             .replace(/^方寬\s*/, '정사각 폭 ')
+             .replace(/^對邊\s*/, '대변 ')
+             .replace(/^寬\s*/, '폭 ')
+             .replace(/^規格\s*/, '규격 ');
+    }
+    return s;
+}
+
+function formatSpecNote(note, group, lang) {
+    if (!lang || lang === 'zh-TW') {
+        return note || (group === 'mold' ? '現有模具' : '現貨庫存');
+    }
+    const isEn = lang === 'en';
+    const isJa = lang === 'ja';
+    const isKo = lang === 'ko';
+
+    if (!note) {
+        return group === 'mold'
+            ? (isEn ? 'Tooling Ready' : isJa ? '保有金型' : '보유 금형')
+            : (isEn ? 'In Stock' : isJa ? '在庫あり' : '상시 재고');
+    }
+
+    if (note.startsWith('單米重')) {
+        const wtVal = note.replace(/^單米重\s*/, '').trim();
+        return isEn ? `Wt: ${wtVal}/m` : isJa ? `単重: ${wtVal}/m` : `단위중량: ${wtVal}/m`;
+    }
+    if (note.includes('五爪壓花')) return isEn ? '5-Bar Tread' : isJa ? '5本線縞板' : '5바 무늬판';
+    if (note.includes('人字壓花')) return isEn ? 'Herringbone' : isJa ? '杉綾模様' : '헤링본 패턴';
+    if (note.includes('六角花')) return isEn ? 'Hex Tread' : isJa ? '六角花縞板' : '육각형 무늬판';
+    if (note.includes('鑽石壓花')) return isEn ? 'Diamond Tread' : isJa ? 'ダイヤ目' : '다이아몬드 무늬';
+    if (note.includes('免開模')) return isEn ? 'Tooling Ready' : isJa ? '金型代無料' : '보유 금형';
+    if (note.includes('A料正T6')) return isEn ? 'Prime T6 Stock' : isJa ? 'A級 T6在庫' : 'A급 정품 T6';
+    if (note.includes('B料正T6')) return isEn ? 'Grade B T6' : isJa ? 'B級 T6' : 'B급 T6';
+    if (note.includes('貼膜板')) return isEn ? 'Masked Plate' : isJa ? '保護フィルム付' : '필름 부착재';
+    if (note.includes('進口料')) return isEn ? 'Imported Stock' : isJa ? '輸入素材' : '수입 소재';
+    if (note.includes('精抽')) return isEn ? 'Precision Drawn' : isJa ? '精密引抜' : '정밀 인발';
+    if (note.includes('現貨')) return isEn ? 'In Stock' : isJa ? '在庫あり' : '상시 재고';
+
+    return note;
+}
+
+function updateSpecsCatSelectOptions(lang) {
+    const sel = document.getElementById('specsCatSelect');
+    if (!sel) return;
+    const isEn = lang === 'en';
+    const isJa = lang === 'ja';
+    const isKo = lang === 'ko';
+
+    const optgroups = sel.querySelectorAll('optgroup');
+    if (optgroups.length >= 3) {
+        optgroups[0].label = isEn ? '📦 In-Stock Aluminum Plate Specifications' : isJa ? '📦 アルミ合金板 常備在庫規格表' : isKo ? '📦 알루미늄 판재 상시 재고 규격표' : '📦 鋁合金板常備現貨規格表';
+        optgroups[1].label = isEn ? '📦 In-Stock Aluminum Extrusion Specifications' : isJa ? '📦 アルミ押出形材 常備在庫規格表' : isKo ? '📦 알루미늄 압출재 상시 재고 규격표' : '📦 鋁擠型常備現貨規格表';
+        optgroups[2].label = isEn ? '📐 Active Extrusion Molds (Free Tooling Fee)' : isJa ? '📐 保有押出金型スペック表（金型代無料）' : isKo ? '📐 보유 압출 금형 규격표 (금형비 면제)' : '📐 現有模具規格表（免開模費）';
+    }
+
+    sel.querySelectorAll('option').forEach(opt => {
+        const val = opt.value;
+        if (val === '全部') {
+            opt.textContent = isEn ? 'All 16 Catalogs (3,071 Items)' : isJa ? '全16大規格表 (3,071件)' : isKo ? '전체 16대 규격표 (3,071건)' : '全部 16 大規格表 (3,071 筆)';
+        } else {
+            const trans = formatSpecCategory(val, lang);
+            if (trans && trans !== val) {
+                const countMatch = opt.textContent.match(/\((\d+)\)/);
+                const countStr = countMatch ? ` (${countMatch[1]})` : '';
+                opt.textContent = `${trans}${countStr}`;
+            }
+        }
+    });
+}
+
 function initSpecsExplorer() {
     const searchInput = document.getElementById('specsSearchInput');
     const catSelect = document.getElementById('specsCatSelect');
@@ -1253,7 +1434,9 @@ function initSpecsExplorer() {
         const q = searchInput ? searchInput.value.trim() : '';
         const category = catSelect ? catSelect.value : '';
 
-        tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 30px; color: #94a3b8;">🔍 正在檢索官網同步規格資料庫...</td></tr>`;
+        const curLang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
+        const loadingText = curLang === 'en' ? '🔍 Searching live specifications database...' : curLang === 'ja' ? '🔍 規格データベースを検索中...' : curLang === 'ko' ? '🔍 실시간 규격 데이터베이스 검색 중...' : '🔍 正在檢索官網同步規格資料庫...';
+        tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 30px; color: #94a3b8;">${loadingText}</td></tr>`;
 
         fetch(`/api/specs?q=${encodeURIComponent(q)}&category=${encodeURIComponent(category)}&group=${encodeURIComponent(currentGroup)}&page=${page}&per_page=25`)
             .then(res => res.json())
@@ -1266,7 +1449,14 @@ function initSpecsExplorer() {
                 if (nextPageBtn) nextPageBtn.disabled = data.page >= totalPages;
 
                 if (!data.items || data.items.length === 0) {
-                    tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 30px; color: #94a3b8;">找不到符合條件的規格，建議切換上方「全部規格」或輸入厚度、外徑、合金型號（如 5052、6061、7075、FT001、PW5168）。</td></tr>`;
+                    const noResultText = curLang === 'en'
+                        ? 'No specifications found matching your criteria. Try switching to "All Specs" or searching for thickness, OD, or alloy (e.g. 5052, 6061, 7075, FT001).'
+                        : curLang === 'ja'
+                        ? '条件に一致する規格が見つかりません。上の「すべての規格」に切り替えるか、厚み、外径、合金型番で再検索してください。'
+                        : curLang === 'ko'
+                        ? '조건에 맞는 규격을 찾을 수 없습니다. 상단의 "전체 규격"을 선택하거나 두께, 외경, 합금 모델명으로 검색해 보세요.'
+                        : '找不到符合條件的規格，建議切換上方「全部規格」或輸入厚度、外徑、合金型號（如 5052、6061、7075、FT001、PW5168）。';
+                    tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 30px; color: #94a3b8;">${noResultText}</td></tr>`;
                     return;
                 }
 
@@ -1276,18 +1466,19 @@ function initSpecsExplorer() {
                     const badgeStyle = item.group === 'mold'
                         ? 'background:rgba(53,89,122,0.12); color:#2b4c6b; border-color:rgba(53,89,122,0.3);'
                         : '';
-                    const curLang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
                     const addQuoteText = curLang === 'en' ? 'Add to RFQ' : curLang === 'ja' ? '見積り追加' : curLang === 'ko' ? '견적 추가' : '加入詢價';
-                    const stockNote = item.note ? item.note : (curLang === 'en' ? 'In Stock' : curLang === 'ja' ? '在庫あり' : curLang === 'ko' ? '상시 재고' : '現貨庫存');
+                    const categoryDisplay = formatSpecCategory(item.category, curLang);
+                    const dimensionDisplay = formatSpecDimension(item.dimension, curLang);
+                    const noteDisplay = formatSpecNote(item.note, item.group, curLang);
                     return `
                     <tr class="spec-row-item">
                         <td style="color: var(--accent-cinnabar); font-weight:700;">#${rowNo}</td>
-                        <td><span style="font-weight:700; color:var(--text-main);">${item.category}</span></td>
+                        <td><span style="font-weight:700; color:var(--text-main);">${categoryDisplay}</span></td>
                         <td><span class="chip" style="color:var(--accent-amber); font-weight:700;">${item.material}</span></td>
-                        <td style="font-weight:600; color:var(--text-main);">${item.dimension || '-'}</td>
+                        <td style="font-weight:600; color:var(--text-main);">${dimensionDisplay || '-'}</td>
                         <td>${item.size || '-'}</td>
                         <td class="spec-action-cell">
-                            <span class="badge-stock" style="${badgeStyle}">${stockNote}</span>
+                            <span class="badge-stock" style="${badgeStyle}">${noteDisplay}</span>
                             <button class="btn-outline spec-quote-btn" style="padding:4px 12px; font-size:0.78rem; margin-left:8px; border-radius:6px;" onclick="addSpecToQuote('${safeSpec}')">${addQuoteText}</button>
                         </td>
                     </tr>`;
@@ -1337,6 +1528,16 @@ function initSpecsExplorer() {
             if (currentPage < totalPages) fetchSpecs(currentPage + 1);
         });
     }
+
+    // Re-render specs table and category select when language switches
+    window.addEventListener('fapo-language-changed', (e) => {
+        const lang = e.detail ? e.detail.lang : (window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW');
+        updateSpecsCatSelectOptions(lang);
+        fetchSpecs(currentPage);
+    });
+
+    const initLang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
+    updateSpecsCatSelectOptions(initLang);
 
     window._setSpecsGroupUI = syncGroupTabUI;
     fetchSpecs(1);

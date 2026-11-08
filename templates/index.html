@@ -274,9 +274,9 @@
                     <div class="hero-visual">
                         <div class="hero-preview-card glass-card">
                             <span class="preview-badge-top" data-i18n="hero.preview_badge">半導體產業首選材料</span>
-                            <img src="{{ url_for('static', filename='img_crawled/05.jpg') }}" alt="<span data-i18n="hero_uacj_h4">日本原裝進口 UACJ 5052 貼膜鋁板</span>" class="zoomable-img" onclick="openImageLightbox(this.src, '日本原裝進口 UACJ 5052 貼膜鋁板 · 半導體與精密光電指定材料')">
+                            <img src="{{ url_for('static', filename='img_crawled/05.jpg') }}" alt="日本原裝進口 UACJ 5052 貼膜鋁板" class="zoomable-img" onclick="openImageLightbox(this.src, '日本原裝進口 UACJ 5052 貼膜鋁板 · 半導體與精密光電指定材料')">
                             <div class="preview-info">
-                                <h4>日本原裝進口 UACJ 5052 貼膜鋁板</h4>
+                                <h4 data-i18n="hero_uacj_h4">日本原裝進口 UACJ 5052 貼膜鋁板</h4>
                                 <p data-i18n="hero.preview_desc">獨特壓延工藝消除內應力，大量精密 CNC 銑削去除不易變形翹曲，確保超高真平度與氣密性。</p>
                                 <div class="preview-specs-chips">
                                     <span class="chip" data-i18n="hero.chip_thick">厚度 0.6mm - 120mm</span>
@@ -1696,8 +1696,8 @@
             </div>
 
             <div class="dock-quick-actions">
-                <button id="dockZenBgmBtn" class="btn-zen-pill active" title="開關真人實錄背景<span data-i18n="dock_bgm_lbl">輕音樂</span>">
-                    🎵 <span class="zen-label-txt">輕音樂</span>
+                <button id="dockZenBgmBtn" class="btn-zen-pill active" title="開關真人實錄背景輕音樂">
+                    🎵 <span class="zen-label-txt" data-i18n="dock_bgm_lbl">輕音樂</span>
                 </button>
 
                 <button id="dockMoreBtn" class="btn-dock-more" title="展開音訊與章節設定">
@@ -1942,9 +1942,9 @@
         window.ALL_PAGES_META = {{ (all_pages_meta or {}) | tojson }};
     </script>
     <!-- Internationalization (i18n) Multi-Language Engine -->
-    <script src="{{ url_for('static', filename='js/i18n.js', v='8.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/i18n.js', v='10.0') }}"></script>
     <!-- Main Interactive Script -->
-    <script src="{{ url_for('static', filename='js/main.js', v='30.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v='32.0') }}"></script>
 </body>
 </html>
 
