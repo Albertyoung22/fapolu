@@ -10,6 +10,7 @@ import hashlib
 import asyncio
 import datetime
 import threading
+import urllib.request
 from functools import wraps
 from flask import Flask, Response, render_template, request, jsonify, session
 import edge_tts
@@ -66,6 +67,89 @@ try:
             INVENTORY_DATA = json.load(f)
 except Exception:
     INVENTORY_DATA = []
+
+# ==========================================================================
+#  全自動 Self-Ping 防休眠背景線程 (Keep-Alive Thread for Render)
+# ==========================================================================
+APP_START_TIME = datetime.datetime.now()
+_KEEP_ALIVE_THREAD = None
+_KEEP_ALIVE_LOCK = threading.Lock()
+
+@app.route('/api/health')
+@app.route('/healthz')
+def api_health():
+    uptime_sec = int((datetime.datetime.now() - APP_START_TIME).total_seconds())
+    return jsonify({
+        "status": "healthy",
+        "service": "fapo-enterprise",
+        "uptime_sec": uptime_sec,
+        "timestamp": datetime.datetime.now().isoformat(),
+        "is_render": bool(os.environ.get('RENDER') or os.environ.get('RENDER_EXTERNAL_URL'))
+    })
+
+@app.route('/api/keep-alive-status')
+def api_keep_alive_status():
+    is_alive = _KEEP_ALIVE_THREAD is not None and _KEEP_ALIVE_THREAD.is_alive()
+    target_base = (
+        os.environ.get('KEEP_ALIVE_URL')
+        or os.environ.get('RENDER_EXTERNAL_URL')
+        or "https://fapolu.onrender.com"
+    ).rstrip('/')
+    return jsonify({
+        "active": is_alive,
+        "target_url": f"{target_base}/api/health",
+        "thread_name": _KEEP_ALIVE_THREAD.name if _KEEP_ALIVE_THREAD else None
+    })
+
+def start_keep_alive_thread(interval_sec=600):
+    """
+    全自動 Self-Ping 防休眠背景線程 (start_keep_alive_thread)
+    定時向伺服器自身公開網址發送 HTTP GET 請求，防止 Render / 雲端容器因 15 分鐘無流量而自動休眠凍結。
+    """
+    global _KEEP_ALIVE_THREAD
+    with _KEEP_ALIVE_LOCK:
+        if _KEEP_ALIVE_THREAD is not None and _KEEP_ALIVE_THREAD.is_alive():
+            return _KEEP_ALIVE_THREAD
+
+        def _ping_loop():
+            # 延遲 15 秒等待 Gunicorn / Flask 服務完全就緒監聽
+            time.sleep(15)
+            
+            target_base = (
+                os.environ.get('KEEP_ALIVE_URL')
+                or os.environ.get('RENDER_EXTERNAL_URL')
+                or "https://fapolu.onrender.com"
+            ).rstrip('/')
+            target_url = f"{target_base}/api/health"
+
+            print(f"🚀 [Keep-Alive] 全自動防休眠背景線程啟動成功！目標: {target_url}，排程間隔: {interval_sec}秒")
+
+            while True:
+                try:
+                    req = urllib.request.Request(
+                        target_url,
+                        headers={'User-Agent': 'FAPO-KeepAlive-Worker/1.0'}
+                    )
+                    with urllib.request.urlopen(req, timeout=15) as resp:
+                        status_code = resp.getcode()
+                        now_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                        print(f"💓 [Keep-Alive] Self-Ping 成功: {target_url} (HTTP {status_code}) at {now_str}")
+                except Exception as e:
+                    now_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    print(f"⚠️ [Keep-Alive] Self-Ping 嘗試中: {e} at {now_str}")
+
+                time.sleep(interval_sec)
+
+        _KEEP_ALIVE_THREAD = threading.Thread(
+            target=_ping_loop,
+            daemon=True,
+            name="FAPO-KeepAlive-Worker"
+        )
+        _KEEP_ALIVE_THREAD.start()
+        return _KEEP_ALIVE_THREAD
+
+# 於伺服器模組載入時自動啟動防休眠背景線程 (預設每 10 分鐘 Self-Ping 一次)
+start_keep_alive_thread(interval_sec=600)
 
 # Tunnel helper
 import tunnel
