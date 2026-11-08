@@ -3603,23 +3603,25 @@ button {
 }
 
 .chem-table th {
-  background: rgba(20, 30, 45, 0.95);
-  color: var(--accent-gold);
+  background: rgba(226, 215, 193, 0.7);
+  color: #5c3d0e;
   font-weight: 700;
   padding: 12px 10px;
-  border: 1px solid var(--border-subtle);
+  border: 1px solid rgba(180, 160, 120, 0.35);
   font-family: var(--font-sans);
+  letter-spacing: 0.3px;
 }
 
 .chem-table td {
   padding: 10px;
-  border: 1px solid var(--border-subtle);
-  color: var(--text-dim);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: var(--text-primary);
+  background: #ffffff;
 }
 
 .chem-table tr:hover td {
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text-bright);
+  background: rgba(180, 130, 45, 0.08);
+  color: var(--text-primary);
 }
 
 .chem-table .td-alloy {
@@ -3630,11 +3632,11 @@ button {
 
 .chem-table .td-hl {
   font-weight: 700;
-  color: #66ccff;
+  color: #0284c7;
 }
 
 .chem-table .rating-good {
-  color: #44dd88;
+  color: #15803d;
   font-weight: 700;
 }
 
