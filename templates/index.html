@@ -699,8 +699,8 @@
                     <div class="product-card glass-card" data-category="{{ prod.category }}">
                         <div class="product-thumb {% if prod.image_fit == 'contain' %}thumb-contain{% endif %}">
                             <img src="{{ prod.image }}" alt="{{ prod.name }}" loading="lazy" class="zoomable-img" onclick="openImageLightbox(this.src, '{{ prod.name }}')">
-                            <span class="product-badge">{{ prod.badge }}</span>
-                            <span class="product-series">{{ prod.series }}</span>
+                            <span class="product-badge" data-i18n="prod.{{ prod.id }}.badge">{{ prod.badge }}</span>
+                            <span class="product-series" data-i18n="prod.{{ prod.id }}.series">{{ prod.series }}</span>
                         </div>
                         <div class="product-content">
                             <h3 class="product-title" data-i18n="prod.{{ prod.id }}.name">{{ prod.name }}</h3>
@@ -708,14 +708,14 @@
                             <p class="product-desc" data-i18n="prod.{{ prod.id }}.desc">{{ prod.desc }}</p>
                             <ul class="product-specs-list">
                                 {% for spec in prod.specs %}
-                                <li>{{ spec }}</li>
+                                <li data-i18n="prod.{{ prod.id }}.spec.{{ loop.index }}">{{ spec }}</li>
                                 {% endfor %}
                             </ul>
                             <div class="product-actions">
-                                <button class="btn-read-tts" onclick="readAloudText('{{ prod.name }}。{{ prod.subtitle }}。{{ prod.desc }}', this)">
+                                <button class="btn-read-tts" onclick="readAloudText('{{ prod.name }}。{{ prod.subtitle }}。{{ prod.desc }}', this)" data-i18n="btn.read_tts">
                                     🎙️ 語音朗讀
                                 </button>
-                                <button class="btn-quote-item" onclick="addSpecToQuote('{{ prod.name }}')">
+                                <button class="btn-quote-item" onclick="addSpecToQuote('{{ prod.name }}')" data-i18n="btn.add_quote">
                                     加入詢價單
                                 </button>
                             </div>
@@ -739,12 +739,12 @@
                         <div class="sample-atlas-card" onclick="openImageLightbox('{{ s.image }}', '{{ s.fig }} · {{ s.title }}（{{ s.spec }}）')">
                             <div class="sample-atlas-img">
                                 <img src="{{ s.image }}" alt="{{ s.fig }} {{ s.title }}" loading="lazy">
-                                <span class="sample-fig-badge">{{ s.fig }}</span>
+                                <span class="sample-fig-badge" data-i18n="emb.{{ loop.index }}.fig">{{ s.fig }}</span>
                             </div>
                             <div class="sample-atlas-info">
-                                <h4>{{ s.title }}</h4>
-                                <span class="sample-spec">{{ s.spec }}</span>
-                                <p>{{ s.usage }}</p>
+                                <h4 data-i18n="emb.{{ loop.index }}.title">{{ s.title }}</h4>
+                                <span class="sample-spec" data-i18n="emb.{{ loop.index }}.spec">{{ s.spec }}</span>
+                                <p data-i18n="emb.{{ loop.index }}.usage">{{ s.usage }}</p>
                             </div>
                         </div>
                         {% endfor %}
@@ -781,8 +781,8 @@
                                 <img src="{{ ep.image }}" alt="{{ ep.name }}" loading="lazy">
                                 <span class="diagram-zoom-chip" title="放大檢視斷面圖" onclick="event.stopPropagation(); openImageLightbox('{{ ep.image }}', '{{ ep.name }} · {{ ep.dim }}')">🔍</span>
                             </div>
-                            <span class="diagram-name">{{ ep.name }}</span>
-                            <span class="diagram-dim">{{ ep.dim }}</span>
+                            <span class="diagram-name" data-i18n="ep.{{ loop.index }}.name">{{ ep.name }}</span>
+                            <span class="diagram-dim" data-i18n="ep.{{ loop.index }}.dim">{{ ep.dim }}</span>
                         </div>
                         {% endfor %}
                     </div>
@@ -886,7 +886,7 @@
                             <span style="font-size: 1.2rem; color: var(--accent-cyan);">⚙️</span>
                         </div>
                         <p class="cap-desc" data-i18n="cap.{{ cap.id }}.desc">{{ cap.desc }}</p>
-                        <button class="btn-read-tts" onclick="readAloudText('{{ cap.name }}。{{ cap.desc }}', this)">
+                        <button class="btn-read-tts" onclick="readAloudText('{{ cap.name }}。{{ cap.desc }}', this)" data-i18n="cap.btn_tts">
                             🎙️ 語音解析此製程
                         </button>
                     </div>
@@ -1032,7 +1032,7 @@
                         </div>
 
                         <div style="margin-top: 18px;">
-                            <button class="btn-read-tts" style="width:100%;" onclick="readAloudText('{{ c.title }}。挑戰：{{ c.challenge }}。法寶解決方案：{{ c.solution }}。成果：{{ c.result }}', this)">
+                            <button class="btn-read-tts" style="width:100%;" onclick="readAloudText('{{ c.title }}。挑戰：{{ c.challenge }}。法寶解決方案：{{ c.solution }}。成果：{{ c.result }}', this)" data-i18n="case.btn_tts">
                                 🎙️ 語音聆聽完整案例解析
                             </button>
                         </div>
@@ -1459,9 +1459,9 @@
                                 <div class="temper-item">
                                     <div>
                                         <span class="temper-code">{{ t.code }}</span>
-                                        <span class="temper-name">{{ t.name }}</span>
+                                        <span class="temper-name" data-i18n="temper.{{ t.code }}.name">{{ t.name }}</span>
                                     </div>
-                                    <p class="temper-desc">{{ t.desc }}</p>
+                                    <p class="temper-desc" data-i18n="temper.{{ t.code }}.desc">{{ t.desc }}</p>
                                 </div>
                                 {% endfor %}
                             </div>
@@ -1942,9 +1942,9 @@
         window.ALL_PAGES_META = {{ (all_pages_meta or {}) | tojson }};
     </script>
     <!-- Internationalization (i18n) Multi-Language Engine -->
-    <script src="{{ url_for('static', filename='js/i18n.js', v='7.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/i18n.js', v='8.0') }}"></script>
     <!-- Main Interactive Script -->
-    <script src="{{ url_for('static', filename='js/main.js', v='29.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v='30.0') }}"></script>
 </body>
 </html>
 
