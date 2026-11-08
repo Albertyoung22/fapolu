@@ -511,8 +511,8 @@
                                 <img src="{{ b.image }}" alt="{{ b.title }}" loading="lazy">
                             </div>
                             <div class="scope-info">
-                                <h4>{{ b.title }}</h4>
-                                <p>{{ b.desc }}</p>
+                                <h4 data-i18n="bitem.{{ loop.index }}.title">{{ b.title }}</h4>
+                                <p data-i18n="bitem.{{ loop.index }}.desc">{{ b.desc }}</p>
                             </div>
                         </div>
                         {% endfor %}
@@ -529,7 +529,7 @@
                         {% for ind in data.company.about_us.sales_industries %}
                         <div class="industry-pill glass-card">
                             <span class="ind-icon">{{ ind.icon }}</span>
-                            <span class="ind-name">{{ ind.name }}</span>
+                            <span class="ind-name" data-i18n="ind.{{ loop.index }}">{{ ind.name }}</span>
                         </div>
                         {% endfor %}
                     </div>
@@ -707,9 +707,9 @@
                             <span class="product-series">{{ prod.series }}</span>
                         </div>
                         <div class="product-content">
-                            <h3 class="product-title">{{ prod.name }}</h3>
-                            <p class="product-subtitle">{{ prod.subtitle }}</p>
-                            <p class="product-desc">{{ prod.desc }}</p>
+                            <h3 class="product-title" data-i18n="prod.{{ prod.id }}.name">{{ prod.name }}</h3>
+                            <p class="product-subtitle" data-i18n="prod.{{ prod.id }}.sub">{{ prod.subtitle }}</p>
+                            <p class="product-desc" data-i18n="prod.{{ prod.id }}.desc">{{ prod.desc }}</p>
                             <ul class="product-specs-list">
                                 {% for spec in prod.specs %}
                                 <li>{{ spec }}</li>
@@ -886,10 +886,10 @@
                             <img src="{{ cap.image }}" alt="{{ cap.name }}" loading="lazy" class="zoomable-img" onclick="openImageLightbox(this.src, '{{ cap.name }}')">
                         </div>
                         <div class="cap-title">
-                            <span>{{ cap.name }}</span>
+                            <span data-i18n="cap.{{ cap.id }}.name">{{ cap.name }}</span>
                             <span style="font-size: 1.2rem; color: var(--accent-cyan);">⚙️</span>
                         </div>
-                        <p class="cap-desc">{{ cap.desc }}</p>
+                        <p class="cap-desc" data-i18n="cap.{{ cap.id }}.desc">{{ cap.desc }}</p>
                         <button class="btn-read-tts" onclick="readAloudText('{{ cap.name }}。{{ cap.desc }}', this)">
                             🎙️ 語音解析此製程
                         </button>
@@ -1019,20 +1019,20 @@
                         {% else %}
                         <span class="case-badge">{{ c.tag }}</span>
                         {% endif %}
-                        <h3 class="case-title">{{ c.title }}</h3>
-                        <p class="case-client"><span data-i18n="cases.client_prefix">產業對象：</span>{{ c.client }}</p>
+                        <h3 class="case-title" data-i18n="case.{{ c.id }}.title">{{ c.title }}</h3>
+                        <p class="case-client"><span data-i18n="cases.client_prefix">產業對象：</span><span data-i18n="case.{{ c.id }}.client">{{ c.client }}</span></p>
                         
                         <div class="case-box">
                             <h5><span data-i18n="case_lbl_challenge">關鍵挑戰</span></h5>
-                            <p>{{ c.challenge }}</p>
+                            <p data-i18n="case.{{ c.id }}.challenge">{{ c.challenge }}</p>
                         </div>
                         <div class="case-box" style="border-left-color: var(--accent-amber);">
                             <h5 style="color: var(--accent-amber);"><span data-i18n="case_lbl_solution">法寶解決方案</span></h5>
-                            <p>{{ c.solution }}</p>
+                            <p data-i18n="case.{{ c.id }}.solution">{{ c.solution }}</p>
                         </div>
                         <div class="case-box" style="border-left-color: var(--accent-emerald);">
                             <h5 style="color: var(--accent-emerald);"><span data-i18n="case_lbl_results">成果與效益</span></h5>
-                            <p>{{ c.result }}</p>
+                            <p data-i18n="case.{{ c.id }}.result">{{ c.result }}</p>
                         </div>
 
                         <div style="margin-top: 18px;">
@@ -1946,9 +1946,9 @@
         window.ALL_PAGES_META = {{ (all_pages_meta or {}) | tojson }};
     </script>
     <!-- Internationalization (i18n) Multi-Language Engine -->
-    <script src="{{ url_for('static', filename='js/i18n.js', v='5.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/i18n.js', v='6.0') }}"></script>
     <!-- Main Interactive Script -->
-    <script src="{{ url_for('static', filename='js/main.js', v='27.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v='28.0') }}"></script>
 </body>
 </html>
 
