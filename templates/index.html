@@ -160,9 +160,6 @@
                 <button id="tunnelShareBtn" class="btn btn-audio nav-share-desktop" onclick="openTunnelModal()" data-i18n="nav.share">
                     🌐 外網分享
                 </button>
-                <a href="/admin" class="btn btn-admin-nav nav-admin-desktop" title="進入業務詢價管理後台 (CRM)" data-i18n="nav.admin">
-                    🔐 後台管理
-                </a>
                 <a href="/contact" data-nav-page="contact" class="btn btn-primary nav-cta-btn" data-i18n="nav.quote">立即詢價</a>
                 <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="開啟導覽選單">☰</button>
             </div>
@@ -190,7 +187,6 @@
                 <a href="/cases" data-nav-page="cases" class="mobile-nav-link {% if active_page == 'cases' %}active{% endif %}" data-i18n="nav.cases">🏆 代表實績案例</a>
                 <a href="/tech" data-nav-page="tech" class="mobile-nav-link {% if active_page == 'tech' %}active{% endif %}" data-i18n="nav.tech">📚 鋁材工程知識庫</a>
                 <a href="/contact" data-nav-page="contact" class="mobile-nav-link {% if active_page == 'contact' %}active{% endif %}" data-i18n="nav.contact">📋 線上圖面詢價</a>
-                <a href="/admin" class="mobile-nav-link mobile-nav-admin" data-i18n="nav.admin"><span data-i18n="btn_admin_crm"><span data-i18n="contact.crm_btn">🔐 進入業務詢價管理後台 (CRM)</span></span></a>
             </div>
             <div class="mobile-nav-footer">
                 <button class="btn btn-outline" style="width:100%; justify-content:center;" onclick="closeMobileMenu(); openTunnelModal();">
@@ -1946,9 +1942,9 @@
         window.ALL_PAGES_META = {{ (all_pages_meta or {}) | tojson }};
     </script>
     <!-- Internationalization (i18n) Multi-Language Engine -->
-    <script src="{{ url_for('static', filename='js/i18n.js', v='6.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/i18n.js', v='7.0') }}"></script>
     <!-- Main Interactive Script -->
-    <script src="{{ url_for('static', filename='js/main.js', v='28.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v='29.0') }}"></script>
 </body>
 </html>
 
