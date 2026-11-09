@@ -1203,7 +1203,7 @@
                                 </div>
                             </div>
                             <ul style="font-size: 0.88rem; line-height: 1.7; color: var(--text-main); margin: 0; padding-left: 18px;">
-                                <li>每批材料標註獨立<strong data-i18n="tech.iso_heat_lot">爐號 (Heat No.) 與生產批號 (Lot No.)</strong>。</li>
+                                <li><span data-i18n="tech.iso_trace_li1">每批材料標註獨立<strong data-i18n="tech.iso_heat_lot">爐號 (Heat No.) 與生產批號 (Lot No.)</strong>。</span></li>
                                 <li><span data-i18n="iso_trace_desc1">隨貨附日本 UACJ、神戶製鋼或歐美原廠標準檢驗證明書 (MTR)。</span></li>
                                 <li><span data-i18n="iso_trace_desc2">確保符合航太、半導體與高真空腔體嚴苛之材料物理完整性。</span></li>
                             </ul>
@@ -1215,12 +1215,12 @@
                                 <span style="font-size: 2rem;">🌿</span>
                                 <div>
                                     <h4 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--accent-cinnabar);">ISO 14001 &amp; RoHS/REACH</h4>
-                                    <span style="font-size: 0.8rem; color: var(--text-dim); font-weight: 600;">環境管理與歐盟綠色供應鏈</span>
+                                    <span style="font-size: 0.8rem; color: var(--text-dim); font-weight: 600;"><span data-i18n="tech.iso_env_tag">環境管理與歐盟綠色供應鏈</span></span>
                                 </div>
                             </div>
                             <ul style="font-size: 0.88rem; line-height: 1.7; color: var(--text-main); margin: 0; padding-left: 18px;">
-                                <li><strong>EU RoHS 2.0 (2011/65/EU)</strong> 鉛、鎘、汞等有害重金屬零超標保證。</li>
-                                <li><strong>EU REACH SVHC</strong> 高關注度物質清單即時合規登錄。</li>
+                                <li><strong>EU RoHS 2.0 (2011/65/EU)</strong> <span data-i18n="tech.iso_rohs_li">鉛、鎘、汞等有害重金屬零超標保證。</span></li>
+                                <li><strong>EU REACH SVHC</strong> <span data-i18n="tech.iso_reach_li">高關注度物質清單即時合規登錄。</span></li>
                                 <li data-i18n="tech.iso_recycle_li">廠內實施 100% 純鋁廢料分流回收，落實綠色低碳循環經濟。</li>
                             </ul>
                         </div>
@@ -1235,7 +1235,7 @@
                                 </div>
                             </div>
                             <ul style="font-size: 0.88rem; line-height: 1.7; color: var(--text-main); margin: 0; padding-left: 18px;">
-                                <li>專業工程團隊<strong><span data-i18n="iso_8d_resp">24 小時內即時回應</span></strong>客戶規格或技術諮詢。</li>
+                                <li><strong data-i18n="tech.iso_team_li">專業工程團隊</strong><strong><span data-i18n="iso_8d_resp">24 小時內即時回應</span></strong><span data-i18n="tech.iso_resp_li">客戶規格或技術諮詢。</span></li>
                                 <li><span data-i18n="iso_8d_desc1">品質問題依循 8D 方法論，48 小時內出具異常要因分析與改善對策。</span></li>
                                 <li><span data-i18n="iso_8d_desc2">全省車隊專人退換貨與補料保證，全面捍衛客戶生產排程。</span></li>
                             </ul>
@@ -1266,28 +1266,28 @@
                             <div class="calc-input-group" style="margin-bottom: 14px;">
                                 <label for="wtAlloySelect"><span data-i18n="calc_lbl_alloy_density">1. 選擇材質牌號與標準比重 (g/cm³)：</span></label>
                                 <select id="wtAlloySelect" onchange="calculateMetalWeight()" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-subtle); background: #fffdf9; color: var(--text-main); font-weight: 700;">
-                                    <option value="2.70|6061 / 6063 鋁合金" selected>6061 / 6063 結構鋁合金 (比重 2.70 g/cm³)</option>
-                                    <option value="2.68|5052 耐蝕鋁合金">5052 耐蝕鋁鎂合金 (比重 2.68 g/cm³)</option>
-                                    <option value="2.66|5083 船用鋁合金">5083 船用高耐蝕鋁合金 (比重 2.66 g/cm³)</option>
-                                    <option value="2.81|7075 航太超硬鋁">7075 航太超硬鋁合金 (比重 2.81 g/cm³)</option>
-                                    <option value="2.78|2024 航太高強鋁">2024 航太高疲勞鋁合金 (比重 2.78 g/cm³)</option>
-                                    <option value="2.71|1050 純鋁 / Korea 4N 超平板">1050 純鋁 ／ Korea 4N 超平板 (比重 2.71 g/cm³)</option>
-                                    <option value="7.93|SUS304 不鏽鋼">AISI / SUS 304 不鏽鋼 (比重 7.93 g/cm³)</option>
-                                    <option value="8.96|C1100 紅銅 / 紫銅">C1100 紅銅 ／ 紫銅 (比重 8.96 g/cm³)</option>
-                                    <option value="8.50|C3604 黃銅">C3604 黃銅 (比重 8.50 g/cm³)</option>
-                                    <option value="1.77|AZ31B 鎂合金">AZ31B 工業鎂合金 (比重 1.77 g/cm³)</option>
+                                    <option value="2.70|6061 / 6063 鋁合金" data-i18n="calc.opt_alloy_6061" selected>6061 / 6063 結構鋁合金 (比重 2.70 g/cm³)</option>
+                                    <option value="2.68|5052 耐蝕鋁合金" data-i18n="calc.opt_alloy_5052">5052 耐蝕鋁鎂合金 (比重 2.68 g/cm³)</option>
+                                    <option value="2.66|5083 船用鋁合金" data-i18n="calc.opt_alloy_5083">5083 船用高耐蝕鋁合金 (比重 2.66 g/cm³)</option>
+                                    <option value="2.81|7075 航太超硬鋁" data-i18n="calc.opt_alloy_7075">7075 航太超硬鋁合金 (比重 2.81 g/cm³)</option>
+                                    <option value="2.78|2024 航太高強鋁" data-i18n="calc.opt_alloy_2024">2024 航太高疲勞鋁合金 (比重 2.78 g/cm³)</option>
+                                    <option value="2.71|1050 純鋁 / Korea 4N 超平板" data-i18n="calc.opt_alloy_1050">1050 純鋁 ／ Korea 4N 超平板 (比重 2.71 g/cm³)</option>
+                                    <option value="7.93|SUS304 不鏽鋼" data-i18n="calc.opt_alloy_sus304">AISI / SUS 304 不鏽鋼 (比重 7.93 g/cm³)</option>
+                                    <option value="8.96|C1100 紅銅 / 紫銅" data-i18n="calc.opt_alloy_c1100">C1100 紅銅 ／ 紫銅 (比重 8.96 g/cm³)</option>
+                                    <option value="8.50|C3604 黃銅" data-i18n="calc.opt_alloy_c3604">C3604 黃銅 (比重 8.50 g/cm³)</option>
+                                    <option value="1.77|AZ31B 鎂合金" data-i18n="calc.opt_alloy_az31b">AZ31B 工業鎂合金 (比重 1.77 g/cm³)</option>
                                 </select>
                             </div>
 
                             <div class="calc-input-group" style="margin-bottom: 14px;">
                                 <label for="wtShapeSelect"><span data-i18n="calc_lbl_shape">2. 選擇型材斷面形狀：</span></label>
                                 <select id="wtShapeSelect" onchange="updateWeightShapeInputs()" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-subtle); background: #fffdf9; color: var(--text-main); font-weight: 700;">
-                                    <option value="plate" selected>🟦 鋁板 ／ 扁條 (厚 T × 寬 W × 長 L)</option>
-                                    <option value="round_bar">⚪ 圓棒 (外徑 D × 長度 L)</option>
-                                    <option value="round_tube">⭕ 圓管 (外徑 OD × 管壁厚 t × 長度 L)</option>
-                                    <option value="square_bar">⬛ 四方條 ／ 正方棒 (邊寬 W × 長度 L)</option>
-                                    <option value="hex_bar">⬡ 六角棒 ／ 六方條 (對邊 D × 長度 L)</option>
-                                    <option value="rect_tube">🔲 方管 ／ 長方管 (寬 W × 高 H × 壁厚 t × 長 L)</option>
+                                    <option value="plate" data-i18n="calc.shape_plate" selected>🟦 鋁板 ／ 扁條 (厚 T × 寬 W × 長 L)</option>
+                                    <option value="round_bar" data-i18n="calc.shape_round_bar">⚪ 圓棒 (外徑 D × 長度 L)</option>
+                                    <option value="round_tube" data-i18n="calc.shape_round_tube">⭕ 圓管 (外徑 OD × 管壁厚 t × 長度 L)</option>
+                                    <option value="square_bar" data-i18n="calc.shape_square_bar">⬛ 四方條 ／ 正方棒 (邊寬 W × 長度 L)</option>
+                                    <option value="hex_bar" data-i18n="calc.shape_hex_bar">⬡ 六角棒 ／ 六方條 (對邊 D × 長度 L)</option>
+                                    <option value="rect_tube" data-i18n="calc.shape_rect_tube">🔲 方管 ／ 長方管 (寬 W × 高 H × 壁厚 t × 長 L)</option>
                                 </select>
                             </div>
 
@@ -1372,10 +1372,10 @@
                         {% for ch in data.aluminum_knowledge.characteristics_15 %}
                         <div class="char-card">
                             <div class="char-head">
-                                <span class="char-title">{{ ch.name }}</span>
-                                <span class="char-badge">{{ ch.badge }}</span>
+                                <span class="char-title" data-i18n="char.{{ ch.id }}.name">{{ ch.name }}</span>
+                                <span class="char-badge" data-i18n="char.{{ ch.id }}.badge">{{ ch.badge }}</span>
                             </div>
-                            <p class="char-desc">{{ ch.desc }}</p>
+                            <p class="char-desc" data-i18n="char.{{ ch.id }}.desc">{{ ch.desc }}</p>
                         </div>
                         {% endfor %}
                     </div>
@@ -1389,22 +1389,23 @@
                     </div>
                     <div class="series-grid">
                         {% for s in data.aluminum_knowledge.series_guide %}
+                        {% set s_id = s.series.split(' ')[0] %}
                         <div class="series-card">
                             <div class="series-top">
                                 <div>
-                                    <div class="series-name">{{ s.series }}</div>
-                                    <div class="series-system">{{ s.alloy_system }}</div>
+                                    <div class="series-name" data-i18n="series.{{ s_id }}.name">{{ s.series }}</div>
+                                    <div class="series-system" data-i18n="series.{{ s_id }}.system">{{ s.alloy_system }}</div>
                                 </div>
-                                <span class="series-badge {% if '熱處理強化型' in s.heat_treatable %}heat-yes{% else %}heat-no{% endif %}">
+                                <span class="series-badge {% if '熱處理強化型' in s.heat_treatable %}heat-yes{% else %}heat-no{% endif %}" data-i18n="series.{{ s_id }}.heat">
                                     {{ s.heat_treatable }}
                                 </span>
                             </div>
                             <div class="series-typical">
                                 <strong><span data-i18n="lbl_grades">代表牌號：</span></strong>{{ s.typical_alloys }}
                             </div>
-                            <p class="series-features">{{ s.features }}</p>
+                            <p class="series-features" data-i18n="series.{{ s_id }}.features">{{ s.features }}</p>
                             <div class="series-apps">
-                                <strong><span data-i18n="lbl_apps">典型應用領域：</span></strong>{{ s.applications }}
+                                <strong><span data-i18n="lbl_apps">典型應用領域：</span></strong><span data-i18n="series.{{ s_id }}.apps">{{ s.applications }}</span>
                             </div>
                         </div>
                         {% endfor %}
@@ -1426,7 +1427,7 @@
                         <table class="chem-table">
                             <thead>
                                 <tr>
-                                    <th rowspan="2">合金牌號 &amp; 調質</th>
+                                    <th rowspan="2"><span data-i18n="th_chem_alloy">合金牌號 &amp; 調質</span></th>
                                     <th rowspan="2"><span data-i18n="th_chem_type">類型分類</span></th>
                                     <th colspan="9"><span data-i18n="th_chem_wt">化學成分重量百分比 (Wt %)</span></th>
                                     <th colspan="4"><span data-i18n="th_chem_mech">機械性能 (Mechanical Properties)</span></th>
@@ -1446,16 +1447,16 @@
                                     <th><span data-i18n="th_chem_ys">降伏強度 (MPa)</span></th>
                                     <th><span data-i18n="th_chem_el">延伸率 (%)</span></th>
                                     <th><span data-i18n="th_chem_hb">硬度 (HB)</span></th>
-                                    <th>切削性</th>
-                                    <th>陽極性</th>
-                                    <th>耐蝕性</th>
+                                    <th><span data-i18n="th_chem_mach">切削性</span></th>
+                                    <th><span data-i18n="th_chem_anod">陽極性</span></th>
+                                    <th><span data-i18n="th_chem_corr">耐蝕性</span></th>
                                 </tr>
                             </thead>
                             <tbody id="chemTableBody">
                                 {% for row in data.aluminum_knowledge.chemical_mechanical_matrix %}
                                 <tr>
                                     <td class="td-alloy">{{ row.alloy }}</td>
-                                    <td>{{ row.category }}</td>
+                                    <td data-i18n="chem.{{ loop.index }}.cat">{{ row.category }}</td>
                                     <td>{{ row.si }}</td>
                                     <td>{{ row.fe }}</td>
                                     <td>{{ row.cu }}</td>
@@ -1469,9 +1470,9 @@
                                     <td>{{ row.yield }}</td>
                                     <td>{{ row.elongation }}</td>
                                     <td class="td-hl">{{ row.hardness }}</td>
-                                    <td class="rating-good">{{ row.machinability }}</td>
-                                    <td class="rating-good">{{ row.anodizing }}</td>
-                                    <td class="rating-good">{{ row.corrosion }}</td>
+                                    <td class="rating-good" data-i18n="chem.{{ loop.index }}.mach">{{ row.machinability }}</td>
+                                    <td class="rating-good" data-i18n="chem.{{ loop.index }}.anod">{{ row.anodizing }}</td>
+                                    <td class="rating-good" data-i18n="chem.{{ loop.index }}.corr">{{ row.corrosion }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -1493,9 +1494,9 @@
                         <div class="standard-card">
                             <div class="standard-top">
                                 <span class="standard-code">{{ st.standard }}</span>
-                                <span class="standard-country">{{ st.country }}</span>
+                                <span class="standard-country" data-i18n="std.{{ loop.index }}.country">{{ st.country }}</span>
                             </div>
-                            <div class="standard-full">{{ st.fullName }}</div>
+                            <div class="standard-full" data-i18n="std.{{ loop.index }}.full">{{ st.fullName }}</div>
                             <div class="standard-ex"><span data-i18n="tech.std_code_lbl">常見標準代號：</span><strong>{{ st.example }}</strong></div>
                         </div>
                         {% endfor %}

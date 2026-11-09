@@ -1589,6 +1589,10 @@ function initSpecsExplorer() {
         const lang = e.detail ? e.detail.lang : (window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW');
         updateSpecsCatSelectOptions(lang);
         fetchSpecs(currentPage);
+        if (typeof updateWeightShapeInputs === 'function') {
+            const s = document.getElementById('wtShapeSelect');
+            if (s) updateWeightShapeInputs();
+        }
     });
 
     const initLang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
@@ -2657,23 +2661,23 @@ window.updateWeightShapeInputs = function() {
     if (!d1Wrap || !d2Wrap || !d3Wrap) return;
 
     if (shape === 'plate') {
-        d1Label.textContent = '厚度 T (mm)：';
+        d1Label.innerHTML = '<span data-i18n="calc_lbl_t">厚度 T (mm)：</span>';
         d2Wrap.style.display = '';
-        d2Label.textContent = '寬度 W (mm)：';
+        d2Label.innerHTML = '<span data-i18n="calc_lbl_w">寬度 W (mm)：</span>';
         d3Wrap.style.display = 'none';
         if (presetRow) {
             presetRow.style.display = 'flex';
             presetRow.innerHTML = `
-                <span style="font-size: 0.78rem; color: var(--text-muted); align-self: center;">常用板規快選：</span>
+                <span style="font-size: 0.78rem; color: var(--text-muted); align-self: center;" data-i18n="calc_lbl_presets">常用板規快選：</span>
                 <button type="button" class="cpsat-add-btn" onclick="applyPlatePreset(1220, 2440)">4'×8' (1220×2440)</button>
                 <button type="button" class="cpsat-add-btn" onclick="applyPlatePreset(914, 1829)">3'×6' (914×1829)</button>
                 <button type="button" class="cpsat-add-btn" onclick="applyPlatePreset(1524, 3048)">5'×10' (1524×3048)</button>
                 <button type="button" class="cpsat-add-btn" onclick="applyPlatePreset(1000, 2000)">1m×2m (1000×2000)</button>
             `;
         }
-        if (formulaDesc) formulaDesc.textContent = '計算公式：厚(mm) × 寬(mm) × 長(mm) × 比重 ÷ 1,000,000';
+        if (formulaDesc) formulaDesc.innerHTML = '<span data-i18n="calc_formula_plate">計算公式：厚(mm) × 寬(mm) × 長(mm) × 比重 ÷ 1,000,000</span>';
     } else if (shape === 'round_bar') {
-        d1Label.textContent = '外徑 D (mm)：';
+        d1Label.innerHTML = '<span data-i18n="calc_lbl_dia">外徑 D (mm)：</span>';
         d1Input.value = '50';
         lenInput.value = '3000';
         d2Wrap.style.display = 'none';
@@ -2681,7 +2685,7 @@ window.updateWeightShapeInputs = function() {
         if (presetRow) {
             presetRow.style.display = 'flex';
             presetRow.innerHTML = `
-                <span style="font-size: 0.78rem; color: var(--text-muted); align-self: center;">常用棒徑快選：</span>
+                <span style="font-size: 0.78rem; color: var(--text-muted); align-self: center;" data-i18n="calc_lbl_bar_presets">常用棒徑快選：</span>
                 <button type="button" class="cpsat-add-btn" onclick="applyRoundBarPreset(20, 1000)">Ø20</button>
                 <button type="button" class="cpsat-add-btn" onclick="applyRoundBarPreset(30, 1000)">Ø30</button>
                 <button type="button" class="cpsat-add-btn" onclick="applyRoundBarPreset(50, 1000)">Ø50</button>
@@ -2690,28 +2694,28 @@ window.updateWeightShapeInputs = function() {
                 <button type="button" class="cpsat-add-btn" onclick="applyRoundBarPreset(150, 1000)">Ø150</button>
             `;
         }
-        if (formulaDesc) formulaDesc.textContent = '計算公式：π × (外徑/2)² × 長(mm) × 比重 ÷ 1,000,000';
+        if (formulaDesc) formulaDesc.innerHTML = '<span data-i18n="calc_formula_round">計算公式：π × (外徑/2)² × 長(mm) × 比重 ÷ 1,000,000</span>';
     } else if (shape === 'round_tube') {
-        d1Label.textContent = '外徑 OD (mm)：';
+        d1Label.innerHTML = '<span data-i18n="calc_lbl_od">外徑 OD (mm)：</span>';
         d1Input.value = '60';
         d2Wrap.style.display = 'none';
         d3Wrap.style.display = '';
-        d3Label.textContent = '管壁厚 t (mm)：';
+        d3Label.innerHTML = '<span data-i18n="calc_lbl_wall">管壁厚 t (mm)：</span>';
         d3Input.value = '5';
         lenInput.value = '3000';
         if (presetRow) {
             presetRow.style.display = 'flex';
             presetRow.innerHTML = `
-                <span style="font-size: 0.78rem; color: var(--text-muted); align-self: center;">定尺長度快選：</span>
-                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(1000)">1 米 (1000mm)</button>
-                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(2000)">2 米 (2000mm)</button>
-                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(3000)">3 米 (3000mm)</button>
-                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(6000)">6 米 (6000mm)</button>
+                <span style="font-size: 0.78rem; color: var(--text-muted); align-self: center;" data-i18n="calc_lbl_len_presets">定尺長度快選：</span>
+                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(1000)">1m (1000mm)</button>
+                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(2000)">2m (2000mm)</button>
+                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(3000)">3m (3000mm)</button>
+                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(6000)">6m (6000mm)</button>
             `;
         }
-        if (formulaDesc) formulaDesc.textContent = '計算公式：π × ((外徑/2)² - (內徑/2)²) × 長(mm) × 比重 ÷ 1,000,000';
+        if (formulaDesc) formulaDesc.innerHTML = '<span data-i18n="calc_formula_rtube">計算公式：π × ((外徑/2)² - (內徑/2)²) × 長(mm) × 比重 ÷ 1,000,000</span>';
     } else if (shape === 'square_bar') {
-        d1Label.textContent = '四方邊寬 W (mm)：';
+        d1Label.innerHTML = '<span data-i18n="calc_lbl_sq_w">四方邊寬 W (mm)：</span>';
         d1Input.value = '40';
         lenInput.value = '3000';
         d2Wrap.style.display = 'none';
@@ -2719,16 +2723,16 @@ window.updateWeightShapeInputs = function() {
         if (presetRow) {
             presetRow.style.display = 'flex';
             presetRow.innerHTML = `
-                <span style="font-size: 0.78rem; color: var(--text-muted); align-self: center;">定尺長度快選：</span>
-                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(1000)">1 米</button>
-                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(2000)">2 米</button>
-                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(3000)">3 米</button>
-                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(4000)">4 米</button>
+                <span style="font-size: 0.78rem; color: var(--text-muted); align-self: center;" data-i18n="calc_lbl_len_presets">定尺長度快選：</span>
+                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(1000)">1m</button>
+                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(2000)">2m</button>
+                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(3000)">3m</button>
+                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(4000)">4m</button>
             `;
         }
-        if (formulaDesc) formulaDesc.textContent = '計算公式：邊寬² × 長(mm) × 比重 ÷ 1,000,000';
+        if (formulaDesc) formulaDesc.innerHTML = '<span data-i18n="calc_formula_sqbar">計算公式：邊寬² × 長(mm) × 比重 ÷ 1,000,000</span>';
     } else if (shape === 'hex_bar') {
-        d1Label.textContent = '六角對邊 D (mm)：';
+        d1Label.innerHTML = '<span data-i18n="calc_lbl_hex_d">六角對邊 D (mm)：</span>';
         d1Input.value = '30';
         lenInput.value = '3000';
         d2Wrap.style.display = 'none';
@@ -2736,26 +2740,28 @@ window.updateWeightShapeInputs = function() {
         if (presetRow) {
             presetRow.style.display = 'flex';
             presetRow.innerHTML = `
-                <span style="font-size: 0.78rem; color: var(--text-muted); align-self: center;">定尺長度快選：</span>
-                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(1000)">1 米</button>
-                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(2000)">2 米</button>
-                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(3000)">3 米</button>
+                <span style="font-size: 0.78rem; color: var(--text-muted); align-self: center;" data-i18n="calc_lbl_len_presets">定尺長度快選：</span>
+                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(1000)">1m</button>
+                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(2000)">2m</button>
+                <button type="button" class="cpsat-add-btn" onclick="applyLengthPreset(3000)">3m</button>
             `;
         }
-        if (formulaDesc) formulaDesc.textContent = '計算公式：0.866025 × 對邊² × 長(mm) × 比重 ÷ 1,000,000';
+        if (formulaDesc) formulaDesc.innerHTML = '<span data-i18n="calc_formula_hex">計算公式：0.866025 × 對邊² × 長(mm) × 比重 ÷ 1,000,000</span>';
     } else if (shape === 'rect_tube') {
-        d1Label.textContent = '管寬 W (mm)：';
+        d1Label.innerHTML = '<span data-i18n="calc_lbl_rect_w">管寬 W (mm)：</span>';
         d1Input.value = '60';
         d2Wrap.style.display = '';
-        d2Label.textContent = '管高 H (mm)：';
+        d2Label.innerHTML = '<span data-i18n="calc_lbl_rect_h">管高 H (mm)：</span>';
         d2Input.value = '40';
         d3Wrap.style.display = '';
-        d3Label.textContent = '管壁厚 t (mm)：';
+        d3Label.innerHTML = '<span data-i18n="calc_lbl_wall">管壁厚 t (mm)：</span>';
         d3Input.value = '3';
         lenInput.value = '3000';
         if (presetRow) presetRow.style.display = 'none';
-        if (formulaDesc) formulaDesc.textContent = '計算公式：(W×H - (W-2t)×(H-2t)) × 長(mm) × 比重 ÷ 1,000,000';
+        if (formulaDesc) formulaDesc.innerHTML = '<span data-i18n="calc_formula_rect">計算公式：(W×H - (W-2t)×(H-2t)) × 長(mm) × 比重 ÷ 1,000,000</span>';
     }
+    const currentLang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
+    if (window.applyTranslations) window.applyTranslations(currentLang);
     calculateMetalWeight();
 };
 
