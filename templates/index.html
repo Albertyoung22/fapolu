@@ -116,8 +116,8 @@
                     <span class="logo-glint-star" aria-hidden="true">✦</span>
                 </span>
                 <div class="logo-text">
-                    <h1>法寶實業有限公司</h1>
-                    <p>FAPO ENTERPRISE CO., LTD. · 創立於 1986</p>
+                    <h1 data-i18n="brand.name">法寶實業有限公司</h1>
+                    <p data-i18n="brand.sub">FAPO ENTERPRISE CO., LTD. · 創立於 1986</p>
                 </div>
             </a>
             <nav role="navigation" aria-label="全站主要導覽選單">
@@ -650,7 +650,7 @@
                             <p class="series-desc"><span data-i18n="series_5000_desc">具備最優異之耐海水與化學腐蝕能力，無應力腐蝕破裂傾向，船舶製造、半導體機箱及油箱首選。</span></p>
                             <div class="series-footer">
                                 <span class="badge-stock"><span data-i18n="series_5000_stock">常備：5052-H32 / 5083-H111</span></span>
-                                <span class="btn-matrix-action">查看現貨 ➔</span>
+                                <span class="btn-matrix-action"><span data-i18n="matrix_btn_view">查看現貨 ➔</span></span>
                             </div>
                         </div>
 
@@ -669,14 +669,14 @@
                             <p class="series-desc"><span data-i18n="series_6000_desc">綜合性能最高之通用合金，機械切削與擠型結構首選，硬質陽極膜厚均勻，航太治具與自動化支架必備。</span></p>
                             <div class="series-footer">
                                 <span class="badge-stock"><span data-i18n="series_6000_stock">常備：6061-T6/T651 / 6063-T5</span></span>
-                                <span class="btn-matrix-action">查看現貨 ➔</span>
+                                <span class="btn-matrix-action"><span data-i18n="matrix_btn_view">查看現貨 ➔</span></span>
                             </div>
                         </div>
 
                         <!-- 7000系 -->
                         <div class="alloy-series-card featured" onclick="quickFilterAlloy('7075')">
                             <div class="series-card-top">
-                                <span class="series-num">7000 系</span>
+                                <span class="series-num"><span data-i18n="series_7000">7000 系</span></span>
                                 <span class="series-name"><span data-i18n="series_7000_name">超硬航空合金 (7075 / 7050)</span></span>
                             </div>
                             <div class="series-ratings">
@@ -688,7 +688,7 @@
                             <p class="series-desc"><span data-i18n="series_7000_desc">超高強度航空級超硬鋁，抗拉強度達 570 MPa 以上，適合高負載航太零組件、精密高週波吹氣模具與結構體。</span></p>
                             <div class="series-footer">
                                 <span class="badge-stock"><span data-i18n="series_7000_stock">常備：7075-T651預拉伸光板</span></span>
-                                <span class="btn-matrix-action">查看現貨 ➔</span>
+                                <span class="btn-matrix-action"><span data-i18n="matrix_btn_view">查看現貨 ➔</span></span>
                             </div>
                         </div>
                     </div>
@@ -730,7 +730,7 @@
                     <div class="showcase-subhead">
                         <div>
                             <span class="showcase-tag"><span data-i18n="embossed_tag">Official Sample Atlas · 鏡面鋁及壓花板實拍</span></span>
-                            <h3>鏡面鋁及壓花鋁板實品圖鑑（附圖一 ～ 附圖七）</h3>
+                            <h3 data-i18n="embossed_title">鏡面鋁及壓花鋁板實品圖鑑（附圖一 ～ 附圖七）</h3>
                         </div>
                         <p><span data-i18n="embossed_hint">對應官網鏡面鋁與止滑壓花板實品樣板，點擊任一圖鑑可放大檢視紋路細節</span></p>
                     </div>
@@ -919,13 +919,14 @@
                         <p><span data-i18n="mach_parts_desc">廠內與協力資源網實際生產之精密鋁合金工件，點擊照片可放大檢視加工細節</span></p>
                     </div>
                     {% for grp in data.machining_gallery %}
+                    {% set g_idx = loop.index %}
                     <div class="machining-group-block">
-                        <h4 class="machining-group-title">◆ {{ grp.group }}</h4>
+                        <h4 class="machining-group-title" data-i18n="mg_grp.{{ g_idx }}">◆ {{ grp.group }}</h4>
                         <div class="machining-parts-grid">
                             {% for item in grp['items'] %}
                             <div class="machining-part-card" onclick="openImageLightbox('{{ item.image }}', '{{ grp.group }} · {{ item.title }}')">
                                 <img src="{{ item.image }}" alt="{{ item.title }}" loading="lazy">
-                                <span>{{ item.title }}</span>
+                                <span data-i18n="mg_item.{{ g_idx }}_{{ loop.index }}">{{ item.title }}</span>
                             </div>
                             {% endfor %}
                         </div>
@@ -944,22 +945,22 @@
                     <div class="tolerance-grid">
                         {% for eq in data.machining_tolerance_matrix %}
                         <div class="tolerance-card">
-                            <h4 class="tolerance-title">{{ eq.equipment }}</h4>
+                            <h4 class="tolerance-title" data-i18n="tol.{{ loop.index }}.equip">{{ eq.equipment }}</h4>
                             <div class="tolerance-specs">
                                 <div class="spec-row">
-                                    <span class="spec-label">最大加工能力：</span>
-                                    <span class="spec-val hl">{{ eq.max_thickness }}</span>
+                                    <span class="spec-label" data-i18n="tol.lbl_max_cap">最大加工能力：</span>
+                                    <span class="spec-val hl" data-i18n="tol.{{ loop.index }}.thick">{{ eq.max_thickness }}</span>
                                 </div>
                                 <div class="spec-row">
-                                    <span class="spec-label">規格行程範圍：</span>
-                                    <span class="spec-val">{{ eq.max_capacity }}</span>
+                                    <span class="spec-label" data-i18n="tol.lbl_stroke">規格行程範圍：</span>
+                                    <span class="spec-val" data-i18n="tol.{{ loop.index }}.cap">{{ eq.max_capacity }}</span>
                                 </div>
                                 <div class="spec-row">
-                                    <span class="spec-label">加工保證公差：</span>
-                                    <span class="spec-val hl">{{ eq.tolerance }}</span>
+                                    <span class="spec-label" data-i18n="tol.lbl_tol">加工保證公差：</span>
+                                    <span class="spec-val hl" data-i18n="tol.{{ loop.index }}.tol">{{ eq.tolerance }}</span>
                                 </div>
                             </div>
-                            <p class="tolerance-desc">{{ eq.features }}</p>
+                            <p class="tolerance-desc" data-i18n="tol.{{ loop.index }}.desc">{{ eq.features }}</p>
                         </div>
                         {% endfor %}
                     </div>
@@ -997,7 +998,7 @@
                     </div>
 
                     <div style="margin-top: 24px; text-align: center;">
-                        <a href="/contact" data-nav-page="contact" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
+                        <a href="/contact" data-nav-page="contact" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px;" data-i18n="tol.btn_upload_rfq">
                             📋 立即上傳圖面 · 評估加工公差與報價
                         </a>
                     </div>
@@ -1112,10 +1113,10 @@
                         {% if c.image %}
                         <div class="case-photo-wrap">
                             <img src="{{ c.image }}" alt="{{ c.title }}" loading="lazy" class="zoomable-img" onclick="openImageLightbox(this.src, '{{ c.tag }} · {{ c.title }}')">
-                            <span class="case-badge">{{ c.tag }}</span>
+                            <span class="case-badge" data-i18n="case.{{ c.id }}.tag">{{ c.tag }}</span>
                         </div>
                         {% else %}
-                        <span class="case-badge">{{ c.tag }}</span>
+                        <span class="case-badge" data-i18n="case.{{ c.id }}.tag">{{ c.tag }}</span>
                         {% endif %}
                         <h3 class="case-title" data-i18n="case.{{ c.id }}.title">{{ c.title }}</h3>
                         <p class="case-client"><span data-i18n="cases.client_prefix">產業對象：</span><span data-i18n="case.{{ c.id }}.client">{{ c.client }}</span></p>
@@ -1727,7 +1728,7 @@
                             <span class="logo-glint-star" aria-hidden="true">✦</span>
                         </span>
                         <div class="logo-text">
-                            <h2 style="font-size:1.2rem; font-family: var(--font-serif);">法寶實業有限公司</h2>
+                            <h2 style="font-size:1.2rem; font-family: var(--font-serif);" data-i18n="brand.name">法寶實業有限公司</h2>
                             <p>FAPO ENTERPRISE CO., LTD.</p>
                         </div>
                     </div>
@@ -1751,7 +1752,7 @@
                         <li><a href="/machining" data-nav-page="machining" data-i18n="nav.machining">精密加工能量</a></li>
                         <li><a href="/cases" data-nav-page="cases" data-i18n="nav.cases">半導體航太實績</a></li>
                         <li><a href="/tech" data-nav-page="tech"><span data-i18n="ft_hardness">金屬硬度換算</span></a></li>
-                        <li><a href="/tech" data-nav-page="tech">調質代號辭典</a></li>
+                        <li><a href="/tech" data-nav-page="tech"><span data-i18n="ft_temper">調質代號辭典</span></a></li>
                         <li><a href="/contact" data-nav-page="contact" data-i18n="nav.quote">線上圖面估價</a></li>
                     </ul>
                 </div>
@@ -2045,7 +2046,7 @@
         window.ALL_PAGES_META = {{ (all_pages_meta or {}) | tojson }};
     </script>
     <!-- Internationalization (i18n) Multi-Language Engine -->
-    <script src="{{ url_for('static', filename='js/i18n.js', v='13.0') }}"></script>
+    <script src="{{ url_for('static', filename='js/i18n.js', v='14.0') }}"></script>
     <!-- Main Interactive Script -->
     <script src="{{ url_for('static', filename='js/main.js', v='36.0') }}"></script>
 </body>
