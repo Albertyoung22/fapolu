@@ -783,7 +783,7 @@
             'ai.chip2': '🔬 陽極高強選料',
             'ai.chip3': '🧮 智慧下料範例',
             'ai.chip4': '📍 據點與證明',
-            'ai.greeting_text': '您好！我是 <strong>法寶實業 AI 智能工程客服</strong>（即時串聯 3,071 筆現貨與模具規格資料庫）。<br><br>您可以直接詢問：<br>• <strong>現貨與模具查詢</strong>：「6061 圓棒 50mm」、「7075 厚 20mm 鋁板」<br>• <strong>智慧裁切排料</strong>：「母材 3000mm 切 800*3, 550*4, 420*5」<br>• <strong>工程選料顧問</strong>：「推薦適合硬陽極與高強度的鋁材」<br><button type="button" class="ai-bubble-audio-btn" onclick="readAloudText(\'您好！我是法寶實業 AI 智慧工程客服。您可以透過語音或文字向我查詢現貨庫存、工程選料，或是使用 AI 進行母材下料裁切最佳化計算！\', this)">🔊 語音朗讀介紹</button>'
+            'ai.greeting_text': '您好！我是 <strong>法寶實業 AI 智能工程客服</strong>（即時串聯 3,071 筆現貨與模具規格資料庫）。<br><br>您可以直接詢問：<br>• <strong>現貨與模具查詢</strong>：「6061 圓棒 50mm」、「7075 厚 20mm 鋁板」<br>• <strong>智慧裁切排料</strong>：「母材 3000mm 切 800*3, 550*4, 420*5」<br>• <strong>工程選料顧問</strong>：「推薦適合硬陽極與高強度的鋁材」<br><button type="button" class="ai-bubble-audio-btn" onclick="readAloudText(\'您好！我是法寶實業 AI 智慧工程客服。您可以透過語音或文字向我查詢現貨庫存、工程選料，或是使用 AI 進行母材下料裁切最佳化計算！\', this)">🔊 語音朗讀介紹</button>',
             'char.lightweight.name': '極致輕量性',
             'char.lightweight.badge': '比重 2.7 g/cm³',
             'char.lightweight.desc': '鋁之比重約 2.7，僅為鋼鐵（7.85）的 35% 或銅（8.96）的 30%，能大幅減輕車輛、航空與精密自動化設備負載，降低能源損耗與慣性衝擊。',
@@ -1716,7 +1716,7 @@
             'ai.chip2': '🔬 High-Strength & Anodizing',
             'ai.chip3': '🧮 Cutting Demo',
             'ai.chip4': '📍 Hubs & MTR Cert',
-            'ai.greeting_text': 'Hello! I am the <strong>FAPO AI Engineering Assistant</strong>, connected in real-time to our database of 3,071 stock items and mold specs.<br><br>Feel free to ask me:<br>• <strong>Stock & Mold Specs</strong>: "6061 Round Bar 50mm", "7075 Aluminum Plate 20mm"<br>• <strong>Smart Cutting Stock</strong>: "Raw stock 3000mm cut 800*3, 550*4, 420*5"<br>• <strong>Alloy Engineering</strong>: "Recommend aluminum for hard anodizing & high strength"<br><button type="button" class="ai-bubble-audio-btn" onclick="readAloudText(\'Hello! I am the FAPO AI Engineering Assistant. You can inquire about our stock inventory, alloy recommendations, or run 1D cutting stock optimization using AI.\', this)">🔊 Audio Introduction</button>'
+            'ai.greeting_text': 'Hello! I am the <strong>FAPO AI Engineering Assistant</strong>, connected in real-time to our database of 3,071 stock items and mold specs.<br><br>Feel free to ask me:<br>• <strong>Stock & Mold Specs</strong>: "6061 Round Bar 50mm", "7075 Aluminum Plate 20mm"<br>• <strong>Smart Cutting Stock</strong>: "Raw stock 3000mm cut 800*3, 550*4, 420*5"<br>• <strong>Alloy Engineering</strong>: "Recommend aluminum for hard anodizing & high strength"<br><button type="button" class="ai-bubble-audio-btn" onclick="readAloudText(\'Hello! I am the FAPO AI Engineering Assistant. You can inquire about our stock inventory, alloy recommendations, or run 1D cutting stock optimization using AI.\', this)">🔊 Audio Introduction</button>',
             'char.lightweight.name': 'Ultra-Lightweight',
             'char.lightweight.badge': 'Density 2.7 g/cm³',
             'char.lightweight.desc': 'Specific gravity of ~2.7 is only 35% of steel (7.85) or 30% of copper (8.96). Drastically reduces structural tare weights in transit, aerospace and high-speed robotics, curbing inertia and drive energy.',
@@ -2649,7 +2649,7 @@
             'ai.chip2': '🔬 高強度・陽極酸化選定',
             'ai.chip3': '🧮 定寸切断サンプル',
             'ai.chip4': '📍 拠点とミルシート',
-            'ai.greeting_text': 'こんにちは！<strong>法宝実業 AI 営業技術アシスタント</strong>です（3,071件の常備在庫および金型仕様データベースとリアルタイム連携）。<br><br>お気軽にお尋ねください：<br>• <strong>在庫・金型スペック検索</strong>：「6061 丸棒 50mm」、「7075 板厚 20mm」<br>• <strong>スマート定寸切断・歩留り計算</strong>：「母材 3000mm 切断 800*3, 550*4, 420*5」<br>• <strong>材料選定・技術相談</strong>：「硬質アルマイトおよび高強度に適したアルミ材」<br><button type="button" class="ai-bubble-audio-btn" onclick="readAloudText(\'こんにちは！法宝実業 AI 営業技術アシスタントです。在庫規格の検索や合金選定、AI による定寸切断の最適化計算をご案内いたします。\', this)">🔊 音声で案内を聞く</button>'
+            'ai.greeting_text': 'こんにちは！<strong>法宝実業 AI 営業技術アシスタント</strong>です（3,071件の常備在庫および金型仕様データベースとリアルタイム連携）。<br><br>お気軽にお尋ねください：<br>• <strong>在庫・金型スペック検索</strong>：「6061 丸棒 50mm」、「7075 板厚 20mm」<br>• <strong>スマート定寸切断・歩留り計算</strong>：「母材 3000mm 切断 800*3, 550*4, 420*5」<br>• <strong>材料選定・技術相談</strong>：「硬質アルマイトおよび高強度に適したアルミ材」<br><button type="button" class="ai-bubble-audio-btn" onclick="readAloudText(\'こんにちは！法宝実業 AI 営業技術アシスタントです。在庫規格の検索や合金選定、AI による定寸切断の最適化計算をご案内いたします。\', this)">🔊 音声で案内を聞く</button>',
             'char.lightweight.name': '究極の軽量性',
             'char.lightweight.badge': '比重 2.7 g/cm³',
             'char.lightweight.desc': '比重約2.7は鋼（7.85）の約35%、銅（8.96）の約30%に過ぎず、輸送機器、航空宇宙、精密ロボットの自重負荷を大幅に削減し慣性エネルギーを抑えます。',
@@ -3582,7 +3582,7 @@
             'ai.chip2': '🔬 아노다이징 고강도 소재',
             'ai.chip3': '🧮 절단 계산 예시',
             'ai.chip4': '📍 거점 및 밀시트',
-            'ai.greeting_text': '안녕하십니까! <strong>법보실업 AI 엔지니어링 챗봇</strong>입니다 (3,071건의 상시 보유 재고 및 금형 규격 DB 실시간 연동).<br><br>편하게 문의해 주세요:<br>• <strong>재고 및 금형 규격 조회</strong>: "6061 환봉 50mm", "7075 판재 두께 20mm"<br>• <strong>스마트 모재 절단 최적화</strong>: "원자재 3000mm 절단 800*3, 550*4, 420*5"<br>• <strong>엔지니어링 소재 추천</strong>: "하드 아노다이징 및 고강도에 적합한 알루미늄 추천"<br><button type="button" class="ai-bubble-audio-btn" onclick="readAloudText(\'안녕하십니까! 법보실업 AI 엔지니어링 챗봇입니다. 재고 규격 검색과 소재 추천, AI 모재 절단 최적화 솔루션을 제공합니다.\', this)">🔊 음성 안내 듣기</button>'
+            'ai.greeting_text': '안녕하십니까! <strong>법보실업 AI 엔지니어링 챗봇</strong>입니다 (3,071건의 상시 보유 재고 및 금형 규격 DB 실시간 연동).<br><br>편하게 문의해 주세요:<br>• <strong>재고 및 금형 규격 조회</strong>: "6061 환봉 50mm", "7075 판재 두께 20mm"<br>• <strong>스마트 모재 절단 최적화</strong>: "원자재 3000mm 절단 800*3, 550*4, 420*5"<br>• <strong>엔지니어링 소재 추천</strong>: "하드 아노다이징 및 고강도에 적합한 알루미늄 추천"<br><button type="button" class="ai-bubble-audio-btn" onclick="readAloudText(\'안녕하십니까! 법보실업 AI 엔지니어링 챗봇입니다. 재고 규격 검색과 소재 추천, AI 모재 절단 최적화 솔루션을 제공합니다.\', this)">🔊 음성 안내 듣기</button>',
             'char.lightweight.name': '극대화된 경량성',
             'char.lightweight.badge': '비중 2.7 g/cm³',
             'char.lightweight.desc': '비중 약 2.7로 강철(7.85)의 35%, 구리(8.96)의 30% 수준에 불과합니다. 운송 차량, 항공기, 정밀 로봇의 자중을 대폭 경감하여 관성 충격과 구동 에너지를 획기적으로 줄입니다.',
