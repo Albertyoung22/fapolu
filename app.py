@@ -28,6 +28,27 @@ app = Flask(
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
+@app.before_request
+def restore_missing_drawing_on_demand():
+    """
+    If Render container restarted/redeployed and wiped static/uploads/drawings/,
+    automatically restore the requested drawing file from the database before Flask serves it.
+    """
+    if request.path.startswith('/static/uploads/drawings/'):
+        fname = os.path.basename(request.path)
+        if fname:
+            local_file = os.path.join(DRAWINGS_DIR, fname)
+            if not os.path.exists(local_file):
+                rec = db.get_drawing_file(fname)
+                if rec and rec.get('file_bytes'):
+                    try:
+                        os.makedirs(DRAWINGS_DIR, exist_ok=True)
+                        with open(local_file, 'wb') as f:
+                            f.write(rec['file_bytes'])
+                    except Exception:
+                        return Response(rec['file_bytes'], mimetype=rec.get('content_type', 'application/octet-stream'))
+
+
 @app.after_request
 def add_no_cache_headers(response):
     # Ensure client browsers always get fresh dynamic rendering and styles without stale caching
@@ -573,10 +594,10 @@ def load_inquiries():
             return []
 
 
-def save_inquiries(items):
+def save_inquiries(items, sync_cloud=False):
     try:
         for it in items:
-            db.add_inquiry(it)
+            db.add_inquiry(it, sync_cloud=sync_cloud)
     except Exception:
         pass
 
@@ -610,23 +631,14 @@ def _async_notify_inquiry(inquiry_copy):
     cfg = mailer.get_smtp_config()
     if not cfg.get('enabled'):
         return
+    tid = inquiry_copy.get('id')
     try:
         mailer.send_inquiry_email(inquiry_copy, custom_cfg=cfg)
-        items = load_inquiries()
-        for item in items:
-            if item.get('id') == inquiry_copy.get('id'):
-                item['emailSent'] = True
-                item.pop('emailError', None)
-                break
-        save_inquiries(items)
+        if tid:
+            db.update_inquiry(tid, {'emailSent': True, 'emailError': ''})
     except Exception as e:
-        items = load_inquiries()
-        for item in items:
-            if item.get('id') == inquiry_copy.get('id'):
-                item['emailSent'] = False
-                item['emailError'] = str(e)
-                break
-        save_inquiries(items)
+        if tid:
+            db.update_inquiry(tid, {'emailSent': False, 'emailError': str(e)})
 
 
 def admin_required(fn):
@@ -689,7 +701,11 @@ def api_contact():
                 clean_name = re.sub(r'[^\w\.-]', '_', os.path.basename(orig_name))
                 saved_filename = f"{ticket_id}_{int(time.time())}_{clean_name}"
                 dest_path = os.path.join(DRAWINGS_DIR, saved_filename)
-                drawing_file.save(dest_path)
+                file_bytes = drawing_file.read()
+                with open(dest_path, 'wb') as f:
+                    f.write(file_bytes)
+                # Persist binary drawing into Cloud/SQLite DB so it survives Render container resets
+                db.save_drawing_file(saved_filename, ticket_id, drawing_file.mimetype, file_bytes)
                 file_rel_url = f"/static/uploads/drawings/{saved_filename}"
                 if drawing_url:
                     drawing_url = f"{file_rel_url} | 雲端連結: {drawing_url}"
@@ -712,8 +728,9 @@ def api_contact():
             "adminNote": "",
             "emailSent": False
         }
+        db.add_inquiry(new_item, sync_cloud=True)
         inquiries.append(new_item)
-        save_inquiries(inquiries)
+        save_inquiries(inquiries, sync_cloud=False)
 
         # Background SMTP notification
         threading.Thread(target=_async_notify_inquiry, args=(dict(new_item),), daemon=True).start()
@@ -828,13 +845,15 @@ def api_admin_inquiries():
         "archived": sum(1 for i in items if i.get('status') == 'archived'),
     }
     smtp_cfg = mailer.get_smtp_config()
+    storage_status = db.get_storage_status()
     return jsonify({
         "success": True,
         "items": items_sorted,
         "stats": stats,
         "smtpEnabled": smtp_cfg['enabled'],
         "notifyEmail": smtp_cfg['notify_email'],
-        "isRender": bool(os.environ.get('RENDER') or os.environ.get('RENDER_EXTERNAL_URL'))
+        "isRender": bool(os.environ.get('RENDER') or os.environ.get('RENDER_EXTERNAL_URL')),
+        "storage": storage_status
     })
 
 
@@ -842,25 +861,20 @@ def api_admin_inquiries():
 @admin_required
 def api_admin_update_inquiry(ticket_id):
     body = request.json or {}
-    items = load_inquiries()
-    updated = None
-    now_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    for item in items:
-        if item.get('id') == ticket_id:
-            if 'status' in body and body['status'] in ('pending', 'quoting', 'closed', 'archived'):
-                item['status'] = body['status']
-            if 'branch' in body:
-                item['branch'] = str(body['branch']).strip() or '未指派'
-            if 'adminNote' in body:
-                item['adminNote'] = str(body['adminNote']).strip()
-            item['updatedAt'] = now_str
-            updated = item
-            break
+    updates = {}
+    if 'status' in body and body['status'] in ('pending', 'quoting', 'closed', 'archived'):
+        updates['status'] = body['status']
+    if 'branch' in body:
+        updates['branch'] = str(body['branch']).strip() or '未指派'
+    if 'adminNote' in body:
+        updates['adminNote'] = str(body['adminNote']).strip()
 
+    updated = db.update_inquiry(ticket_id, updates)
     if not updated:
         return jsonify({"success": False, "error": "找不到該筆詢價單"}), 404
 
-    save_inquiries(items)
+    items = load_inquiries()
+    save_inquiries(items, sync_cloud=False)
     return jsonify({"success": True, "item": updated})
 
 
@@ -1014,14 +1028,10 @@ def api_admin_resend_email(ticket_id):
         return jsonify({"success": False, "error": "找不到該筆詢價單"}), 404
     try:
         mailer.send_inquiry_email(target)
-        target['emailSent'] = True
-        target.pop('emailError', None)
-        save_inquiries(items)
+        db.update_inquiry(ticket_id, {'emailSent': True, 'emailError': ''})
         return jsonify({"success": True, "message": "已成功補寄通知信！"})
     except Exception as e:
-        target['emailSent'] = False
-        target['emailError'] = str(e)
-        save_inquiries(items)
+        db.update_inquiry(ticket_id, {'emailSent': False, 'emailError': str(e)})
         return jsonify({"success": False, "error": str(e)}), 400
 
 
@@ -1079,6 +1089,7 @@ def api_admin_export_csv():
 def api_admin_settings():
     if request.method == 'GET':
         cfg = mailer.get_smtp_config()
+        storage = db.get_storage_status()
         return jsonify({
             "success": True,
             "smtp_host": cfg['smtp_host'],
@@ -1088,7 +1099,12 @@ def api_admin_settings():
             "notify_email": cfg['notify_email'],
             "enabled": cfg['enabled'],
             "from_env": cfg['from_env'],
-            "has_env_admin_pwd": bool(os.environ.get('ADMIN_PASSWORD'))
+            "has_env_admin_pwd": bool(os.environ.get('ADMIN_PASSWORD')),
+            "github_repo": storage['github_repo'],
+            "github_branch": storage['github_branch'],
+            "has_github_token": storage['has_github_token'],
+            "google_sheets_webhook_url": storage['gsheets_url'],
+            "storage": storage
         })
 
     body = request.json or {}
@@ -1108,14 +1124,70 @@ def api_admin_settings():
         updates['notify_email'] = str(body['notify_email']).strip()
     if body.get('new_admin_password'):
         updates['admin_password'] = str(body['new_admin_password']).strip()
+    if 'github_repo' in body:
+        updates['github_repo'] = str(body['github_repo']).strip() or 'Albertyoung22/fapolu'
+    if 'github_branch' in body:
+        updates['github_branch'] = str(body['github_branch']).strip() or 'cloud-backup'
+    if body.get('github_token'):
+        updates['github_token'] = str(body['github_token']).strip()
+    if 'google_sheets_webhook_url' in body:
+        updates['google_sheets_webhook_url'] = str(body['google_sheets_webhook_url']).strip()
 
     mailer.save_local_config(updates)
     cfg = mailer.get_smtp_config()
+    storage = db.get_storage_status()
     return jsonify({
         "success": True,
         "enabled": cfg['enabled'],
+        "storage": storage,
         "message": "設定已儲存！"
     })
+
+
+@app.route('/api/admin/sync-github', methods=['POST'])
+@admin_required
+def api_admin_sync_github():
+    body = request.json or {}
+    updates = {}
+    if body.get('github_repo'):
+        updates['github_repo'] = str(body['github_repo']).strip()
+    if body.get('github_branch'):
+        updates['github_branch'] = str(body['github_branch']).strip()
+    if body.get('github_token'):
+        updates['github_token'] = str(body['github_token']).strip()
+    if updates:
+        mailer.save_local_config(updates)
+    try:
+        res = db.sync_all_to_github(custom_cfg={
+            'repo': body.get('github_repo'),
+            'branch': body.get('github_branch'),
+            'token': body.get('github_token')
+        })
+        return jsonify({
+            "success": True,
+            "message": f"GitHub 雙向同步成功！已備份 {res['pushed']} 筆詢價單至 {res['repo']} ({res['branch']} 分支)，並自雲端還原 {res['restored']} 筆紀錄。",
+            "details": res
+        })
+    except Exception as e:
+        return jsonify({"success": False, "error": f"GitHub 同步失敗：{e}"}), 400
+
+
+@app.route('/api/admin/sync-gsheets', methods=['POST'])
+@admin_required
+def api_admin_sync_gsheets():
+    body = request.json or {}
+    custom_url = str(body.get('google_sheets_webhook_url', '')).strip()
+    if custom_url:
+        mailer.save_local_config({'google_sheets_webhook_url': custom_url})
+    try:
+        res = db.sync_all_to_google_sheets(custom_url=custom_url or None)
+        return jsonify({
+            "success": True,
+            "message": f"Google 試算表雙向同步成功！已上傳 {res['pushed']} 筆詢價單，並自雲端還原 {res['restored']} 筆歷史紀錄。",
+            "details": res
+        })
+    except Exception as e:
+        return jsonify({"success": False, "error": f"同步失敗：{e}"}), 400
 
 
 @app.route('/api/admin/test-email', methods=['POST'])

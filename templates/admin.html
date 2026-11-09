@@ -724,11 +724,14 @@
         </div>
 
         <div class="topbar-actions">
+            <div id="cloudDbStatusPill" class="smtp-pill off" onclick="openSettingsModal()" title="點擊查看/設定雲端永久資料庫">
+                ☁️ 資料庫檢測中...
+            </div>
             <div id="smtpStatusPill" class="smtp-pill off" onclick="openSettingsModal()" title="點擊設定 Email 通知">
                 ⚪ Email 通知檢測中...
             </div>
             <button class="btn" onclick="fetchInquiries()">🔄 重新整理</button>
-            <button class="btn" onclick="openSettingsModal()">⚙️ 通知與密碼設定</button>
+            <button class="btn" onclick="openSettingsModal()">⚙️ 雲端與通知設定</button>
             <button class="btn btn-emerald" onclick="exportCsv()">📥 匯出 Excel (CSV)</button>
             <a href="/" class="btn">🏠 前台官網</a>
             <button class="btn btn-danger" onclick="logoutAdmin()">登出</button>
@@ -753,9 +756,9 @@
             <!-- Render Cloud Storage Reminder -->
             <div id="renderBanner" class="cloud-banner">
                 <div>
-                    ⚠️ <b>雲端環境提醒：</b>目前運行於 Render 伺服器，免費方案休眠重啟時會重置本地暫存檔。建議點擊右側按鈕設定 <b>Email (SMTP) 即時通知</b>（或於 Render 後台設定環境變數 <code>SMTP_USER</code> / <code>SMTP_PASS</code> / <code>NOTIFY_EMAIL</code>），新單送出即刻寄達業務信箱不漏單！
+                    ⚠️ <b>Render 免費版防資料遺失提醒：</b>目前尚未綁定外部雲端資料庫（<code>DATABASE_URL</code> 或 <code>Google 試算表同步</code>），Render 休眠或重新上傳時會重置本機暫存檔。請點擊右側按鈕設定 <b>外部雲端資料庫 / Google 試算表同步</b> 或 <b>Email 即時通知</b>，即可 100% 永久保存所有客戶詢價與圖檔！
                 </div>
-                <button class="btn btn-sm" style="border-color:#a85814;color:#8a480d;" onclick="openSettingsModal()">立即設定 Email 通知</button>
+                <button class="btn btn-sm" style="border-color:#a85814;color:#8a480d;" onclick="openSettingsModal()">立即設定雲端永久保存</button>
             </div>
 
             <!-- KPI Stats -->
@@ -1050,13 +1053,60 @@
     </div>
 
     <!-- =====================================================================
-         SMTP Email Notification & Password Settings Modal
+         Cloud Persistence, SMTP Email Notification & Password Settings Modal
          ===================================================================== -->
     <div id="settingsModal" class="modal-backdrop" onclick="if(event.target===this)closeSettingsModal()">
-        <div class="modal-box">
+        <div class="modal-box" style="max-width: 680px;">
             <div class="modal-header">
-                <h3 style="font-size: 1.1rem;">⚙️ Email (SMTP) 即時通知與後台密碼設定</h3>
+                <h3 style="font-size: 1.1rem;">⚙️ 雲端永久資料庫、Email 通知與密碼設定</h3>
                 <button class="btn btn-sm" onclick="closeSettingsModal()">✕ 關閉</button>
+            </div>
+
+            <!-- Cloud Database, GitHub Auto-Backup & Google Sheets Sync Section -->
+            <div style="background: rgba(45, 106, 79, 0.08); border: 1px solid rgba(45, 106, 79, 0.3); border-radius: 10px; padding: 14px 16px; margin-bottom: 18px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+                    <div style="font-weight:800; color:#21573f; font-size:0.95rem;">
+                        ☁️ 雲端資料永久保存設定（防 Render 休眠 / 重新部署資料消失）
+                    </div>
+                    <span id="cfgStorageBadge" class="badge" style="background:#dcfce7;color:#15803d;font-size:0.78rem;">檢測中...</span>
+                </div>
+
+                <!-- Method 3: GitHub Repository Auto-Backup (Recommended) -->
+                <div style="background:#fffdf8; border:1px solid rgba(45, 106, 79, 0.28); border-radius:8px; padding:12px 14px; margin-bottom:12px;">
+                    <div style="font-weight:800; color:#1f1b16; font-size:0.88rem; margin-bottom:6px;">
+                        🐙 最推薦：自動存回您的 GitHub 儲存庫（免辦新帳號 · 獨立 <code>cloud-backup</code> 分支不衝突）
+                    </div>
+                    <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:10px; line-height:1.5;">
+                        系統已自動綁定您的專案 <code>Albertyoung22/fapolu</code>。只需前往 <a href="https://github.com/settings/tokens/new?description=Fapolu-Render-Cloud-Backup&scopes=repo" target="_blank" style="color:#a62c22;font-weight:800;text-decoration:underline;">🔗 點此一鍵產生 GitHub Token (勾選 repo 權限)</a>，將產生的 <code>ghp_...</code> 金鑰貼入下方（或設於 Render 環境變數 <code>GITHUB_TOKEN</code>），客戶留單與上傳圖檔就會自動備份回 GitHub，Render 休眠或重新上傳時也會自動從 GitHub 100% 還原！
+                    </div>
+                    <div class="detail-grid" style="margin-bottom:8px; gap:10px;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>GitHub 儲存庫 (GITHUB_REPO)</label>
+                            <input type="text" id="cfgGithubRepo" class="input-control" placeholder="Albertyoung22/fapolu" value="Albertyoung22/fapolu">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>備份專用分支 (GITHUB_BRANCH，不影響 main 推播)</label>
+                            <input type="text" id="cfgGithubBranch" class="input-control" placeholder="cloud-backup" value="cloud-backup">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>GitHub 存取權杖 (GITHUB_TOKEN)</label>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <input type="password" id="cfgGithubToken" class="input-control" style="flex:1; min-width:220px;" placeholder="請貼上 ghp_xxxxxx 或 github_pat_xxxxxx 金鑰">
+                            <button type="button" id="btnSyncGithub" class="btn btn-primary btn-sm" onclick="syncGithubNow()">🐙 測試並立即同步至 GitHub</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Optional: Google Sheets or PostgreSQL -->
+                <div class="form-group" style="margin-bottom: 4px;">
+                    <label style="font-size:0.8rem;">選用備援：Google 試算表 Webhook 網址 (GOOGLE_SHEETS_WEBHOOK_URL)</label>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                        <input type="url" id="cfgGSheetsUrl" class="input-control" style="flex:1; min-width:220px;" placeholder="https://script.google.com/macros/s/xxxxxx/exec">
+                        <button type="button" id="btnSyncGSheets" class="btn btn-emerald btn-sm" onclick="syncGoogleSheetsNow()">🔄 同步 Google 試算表</button>
+                        <button type="button" class="btn btn-sm" onclick="copyGasScript()">📋 複製試算表腳本</button>
+                    </div>
+                </div>
             </div>
 
             <div style="margin-bottom: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
@@ -1094,8 +1144,8 @@
             </div>
 
             <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 12px 14px; font-size: 0.81rem; color: var(--text-dim); margin: 14px 0;">
-                💡 <b>Gmail 設定小撇步：</b>請至 Google 帳戶 →「安全性」→ 開啟「兩步驟驗證」→ 搜尋「<b>應用程式密碼</b>」產生一組 16 位數密碼填入上方 <code>SMTP_PASS</code>。<br>
-                ☁️ <b>Render 雲端永久保存建議：</b>在 Render 後台 <b>Environment</b> 加入 <code>ADMIN_PASSWORD</code>、<code>SMTP_HOST</code>、<code>SMTP_PORT</code>、<code>SMTP_USER</code>、<code>SMTP_PASS</code>、<code>NOTIFY_EMAIL</code>，即使雲端重啟設定也永久生效！
+                💡 <b>Gmail 設定小撇步：</b>請至 Google 帳戶 →「安全性」→ 開啟「兩步驟驗證」→ 搜尋「<b>應用程式密碼</b>」產生一組 16 位數密碼填入上方 <code>SMTP_PASS</code>（客戶上傳的工程圖面也會自動變成 Email 附件寄出）。<br>
+                ☁️ <b>Render 環境變數永久保存：</b>建議於 Render 後台 <b>Environment</b> 設定 <code>DATABASE_URL</code>（或 <code>GOOGLE_SHEETS_WEBHOOK_URL</code>）以及 <code>SMTP_USER</code>、<code>SMTP_PASS</code>、<code>NOTIFY_EMAIL</code>。
             </div>
 
             <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px; flex-wrap: wrap; gap: 10px;">
@@ -1160,8 +1210,24 @@
                     pill.textContent = '🟠 Email 通知未啟用 (點擊設定)';
                 }
 
+                const dbPill = document.getElementById('cloudDbStatusPill');
+                const st = data.storage || {};
+                if (st.github_configured) {
+                    dbPill.className = 'smtp-pill on';
+                    dbPill.textContent = `🐙 GitHub 自動備份中 (${st.github_repo})`;
+                } else if (st.postgres_configured) {
+                    dbPill.className = 'smtp-pill on';
+                    dbPill.textContent = '☁️ 雲端 PostgreSQL 永久保存中';
+                } else if (st.gsheets_configured) {
+                    dbPill.className = 'smtp-pill on';
+                    dbPill.textContent = '☁️ Google 試算表雙向同步中';
+                } else {
+                    dbPill.className = 'smtp-pill off';
+                    dbPill.textContent = data.isRender ? '⚠️ 本機暫存 (點擊設定 GitHub 永久保存)' : '💾 本機 SQLite 資料庫';
+                }
+
                 const banner = document.getElementById('renderBanner');
-                banner.style.display = (data.isRender && !data.smtpEnabled) ? 'flex' : 'none';
+                banner.style.display = (data.isRender && !st.cloud_persisted && !data.smtpEnabled) ? 'flex' : 'none';
 
                 renderTable();
             } catch (e) {
@@ -1390,6 +1456,33 @@
                     : 'Gmail 請填 16 位應用程式密碼';
                 document.getElementById('cfgNotify').value = data.notify_email || '';
                 document.getElementById('cfgNewAdminPwd').value = '';
+                document.getElementById('cfgGithubRepo').value = data.github_repo || 'Albertyoung22/fapolu';
+                document.getElementById('cfgGithubBranch').value = data.github_branch || 'cloud-backup';
+                document.getElementById('cfgGithubToken').value = '';
+                document.getElementById('cfgGithubToken').placeholder = data.has_github_token
+                    ? '（已儲存 GitHub Token，若不修改請留空）'
+                    : '請貼上 ghp_xxxxxx 或 github_pat_xxxxxx 金鑰';
+                document.getElementById('cfgGSheetsUrl').value = data.google_sheets_webhook_url || '';
+
+                const badge = document.getElementById('cfgStorageBadge');
+                const st = data.storage || {};
+                if (st.github_configured) {
+                    badge.textContent = `🟢 已啟用 GitHub 自動備份 (${st.github_repo}@${st.github_branch})`;
+                    badge.style.background = '#dcfce7';
+                    badge.style.color = '#15803d';
+                } else if (st.postgres_configured) {
+                    badge.textContent = '🟢 已連線外部 PostgreSQL 雲端資料庫';
+                    badge.style.background = '#dcfce7';
+                    badge.style.color = '#15803d';
+                } else if (st.gsheets_configured) {
+                    badge.textContent = '🟢 已啟用 Google 試算表雲端雙向備份';
+                    badge.style.background = '#dcfce7';
+                    badge.style.color = '#15803d';
+                } else {
+                    badge.textContent = '🟠 尚未設定 GITHUB_TOKEN (目前為本機 SQLite)';
+                    badge.style.background = '#fef3c7';
+                    badge.style.color = '#b45309';
+                }
             }
             document.getElementById('settingsModal').classList.add('open');
         }
@@ -1417,7 +1510,11 @@
                         smtp_user: document.getElementById('cfgUser').value,
                         smtp_pass: document.getElementById('cfgPass').value,
                         notify_email: document.getElementById('cfgNotify').value,
-                        new_admin_password: document.getElementById('cfgNewAdminPwd').value
+                        new_admin_password: document.getElementById('cfgNewAdminPwd').value,
+                        github_repo: document.getElementById('cfgGithubRepo').value,
+                        github_branch: document.getElementById('cfgGithubBranch').value,
+                        github_token: document.getElementById('cfgGithubToken').value,
+                        google_sheets_webhook_url: document.getElementById('cfgGSheetsUrl').value
                     })
                 });
                 const data = await res.json();
@@ -1432,6 +1529,129 @@
                 btn.disabled = false;
                 btn.textContent = '💾 儲存設定';
             }
+        }
+
+        async function syncGithubNow() {
+            const btn = document.getElementById('btnSyncGithub');
+            const repoVal = document.getElementById('cfgGithubRepo').value.trim() || 'Albertyoung22/fapolu';
+            const branchVal = document.getElementById('cfgGithubBranch').value.trim() || 'cloud-backup';
+            const tokenVal = document.getElementById('cfgGithubToken').value.trim();
+            btn.disabled = true;
+            btn.textContent = '⏳ 正在同步至 GitHub...';
+            try {
+                const res = await fetch('/api/admin/sync-github', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        github_repo: repoVal,
+                        github_branch: branchVal,
+                        github_token: tokenVal
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('🐙 ' + data.message);
+                    fetchInquiries();
+                } else {
+                    alert(data.error || 'GitHub 同步失敗');
+                }
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🐙 測試並立即同步至 GitHub';
+            }
+        }
+
+        async function syncGoogleSheetsNow() {
+            const btn = document.getElementById('btnSyncGSheets');
+            const urlVal = document.getElementById('cfgGSheetsUrl').value.trim();
+            if (!urlVal) {
+                alert('請先填入 Google Apps Script 部署後的網頁應用程式網址 (https://script.google.com/macros/s/.../exec)');
+                return;
+            }
+            btn.disabled = true;
+            btn.textContent = '⏳ 雙向同步中...';
+            try {
+                const res = await fetch('/api/admin/sync-gsheets', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ google_sheets_webhook_url: urlVal })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('✅ ' + data.message);
+                    fetchInquiries();
+                } else {
+                    alert(data.error || '同步失敗');
+                }
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🔄 測試並立即雙向同步';
+            }
+        }
+
+        function copyGasScript() {
+            const gasCode = `// 法寶實業 RFQ 詢價系統 — Google 試算表雙向雲端同步與自動還原腳本
+// 使用方式：
+// 1. 建立一份新的 Google 試算表，點擊上方選單「擴充功能」→「Apps Script」
+// 2. 貼上此段程式碼並儲存，點擊右上角「部署」→「新增部署作業」
+// 3. 類型選擇「網頁應用程式」，誰可以存取選擇「所有人 (Anyone)」，複製產生的網址貼回法寶實業後台即可！
+
+function getOrCreateSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('詢價單紀錄') || ss.getSheets()[0];
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(['id','timestamp','updatedAt','status','branch','companyName','contactPerson','contactPhone','contactEmail','inquiryMaterial','inquiryMessage','drawingUrl','adminNote','emailSent']);
+  }
+  return sheet;
+}
+
+function doGet(e) {
+  var sheet = getOrCreateSheet();
+  var rows = sheet.getDataRange().getValues();
+  var headers = rows[0] || [];
+  var items = [];
+  for (var i = 1; i < rows.length; i++) {
+    var obj = {};
+    for (var j = 0; j < headers.length; j++) {
+      obj[headers[j]] = rows[i][j];
+    }
+    if (obj.id) items.push(obj);
+  }
+  return ContentService.createTextOutput(JSON.stringify({success: true, items: items})).setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  var sheet = getOrCreateSheet();
+  var data = JSON.parse(e.postData.contents);
+  var cols = ['id','timestamp','updatedAt','status','branch','companyName','contactPerson','contactPhone','contactEmail','inquiryMaterial','inquiryMessage','drawingUrl','adminNote','emailSent'];
+  
+  function upsertOne(item) {
+    var rows = sheet.getDataRange().getValues();
+    var rowData = cols.map(function(k) { return item[k] !== undefined ? String(item[k]) : ''; });
+    for (var i = 1; i < rows.length; i++) {
+      if (String(rows[i][0]) === String(item.id)) {
+        sheet.getRange(i + 1, 1, 1, cols.length).setValues([rowData]);
+        return;
+      }
+    }
+    sheet.appendRow(rowData);
+  }
+
+  if (data.action === 'upsert_inquiry' && data.item) {
+    upsertOne(data.item);
+  } else if (data.action === 'sync_all_inquiries' && data.items) {
+    for (var k = 0; k < data.items.length; k++) upsertOne(data.items[k]);
+  } else if (data.action === 'delete_inquiry' && data.id) {
+    var rows = sheet.getDataRange().getValues();
+    for (var r = rows.length - 1; r >= 1; r--) {
+      if (String(rows[r][0]) === String(data.id)) sheet.deleteRow(r + 1);
+    }
+  }
+  return ContentService.createTextOutput(JSON.stringify({success: true})).setMimeType(ContentService.MimeType.JSON);
+}`;
+            navigator.clipboard.writeText(gasCode).then(() => {
+                showToast('📋 已複製 Google 試算表 Apps Script 程式碼！請貼至 Google 試算表「擴充功能 → Apps Script」部署。');
+            });
         }
 
         async function sendTestEmail() {

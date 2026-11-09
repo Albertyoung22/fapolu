@@ -5,6 +5,7 @@ import html
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
 from email.utils import formataddr
 
 BASE_DIR = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
@@ -12,21 +13,37 @@ CONFIG_PATH = os.path.join(BASE_DIR, 'data', 'admin_config.json')
 
 
 def load_local_config():
+    cfg = {}
     if os.path.exists(CONFIG_PATH):
         try:
             with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                cfg = json.load(f)
         except Exception:
-            return {}
-    return {}
+            cfg = {}
+    try:
+        import db
+        db_cfg = db.get_app_settings()
+        if db_cfg:
+            cfg.update(db_cfg)
+    except Exception:
+        pass
+    return cfg
 
 
 def save_local_config(data):
     os.makedirs(os.path.dirname(CONFIG_PATH), exist_ok=True)
     current = load_local_config()
     current.update(data)
-    with open(CONFIG_PATH, 'w', encoding='utf-8') as f:
-        json.dump(current, f, ensure_ascii=False, indent=2)
+    try:
+        with open(CONFIG_PATH, 'w', encoding='utf-8') as f:
+            json.dump(current, f, ensure_ascii=False, indent=2)
+    except Exception:
+        pass
+    try:
+        import db
+        db.save_app_settings(data)
+    except Exception:
+        pass
     return current
 
 
@@ -35,21 +52,21 @@ def get_admin_password():
     if env_pwd:
         return env_pwd
     local_cfg = load_local_config()
-    return local_cfg.get('admin_password', '').strip() or 'fapolu8888'
+    return str(local_cfg.get('admin_password', '')).strip() or 'fapolu8888'
 
 
 def get_smtp_config():
     local_cfg = load_local_config()
-    host = os.environ.get('SMTP_HOST', '').strip() or local_cfg.get('smtp_host', 'smtp.gmail.com').strip()
+    host = os.environ.get('SMTP_HOST', '').strip() or str(local_cfg.get('smtp_host', 'smtp.gmail.com')).strip()
     port_raw = os.environ.get('SMTP_PORT', '').strip() or str(local_cfg.get('smtp_port', 587)).strip()
     try:
         port = int(port_raw)
     except ValueError:
         port = 587
 
-    user = os.environ.get('SMTP_USER', '').strip() or local_cfg.get('smtp_user', '').strip()
-    password = os.environ.get('SMTP_PASS', '').strip() or local_cfg.get('smtp_pass', '').strip()
-    notify_email = os.environ.get('NOTIFY_EMAIL', '').strip() or local_cfg.get('notify_email', '').strip() or user
+    user = os.environ.get('SMTP_USER', '').strip() or str(local_cfg.get('smtp_user', '')).strip()
+    password = os.environ.get('SMTP_PASS', '').strip() or str(local_cfg.get('smtp_pass', '')).strip()
+    notify_email = os.environ.get('NOTIFY_EMAIL', '').strip() or str(local_cfg.get('notify_email', '')).strip() or user
 
     enabled = bool(host and user and password and notify_email)
     from_env = bool(os.environ.get('SMTP_USER') and os.environ.get('SMTP_PASS'))
@@ -65,7 +82,7 @@ def get_smtp_config():
     }
 
 
-def _send_mail_message(cfg, subject, html_body, text_body, reply_to=None):
+def _send_mail_message(cfg, subject, html_body, text_body, reply_to=None, attachments=None):
     if not cfg.get('enabled'):
         raise ValueError("尚未完成 SMTP 寄件帳號與應用程式密碼設定")
 
@@ -73,25 +90,39 @@ def _send_mail_message(cfg, subject, html_body, text_body, reply_to=None):
     if not recipients:
         raise ValueError("未設定有效的收件通知信箱 (NOTIFY_EMAIL)")
 
-    msg = MIMEMultipart('alternative')
+    msg = MIMEMultipart('mixed') if attachments else MIMEMultipart('alternative')
     msg['Subject'] = subject
     msg['From'] = formataddr(('法寶實業詢價系統', cfg['smtp_user']))
     msg['To'] = ', '.join(recipients)
     if reply_to:
         msg['Reply-To'] = reply_to
 
-    msg.attach(MIMEText(text_body, 'plain', 'utf-8'))
-    msg.attach(MIMEText(html_body, 'html', 'utf-8'))
+    if attachments:
+        alt_part = MIMEMultipart('alternative')
+        alt_part.attach(MIMEText(text_body, 'plain', 'utf-8'))
+        alt_part.attach(MIMEText(html_body, 'html', 'utf-8'))
+        msg.attach(alt_part)
+
+        for att in attachments:
+            fname = att.get('filename') or 'drawing_attachment'
+            fdata = att.get('data')
+            if fdata:
+                part = MIMEApplication(fdata, Name=fname)
+                part.add_header('Content-Disposition', 'attachment', filename=fname)
+                msg.attach(part)
+    else:
+        msg.attach(MIMEText(text_body, 'plain', 'utf-8'))
+        msg.attach(MIMEText(html_body, 'html', 'utf-8'))
 
     host = cfg['smtp_host']
     port = cfg['smtp_port']
 
     if port == 465:
-        with smtplib.SMTP_SSL(host, port, timeout=20) as server:
+        with smtplib.SMTP_SSL(host, port, timeout=25) as server:
             server.login(cfg['smtp_user'], cfg['smtp_pass'])
             server.sendmail(cfg['smtp_user'], recipients, msg.as_string())
     else:
-        with smtplib.SMTP(host, port, timeout=20) as server:
+        with smtplib.SMTP(host, port, timeout=25) as server:
             server.ehlo()
             server.starttls()
             server.ehlo()
@@ -99,8 +130,42 @@ def _send_mail_message(cfg, subject, html_body, text_body, reply_to=None):
             server.sendmail(cfg['smtp_user'], recipients, msg.as_string())
 
 
+def _resolve_drawing_attachments(drawing_url):
+    """Finds uploaded drawing file from local disk or DB so it can be attached to the email."""
+    attachments = []
+    if not drawing_url or '/static/uploads/drawings/' not in drawing_url:
+        return attachments
+    import re
+    match = re.search(r'/static/uploads/drawings/([^\s|]+)', drawing_url)
+    if not match:
+        return attachments
+    saved_filename = match.group(1).strip()
+    local_path = os.path.join(BASE_DIR, 'static', 'uploads', 'drawings', saved_filename)
+    file_bytes = None
+    if os.path.exists(local_path):
+        try:
+            with open(local_path, 'rb') as f:
+                file_bytes = f.read()
+        except Exception:
+            pass
+    if not file_bytes:
+        try:
+            import db
+            rec = db.get_drawing_file(saved_filename)
+            if rec and rec.get('file_bytes'):
+                file_bytes = rec['file_bytes']
+        except Exception:
+            pass
+    if file_bytes:
+        attachments.append({
+            'filename': saved_filename,
+            'data': file_bytes
+        })
+    return attachments
+
+
 def send_inquiry_email(inquiry, custom_cfg=None):
-    """寄送客戶新詢價單 HTML 通知信"""
+    """寄送客戶新詢價單 HTML 通知信（若客戶有上傳工程圖檔，自動隨信附檔寄出）"""
     cfg = custom_cfg or get_smtp_config()
     ticket_id = inquiry.get('id', 'REQ-NEW')
     company = inquiry.get('companyName', '未填寫')
@@ -112,9 +177,12 @@ def send_inquiry_email(inquiry, custom_cfg=None):
     drawing_url = inquiry.get('drawingUrl', '').strip()
     timestamp = inquiry.get('timestamp', '')
 
+    attachments = _resolve_drawing_attachments(drawing_url)
+    has_attachment_note = "（已隨信附上工程圖面檔案）" if attachments else ""
+
     subject = f"【法寶實業新詢價單】{ticket_id}｜{company} - {material[:35]}"
 
-    drawing_text = f"\n圖面連結/說明：{drawing_url}" if drawing_url else ""
+    drawing_text = f"\n圖面連結/說明：{drawing_url} {has_attachment_note}" if drawing_url else ""
     text_body = (
         f"法寶實業有限公司 - 線上即時詢價通知\n"
         f"========================================\n"
@@ -125,7 +193,7 @@ def send_inquiry_email(inquiry, custom_cfg=None):
         f"聯絡電話：{phone}\n"
         f"電子郵件：{email}\n"
         f"材料規格：{material}\n"
-        f"{drawing_text}"
+        f"{drawing_text}\n"
         f"需求說明：\n{message}\n"
         f"========================================\n"
         f"可直接回覆此郵件與客戶聯繫，或登入 /admin 後台更新報價進度。"
@@ -146,7 +214,8 @@ def send_inquiry_email(inquiry, custom_cfg=None):
         if drawing_url.startswith('http://') or drawing_url.startswith('https://'):
             drawing_val_html = f'<a href="{esc_drawing}" target="_blank" style="color:#38bdf8;font-weight:bold;text-decoration:underline;">🔗 點擊開啟圖面連結</a>'
         else:
-            drawing_val_html = f'<span style="color:#cbd5e1;">{esc_drawing}</span>'
+            att_badge = ' <span style="background:#065f46;color:#a7f3d0;padding:2px 8px;border-radius:4px;font-size:12px;">📎 圖檔已作為本信件附件寄出</span>' if attachments else ''
+            drawing_val_html = f'<span style="color:#cbd5e1;">{esc_drawing}</span>{att_badge}'
         drawing_row = f"""
                 <tr>
                     <td style="padding:10px 0;color:#94a3b8;border-bottom:1px solid #1e293b;">CAD/圖面說明</td>
@@ -200,7 +269,7 @@ def send_inquiry_email(inquiry, custom_cfg=None):
     """
 
     reply_addr = email if '@' in email else None
-    _send_mail_message(cfg, subject, html_body, text_body, reply_to=reply_addr)
+    _send_mail_message(cfg, subject, html_body, text_body, reply_to=reply_addr, attachments=attachments)
 
 
 def send_test_email(custom_cfg=None):
