@@ -50,7 +50,15 @@ def restore_missing_drawing_on_demand():
 
 
 @app.after_request
-def add_no_cache_headers(response):
+def add_cors_and_no_cache_headers(response):
+    # Support cross-origin API calls from custom domain (fapolu.com.tw) to Render
+    origin = request.headers.get('Origin')
+    if origin and any(domain in origin for domain in ['fapolu.com.tw', 'localhost', '127.0.0.1']):
+        response.headers['Access-Control-Allow-Origin'] = origin
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+
     # Ensure client browsers always get fresh dynamic rendering and styles without stale caching
     if 'text/css' in response.headers.get('Content-Type', '') or 'javascript' in response.headers.get('Content-Type', '') or 'text/html' in response.headers.get('Content-Type', ''):
         response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
