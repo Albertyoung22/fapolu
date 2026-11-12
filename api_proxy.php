@@ -24,7 +24,7 @@ if (!empty($query_string)) {
     $target_url .= '?' . $query_string;
 }
 
-function call_render_api($url, $is_post, $raw_input, $timeout = 60) {
+function call_render_api($url, $is_post, $raw_input, $custom_headers = array(), $timeout = 60) {
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
@@ -36,10 +36,9 @@ function call_render_api($url, $is_post, $raw_input, $timeout = 60) {
     if ($is_post) {
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $raw_input);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json',
-            'User-Agent: Mozilla/5.0 (Fapo-Proxy)'
-        ));
+        if (!empty($custom_headers)) {
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $custom_headers);
+        }
     }
 
     $response = curl_exec($ch);
@@ -51,14 +50,35 @@ function call_render_api($url, $is_post, $raw_input, $timeout = 60) {
 }
 
 $is_post = ($_SERVER['REQUEST_METHOD'] === 'POST');
-$raw_input = $is_post ? file_get_contents('php://input') : null;
+$content_type = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '';
+$raw_input = null;
+$custom_headers = array('User-Agent: Mozilla/5.0 (Fapo-Proxy)');
 
-$result = call_render_api($target_url, $is_post, $raw_input, 45);
+if ($is_post) {
+    if (strpos($content_type, 'multipart/form-data') !== false || !empty($_FILES)) {
+        // Multipart/form-data with fields & files
+        $fields = $_POST;
+        if (!empty($_FILES)) {
+            foreach ($_FILES as $k => $f) {
+                if (isset($f['tmp_name']) && is_uploaded_file($f['tmp_name'])) {
+                    $fields[$k] = new CURLFile($f['tmp_name'], $f['type'], $f['name']);
+                }
+            }
+        }
+        $raw_input = $fields;
+        // cURL automatically sets the correct multipart boundary header with CURLFile
+    } else {
+        $raw_input = file_get_contents('php://input');
+        $custom_headers[] = 'Content-Type: ' . ($content_type ?: 'application/json');
+    }
+}
+
+$result = call_render_api($target_url, $is_post, $raw_input, $custom_headers, 45);
 
 if ($result['code'] === 0 || $result['code'] >= 500) {
     @file_get_contents('https://fapolu-io9w.onrender.com/healthz');
     sleep(2);
-    $result = call_render_api($target_url, $is_post, $raw_input, 30);
+    $result = call_render_api($target_url, $is_post, $raw_input, $custom_headers, 30);
 }
 
 if ($result['body'] === false || empty($result['body'])) {

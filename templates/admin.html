@@ -781,25 +781,32 @@
                 </div>
             </div>
 
-            <!-- Filter & Search Toolbar -->
-            <div class="toolbar">
-                <div class="filter-chips" id="statusChips">
-                    <button class="chip active" data-status="all" onclick="setStatusFilter('all')">全部單據</button>
-                    <button class="chip" data-status="pending" onclick="setStatusFilter('pending')">🔔 待處理</button>
-                    <button class="chip" data-status="quoting" onclick="setStatusFilter('quoting')">💬 已報價</button>
-                    <button class="chip" data-status="closed" onclick="setStatusFilter('closed')">✅ 已結案</button>
-                    <button class="chip" data-status="archived" onclick="setStatusFilter('archived')">🗄️ 已取消</button>
+            <!-- Filter & Search Toolbar (支援北中南防搶單分區隔離) -->
+            <div class="toolbar" style="flex-direction: column; align-items: stretch; gap: 12px;">
+                <!-- 區域防搶單快速切換列 -->
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                    <div class="filter-chips" id="regionChips">
+                        <span style="font-size: 0.88rem; font-weight: 700; color: var(--text-primary); margin-right: 4px; display: inline-flex; align-items: center;">📍 責任區域：</span>
+                        <button class="chip active" id="chipRegAll" onclick="setRegionFilter('all')">🌏 全部區域</button>
+                        <button class="chip" id="chipRegNorth" style="color: #27ae60; font-weight: 700;" onclick="setRegionFilter('north')">🟢 北部區域 (<span id="cntRegNorth">0</span>)</button>
+                        <button class="chip" id="chipRegCentral" style="color: #2980b9; font-weight: 700;" onclick="setRegionFilter('central')">🔵 中部區域 (<span id="cntRegCentral">0</span>)</button>
+                        <button class="chip" id="chipRegSouth" style="color: #e67e22; font-weight: 700;" onclick="setRegionFilter('south')">🟠 南部區域 (<span id="cntRegSouth">0</span>)</button>
+                    </div>
+
+                    <div class="search-group" style="margin-left: auto;">
+                        <input type="text" id="searchInput" class="input-control" placeholder="🔍 搜尋單號、公司、聯絡人、電話、鋁材規格、縣市..." oninput="renderTable()" style="min-width: 260px;">
+                    </div>
                 </div>
 
-                <div class="search-group">
-                    <select id="branchFilter" class="input-control" style="width: 150px;" onchange="renderTable()">
-                        <option value="all">全部廠區據點</option>
-                        <option value="未指派">未指派</option>
-                        <option value="台北總公司">台北總公司</option>
-                        <option value="台中廠">台中廠</option>
-                        <option value="台南雙廠區">台南雙廠區</option>
-                    </select>
-                    <input type="text" id="searchInput" class="input-control" placeholder="🔍 搜尋單號、公司、聯絡人、電話、鋁材規格..." oninput="renderTable()">
+                <!-- 單據狀態過濾列 -->
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; border-top: 1px dashed rgba(0,0,0,0.08); padding-top: 8px;">
+                    <div class="filter-chips" id="statusChips">
+                        <button class="chip active" data-status="all" onclick="setStatusFilter('all')">全部單據</button>
+                        <button class="chip" data-status="pending" onclick="setStatusFilter('pending')">🔔 待處理</button>
+                        <button class="chip" data-status="quoting" onclick="setStatusFilter('quoting')">💬 已報價</button>
+                        <button class="chip" data-status="closed" onclick="setStatusFilter('closed')">✅ 已結案</button>
+                        <button class="chip" data-status="archived" onclick="setStatusFilter('archived')">🗄️ 已取消</button>
+                    </div>
                 </div>
             </div>
 
@@ -966,12 +973,15 @@
                     </select>
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
-                    <label for="mBranch">指派負責廠區據點</label>
+                    <label for="mBranch">指派責任服務分區 (防搶單劃分)</label>
                     <select id="mBranch" class="input-control">
                         <option value="未指派">未指派</option>
-                        <option value="台北總公司">🏢 台北總公司</option>
-                        <option value="台中廠">🏭 台中廠 (沙鹿物流裁切)</option>
-                        <option value="台南雙廠區">🏭 台南雙廠區 (佳里/麻豆)</option>
+                        <option value="北部區域 (台北服務部)">🟢 北部區域 (台北服務部)</option>
+                        <option value="中部區域 (台中營運總部)">🔵 中部區域 (台中營運總部)</option>
+                        <option value="南部區域 (台南雙廠區)">🟠 南部區域 (台南雙廠區)</option>
+                        <option value="台北總公司">🏢 台北總公司 (舊標籤)</option>
+                        <option value="台中廠">🏭 台中廠 (舊標籤)</option>
+                        <option value="台南雙廠區">🏭 台南雙廠區 (舊標籤)</option>
                     </select>
                 </div>
                 <div class="form-group full" style="grid-column: 1 / -1; margin-bottom: 6px;">
@@ -1201,6 +1211,13 @@
                 document.getElementById('statQuoting').textContent = data.stats.quoting;
                 document.getElementById('statClosed').textContent = data.stats.closed;
 
+                const n = allInquiries.filter(i => (i.branch || i.region || '').includes('北')).length;
+                const c = allInquiries.filter(i => (i.branch || i.region || '').includes('中')).length;
+                const s = allInquiries.filter(i => (i.branch || i.region || '').includes('南')).length;
+                if (document.getElementById('cntRegNorth')) document.getElementById('cntRegNorth').textContent = n;
+                if (document.getElementById('cntRegCentral')) document.getElementById('cntRegCentral').textContent = c;
+                if (document.getElementById('cntRegSouth')) document.getElementById('cntRegSouth').textContent = s;
+
                 const pill = document.getElementById('smtpStatusPill');
                 if (data.smtpEnabled) {
                     pill.className = 'smtp-pill on';
@@ -1235,6 +1252,18 @@
             }
         }
 
+        let currentRegionFilter = 'all';
+
+        function setRegionFilter(reg) {
+            currentRegionFilter = reg;
+            document.querySelectorAll('#regionChips .chip').forEach(btn => btn.classList.remove('active'));
+            if (reg === 'all') document.getElementById('chipRegAll')?.classList.add('active');
+            else if (reg === 'north') document.getElementById('chipRegNorth')?.classList.add('active');
+            else if (reg === 'central') document.getElementById('chipRegCentral')?.classList.add('active');
+            else if (reg === 'south') document.getElementById('chipRegSouth')?.classList.add('active');
+            renderTable();
+        }
+
         function setStatusFilter(status) {
             currentStatusFilter = status;
             document.querySelectorAll('#statusChips .chip').forEach(btn => {
@@ -1245,17 +1274,22 @@
 
         function renderTable() {
             const tbody = document.getElementById('inquiryTableBody');
-            const branchVal = document.getElementById('branchFilter').value;
             const q = document.getElementById('searchInput').value.trim().toLowerCase();
 
             const filtered = allInquiries.filter(item => {
                 if (currentStatusFilter !== 'all' && item.status !== currentStatusFilter) return false;
-                if (branchVal !== 'all' && (item.branch || '未指派') !== branchVal) return false;
+
+                const b = (item.branch || item.region || '').toLowerCase();
+                if (currentRegionFilter === 'north' && !b.includes('北')) return false;
+                if (currentRegionFilter === 'central' && !b.includes('中')) return false;
+                if (currentRegionFilter === 'south' && !b.includes('南')) return false;
+
                 if (q) {
                     const hay = [
                         item.id, item.companyName, item.contactPerson,
                         item.contactPhone, item.contactEmail,
-                        item.inquiryMaterial, item.inquiryMessage, item.adminNote
+                        item.inquiryMaterial, item.inquiryMessage, item.adminNote,
+                        item.branch, item.deliveryCounty
                     ].join(' ').toLowerCase();
                     if (!hay.includes(q)) return false;
                 }
@@ -1278,6 +1312,16 @@
                     ? `<div class="note-preview">📝 ${escapeHtml(item.adminNote)}</div>`
                     : '';
 
+                let branchBadge = `<span class="badge" style="background:rgba(0,0,0,0.06);color:#555;">⚪ 未指派</span>`;
+                const br = item.branch || item.region || '';
+                if (br.includes('北')) {
+                    branchBadge = `<span class="badge" style="background:rgba(39,174,96,0.12);color:#21573f;border:1px solid rgba(39,174,96,0.3);font-weight:700;">🟢 北部區域</span>`;
+                } else if (br.includes('南')) {
+                    branchBadge = `<span class="badge" style="background:rgba(230,126,34,0.12);color:#b45309;border:1px solid rgba(230,126,34,0.3);font-weight:700;">🟠 南部區域</span>`;
+                } else if (br.includes('中')) {
+                    branchBadge = `<span class="badge" style="background:rgba(41,128,185,0.12);color:#1e40af;border:1px solid rgba(41,128,185,0.3);font-weight:700;">🔵 中部區域</span>`;
+                }
+
                 return `
                     <tr class="inq-row" onclick="openDetailModal('${escapeHtml(item.id)}')">
                         <td>
@@ -1298,7 +1342,10 @@
                             <div class="msg-preview">${escapeHtml(item.inquiryMessage || '')}</div>
                             ${noteHtml}
                         </td>
-                        <td><span style="font-size:0.84rem;color:var(--text-dim);">📍 ${escapeHtml(item.branch || '未指派')}</span></td>
+                        <td>
+                            ${branchBadge}
+                            <div style="font-size:0.74rem;color:var(--text-dim);margin-top:3px;">${escapeHtml(item.deliveryCounty ? '送貨：' + item.deliveryCounty : (item.branch || ''))}</div>
+                        </td>
                         <td><span class="badge ${st.cls}">${st.text}</span></td>
                         <td>${emailIcon}</td>
                         <td onclick="event.stopPropagation()">

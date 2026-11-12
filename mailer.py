@@ -176,17 +176,26 @@ def send_inquiry_email(inquiry, custom_cfg=None):
     message = inquiry.get('inquiryMessage') or '（無額外備註說明）'
     drawing_url = inquiry.get('drawingUrl', '').strip()
     timestamp = inquiry.get('timestamp', '')
+    branch = inquiry.get('branch', '未指派')
+    region = inquiry.get('region', '')
+    if not region:
+        if '北' in branch: region = '北區'
+        elif '南' in branch: region = '南區'
+        elif '中' in branch: region = '中區'
+        else: region = '未分區'
+    county = inquiry.get('deliveryCounty', '')
 
     attachments = _resolve_drawing_attachments(drawing_url)
     has_attachment_note = "（已隨信附上工程圖面檔案）" if attachments else ""
 
-    subject = f"【法寶實業新詢價單】{ticket_id}｜{company} - {material[:35]}"
+    subject = f"【法寶新詢價單 · {region}】{ticket_id}｜{company} - {material[:35]}"
 
     drawing_text = f"\n圖面連結/說明：{drawing_url} {has_attachment_note}" if drawing_url else ""
     text_body = (
         f"法寶實業有限公司 - 線上即時詢價通知\n"
         f"========================================\n"
         f"詢價單號：{ticket_id}\n"
+        f"指派責任區域：{branch}（送貨地點：{county or '由客戶備註'}）\n"
         f"送出時間：{timestamp}\n"
         f"公司寶號：{company}\n"
         f"聯絡人員：{person}\n"
@@ -196,7 +205,7 @@ def send_inquiry_email(inquiry, custom_cfg=None):
         f"{drawing_text}\n"
         f"需求說明：\n{message}\n"
         f"========================================\n"
-        f"可直接回覆此郵件與客戶聯繫，或登入 /admin 後台更新報價進度。"
+        f"※ 依送貨區域指派專屬業務團隊跟進報價，避免跨區重覆聯繫或搶單衝突。"
     )
 
     esc_ticket = html.escape(str(ticket_id))
@@ -208,6 +217,8 @@ def send_inquiry_email(inquiry, custom_cfg=None):
     esc_material = html.escape(str(material))
     esc_drawing = html.escape(str(drawing_url))
     esc_message = html.escape(str(message))
+    esc_branch = html.escape(str(branch))
+    esc_county = html.escape(str(county))
 
     drawing_row = ""
     if drawing_url:
@@ -230,9 +241,13 @@ def send_inquiry_email(inquiry, custom_cfg=None):
             <h2 style="margin:6px 0 0;font-size:20px;color:#ffffff;">法寶實業 新進客戶詢價單通知</h2>
         </div>
         <div style="padding:24px 28px;">
-            <div style="background:#131e36;padding:12px 16px;border-radius:8px;margin-bottom:18px;display:flex;justify-content:space-between;">
+            <div style="background:#131e36;padding:12px 16px;border-radius:8px;margin-bottom:14px;display:flex;justify-content:space-between;">
                 <span style="color:#00f0ff;font-weight:bold;font-size:15px;">單號：{esc_ticket}</span>
                 <span style="color:#94a3b8;font-size:13px;margin-left:16px;">時間：{esc_time}</span>
+            </div>
+            <div style="background:#0f2b48;border-left:4px solid #00f0ff;padding:12px 16px;border-radius:6px;margin-bottom:18px;">
+                <div style="color:#00f0ff;font-weight:bold;font-size:14px;">📍 責任服務分區：【{esc_branch}】</div>
+                <div style="font-size:12px;color:#94a3b8;margin-top:4px;">送貨地點：{esc_county or '未指定'} ｜ 系統已自動分區派單，請該區域業務專員優先報價，避免跨區搶單爭議。</div>
             </div>
             <table style="width:100%;border-collapse:collapse;font-size:14px;">
                 <tr>

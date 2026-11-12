@@ -687,6 +687,41 @@ def api_contact():
         material = str(raw.get('inquiryMaterial', '')).strip()
         message = str(raw.get('inquiryMessage', '')).strip()
         drawing_url = str(raw.get('drawingUrl', '')).strip()
+        county = str(raw.get('deliveryCounty', '')).strip()
+        region = str(raw.get('region', '')).strip()
+
+        # North / Central / South region assignment mapping (避免業務人員搶單衝突)
+        north_counties = {'台北市', '新北市', '基隆市', '桃園市', '新竹市', '新竹縣', '宜蘭縣'}
+        central_counties = {'台中市', '苗栗縣', '彰化縣', '南投縣', '雲林縣'}
+        south_counties = {'台南市', '嘉義市', '嘉義縣', '高雄市', '屏東縣', '花蓮縣', '台東縣', '澎湖縣', '金門縣', '連江縣', '澎湖金門連江'}
+
+        if not region:
+            if county in north_counties:
+                region = '北部區域'
+            elif county in south_counties:
+                region = '南部區域'
+            elif county in central_counties:
+                region = '中部區域'
+            else:
+                if any(c in message for c in north_counties):
+                    region = '北部區域'
+                elif any(c in message for c in south_counties):
+                    region = '南部區域'
+                else:
+                    region = '中部區域'
+
+        if '北' in region:
+            assigned_branch = '北部區域 (台北服務部)'
+            region_name = '北部區域'
+        elif '南' in region:
+            assigned_branch = '南部區域 (台南雙廠區)'
+            region_name = '南部區域'
+        else:
+            assigned_branch = '中部區域 (台中營運總部)'
+            region_name = '中部區域'
+
+        if county and county not in message:
+            message = f"[送貨地點：{county} ｜ 專屬派單：{assigned_branch}]\n" + message
 
         if not (company or person) and not (phone or email):
             return jsonify({
@@ -732,8 +767,10 @@ def api_contact():
             "timestamp": now_str,
             "updatedAt": now_str,
             "status": "pending",
-            "branch": "未指派",
-            "adminNote": "",
+            "branch": assigned_branch,
+            "region": region_name,
+            "deliveryCounty": county,
+            "adminNote": f"系統依送貨地點自動指派至【{assigned_branch}】",
             "emailSent": False
         }
         db.add_inquiry(new_item, sync_cloud=True)
@@ -851,6 +888,9 @@ def api_admin_inquiries():
         "quoting": sum(1 for i in items if i.get('status') == 'quoting'),
         "closed": sum(1 for i in items if i.get('status') == 'closed'),
         "archived": sum(1 for i in items if i.get('status') == 'archived'),
+        "north": sum(1 for i in items if '北' in str(i.get('branch', '') or i.get('region', ''))),
+        "central": sum(1 for i in items if '中' in str(i.get('branch', '') or i.get('region', ''))),
+        "south": sum(1 for i in items if '南' in str(i.get('branch', '') or i.get('region', ''))),
     }
     smtp_cfg = mailer.get_smtp_config()
     storage_status = db.get_storage_status()

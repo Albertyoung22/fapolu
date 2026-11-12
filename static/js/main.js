@@ -1781,6 +1781,64 @@ window.quickFilterAlloy = function(alloyCode) {
 /* ==========================================================================
    6. Contact Form & Quotation Workflow (附圖面拖曳上傳與估價單)
    ========================================================================== */
+window.onDeliveryCountyChange = function(county) {
+    const north = ['台北市', '新北市', '基隆市', '桃園市', '新竹市', '新竹縣', '宜蘭縣'];
+    const central = ['台中市', '苗栗縣', '彰化縣', '南投縣', '雲林縣'];
+    const south = ['台南市', '嘉義市', '嘉義縣', '高雄市', '屏東縣', '花蓮縣', '台東縣', '澎湖金門連江'];
+
+    if (north.includes(county)) {
+        window.selectRegion('北部區域');
+    } else if (south.includes(county)) {
+        window.selectRegion('南部區域');
+    } else if (central.includes(county)) {
+        window.selectRegion('中部區域');
+    }
+};
+
+window.selectRegion = function(regionName) {
+    const hidden = document.getElementById('selectedRegion');
+    if (hidden) hidden.value = regionName;
+
+    const btnN = document.getElementById('regChipNorth');
+    const btnC = document.getElementById('regChipCentral');
+    const btnS = document.getElementById('regChipSouth');
+    const hint = document.getElementById('regionRoutingText');
+
+    [btnN, btnC, btnS].forEach(btn => {
+        if (!btn) return;
+        btn.style.border = '1px solid rgba(0,0,0,0.15)';
+        btn.style.background = '#fff';
+        const spanTitle = btn.querySelector('span:first-child');
+        if (spanTitle) spanTitle.style.color = 'inherit';
+    });
+
+    if (regionName === '北部區域') {
+        if (btnN) {
+            btnN.style.border = '2px solid #27ae60';
+            btnN.style.background = 'rgba(39, 174, 96, 0.08)';
+            const st = btnN.querySelector('span:first-child');
+            if (st) st.style.color = '#27ae60';
+        }
+        if (hint) hint.innerHTML = '已為您自動指派【台北服務部】專屬業務團隊（電話：02-2718-3134 ｜ 專車直配基隆/雙北/桃竹宜）。';
+    } else if (regionName === '南部區域') {
+        if (btnS) {
+            btnS.style.border = '2px solid #e67e22';
+            btnS.style.background = 'rgba(230, 126, 34, 0.08)';
+            const st = btnS.querySelector('span:first-child');
+            if (st) st.style.color = '#e67e22';
+        }
+        if (hint) hint.innerHTML = '已為您自動指派【台南雙廠區】專屬業務團隊（電話：06-726-3666 ｜ 專車直配嘉南高屏花東）。';
+    } else {
+        if (btnC) {
+            btnC.style.border = '2px solid var(--accent-cinnabar)';
+            btnC.style.background = 'rgba(184, 51, 42, 0.08)';
+            const st = btnC.querySelector('span:first-child');
+            if (st) st.style.color = 'var(--accent-cinnabar)';
+        }
+        if (hint) hint.innerHTML = '已為您自動指派【台中營運總部】專屬業務團隊（電話：04-2258-4931 ｜ 專車直配苗栗/台中/彰投雲）。';
+    }
+};
+
 function initContactForm() {
     const form = document.getElementById('quoteForm');
     if (!form) return;

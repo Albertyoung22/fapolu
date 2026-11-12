@@ -1705,6 +1705,70 @@
                                     <label for="contactEmail" data-i18n="contact.lbl_email">電子郵件 *</label>
                                     <input type="email" id="contactEmail" name="contactEmail" required data-i18n="contact.ph_email" placeholder="name@company.com">
                                 </div>
+                                <div class="form-group full" style="background: rgba(184, 51, 42, 0.04); border: 1px solid rgba(184, 51, 42, 0.18); border-radius: 12px; padding: 16px; margin: 4px 0 10px 0;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                                        <label style="margin: 0; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
+                                            <span>📍 送貨地點與專屬負責服務區域</span>
+                                            <span style="font-size: 0.75rem; background: var(--accent-cinnabar); color: #fff; padding: 2px 8px; border-radius: 10px; font-weight: 600;">北中南分區派單機制</span>
+                                        </label>
+                                        <span style="font-size: 0.8rem; color: var(--text-secondary);">依送貨縣市智能指派專屬團隊，報價精準且避免跨區搶單爭議</span>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 14px;">
+                                        <div>
+                                            <label for="deliveryCounty" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; display: block;">送貨縣市 *</label>
+                                            <select id="deliveryCounty" name="deliveryCounty" class="input-control" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.15); background: #fff; font-size: 0.95rem; font-weight: 600;" onchange="onDeliveryCountyChange(this.value)">
+                                                <option value="">-- 請選擇送貨縣市 --</option>
+                                                <optgroup label="北部區域 (台北服務部)">
+                                                    <option value="台北市">台北市</option>
+                                                    <option value="新北市">新北市</option>
+                                                    <option value="基隆市">基隆市</option>
+                                                    <option value="桃園市">桃園市</option>
+                                                    <option value="新竹市">新竹市</option>
+                                                    <option value="新竹縣">新竹縣</option>
+                                                    <option value="宜蘭縣">宜蘭縣</option>
+                                                </optgroup>
+                                                <optgroup label="中部區域 (台中營運總部)">
+                                                    <option value="台中市">台中市</option>
+                                                    <option value="苗栗縣">苗栗縣</option>
+                                                    <option value="彰化縣">彰化縣</option>
+                                                    <option value="南投縣">南投縣</option>
+                                                    <option value="雲林縣">雲林縣</option>
+                                                </optgroup>
+                                                <optgroup label="南部區域 (台南雙廠區)">
+                                                    <option value="台南市">台南市</option>
+                                                    <option value="嘉義市">嘉義市</option>
+                                                    <option value="嘉義縣">嘉義縣</option>
+                                                    <option value="高雄市">高雄市</option>
+                                                    <option value="屏東縣">屏東縣</option>
+                                                    <option value="花蓮縣">花蓮縣</option>
+                                                    <option value="台東縣">台東縣</option>
+                                                    <option value="澎湖金門連江">外島 (澎湖/金門/連江)</option>
+                                                </optgroup>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label style="font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; display: block;">專屬接單廠區 (可手動指定或依縣市自動帶入)</label>
+                                            <div class="region-selector-chips" style="display: flex; gap: 8px;">
+                                                <input type="hidden" name="region" id="selectedRegion" value="中部區域">
+                                                <button type="button" class="region-chip-btn" id="regChipNorth" onclick="selectRegion('北部區域')" style="flex: 1; padding: 8px 6px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.15); background: #fff; cursor: pointer; text-align: center; transition: all 0.2s;">
+                                                    <span style="display: block; font-weight: 700; font-size: 0.88rem;">🟢 北部區域</span>
+                                                    <span style="display: block; font-size: 0.72rem; color: #666;">台北服務部</span>
+                                                </button>
+                                                <button type="button" class="region-chip-btn active" id="regChipCentral" onclick="selectRegion('中部區域')" style="flex: 1; padding: 8px 6px; border-radius: 8px; border: 2px solid var(--accent-cinnabar); background: rgba(184, 51, 42, 0.08); cursor: pointer; text-align: center; transition: all 0.2s;">
+                                                    <span style="display: block; font-weight: 700; font-size: 0.88rem; color: var(--accent-cinnabar);">🔵 中部區域</span>
+                                                    <span style="display: block; font-size: 0.72rem; color: #666;">台中營運總部</span>
+                                                </button>
+                                                <button type="button" class="region-chip-btn" id="regChipSouth" onclick="selectRegion('南部區域')" style="flex: 1; padding: 8px 6px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.15); background: #fff; cursor: pointer; text-align: center; transition: all 0.2s;">
+                                                    <span style="display: block; font-weight: 700; font-size: 0.88rem;">🟠 南部區域</span>
+                                                    <span style="display: block; font-size: 0.72rem; color: #666;">台南雙廠區</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="regionRoutingHint" style="margin-top: 10px; font-size: 0.83rem; color: #27ae60; display: flex; align-items: center; gap: 6px;">
+                                        <span>ℹ️</span> <span id="regionRoutingText">已指派【台中營運總部】專屬業務團隊為您服務（專線：04-2258-4931）。</span>
+                                    </div>
+                                </div>
                                 <div class="form-group full">
                                     <label for="inquiryMaterial" data-i18n="contact.lbl_material">材料型號與規格需求</label>
                                     <input type="text" id="inquiryMaterial" name="inquiryMaterial" data-i18n="contact.ph_material" placeholder="例：UACJ 5052 貼膜板 10mm x 4' x 8' 或 6061-T6 圓棒 Dia.50">
