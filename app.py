@@ -122,7 +122,7 @@ def api_keep_alive_status():
     target_base = (
         os.environ.get('KEEP_ALIVE_URL')
         or os.environ.get('RENDER_EXTERNAL_URL')
-        or "https://fapolu.onrender.com"
+        or "https://fapolu-io9w.onrender.com"
     ).rstrip('/')
     return jsonify({
         "active": is_alive,
@@ -147,7 +147,7 @@ def start_keep_alive_thread(interval_sec=600):
             target_base = (
                 os.environ.get('KEEP_ALIVE_URL')
                 or os.environ.get('RENDER_EXTERNAL_URL')
-                or "https://fapolu.onrender.com"
+                or "https://fapolu-io9w.onrender.com"
             ).rstrip('/')
             target_url = f"{target_base}/api/health"
 
