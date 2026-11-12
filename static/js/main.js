@@ -2304,21 +2304,23 @@ window.sendAiQuickPrompt = function(promptText) {
     }
 };
 
-window.sendAiChatMessage = function() {
+window.sendAiChatMessage = function(retryText) {
     const inp = document.getElementById('aiChatInput');
     const box = document.getElementById('aiChatMessages');
-    if (!inp || !box) return;
+    if (!box) return;
 
-    const text = inp.value.trim();
+    const text = (typeof retryText === 'string') ? retryText : (inp ? inp.value.trim() : '');
     if (!text) return;
-    inp.value = '';
+    if (inp && typeof retryText !== 'string') inp.value = '';
 
-    // Append user bubble
-    const userDiv = document.createElement('div');
-    userDiv.className = 'ai-msg ai-msg-user';
-    userDiv.innerHTML = `<div class="ai-msg-bubble">${formatAiMarkdown(text)}</div>`;
-    box.appendChild(userDiv);
-    box.scrollTop = box.scrollHeight;
+    // Only append user bubble if this isn't an automated retry
+    if (typeof retryText !== 'string') {
+        const userDiv = document.createElement('div');
+        userDiv.className = 'ai-msg ai-msg-user';
+        userDiv.innerHTML = `<div class="ai-msg-bubble">${formatAiMarkdown(text)}</div>`;
+        box.appendChild(userDiv);
+        box.scrollTop = box.scrollHeight;
+    }
 
     // Append loading bubble
     const botDiv = document.createElement('div');
@@ -2328,63 +2330,93 @@ window.sendAiChatMessage = function() {
     box.scrollTop = box.scrollHeight;
 
     const currentLang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
-    fetch('/api/ai/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text, lang: currentLang })
-    })
-    .then(r => r.json())
-    .then(data => {
-        let html = `<div class="ai-msg-bubble">${formatAiMarkdown(data.reply || '')}`;
 
-        if (data.specs && data.specs.length > 0) {
-            html += `<div class="ai-spec-cards">`;
-            data.specs.forEach(s => {
-                const safeSpec = `${s.category} ${s.material} ${s.dimension || ''} ${s.size || ''}`.replace(/'/g, "\'");
-                html += `
-                    <div class="ai-spec-mini-card">
-                        <div class="ai-spec-mini-info">
-                            <strong>${s.material} · ${s.dimension || '-'}</strong>
-                            <span>${s.category} (${s.size || '常備規格'})</span>
+    function doFetch(attemptsLeft) {
+        fetch('/api/ai/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: text, lang: currentLang })
+        })
+        .then(r => {
+            if (!r.ok) {
+                return r.json().catch(() => ({ reply: null })).then(errData => {
+                    throw new Error(errData.reply || ('HTTP ' + r.status));
+                });
+            }
+            return r.json();
+        })
+        .then(data => {
+            let html = `<div class="ai-msg-bubble">${formatAiMarkdown(data.reply || '')}`;
+
+            if (data.specs && data.specs.length > 0) {
+                html += `<div class="ai-spec-cards">`;
+                data.specs.forEach(s => {
+                    const safeSpec = `${s.category} ${s.material} ${s.dimension || ''} ${s.size || ''}`.replace(/'/g, "\\'");
+                    html += `
+                        <div class="ai-spec-mini-card">
+                            <div class="ai-spec-mini-info">
+                                <strong>${s.material} · ${s.dimension || '-'}</strong>
+                                <span>${s.category} (${s.size || '常備規格'})</span>
+                            </div>
+                            <button type="button" class="ai-spec-mini-btn" onclick="addSpecToQuote('${safeSpec}')">＋詢價</button>
                         </div>
-                        <button type="button" class="ai-spec-mini-btn" onclick="addSpecToQuote('${safeSpec}')">＋詢價</button>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            if (data.cutting_plan && data.cutting_plan.success) {
+                const p = data.cutting_plan;
+                const quoteSummary = `[最佳化裁切需求] 母材 ${p.stock_length_mm}mm 共需 ${p.total_bars_used} 支 (利用率 ${p.overall_utilization_pct}%): ` +
+                    p.bars_plan.map(b => `第${b.bar_no}支(${b.cuts_summary})`).join('；');
+                const safeQuote = quoteSummary.replace(/'/g, "\\'");
+                html += `
+                    <div style="margin-top:10px;">
+                        <button type="button" class="ai-spec-mini-btn" style="width:100%;padding:7px;" onclick="addSpecToQuote('${safeQuote}')">
+                            📋 將此最佳裁切方案加入詢價單
+                        </button>
                     </div>
                 `;
-            });
-            html += `</div>`;
-        }
+            }
 
-        if (data.cutting_plan && data.cutting_plan.success) {
-            const p = data.cutting_plan;
-            const quoteSummary = `[最佳化裁切需求] 母材 ${p.stock_length_mm}mm 共需 ${p.total_bars_used} 支 (利用率 ${p.overall_utilization_pct}%): ` +
-                p.bars_plan.map(b => `第${b.bar_no}支(${b.cuts_summary})`).join('；');
-            const safeQuote = quoteSummary.replace(/'/g, "\'");
+            const voiceText = data.voice_script || (data.reply || '').replace(/[*`#|•📍✅📦🧮📋💡☎️]/g, '').replace(/\[.*?\]\(.*?\)/g, '').trim().substring(0, 300);
+            const safeVoiceText = voiceText.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
             html += `
-                <div style="margin-top:10px;">
-                    <button type="button" class="ai-spec-mini-btn" style="width:100%;padding:7px;" onclick="addSpecToQuote('${safeQuote}')">
-                        📋 將此最佳裁切方案加入詢價單
+                <div style="margin-top:8px;">
+                    <button type="button" class="ai-bubble-audio-btn" onclick="readAloudText('${safeVoiceText}', this)" title="播放擬人化語音解說">
+                        🔊 聽取 AI 語音解說
                     </button>
                 </div>
             `;
-        }
 
-        const voiceText = data.voice_script || (data.reply || '').replace(/[*`#|•📍✅📦🧮📋💡☎️]/g, '').replace(/\[.*?\]\(.*?\)/g, '').trim().substring(0, 300);
-        const safeVoiceText = voiceText.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
-        html += `
-            <div style="margin-top:8px;">
-                <button type="button" class="ai-bubble-audio-btn" onclick="readAloudText('${safeVoiceText}', this)" title="播放擬人化語音解說">
-                    🔊 聽取 AI 語音解說
-                </button>
-            </div>
-        `;
+            html += `</div>`;
+            botDiv.innerHTML = html;
+            box.scrollTop = box.scrollHeight;
+        })
+        .catch(err => {
+            if (attemptsLeft > 0) {
+                botDiv.innerHTML = `<div class="ai-msg-bubble">🔄 雲端引擎喚醒中，正在為您自動重試 (倒數 5 秒)...</div>`;
+                box.scrollTop = box.scrollHeight;
+                setTimeout(() => {
+                    botDiv.innerHTML = `<div class="ai-msg-bubble">⏳ 正在再次發送請求...</div>`;
+                    doFetch(attemptsLeft - 1);
+                }, 5000);
+            } else {
+                const escapedText = text.replace(/'/g, "\\'");
+                botDiv.innerHTML = `
+                    <div class="ai-msg-bubble" style="border-left: 3px solid #e74c3c;">
+                        ⚠️ 雲端運算伺服器可能正在休眠重啟中，請稍候片刻。<br>
+                        <button type="button" class="ai-spec-mini-btn" style="margin-top:8px;padding:6px 12px;background:var(--accent-cinnabar);color:#fff;" onclick="this.closest('.ai-msg').remove(); window.sendAiChatMessage('${escapedText}');">
+                            🔄 點擊此處立即重試
+                        </button>
+                    </div>
+                `;
+                box.scrollTop = box.scrollHeight;
+            }
+        });
+    }
 
-        html += `</div>`;
-        botDiv.innerHTML = html;
-        box.scrollTop = box.scrollHeight;
-    })
-    .catch(() => {
-        botDiv.innerHTML = `<div class="ai-msg-bubble">⚠️ 連線發生異常，請稍後再試。</div>`;
-    });
+    doFetch(1);
 };
 
 window.addCpsatDemandRow = function() {
