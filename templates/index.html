@@ -587,6 +587,52 @@
                     </div>
                     {% endfor %}
                 </div>
+
+                <!-- 現代化實景廠區與先進智慧倉儲實景巡禮 (Factory & Logistics Showcase) -->
+                {% if data.factory_showcase %}
+                <div class="factory-showcase-container glass-card" style="margin-top: 50px; padding: 36px 30px; border-radius: 20px;">
+                    <div class="section-header" style="margin-bottom: 30px; text-align: left;">
+                        <span class="section-tag" style="background: rgba(220, 53, 69, 0.15); color: var(--accent-cinnabar); font-weight: 700; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem;">
+                            🏭 Factory & Infrastructure Showcase
+                        </span>
+                        <h3 style="font-size: 1.8rem; margin: 12px 0 8px 0; color: var(--text-primary); font-weight: 800;">
+                            現代化實景廠區與先進智慧倉儲巡禮
+                        </h3>
+                        <p style="color: var(--text-secondary); margin: 0; font-size: 1rem;">
+                            法寶實業堅持自有廠房、萬噸現貨儲位、專屬物流車隊直配與進口重型裁切設備，點擊照片皆可放大檢視高解析實景細節
+                        </p>
+                    </div>
+
+                    {% for sec in data.factory_showcase %}
+                    <div class="showcase-category-group" style="margin-bottom: 40px;">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px;">
+                            <span style="font-size: 1.25rem; font-weight: 800; color: var(--accent-cinnabar);">◆ {{ sec.category }}</span>
+                            <span style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">{{ sec.tag }}</span>
+                        </div>
+                        <div class="factory-photo-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                            {% for photo in sec.photos %}
+                            <div class="factory-photo-card" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column;"
+                                 onmouseenter="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 30px rgba(0,0,0,0.3)';"
+                                 onmouseleave="this.style.transform='none'; this.style.boxShadow='none';">
+                                <div style="position: relative; height: 190px; overflow: hidden; cursor: pointer;" onclick="openImageLightbox('{{ photo.image }}', '{{ photo.title }} · {{ photo.desc }}')">
+                                    <img src="{{ photo.image }}" alt="{{ photo.title }}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;"
+                                         onmouseenter="this.style.transform='scale(1.05)';"
+                                         onmouseleave="this.style.transform='scale(1.0)';">
+                                    <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); color: #fff; font-size: 0.75rem; padding: 3px 8px; border-radius: 6px;">
+                                        🔍 點擊放大
+                                    </div>
+                                </div>
+                                <div style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
+                                    <h4 style="font-size: 1.05rem; font-weight: 700; margin: 0 0 8px 0; color: var(--text-primary);">{{ photo.title }}</h4>
+                                    <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0; line-height: 1.5; flex: 1;">{{ photo.desc }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
         </section>
 
@@ -1152,6 +1198,7 @@
                     </div>
                     {% endfor %}
                 </div>
+
             </div>
         </section>
 

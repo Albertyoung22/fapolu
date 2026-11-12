@@ -17,7 +17,7 @@
         "fax": "02-27189443",
         "email": "taipei@fapolu.com.tw",
         "highlights": "鄰近松山機場，統籌全台進出口貿易、訂單調度與高科技客戶即時服務。",
-        "image": "/static/img_factory/factory_gate_side.jpg"
+        "image": "/static/img_factory/factory_gate_facade.jpg"
       },
       {
         "id": "taichung",
@@ -39,7 +39,7 @@
         "fax": "06-7263888",
         "email": "fapotnn@ms37.hinet.net",
         "highlights": "鄰近麻豆交流道，長期作為南部核心發貨倉庫，深耕南部產業聚落即時調撥。",
-        "image": "/static/img_factory/warehouse_heavy_plates_stacked.jpg"
+        "image": "/static/img_factory/logistics_truck_dispatch.jpg"
       },
       {
         "id": "tainan-2",
@@ -50,15 +50,15 @@
         "fax": "06-7263888",
         "email": "fapotnn@ms37.hinet.net",
         "highlights": "具備更寬敞儲運空間與新型自動鋸切設備，專責處理大型訂單與特殊規格材料精密裁切。",
-        "image": "/static/img_factory/factory_office_courtyard.jpg"
+        "image": "/static/img_factory/warehouse_heavy_plates_stacked.jpg"
       }
     ],
     "about_us": {
       "headline": "深耕台灣四十載，全方位鋁合金材料供應鏈",
       "subheadline": "Since 1986 —— 北、中、南服務網絡再升級",
-      "hero_image": "/static/img_factory/factory_gate_facade.jpg",
-      "banner_image": "/static/img_factory/warehouse_bar_racks_1.jpg",
-      "vision_image": "/static/img_factory/logistics_truck_fleet.jpg",
+      "hero_image": "/static/img_factory/factory_panoramic_campus.jpg",
+      "banner_image": "/static/img_factory/factory_office_courtyard.jpg",
+      "vision_image": "/static/img_factory/logistics_fleet_sunset.jpg",
       "history": "法寶實業有限公司成立於 1986 年，初期專注於進出口貿易業務。歷經近 40 年的耕耘，我們已從單純的貿易商，轉型為具備「龐大現貨庫存」與「精密裁切加工能力」的綜合材料供應商。我們致力於提供迅速、優良、高效率的專業服務，成為客戶最堅實的後盾。",
       "network_summary": [
         {
@@ -93,47 +93,47 @@
       "business_items": [
         {
           "title": "鋁材供應",
-          "image": "/static/img/biz_aluminum_stock.jpg",
+          "image": "/static/img_factory/warehouse_6061_racks.jpg",
           "desc": "進口、批發、零售各項純鋁及鋁合金，涵蓋鋁捲片、平片、圓片、鋁箔、鋁線、鋁管、圓棒、擠型材、烤漆鋁捲、金銀色鏡面鋁、浪板、模具用鋁、航空用料、建築企口鋁板、鑽石紋／二爪／三爪／五爪／人字壓花板、鋁帷幕牆、路燈反射鋁片，並進口各國特殊材質規格鋁料。"
         },
         {
           "title": "不鏽鋼材",
-          "image": "/static/img/biz_stainless_steel.jpg",
+          "image": "/static/img_factory/warehouse_heavy_plates_stacked.jpg",
           "desc": "常備供應 AISI 304、410、420、430 等各系列工業與精密機構用不鏽鋼板材與捲片。"
         },
         {
           "title": "鎂合金",
-          "image": "/static/img/biz_magnesium_alloy.jpg",
+          "image": "/static/img_factory/warehouse_7075_tubes_racks.jpg",
           "desc": "供應高比強度、極致輕量化與優良減震吸能特性之工業鎂合金材料，滿足 3C、航太與精密運動器材需求。"
         },
         {
           "title": "銅材",
-          "image": "/static/img/biz_copper_brass.jpg",
+          "image": "/static/img_factory/warehouse_bundled_skids.jpg",
           "desc": "供應高導電導熱之黃銅、紅銅、燐青銅及其他特殊合金銅之捲片、平片、棒材與異型材。"
         },
         {
           "title": "鋼材與保溫工程料",
-          "image": "/static/img/biz_insulation_steel.jpg",
+          "image": "/static/img_factory/warehouse_extrusions_vertical.jpg",
           "desc": "各項鋼材、保溫工程用不鏽鋼捲片（AISI 304 0.2mm–2.0mm）、不鏽鋼束帶及不鏽鋼扣；烤漆鍍鋅鋼捲 PVC / PVDF（BAND BELT 12.8mm–19.2mm）及鍍鋅鐵皮捲。"
         },
         {
           "title": "加工整合服務",
-          "image": "/static/img/biz_machining_service.jpg",
+          "image": "/static/img_factory/machining_panel_saw_cutting.jpg",
           "desc": "代客開模、銑床、車床、烤漆、陽極處理、分條、裁切、壓花、沖孔、折床、毛絲處理、牛皮紙貼合、焊接、合金硬度處理及相關用料加工服務。"
         },
         {
           "title": "專業技術服務",
-          "image": "/static/img/biz_technical_service.jpg",
+          "image": "/static/img_factory/machining_circular_saw_action.jpg",
           "desc": "提供代客估價、材質硬度測定、材料使用效益評估、協助新產品設計與開發，以及國外新技術引進與諮詢。"
         },
         {
           "title": "純金屬錠與鑄造錠料",
-          "image": "/static/img/biz_metal_ingots.jpg",
+          "image": "/static/img_factory/logistics_truck_dispatch.jpg",
           "desc": "供應純鋁錠（99.7%）、鋅錠（99.6%）、鎂錠（99.99%）、鋁合金鑄錠（ADC6、10、12，A356、356.2、357、380.2、413 等），依客戶要求提供所需材質。"
         },
         {
           "title": "材質證明與國際檢驗",
-          "image": "/static/img/biz_certifications_testing.jpg",
+          "image": "/static/img_factory/factory_admin_office.jpg",
           "desc": "提供原廠進口證明、材質證明書（Mill Sheet）、材質係數與國內外各項環保無毒檢驗報告（如 RoHS、PFOS 等檢驗）。"
         }
       ],
@@ -465,49 +465,49 @@
       "name": "CNC 銑床加工",
       "icon": "cog",
       "desc": "配備高剛性高精密立式 CNC 加工中心機，專注 6xxx 與 7xxx 鋁合金切削特性研究，專責半導體腔體結構、精密散熱底座與自動化治具之高速銑削與精密攻牙。",
-      "image": "/static/img_crawled/pro_1.jpg"
+      "image": "/static/img_factory/machining_cnc_bar_saw_jih_nc24l.jpg"
     },
     {
       "id": "cnc-lathe",
       "name": "精密 CNC 車床加工",
       "icon": "disc",
       "desc": "結合豐富 2xxx / 6xxx / 7xxx 鋁棒與鋁擠錠庫存優勢，多軸車銑複合一次完成外徑、內孔、精密螺紋、端面洗槽與偏心孔加工，確保高同心度與極致真圓度。",
-      "image": "/static/img_crawled/19.jpg"
+      "image": "/static/img_factory/machining_circular_saw_action.jpg"
     },
     {
       "id": "stamping",
       "name": "沖床與板金沖剪加工",
       "icon": "layers",
       "desc": "整合模具開發建議至高速連續衝壓、精密沖孔、落料、引伸成形與折床加工，結合對 1050 / 5052 鋁板延展特性的掌握，實現高效率批量生產。",
-      "image": "/static/img_crawled/194.jpg"
+      "image": "/static/img_factory/machining_chequered_shear_action.jpg"
     },
     {
       "id": "five-axis",
       "name": "航太級五軸同動加工",
       "icon": "cube",
       "desc": "引進高階五軸聯動加工中心，結合鋁材內部應力釋放專業技術，一次裝夾攻克複雜 3D 自由曲面、多角度斜孔歧管與深腔死角，消除多次治具轉換誤差。",
-      "image": "/static/img_crawled/pro_9.jpg"
+      "image": "/static/img_factory/machining_panel_saw_cutting.jpg"
     },
     {
       "id": "gantry-milling",
       "name": "大型龍門銑床加工",
       "icon": "maximize",
       "desc": "結合廠內大型鋁合金厚板庫存優勢，提供從「精密鋸切裁板」到「超大型平面精銑、重切削與精密孔系」整合服務，省去沉重板材跨廠搬運成本與碰撞風險。",
-      "image": "/static/img_crawled/pro_6.jpg"
+      "image": "/static/img_factory/machining_large_saw_cm3800.jpg"
     },
     {
       "id": "polishing",
       "name": "拋光與拉絲表面處理",
       "icon": "sparkles",
       "desc": "提供專業平面拉絲與精密手工／機械拋光工序，將加工素材轉化為細緻髮絲紋（Hairline）、雪花砂面或高光澤鏡面金屬質感，大幅提升產品外觀價值。",
-      "image": "/static/img_crawled/pro_14.jpg"
+      "image": "/static/img_factory/machining_vacuum_lift_operation.jpg"
     },
     {
       "id": "anodizing",
       "name": "陽極氧化與表面防蝕處理",
       "icon": "shield",
       "desc": "透過電化學工藝生成緻密氧化保護層，提供本色陽極、霧黑／消光陽極、多彩染色陽極及高硬度耐磨硬質陽極（Hard Anodizing），兼具耐蝕絕緣與精品色澤。",
-      "image": "/static/img_crawled/p01.jpg"
+      "image": "/static/img_factory/machining_precision_plate_feed.jpg"
     }
   ],
   "machining_gallery": [
@@ -600,7 +600,7 @@
       "solution": "材料選用堅持採用日本 UACJ 原廠進口 5052 / 6061 低應力貼膜鋁板，由源頭壓延工藝控制內應力；製程端結合高速精密銑削參數、微細孔加工與應力消除工法，確保薄化加工後依然維持極佳真平度。",
       "result": "成功將大型底座與腔體盤面平面度控制在嚴苛公差範圍內，大幅降低組裝重工率，獲選為該半導體設備商指定長期供應夥伴。",
       "tag": "半導體設備產業",
-      "image": "/static/img_crawled/pro_15.jpg"
+      "image": "/static/img_factory/warehouse_heavy_plates_stacked.jpg"
     },
     {
       "id": "case-aerospace",
@@ -610,7 +610,7 @@
       "solution": "提供附帶原廠材質證明書（Mill Sheet）之 7075-T651 超高強度航空鋁合金，並運用廠內五軸加工中心機進行一次性精密銑削，精準克服複雜 3D 曲面死角，完全符合 ISO 幾何公差規範。",
       "result": "順利通過嚴格材質探傷與三次元尺寸檢驗，協助客戶達成設備大幅減重目標，展現法寶實業處理 7xxx 系高硬度鋁材之專業實力。",
       "tag": "航太與高強度工業",
-      "image": "/static/img_crawled/pro_3.jpg"
+      "image": "/static/img_factory/warehouse_7075_tubes_racks.jpg"
     },
     {
       "id": "case-robotics",
@@ -620,7 +620,7 @@
       "solution": "發揮法寶一站式供應鏈整合優勢，嚴選表面均勻無組織料紋之優質鋁材，從鋁料精密裁切、CNC 精加工，到後端噴砂與陽極氧化處理全程控管，確保陽極後色澤均勻細緻。",
       "result": "客戶無需分別對口材料商、加工廠與表面處理廠，大幅縮短溝通與周轉工期，順利於預定交期內完成數百套高階組件交付。",
       "tag": "自動化機械手臂",
-      "image": "/static/img_crawled/195548-OY9OIN-908.jpg"
+      "image": "/static/img_factory/warehouse_6061_racks.jpg"
     }
   ],
   "hardness_data": [
@@ -1200,7 +1200,7 @@
       "max_capacity": "主軸 15,000 ~ 24,000 RPM",
       "tolerance": "重複定位精度 ±0.005 mm · 平行度 ≤ 0.01 mm",
       "features": "半導體微孔真空均流盤、航太複雜曲面掏空、高氣密接頭五面一次裝夾加工。",
-      "image": "/static/img_factory/machining_precision_plate_feed.jpg"
+      "image": "/static/img_factory/machining_circular_saw_action.jpg"
     },
     {
       "equipment": "雙面全自動貼膜與保護表面處理線",
@@ -1208,7 +1208,120 @@
       "max_capacity": "最大寬度 1650 mm",
       "tolerance": "氣泡覆蓋率 0% · 邊界對齊公差 ±1 mm",
       "features": "供應日本進口藍膜、大族雷射切割專用保護膜、無膠靜電吸附膜，防止加工搬運刮擦傷。",
+      "image": "/static/img_factory/machining_chequered_shear_action.jpg"
+    },
+    {
+      "equipment": "天車連動真空吸盤無痕吊裝系統",
+      "max_thickness": "單次承重 2.6 噸",
+      "max_capacity": "跨距大尺寸鋁厚板 / 防刮無痕吸取",
+      "tolerance": "零表面損傷保證",
       "image": "/static/img_factory/machining_vacuum_lift_operation.jpg"
+    }
+  ],
+  "factory_showcase": [
+    {
+      "category": "廠區外觀與營運園區",
+      "tag": "Headquarters & Campus",
+      "photos": [
+        {
+          "title": "台中總部全景園區與正門招牌",
+          "desc": "座落於交通要衝之現代化工業園區，全區佔地寬廣，擁有完善物料進出動線。",
+          "image": "/static/img_factory/factory_panoramic_campus.jpg"
+        },
+        {
+          "title": "總部行政大樓與迎賓庭園",
+          "desc": "現代化三層樓行政營運大樓，設有專屬客戶接待中心與工程諮詢室。",
+          "image": "/static/img_factory/factory_office_courtyard.jpg"
+        },
+        {
+          "title": "企業行政營運與品保中心",
+          "desc": "即時 ERP 庫存管理與品保材質證明核發作業中心，提供迅速報價與技術支援。",
+          "image": "/static/img_factory/factory_admin_office.jpg"
+        }
+      ]
+    },
+    {
+      "category": "自有專屬物流車隊",
+      "tag": "Logistics & Fleet",
+      "photos": [
+        {
+          "title": "五十鈴 (ISUZU) 專屬物流車隊",
+          "desc": "自有大型藍色貨車編隊（CEA-9773、BYS-3881、RFF-7311），專人專車全台直配。",
+          "image": "/static/img_factory/logistics_fleet_sunset.jpg"
+        },
+        {
+          "title": "室內裝卸月台與天車吊裝",
+          "desc": "全室內挑高裝卸月台，配備天車吊掛設備，雨天裝卸不淋濕，確保材料品質。",
+          "image": "/static/img_factory/logistics_truck_loading.jpg"
+        },
+        {
+          "title": "專業托盤捆扎與出貨整備",
+          "desc": "棧板打包、護角防護、鋼帶緊固與出廠標籤核對，確保運送過程零碰撞變形。",
+          "image": "/static/img_factory/logistics_forklift_staging.jpg"
+        }
+      ]
+    },
+    {
+      "category": "萬噸級智慧現貨倉儲",
+      "tag": "Smart Warehousing & Inventory",
+      "photos": [
+        {
+          "title": "6061-T6 圓棒懸臂儲位料架",
+          "desc": "8mm 至 76.2mm+ 全系列外徑常備現貨，色標端面管理，規格齊全即訂即切。",
+          "image": "/static/img_factory/warehouse_6061_racks.jpg"
+        },
+        {
+          "title": "7075 航太級圓棒與無縫鋁管",
+          "desc": "航太與半導體專用超高強度鋁合金圓棒與多重規格無縫管在庫儲備。",
+          "image": "/static/img_factory/warehouse_7075_tubes_racks.jpg"
+        },
+        {
+          "title": "六米直立式 A 型鋁擠型儲位",
+          "desc": "挑高夾層專用立式儲位，完整保護長型鋁擠型素材真直度，避免重壓彎曲。",
+          "image": "/static/img_factory/warehouse_extrusions_vertical.jpg"
+        },
+        {
+          "title": "原裝進口高規格精密鋁厚板庫存",
+          "desc": "UACJ 等國際大廠精密雙面貼膜鋁板與預拉伸厚板，大量木棧板現貨在庫。",
+          "image": "/static/img_factory/warehouse_heavy_plates_stacked.jpg"
+        }
+      ]
+    },
+    {
+      "category": "先進重型加工與裁切產線",
+      "tag": "Machining & Precision Cutting",
+      "photos": [
+        {
+          "title": "CM3800 超大行程自動精密裁板機",
+          "desc": "大尺寸鋁合金厚板精準切削，提供鏡面級切口與高精度平整度。",
+          "image": "/static/img_factory/machining_large_saw_cm3800.jpg"
+        },
+        {
+          "title": "JIH-NC24L 全自動 CNC 圓棒切斷機",
+          "desc": "數位數控自動進料與連續高精度切斷，滿足大批量定寸加工需求。",
+          "image": "/static/img_factory/machining_cnc_bar_saw_jih_nc24l.jpg"
+        },
+        {
+          "title": "SOCO MC-360NF 非鐵金屬高速圓鋸機",
+          "desc": "配備專用旋風集塵與快速夾持機構，確保鋁擠型與鋁管切面無毛邊。",
+          "image": "/static/img_factory/machining_circular_saw_action.jpg"
+        },
+        {
+          "title": "川洋油壓精密重型剪床裁切機",
+          "desc": "專業沖剪鋁合金防滑花紋板與各式薄中厚板，切口平整筆直。",
+          "image": "/static/img_factory/machining_chequered_shear_action.jpg"
+        },
+        {
+          "title": "2.6 噸天車真空吸盤無痕吊裝",
+          "desc": "高潔淨度真空吸取搬運，全程防止鋁板表面刮傷，符合半導體外觀嚴格標準。",
+          "image": "/static/img_factory/machining_vacuum_lift_operation.jpg"
+        },
+        {
+          "title": "氣浮平台高平整推料進鋸系統",
+          "desc": "氣浮減摩擦推進機構，使大型重板移動如行雲流水，保證切鋸垂直度。",
+          "image": "/static/img_factory/machining_precision_plate_feed.jpg"
+        }
+      ]
     }
   ]
 }
