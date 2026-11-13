@@ -1839,6 +1839,50 @@ window.selectRegion = function(regionName) {
     }
 };
 
+window.quickFillAndScroll = function(templateText) {
+    // If on subpage, navigate to contact page
+    if (window.navigateToPage) {
+        window.navigateToPage('contact', { scrollTarget: 'quoteFormCard' });
+    }
+    setTimeout(() => {
+        const inp = document.getElementById('inquiryMaterial');
+        if (inp) {
+            inp.value = templateText;
+            inp.focus();
+        }
+        const formCard = document.getElementById('quoteFormCard');
+        if (formCard) {
+            formCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            formCard.style.boxShadow = '0 0 0 4px var(--accent-cinnabar), 0 12px 36px rgba(166,44,34,0.3)';
+            setTimeout(() => { formCard.style.boxShadow = ''; }, 2200);
+        }
+    }, 150);
+};
+
+window.quickSnapInquiry = function() {
+    if (window.navigateToPage) {
+        window.navigateToPage('contact', { scrollTarget: 'quoteFormCard' });
+    }
+    setTimeout(() => {
+        const fileInput = document.getElementById('drawingFileInput');
+        const formCard = document.getElementById('quoteFormCard');
+        if (formCard) {
+            formCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        if (fileInput) {
+            fileInput.click();
+        }
+    }, 150);
+};
+
+window.fillQuickMaterial = function(text) {
+    const inp = document.getElementById('inquiryMaterial');
+    if (inp) {
+        inp.value = text;
+        inp.focus();
+    }
+};
+
 function initContactForm() {
     const form = document.getElementById('quoteForm');
     if (!form) return;

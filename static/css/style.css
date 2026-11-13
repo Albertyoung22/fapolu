@@ -5009,3 +5009,238 @@ textarea:focus-visible {
 }
 
 
+
+/* ==========================================================================
+   現場師傅專用 · 看圖直覺找料專區 (Visual Shape Material Finder)
+   ========================================================================== */
+.visual-finder-section {
+  margin: 45px 0 35px 0;
+  padding: 36px 28px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #ffffff 0%, #faf6ee 100%);
+  border: 2px solid rgba(166, 44, 34, 0.28);
+  box-shadow: 0 14px 36px rgba(92, 72, 38, 0.08);
+  position: relative;
+}
+
+.vf-header-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent-cinnabar);
+  color: #ffffff;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.vf-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 10px 0 6px 0;
+  line-height: 1.3;
+}
+
+.vf-subtitle {
+  font-size: 1rem;
+  color: var(--text-dim);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.visual-shape-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 22px;
+  margin-top: 24px;
+}
+
+.visual-shape-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(92, 75, 48, 0.16);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+}
+
+.visual-shape-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent-cinnabar);
+  box-shadow: 0 16px 36px rgba(166, 44, 34, 0.12);
+}
+
+.vs-img-wrap {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #2a241e;
+}
+
+.vs-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.visual-shape-card:hover .vs-img-wrap img {
+  transform: scale(1.06);
+}
+
+.vs-badge-shape {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(26, 20, 16, 0.88);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vs-zoom-tip {
+  position: absolute;
+  bottom: 10px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.72);
+  color: #ffffff;
+  font-size: 0.75rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+}
+
+.vs-body {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.vs-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.vs-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.vs-spec-tag {
+  font-size: 0.76rem;
+  color: var(--accent-cinnabar);
+  background: rgba(166, 44, 34, 0.08);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.vs-features {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 16px 0;
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+.vs-features li {
+  margin-bottom: 6px;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.vs-features li b {
+  color: var(--text-main);
+}
+
+.vs-actions {
+  margin-top: auto;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-vs-pick {
+  flex: 1.5;
+  background: var(--accent-cinnabar);
+  color: #ffffff;
+  border: none;
+  padding: 11px 12px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-vs-pick:hover {
+  background: #8e231b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(166, 44, 34, 0.25);
+}
+
+.btn-vs-zoom {
+  flex: 1;
+  background: #f5efe3;
+  color: var(--text-main);
+  border: 1px solid rgba(92, 75, 48, 0.2);
+  padding: 11px 10px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.btn-vs-zoom:hover {
+  background: #ebe2d0;
+}
+
+/* 師傅快捷點選列 */
+.chip-shape-btn {
+  background: #ffffff;
+  border: 1px solid rgba(166, 44, 34, 0.35);
+  color: #1f1b16;
+  font-size: 0.86rem;
+  font-weight: 700;
+  padding: 7px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.chip-shape-btn:hover {
+  background: var(--accent-cinnabar);
+  color: #ffffff;
+  border-color: var(--accent-cinnabar);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(166, 44, 34, 0.18);
+}
