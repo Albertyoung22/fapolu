@@ -465,7 +465,7 @@
       "name": "CNC 銑床加工",
       "icon": "cog",
       "desc": "配備高剛性高精密立式 CNC 加工中心機，專注 6xxx 與 7xxx 鋁合金切削特性研究，專責半導體腔體結構、精密散熱底座與自動化治具之高速銑削與精密攻牙。",
-      "image": "/static/img_factory/machining_precision_plate_feed.jpg"
+      "image": "/static/img_factory/cap_cnc_vertical_milling.jpg"
     },
     {
       "id": "cnc-lathe",
@@ -479,7 +479,7 @@
       "name": "沖床與板金沖剪加工",
       "icon": "layers",
       "desc": "整合模具開發建議至高速連續衝壓、精密沖孔、落料、引伸成形與折床加工，結合對 1050 / 5052 鋁板延展特性的掌握，實現高效率批量生產。",
-      "image": "/static/img_factory/machining_chequered_shear_action.jpg"
+      "image": "/static/img_factory/cap_stamping_press_brake.jpg"
     },
     {
       "id": "five-axis",
