@@ -223,7 +223,7 @@ def main():
 
     print("  🚀 正在開啟桌面視窗...")
     # gui='edgechromium' uses Microsoft Edge Chromium runtime on Windows with custom icon
-    webview.start(gui='edgechromium', debug=False, icon=icon_ico_path)
+    webview.start(gui='edgechromium', debug=False)
     print("  桌面視窗已關閉，感謝使用！")
 
 if __name__ == '__main__':

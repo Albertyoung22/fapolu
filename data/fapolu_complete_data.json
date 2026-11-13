@@ -323,7 +323,7 @@
       "badge": "高強快削",
       "subtitle": "2011/2014/2024 快削高強 · 5083 海事級 · 7075 超硬鋁棒與擠錠",
       "desc": "專供高硬度與耐蝕結構擠型料件：2011/2024 快削高抗疲勞鋁棒、5083/5086 海事抗蝕鋁棒、7075/7050 航太超硬鋁棒，並供應高 CP 值車床用鋁擠錠料（Aluminum Billet），大幅降低大外徑車削材料成本。",
-      "image": "/static/img_crawled/aluminum-futures-trade.jpg",
+      "image": "/static/img_factory/prod_aerospace_billets_bars.jpg",
       "specs": [
         "系列：2011, 2014, 2024-T351, 5083, 7075-T651",
         "形狀：精抽鋁圓棒、六角棒、厚壁管、經濟型鋁擠錠",
@@ -339,7 +339,7 @@
       "badge": "一站整合",
       "subtitle": "1~7系客製擠型開模 · 高強度鍛造與精密鑄造雙軌方案",
       "desc": "擁有豐富鋁合金模具開發經驗，專精於 6 系工業結構與 7 系高強度航太擠型開模，以及高強度鍛造與重力／壓鑄模具開發，從圖面檢討、開模試樣到 CNC 與陽極表面處理一貫化完成。",
-      "image": "/static/img_crawled/191.jpg",
+      "image": "/static/img_factory/prod_custom_extrusion_molds.jpg",
       "specs": [
         "服務項目：1~7系鋁擠型開模、鍛造開模、重力鑄造、壓鑄",
         "支援格式：AutoCAD, STEP, IGES, SolidWorks",
@@ -465,14 +465,14 @@
       "name": "CNC 銑床加工",
       "icon": "cog",
       "desc": "配備高剛性高精密立式 CNC 加工中心機，專注 6xxx 與 7xxx 鋁合金切削特性研究，專責半導體腔體結構、精密散熱底座與自動化治具之高速銑削與精密攻牙。",
-      "image": "/static/img_factory/machining_cnc_bar_saw_jih_nc24l.jpg"
+      "image": "/static/img_factory/machining_precision_plate_feed.jpg"
     },
     {
       "id": "cnc-lathe",
       "name": "精密 CNC 車床加工",
       "icon": "disc",
       "desc": "結合豐富 2xxx / 6xxx / 7xxx 鋁棒與鋁擠錠庫存優勢，多軸車銑複合一次完成外徑、內孔、精密螺紋、端面洗槽與偏心孔加工，確保高同心度與極致真圓度。",
-      "image": "/static/img_factory/machining_circular_saw_action.jpg"
+      "image": "/static/img_factory/cap_cnc_lathe_turning.jpg"
     },
     {
       "id": "stamping",
@@ -486,28 +486,28 @@
       "name": "航太級五軸同動加工",
       "icon": "cube",
       "desc": "引進高階五軸聯動加工中心，結合鋁材內部應力釋放專業技術，一次裝夾攻克複雜 3D 自由曲面、多角度斜孔歧管與深腔死角，消除多次治具轉換誤差。",
-      "image": "/static/img_factory/machining_panel_saw_cutting.jpg"
+      "image": "/static/img_factory/cap_five_axis_machining.jpg"
     },
     {
       "id": "gantry-milling",
       "name": "大型龍門銑床加工",
       "icon": "maximize",
       "desc": "結合廠內大型鋁合金厚板庫存優勢，提供從「精密鋸切裁板」到「超大型平面精銑、重切削與精密孔系」整合服務，省去沉重板材跨廠搬運成本與碰撞風險。",
-      "image": "/static/img_factory/machining_large_saw_cm3800.jpg"
+      "image": "/static/img_factory/cap_gantry_milling.jpg"
     },
     {
       "id": "polishing",
       "name": "拋光與拉絲表面處理",
       "icon": "sparkles",
       "desc": "提供專業平面拉絲與精密手工／機械拋光工序，將加工素材轉化為細緻髮絲紋（Hairline）、雪花砂面或高光澤鏡面金屬質感，大幅提升產品外觀價值。",
-      "image": "/static/img_factory/machining_vacuum_lift_operation.jpg"
+      "image": "/static/img_factory/cap_surface_polishing_hairline.jpg"
     },
     {
       "id": "anodizing",
       "name": "陽極氧化與表面防蝕處理",
       "icon": "shield",
       "desc": "透過電化學工藝生成緻密氧化保護層，提供本色陽極、霧黑／消光陽極、多彩染色陽極及高硬度耐磨硬質陽極（Hard Anodizing），兼具耐蝕絕緣與精品色澤。",
-      "image": "/static/img_factory/machining_precision_plate_feed.jpg"
+      "image": "/static/img_factory/cap_anodizing_facility.jpg"
     }
   ],
   "machining_gallery": [
@@ -600,7 +600,7 @@
       "solution": "材料選用堅持採用日本 UACJ 原廠進口 5052 / 6061 低應力貼膜鋁板，由源頭壓延工藝控制內應力；製程端結合高速精密銑削參數、微細孔加工與應力消除工法，確保薄化加工後依然維持極佳真平度。",
       "result": "成功將大型底座與腔體盤面平面度控制在嚴苛公差範圍內，大幅降低組裝重工率，獲選為該半導體設備商指定長期供應夥伴。",
       "tag": "半導體設備產業",
-      "image": "/static/img_factory/warehouse_heavy_plates_stacked.jpg"
+      "image": "/static/img_factory/case_semiconductor_chamber.jpg"
     },
     {
       "id": "case-aerospace",
@@ -610,7 +610,7 @@
       "solution": "提供附帶原廠材質證明書（Mill Sheet）之 7075-T651 超高強度航空鋁合金，並運用廠內五軸加工中心機進行一次性精密銑削，精準克服複雜 3D 曲面死角，完全符合 ISO 幾何公差規範。",
       "result": "順利通過嚴格材質探傷與三次元尺寸檢驗，協助客戶達成設備大幅減重目標，展現法寶實業處理 7xxx 系高硬度鋁材之專業實力。",
       "tag": "航太與高強度工業",
-      "image": "/static/img_factory/warehouse_7075_tubes_racks.jpg"
+      "image": "/static/img_factory/case_aerospace_structural.jpg"
     },
     {
       "id": "case-robotics",
@@ -620,7 +620,7 @@
       "solution": "發揮法寶一站式供應鏈整合優勢，嚴選表面均勻無組織料紋之優質鋁材，從鋁料精密裁切、CNC 精加工，到後端噴砂與陽極氧化處理全程控管，確保陽極後色澤均勻細緻。",
       "result": "客戶無需分別對口材料商、加工廠與表面處理廠，大幅縮短溝通與周轉工期，順利於預定交期內完成數百套高階組件交付。",
       "tag": "自動化機械手臂",
-      "image": "/static/img_factory/warehouse_6061_racks.jpg"
+      "image": "/static/img_factory/case_robotics_articulation.jpg"
     }
   ],
   "hardness_data": [
@@ -1200,7 +1200,7 @@
       "max_capacity": "主軸 15,000 ~ 24,000 RPM",
       "tolerance": "重複定位精度 ±0.005 mm · 平行度 ≤ 0.01 mm",
       "features": "半導體微孔真空均流盤、航太複雜曲面掏空、高氣密接頭五面一次裝夾加工。",
-      "image": "/static/img_factory/machining_circular_saw_action.jpg"
+      "image": "/static/img_factory/cap_five_axis_machining.jpg"
     },
     {
       "equipment": "雙面全自動貼膜與保護表面處理線",
@@ -1208,7 +1208,7 @@
       "max_capacity": "最大寬度 1650 mm",
       "tolerance": "氣泡覆蓋率 0% · 邊界對齊公差 ±1 mm",
       "features": "供應日本進口藍膜、大族雷射切割專用保護膜、無膠靜電吸附膜，防止加工搬運刮擦傷。",
-      "image": "/static/img_factory/machining_chequered_shear_action.jpg"
+      "image": "/static/img_factory/machining_precision_plate_feed.jpg"
     },
     {
       "equipment": "天車連動真空吸盤無痕吊裝系統",
