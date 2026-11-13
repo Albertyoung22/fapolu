@@ -205,7 +205,7 @@ def send_inquiry_email(inquiry, custom_cfg=None):
         f"{drawing_text}\n"
         f"需求說明：\n{message}\n"
         f"========================================\n"
-        f"※ 依送貨區域指派專屬業務團隊跟進報價，避免跨區重覆聯繫或搶單衝突。"
+        f"※ 依送貨區域指派專屬業務團隊跟進報價，確保報價精準且具最佳時效性。"
     )
 
     esc_ticket = html.escape(str(ticket_id))
@@ -247,7 +247,7 @@ def send_inquiry_email(inquiry, custom_cfg=None):
             </div>
             <div style="background:#0f2b48;border-left:4px solid #00f0ff;padding:12px 16px;border-radius:6px;margin-bottom:18px;">
                 <div style="color:#00f0ff;font-weight:bold;font-size:14px;">📍 責任服務分區：【{esc_branch}】</div>
-                <div style="font-size:12px;color:#94a3b8;margin-top:4px;">送貨地點：{esc_county or '未指定'} ｜ 系統已自動分區派單，請該區域業務專員優先報價，避免跨區搶單爭議。</div>
+                <div style="font-size:12px;color:#94a3b8;margin-top:4px;">送貨地點：{esc_county or '未指定'} ｜ 系統已自動分區派單，由該區域業務專員優先處理，確保報價精準且具最佳時效性。</div>
             </div>
             <table style="width:100%;border-collapse:collapse;font-size:14px;">
                 <tr>

@@ -690,7 +690,7 @@ def api_contact():
         county = str(raw.get('deliveryCounty', '')).strip()
         region = str(raw.get('region', '')).strip()
 
-        # North / Central / South region assignment mapping (避免業務人員搶單衝突)
+        # North / Central / South region assignment mapping (依送貨區域精準派單，具最佳時效性)
         north_counties = {'台北市', '新北市', '基隆市', '桃園市', '新竹市', '新竹縣', '宜蘭縣'}
         central_counties = {'台中市', '苗栗縣', '彰化縣', '南投縣', '雲林縣'}
         south_counties = {'台南市', '嘉義市', '嘉義縣', '高雄市', '屏東縣', '花蓮縣', '台東縣', '澎湖縣', '金門縣', '連江縣', '澎湖金門連江'}
