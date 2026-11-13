@@ -17,7 +17,7 @@
         "fax": "02-27189443",
         "email": "taipei@fapolu.com.tw",
         "highlights": "鄰近松山機場，統籌全台進出口貿易、訂單調度與高科技客戶即時服務。",
-        "image": "/static/img_factory/factory_gate_facade.jpg"
+        "image": "/static/img_factory/location_taipei_hq.jpg"
       },
       {
         "id": "taichung",
@@ -28,7 +28,7 @@
         "fax": "04-22588743",
         "email": "taichung@fapolu.com.tw",
         "highlights": "緊鄰國1台中沙鹿交流道。備有各式大型鋁合金裁切機具，1000/5000/6000/7000系列鋁板、擠型圓棒扁條常備庫存。",
-        "image": "/static/img_factory/logistics_truck_loading.jpg"
+        "image": "/static/img_factory/warehouse_heavy_plates_stacked.jpg"
       },
       {
         "id": "tainan-1",
@@ -50,7 +50,7 @@
         "fax": "06-7263888",
         "email": "fapotnn@ms37.hinet.net",
         "highlights": "具備更寬敞儲運空間與新型自動鋸切設備，專責處理大型訂單與特殊規格材料精密裁切。",
-        "image": "/static/img_factory/warehouse_heavy_plates_stacked.jpg"
+        "image": "/static/img_factory/factory_gate_facade.jpg"
       }
     ],
     "about_us": {
@@ -1224,17 +1224,17 @@
       "tag": "Headquarters & Campus",
       "photos": [
         {
-          "title": "台中總部全景園區與正門招牌",
-          "desc": "座落於交通要衝之現代化工業園區，全區佔地寬廣，擁有完善物料進出動線。",
+          "title": "台南麻豆新廠全景園區與正門招牌",
+          "desc": "座落於台南麻豆之現代化廠區，全區佔地寬廣，擁有完善物料進出動線與新型自動鋸切設備。",
           "image": "/static/img_factory/factory_panoramic_campus.jpg"
         },
         {
-          "title": "總部行政大樓與迎賓庭園",
+          "title": "麻豆新廠行政大樓與迎賓庭園",
           "desc": "現代化三層樓行政營運大樓，設有專屬客戶接待中心與工程諮詢室。",
           "image": "/static/img_factory/factory_office_courtyard.jpg"
         },
         {
-          "title": "企業行政營運與品保中心",
+          "title": "新廠行政營運與品保中心",
           "desc": "即時 ERP 庫存管理與品保材質證明核發作業中心，提供迅速報價與技術支援。",
           "image": "/static/img_factory/factory_admin_office.jpg"
         }
