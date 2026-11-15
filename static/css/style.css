@@ -4821,11 +4821,12 @@ button {
 
 .series-footer {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 10px;
   font-size: 0.8rem;
-  padding-top: 10px;
+  padding-top: 12px;
   border-top: 1px dashed rgba(200, 180, 160, 0.4);
+  margin-top: auto;
 }
 
 .badge-stock {
@@ -4836,6 +4837,38 @@ button {
 .btn-matrix-action {
   font-weight: 700;
   color: var(--accent-cinnabar);
+}
+
+.series-footer .badge-stock {
+  display: block;
+  width: 100%;
+  padding: 6px 10px;
+  background: rgba(15, 23, 42, 0.04);
+  color: #1e293b;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.45;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.series-footer .btn-matrix-action {
+  align-self: flex-end;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--accent-cinnabar);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: transform 0.2s ease, color 0.2s ease;
+  letter-spacing: 0.2px;
+}
+
+.alloy-series-card:hover .series-footer .btn-matrix-action {
+  transform: translateX(4px);
+  color: #991b1b;
 }
 
 /* ==========================================================================
