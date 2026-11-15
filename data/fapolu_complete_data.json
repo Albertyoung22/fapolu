@@ -16,7 +16,7 @@
         "tel": "02-27183134",
         "fax": "02-27189443",
         "email": "taipei@fapolu.com.tw",
-        "highlights": "鄰近松山機場，統籌全台進出口貿易、訂單調度與高科技客戶即時服務。",
+        "highlights": "鄰近松山機場，統籌全台進出口貿易、訂單調度與北部高科技客戶即時服務據點。",
         "image": "/static/img_factory/location_taipei_hq.jpg"
       },
       {
@@ -27,8 +27,8 @@
         "tel": "04-22584931",
         "fax": "04-22588743",
         "email": "taichung@fapolu.com.tw",
-        "highlights": "緊鄰國1台中沙鹿交流道。備有各式大型鋁合金裁切機具，1000/5000/6000/7000系列鋁板、擠型圓棒扁條常備庫存。",
-        "image": "/static/img_factory/warehouse_heavy_plates_stacked.jpg"
+        "highlights": "緊鄰國1沙鹿交流道。配置 CM3800 大型重切削裁板機與數控圓棒鋸床，中部龐大現貨發貨中心。",
+        "image": "/static/img_factory/machining_heavy_sawing_bay.jpg"
       },
       {
         "id": "tainan-1",
@@ -38,8 +38,8 @@
         "tel": "06-7263666",
         "fax": "06-7263888",
         "email": "fapotnn@ms37.hinet.net",
-        "highlights": "鄰近麻豆交流道，長期作為南部核心發貨倉庫，深耕南部產業聚落即時調撥。",
-        "image": "/static/img_factory/logistics_truck_dispatch.jpg"
+        "highlights": "鄰近麻豆交流道，深耕南部產業聚落近40年，萬坪原木棧板與貼膜鋁板常備庫存迅速調撥。",
+        "image": "/static/img_factory/warehouse_wood_pallets_plates.jpg"
       },
       {
         "id": "tainan-2",
@@ -49,7 +49,7 @@
         "tel": "06-7263666",
         "fax": "06-7263888",
         "email": "fapotnn@ms37.hinet.net",
-        "highlights": "具備更寬敞儲運空間與新型自動鋸切設備，專責處理大型訂單與特殊規格材料精密裁切。",
+        "highlights": "麻豆新廠營運園區，具備挑高無塵儲存月台、新型超大行程自動鋸切設備與專屬物流車隊調度站。",
         "image": "/static/img_factory/factory_gate_facade.jpg"
       }
     ],
@@ -94,47 +94,56 @@
         {
           "title": "鋁材供應",
           "image": "/static/img_factory/warehouse_6061_racks.jpg",
-          "desc": "進口、批發、零售各項純鋁及鋁合金，涵蓋鋁捲片、平片、圓片、鋁箔、鋁線、鋁管、圓棒、擠型材、烤漆鋁捲、金銀色鏡面鋁、浪板、模具用鋁、航空用料、建築企口鋁板、鑽石紋／二爪／三爪／五爪／人字壓花板、鋁帷幕牆、路燈反射鋁片，並進口各國特殊材質規格鋁料。"
+          "desc": "進口、批發、零售各項純鋁及鋁合金，涵蓋鋁捲片、平片、圓片、鋁箔、鋁線、鋁管、圓棒、擠型材、烤漆鋁捲、金銀色鏡面鋁、浪板、模具用鋁、航空用料、建築企口鋁板、鑽石紋／二爪／三爪／五爪／人字壓花板、鋁帷幕牆、路燈反射鋁片，並進口各國特殊材質規格鋁料。",
+          "alt": "法寶實業萬噸級鋁合金現貨倉儲料架"
         },
         {
           "title": "不鏽鋼材",
-          "image": "/static/img_factory/warehouse_heavy_plates_stacked.jpg",
-          "desc": "常備供應 AISI 304、410、420、430 等各系列工業與精密機構用不鏽鋼板材與捲片。"
+          "image": "/static/img_crawled/918.jpg",
+          "desc": "常備供應 AISI 304、410、420、430 等各系列工業與精密機構用不鏽鋼板材與捲片。",
+          "alt": "各系列工業與精密機構用不鏽鋼板材、捲片與圓棒"
         },
         {
           "title": "鎂合金",
-          "image": "/static/img_factory/warehouse_7075_tubes_racks.jpg",
-          "desc": "供應高比強度、極致輕量化與優良減震吸能特性之工業鎂合金材料，滿足 3C、航太與精密運動器材需求。"
+          "image": "/static/img_factory/case_aerospace_structural.jpg",
+          "desc": "供應高比強度、極致輕量化與優良減震吸能特性之工業鎂合金材料，滿足 3C、航太與精密運動器材需求。",
+          "alt": "高比強度航太級與精密運動器材輕量化鎂合金/鋁合金結構件"
         },
         {
           "title": "銅材",
-          "image": "/static/img_factory/warehouse_bundled_skids.jpg",
-          "desc": "供應高導電導熱之黃銅、紅銅、燐青銅及其他特殊合金銅之捲片、平片、棒材與異型材。"
+          "image": "/static/img_crawled/918.jpg",
+          "desc": "供應高導電導熱之黃銅、紅銅、燐青銅及其他特殊合金銅之捲片、平片、棒材與異型材。",
+          "alt": "高導電導熱黃銅、紅銅、燐青銅平片與棒材"
         },
         {
           "title": "鋼材與保溫工程料",
-          "image": "/static/img_factory/warehouse_extrusions_vertical.jpg",
-          "desc": "各項鋼材、保溫工程用不鏽鋼捲片（AISI 304 0.2mm–2.0mm）、不鏽鋼束帶及不鏽鋼扣；烤漆鍍鋅鋼捲 PVC / PVDF（BAND BELT 12.8mm–19.2mm）及鍍鋅鐵皮捲。"
+          "image": "/static/img_factory/machining_heavy_shear_chuan_yang.jpg",
+          "desc": "各項鋼材、保溫工程用不鏽鋼捲片（AISI 304 0.2mm–2.0mm）、不鏽鋼束帶及不鏽鋼扣；烤漆鍍鋅鋼捲 PVC / PVDF（BAND BELT 12.8mm–19.2mm）及鍍鋅鐵皮捲。",
+          "alt": "保溫工程用不鏽鋼捲片、束帶及鋼材精密切割加工"
         },
         {
           "title": "加工整合服務",
-          "image": "/static/img_factory/machining_panel_saw_cutting.jpg",
-          "desc": "代客開模、銑床、車床、烤漆、陽極處理、分條、裁切、壓花、沖孔、折床、毛絲處理、牛皮紙貼合、焊接、合金硬度處理及相關用料加工服務。"
+          "image": "/static/img_factory/machining_large_saw_cm3800.jpg",
+          "desc": "代客開模、銑床、車床、烤漆、陽極處理、分條、裁切、壓花、沖孔、折床、毛絲處理、牛皮紙貼合、焊接、合金硬度處理及相關用料加工服務。",
+          "alt": "CM3800 大型精密裁板機與全自動鋸切加工服務"
         },
         {
           "title": "專業技術服務",
-          "image": "/static/img_factory/machining_circular_saw_action.jpg",
-          "desc": "提供代客估價、材質硬度測定、材料使用效益評估、協助新產品設計與開發，以及國外新技術引進與諮詢。"
+          "image": "/static/img_factory/machining_vacuum_lift_operation.jpg",
+          "desc": "提供代客估價、材質硬度測定、材料使用效益評估、協助新產品設計與開發，以及國外新技術引進與諮詢。",
+          "alt": "專業材料硬度測定、DFM 評估與天車無痕吊裝品管流程"
         },
         {
           "title": "純金屬錠與鑄造錠料",
-          "image": "/static/img_factory/logistics_truck_dispatch.jpg",
-          "desc": "供應純鋁錠（99.7%）、鋅錠（99.6%）、鎂錠（99.99%）、鋁合金鑄錠（ADC6、10、12，A356、356.2、357、380.2、413 等），依客戶要求提供所需材質。"
+          "image": "/static/img_factory/prod_aerospace_billets_bars.jpg",
+          "desc": "供應純鋁錠（99.7%）、鋅錠（99.6%）、鎂錠（99.99%）、鋁合金鑄錠（ADC6、10、12，A356、356.2、357、380.2、413 等），依客戶要求提供所需材質。",
+          "alt": "純鋁錠、鋅錠、鎂錠與高階鑄造鋁錠料"
         },
         {
           "title": "材質證明與國際檢驗",
-          "image": "/static/img_factory/factory_admin_office.jpg",
-          "desc": "提供原廠進口證明、材質證明書（Mill Sheet）、材質係數與國內外各項環保無毒檢驗報告（如 RoHS、PFOS 等檢驗）。"
+          "image": "/static/img_crawled/korea_fournine_tolerance_cert.png",
+          "desc": "提供原廠進口證明、材質證明書（Mill Sheet）、材質係數與國內外各項環保無毒檢驗報告（如 RoHS、PFOS 等檢驗）。",
+          "alt": "原廠進口材質分析證明書（Mill Sheet）與公差檢驗合格證"
         }
       ],
       "sales_industries": [
