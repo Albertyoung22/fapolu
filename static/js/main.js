@@ -1966,9 +1966,31 @@ function initContactForm() {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
             if (data.success) {
+                // Save current inquiry snapshot for instant quotation viewing
+                try {
+                    const snap = {
+                        id: data.ticket_id || ('REQ-' + Date.now()),
+                        companyName: (form.companyName ? form.companyName.value : '') || '貴客戶',
+                        contactPerson: (form.contactPerson ? form.contactPerson.value : '') || '採購專員',
+                        contactPhone: (form.contactPhone ? form.contactPhone.value : '') || '—',
+                        contactEmail: (form.contactEmail ? form.contactEmail.value : '') || '—',
+                        inquiryMaterial: (form.inquiryMaterial ? form.inquiryMaterial.value : '') || '客製鋁合金規格材料',
+                        inquiryMessage: (form.inquiryMessage ? form.inquiryMessage.value : '') || '',
+                        branch: (form.region ? form.region.value : '') || (form.deliveryCounty ? form.deliveryCounty.value : '') || '全台配送',
+                        timestamp: new Date().toISOString().slice(0, 10)
+                    };
+                    sessionStorage.setItem('current_inquiry', JSON.stringify(snap));
+                    if (data.ticket_id) {
+                        sessionStorage.setItem('inquiry_' + data.ticket_id, JSON.stringify(snap));
+                    }
+                } catch(e) {}
+
                 showSuccessModal(data.ticket_id, data.message);
                 form.reset();
                 updateFileDisplay(null);
+                if (typeof window.clearInquiryCart === 'function') {
+                    window.clearInquiryCart();
+                }
             } else {
                 showToast("送出失敗：" + (data.error || '未預期錯誤'));
             }
@@ -1991,7 +2013,14 @@ function showSuccessModal(ticketId, message) {
         if (modalMsg) modalMsg.textContent = message;
         if (modalTicket) modalTicket.textContent = `諮詢單號：${ticketId}`;
         if (pdfBtn) {
-            pdfBtn.href = `/quotation/${encodeURIComponent(ticketId)}`;
+            const quotationUrl = `/quotation.html?id=${encodeURIComponent(ticketId)}`;
+            pdfBtn.href = quotationUrl;
+            pdfBtn.setAttribute('target', '_blank');
+            pdfBtn.onclick = function(e) {
+                // Ensure new tab opens quotation immediately
+                window.open(quotationUrl, '_blank');
+                return false;
+            };
         }
         modal.classList.add('open');
     }

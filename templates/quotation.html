@@ -330,7 +330,7 @@
     <div class="action-bar">
         <div>
             <span style="font-weight:700; color:#1e293b;" data-i18n="quote.sheet_title">📄 正式需求估價單據預覽</span>
-            <span style="font-size:12px; color:#64748b; margin-left:8px;">單號：{{ inquiry.id }}</span>
+            <span style="font-size:12px; color:#64748b; margin-left:8px;">單號：<span class="val-ticket-id">{{ inquiry.id }}</span></span>
         </div>
         <div style="display:flex; gap:10px;">
             <button type="button" class="action-btn btn-secondary" onclick="window.history.back()">
@@ -377,23 +377,23 @@
                 <div class="info-card-title" data-i18n="quote.sec_customer">客戶資料 / Client Information</div>
                 <div class="info-row">
                     <span class="info-label">客戶寶號：</span>
-                    <span class="info-val" style="font-weight:700;">{{ inquiry.companyName or '—' }}</span>
+                    <span class="info-val val-company" style="font-weight:700;">{{ inquiry.companyName or '—' }}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">聯絡人員：</span>
-                    <span class="info-val">{{ inquiry.contactPerson or '—' }}</span>
+                    <span class="info-val val-person">{{ inquiry.contactPerson or '—' }}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">聯絡電話：</span>
-                    <span class="info-val num-font">{{ inquiry.contactPhone or '—' }}</span>
+                    <span class="info-val num-font val-phone">{{ inquiry.contactPhone or '—' }}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">電子郵件：</span>
-                    <span class="info-val num-font">{{ inquiry.contactEmail or '—' }}</span>
+                    <span class="info-val num-font val-email">{{ inquiry.contactEmail or '—' }}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">送達廠區：</span>
-                    <span class="info-val">{{ inquiry.branch or '全台配送 / 依約定' }}</span>
+                    <span class="info-val val-branch">{{ inquiry.branch or '全台配送 / 依約定' }}</span>
                 </div>
             </div>
 
@@ -402,11 +402,11 @@
                 <div class="info-card-title" data-i18n="quote.sec_info">單據資訊 / Quotation Details</div>
                 <div class="info-row">
                     <span class="info-label">報價單號：</span>
-                    <span class="info-val highlight">{{ inquiry.id }}</span>
+                    <span class="info-val highlight val-ticket-id">{{ inquiry.id }}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">開單日期：</span>
-                    <span class="info-val num-font">{{ inquiry.timestamp or '2026-11-07' }}</span>
+                    <span class="info-val num-font val-date">{{ inquiry.timestamp or '2026-11-07' }}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">有效期限：</span>
@@ -445,10 +445,10 @@
                 <tr>
                     <td class="text-center num-font">01</td>
                     <td>
-                        <strong style="color:#0f172a; font-size:13px;">{{ inquiry.inquiryMaterial or '客製鋁合金精密切割料' }}</strong>
+                        <strong class="val-material" style="color:#0f172a; font-size:13px; white-space:pre-wrap;">{{ inquiry.inquiryMaterial or '客製鋁合金精密切割料' }}</strong>
                         {% if inquiry.inquiryMessage %}
                         <div style="font-size:11px; color:#475569; margin-top:4px; line-height:1.4;">
-                            說明：{{ inquiry.inquiryMessage }}
+                            <span class="val-message">說明：{{ inquiry.inquiryMessage }}</span>
                         </div>
                         {% endif %}
                         {% if inquiry.drawingUrl %}
@@ -540,6 +540,67 @@
             if (sel) sel.value = e.detail.language;
         });
     </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const params = new URLSearchParams(window.location.search);
+        let ticketId = params.get('id') || '';
+        if (!ticketId) {
+            const parts = window.location.pathname.split('/');
+            const lastPart = parts[parts.length - 1];
+            if (lastPart && lastPart !== 'quotation.html') {
+                ticketId = decodeURIComponent(lastPart);
+            }
+        }
+
+        function applyInquiryData(d) {
+            if (!d) return;
+            if (d.id) {
+                document.querySelectorAll('.val-ticket-id').forEach(el => el.textContent = d.id);
+                document.title = '產品需求估價單 - ' + d.id + ' - 法寶實業有限公司';
+            }
+            if (d.companyName) document.querySelectorAll('.val-company').forEach(el => el.textContent = d.companyName);
+            if (d.contactPerson) document.querySelectorAll('.val-person').forEach(el => el.textContent = d.contactPerson);
+            if (d.contactPhone) document.querySelectorAll('.val-phone').forEach(el => el.textContent = d.contactPhone);
+            if (d.contactEmail) document.querySelectorAll('.val-email').forEach(el => el.textContent = d.contactEmail);
+            if (d.branch) document.querySelectorAll('.val-branch').forEach(el => el.textContent = d.branch);
+            if (d.timestamp) document.querySelectorAll('.val-date').forEach(el => el.textContent = d.timestamp);
+            if (d.inquiryMaterial) document.querySelectorAll('.val-material').forEach(el => el.textContent = d.inquiryMaterial);
+            if (d.inquiryMessage) document.querySelectorAll('.val-message').forEach(el => el.textContent = '說明：' + d.inquiryMessage);
+            if (d.drawingUrl) {
+                const drawEl = document.querySelector('.val-drawing');
+                if (drawEl) drawEl.textContent = '📎 檢附工程圖面：' + d.drawingUrl;
+            }
+        }
+
+        // 1. Try reading from sessionStorage
+        let saved = null;
+        try {
+            if (ticketId) {
+                const item = sessionStorage.getItem('inquiry_' + ticketId);
+                if (item) saved = JSON.parse(item);
+            }
+            if (!saved) {
+                const item = sessionStorage.getItem('current_inquiry');
+                if (item) saved = JSON.parse(item);
+            }
+            if (saved) {
+                applyInquiryData(saved);
+            }
+        } catch(e) {}
+
+        // 2. Fallback to API if ticketId provided and not populated
+        if (ticketId && (!saved || !saved.companyName)) {
+            fetch('/api/inquiries/' + encodeURIComponent(ticketId))
+                .then(r => r.json())
+                .then(apiData => {
+                    if (apiData && apiData.id) applyInquiryData(apiData);
+                })
+                .catch(() => {});
+        }
+    });
+    </script>
+
 </body>
 </html>
 
