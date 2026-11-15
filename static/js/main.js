@@ -3565,18 +3565,48 @@ window.clearInquiryCart = function(event) {
 window.renderInquiryCartUI = function() {
     const count = window.inquiryCart.length;
     
-    // 1. Update Floating Cart Dock
+    // 1. Update Floating Cart Dock (Always visible & animated)
     const floatingCart = document.getElementById('floatingInquiryCart');
     const badgeCount = document.getElementById('inquiryCartBadgeCount');
     const countText = document.getElementById('inquiryCartCountText');
+    const hintText = document.getElementById('ficHintText');
     if (floatingCart) {
-        if (count > 0) {
-            floatingCart.style.display = 'flex';
-            if (badgeCount) badgeCount.textContent = count;
-            if (countText) countText.textContent = count;
-        } else {
-            floatingCart.style.display = 'none';
+        floatingCart.style.display = 'flex';
+        if (badgeCount) badgeCount.textContent = count;
+        if (countText) countText.textContent = count;
+        if (hintText) {
+            hintText.textContent = count > 0 ? '前往填尺寸 ➔' : '點選材料加入';
         }
+        if (count > 0) {
+            floatingCart.style.borderColor = 'var(--accent-cinnabar, #b8332a)';
+            floatingCart.style.boxShadow = '0 14px 38px rgba(184, 51, 42, 0.28), 0 4px 14px rgba(184, 51, 42, 0.2)';
+        } else {
+            floatingCart.style.borderColor = '#cbd5e1';
+            floatingCart.style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)';
+        }
+    }
+
+    // 2. Update Header Navbar Cart Badge
+    const navCartBadge = document.getElementById('navCartBadge');
+    if (navCartBadge) {
+        navCartBadge.textContent = count;
+    }
+
+    // 3. Update Visual Catalog Cart Dock (vfCartDock)
+    const vfCartCount = document.getElementById('vfCartCount');
+    const vfCartDesc = document.getElementById('vfCartDesc');
+    const btnVfClear = document.getElementById('btnVfClear');
+    if (vfCartCount) vfCartCount.textContent = count;
+    if (vfCartDesc) {
+        if (count > 0) {
+            const names = window.inquiryCart.map(item => item.name).join('、');
+            vfCartDesc.innerHTML = `已加入：<b>${names}</b>，點擊右側按鈕帶入詢價單填寫尺寸`;
+        } else {
+            vfCartDesc.textContent = '點選上方任一卡片「🛒 加入詢價單」即可多選加入，可累積多筆材料一併估價';
+        }
+    }
+    if (btnVfClear) {
+        btnVfClear.style.display = count > 0 ? 'inline-block' : 'none';
     }
 
     // 2. Update Card Buttons state
