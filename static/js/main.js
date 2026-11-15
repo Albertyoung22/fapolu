@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initTechTabs();
     initMobileUI();
     initDynamicInteractions();
+    initInquiryCart();
 });
 
 function initAboutTabs() {
@@ -3503,4 +3504,148 @@ window.runWorkbenchCpsatSolver = function() {
         resBox.innerHTML = `<div style="color:#b91c1c;font-weight:700;padding:12px;background:#fef2f2;border-radius:8px;">❌ 網路或後端求解器連線異常，請稍後重試。</div>`;
         console.error('CP-SAT solve error:', err);
     });
+};
+
+// ==========================================================================
+// 多選詢價車系統 (Multi-Item Inquiry Cart System)
+// ==========================================================================
+window.inquiryCart = [];
+
+window.initInquiryCart = function() {
+    try {
+        const saved = sessionStorage.getItem('fapo_inquiry_cart');
+        if (saved) {
+            window.inquiryCart = JSON.parse(saved);
+        }
+    } catch(e) {}
+    renderInquiryCartUI();
+};
+
+window.saveInquiryCart = function() {
+    try {
+        sessionStorage.setItem('fapo_inquiry_cart', JSON.stringify(window.inquiryCart));
+    } catch(e) {}
+};
+
+window.addToInquiryCart = function(id, name, templateText, btnElement) {
+    const existingIndex = window.inquiryCart.findIndex(item => item.id === id);
+    if (existingIndex === -1) {
+        window.inquiryCart.push({ id, name, template: templateText });
+        window.saveInquiryCart();
+        renderInquiryCartUI();
+        if (typeof showToast === 'function') {
+            showToast(`🛒 已加入「${name}」至詢價清單 (共 ${window.inquiryCart.length} 項)`);
+        }
+    } else {
+        if (typeof showToast === 'function') {
+            showToast(`ℹ️「${name}」已在詢價清單中 (共 ${window.inquiryCart.length} 項)`);
+        }
+    }
+};
+
+window.removeFromInquiryCart = function(id) {
+    window.inquiryCart = window.inquiryCart.filter(item => item.id !== id);
+    window.saveInquiryCart();
+    renderInquiryCartUI();
+    if (typeof showToast === 'function') {
+        showToast('🗑️ 已從詢價清單移除該項材料');
+    }
+};
+
+window.clearInquiryCart = function(event) {
+    if (event) event.stopPropagation();
+    window.inquiryCart = [];
+    window.saveInquiryCart();
+    renderInquiryCartUI();
+    if (typeof showToast === 'function') {
+        showToast('🧹 已清空詢價清單');
+    }
+};
+
+window.renderInquiryCartUI = function() {
+    const count = window.inquiryCart.length;
+    
+    // 1. Update Floating Cart Dock
+    const floatingCart = document.getElementById('floatingInquiryCart');
+    const badgeCount = document.getElementById('inquiryCartBadgeCount');
+    const countText = document.getElementById('inquiryCartCountText');
+    if (floatingCart) {
+        if (count > 0) {
+            floatingCart.style.display = 'flex';
+            if (badgeCount) badgeCount.textContent = count;
+            if (countText) countText.textContent = count;
+        } else {
+            floatingCart.style.display = 'none';
+        }
+    }
+
+    // 2. Update Card Buttons state
+    const allCartBtns = document.querySelectorAll('.btn-vs-pick');
+    allCartBtns.forEach(btn => {
+        const itemId = btn.getAttribute('data-cart-id');
+        if (!itemId) return;
+        const inCart = window.inquiryCart.some(item => item.id === itemId);
+        if (inCart) {
+            btn.classList.add('is-in-cart');
+            btn.innerHTML = '✓ 已在詢價單 (點擊查看)';
+            btn.onclick = function() { window.goToInquiryForm(); };
+        } else {
+            btn.classList.remove('is-in-cart');
+            btn.innerHTML = '🛒 加入詢價單';
+            const origTemplate = btn.getAttribute('data-cart-template');
+            const origName = btn.getAttribute('data-cart-name');
+            btn.onclick = function() { window.addToInquiryCart(itemId, origName, origTemplate, this); };
+        }
+    });
+
+    // 3. Update Textarea & Form Preview Box
+    const textarea = document.getElementById('inquiryMaterial');
+    const formBox = document.getElementById('inquiryCartFormBox');
+    const formChips = document.getElementById('icfbChips');
+    const formCount = document.getElementById('icfbCount');
+
+    if (formBox && formChips) {
+        if (count > 0) {
+            formBox.style.display = 'block';
+            if (formCount) formCount.textContent = count;
+            formChips.innerHTML = window.inquiryCart.map(item => `
+                <div class="icfb-chip">
+                    <span>${item.name}</span>
+                    <button type="button" class="icfb-chip-remove" onclick="removeFromInquiryCart('${item.id}')" title="移除此項">✕</button>
+                </div>
+            `).join('');
+        } else {
+            formBox.style.display = 'none';
+        }
+    }
+
+    if (textarea && count > 0) {
+        const formatted = window.inquiryCart.map((item, idx) => `${idx + 1}. ${item.template}`).join('\n');
+        textarea.value = formatted;
+    }
+};
+
+window.goToInquiryForm = function() {
+    if (window.navigateToPage) {
+        window.navigateToPage('contact', { scrollTarget: 'quoteFormCard' });
+    }
+    setTimeout(() => {
+        const formCard = document.getElementById('quoteFormCard');
+        if (formCard) {
+            formCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            formCard.style.boxShadow = '0 0 0 4px var(--accent-cinnabar), 0 12px 36px rgba(184,51,42,0.3)';
+            setTimeout(() => { formCard.style.boxShadow = ''; }, 2200);
+        }
+        const textarea = document.getElementById('inquiryMaterial');
+        if (textarea) {
+            textarea.focus();
+        }
+    }, 150);
+};
+
+// Also support quick pick chips in quote form
+window.fillQuickMaterial = function(templateText, shapeName) {
+    const id = 'quick_' + templateText.slice(0, 8).replace(/[^a-zA-Z0-9一-龥]/g, '_');
+    const name = shapeName || templateText.split(' ')[0] || '常用規格';
+    window.addToInquiryCart(id, name, templateText);
 };

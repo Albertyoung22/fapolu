@@ -5246,28 +5246,42 @@ textarea:focus-visible {
 
 .btn-vs-pick {
   flex: 1.4;
-  background: #0f172a;
+  background: var(--accent-cinnabar, #b8332a);
   color: #ffffff;
-  border: 1px solid #0f172a;
+  border: 1px solid #9f2a22;
   padding: 10px 14px;
   border-radius: 8px;
   font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
   text-align: center;
-  transition: all 0.2s ease;
+  transition: all 0.22s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 2px 8px rgba(184, 51, 42, 0.22);
 }
 
 .btn-vs-pick:hover {
-  background: var(--accent-cinnabar, #991b1b);
-  border-color: var(--accent-cinnabar, #991b1b);
+  background: #991b1b;
+  border-color: #831818;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(153, 27, 27, 0.25);
+  box-shadow: 0 6px 16px rgba(184, 51, 42, 0.35);
+}
+
+.btn-vs-pick.is-in-cart {
+  background: #15803d;
+  border-color: #166534;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(21, 128, 61, 0.25);
+}
+
+.btn-vs-pick.is-in-cart:hover {
+  background: #166534;
+  border-color: #14532d;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(21, 128, 61, 0.35);
 }
 
 .btn-vs-zoom {
@@ -5313,4 +5327,183 @@ textarea:focus-visible {
   border-color: #0f172a;
   transform: translateY(-1px);
   box-shadow: 0 4px 10px rgba(15, 23, 42, 0.14);
+}
+
+/* ==========================================================================
+   多選詢價車機制 (Inquiry Cart System & Floating Dock)
+   ========================================================================== */
+.floating-inquiry-cart {
+  position: fixed;
+  bottom: 26px;
+  right: 26px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid rgba(184, 51, 42, 0.35);
+  border-radius: 50px;
+  box-shadow: 0 14px 38px rgba(15, 23, 42, 0.2), 0 4px 14px rgba(184, 51, 42, 0.18);
+  padding: 6px 10px 6px 14px;
+  gap: 10px;
+  animation: ficSlideUp 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  backdrop-filter: blur(10px);
+}
+
+@keyframes ficSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.fic-main-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  text-align: left;
+}
+
+.fic-cart-badge {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  background: var(--accent-cinnabar, #b8332a);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 1.25rem;
+  box-shadow: 0 4px 12px rgba(184, 51, 42, 0.35);
+}
+
+.fic-badge-count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ffffff;
+  color: var(--accent-cinnabar, #b8332a);
+  font-size: 0.72rem;
+  font-weight: 800;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--accent-cinnabar, #b8332a);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.fic-text-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.fic-title {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+.fic-hint {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--accent-cinnabar, #b8332a);
+}
+
+.fic-clear-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  transition: all 0.18s ease;
+}
+
+.fic-clear-btn:hover {
+  background: #fee2e2;
+  color: #b8332a;
+  border-color: #fca5a5;
+}
+
+/* 詢價單內部購物車預覽區塊 */
+.inquiry-cart-form-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+
+.icfb-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.icfb-clear {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 0.78rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.icfb-clear:hover {
+  color: var(--accent-cinnabar, #b8332a);
+}
+
+.icfb-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.icfb-chip {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: #1e293b;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.icfb-chip-remove {
+  cursor: pointer;
+  color: #94a3b8;
+  font-weight: 700;
+  border: none;
+  background: transparent;
+  padding: 0;
+  line-height: 1;
+}
+
+.icfb-chip-remove:hover {
+  color: #ef4444;
 }
