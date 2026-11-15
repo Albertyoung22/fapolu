@@ -297,27 +297,27 @@
 
                 
                 <!-- ==========================================================================
-                     現場師傅專用 · 看圖直覺找料專區 (Visual Shape Material Finder)
+                     視覺化材料斷面圖鑑 · 依形狀快速選料 (Visual Material Directory)
                      ========================================================================== -->
                 <div class="visual-finder-section glass-card" id="visualFinderSection">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-bottom: 22px; border-bottom: 2px solid rgba(166, 44, 34, 0.12); padding-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; border-bottom: 1px solid rgba(0,0,0,0.08); padding-bottom: 18px;">
                         <div>
                             <div class="vf-header-tag">
-                                <span>👷‍♂️ 現場師傅專用 · 看圖快速找料</span>
-                                <span style="background: rgba(255,255,255,0.25); padding: 1px 7px; border-radius: 10px; font-size: 0.75rem;">直覺挑選</span>
+                                <span>✦ 現貨斷面圖鑑 · 視覺化快速選料</span>
+                                <span style="background: rgba(255,255,255,0.2); padding: 1px 8px; border-radius: 10px; font-size: 0.76rem; font-weight: 600;">依形狀選型</span>
                             </div>
                             <h3 class="vf-title">
-                                看圖片選形狀 · 不用背專業代號直接點
+                                常用材料斷面圖鑑 · 依形狀直覺選料
                             </h3>
                             <p class="vf-subtitle">
-                                現場師傅與加工頭家專用！點選您需要的材料外觀形狀，查看現貨尺寸，或一鍵帶入估價單，支援<b>手機拍照手寫草圖</b>快速核算。
+                                精選六大金屬斷面與實拍儲位，點選常用形狀即可快速檢視尺寸、帶入詢價單，支援<b>手機拍照手繪草圖</b>上傳估算。
                             </p>
                         </div>
                         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                            <a href="tel:0422584931" class="btn btn-primary" style="padding: 10px 18px; font-size: 0.92rem; font-weight: 700; border-radius: 30px; display: inline-flex; align-items: center; gap: 6px;">
-                                <span>📞 電話直撥叫料</span>
+                            <a href="tel:0422584931" class="btn btn-primary" style="padding: 9px 18px; font-size: 0.9rem; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px;">
+                                <span>📞 廠區專線洽詢</span>
                             </a>
-                            <button type="button" class="btn btn-secondary" onclick="quickSnapInquiry()" style="padding: 10px 18px; font-size: 0.92rem; font-weight: 700; border-radius: 30px; display: inline-flex; align-items: center; gap: 6px; background: #fff; border-color: #a62c22; color: #a62c22;">
+                            <button type="button" class="btn btn-secondary" onclick="quickSnapInquiry()" style="padding: 9px 18px; font-size: 0.9rem; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; background: #fff; border-color: rgba(0,0,0,0.18); color: var(--text-main);">
                                 <span>📸 拍照傳圖估價</span>
                             </button>
                         </div>
@@ -330,8 +330,8 @@
                         <div class="visual-shape-card">
                             <div class="vs-img-wrap" onclick="openImageLightbox('/static/img_factory/warehouse_6061_racks.jpg', '6061-T6 實心圓棒現貨料架（紫色端面色標管理，外徑 8mm~76.2mm+）')">
                                 <img src="/static/img_factory/warehouse_6061_racks.jpg" alt="6061 實心圓棒現貨儲位" loading="lazy">
-                                <span class="vs-badge-shape">🔵 實心圓棒</span>
-                                <span class="vs-zoom-tip">🔍 點擊看料架大圖</span>
+                                <span class="vs-badge-shape">實心圓棒 · Round Bar</span>
+                                <span class="vs-zoom-tip">🔍 檢視儲位圖鑑</span>
                             </div>
                             <div class="vs-body">
                                 <div class="vs-title-row">
@@ -346,10 +346,10 @@
                                 </ul>
                                 <div class="vs-actions">
                                     <button type="button" class="btn-vs-pick" onclick="quickFillAndScroll('6061 實心圓棒 外徑: Ø mm 長度: mm 支數: 支')">
-                                        📋 我要買這個 (填尺寸)
+                                        📋 選取規格 · 帶入詢價
                                     </button>
                                     <button type="button" class="btn-vs-zoom" onclick="openImageLightbox('/static/img_factory/warehouse_6061_racks.jpg', '6061-T6 實心圓棒現貨料架')">
-                                        🔍 實拍照
+                                        🔍 檢視儲位圖鑑
                                     </button>
                                 </div>
                             </div>
@@ -359,8 +359,8 @@
                         <div class="visual-shape-card">
                             <div class="vs-img-wrap" onclick="openImageLightbox('/static/img_factory/warehouse_heavy_plates_stacked.jpg', '日本原裝進口 UACJ 貼膜鋁板與精密厚板庫存（厚度 1mm~150mm+）')">
                                 <img src="/static/img_factory/warehouse_heavy_plates_stacked.jpg" alt="平面厚板與貼膜板" loading="lazy">
-                                <span class="vs-badge-shape">🟩 平面厚板 / 貼膜板</span>
-                                <span class="vs-zoom-tip">🔍 點擊看厚板大圖</span>
+                                <span class="vs-badge-shape">平面厚板 / 貼膜板 · Plate</span>
+                                <span class="vs-zoom-tip">🔍 檢視儲位圖鑑</span>
                             </div>
                             <div class="vs-body">
                                 <div class="vs-title-row">
@@ -375,10 +375,10 @@
                                 </ul>
                                 <div class="vs-actions">
                                     <button type="button" class="btn-vs-pick" onclick="quickFillAndScroll('5052 平面貼膜鋁板 厚度: mm 尺寸: mm × mm 塊數: 塊')">
-                                        📋 我要買這個 (填尺寸)
+                                        📋 選取規格 · 帶入詢價
                                     </button>
                                     <button type="button" class="btn-vs-zoom" onclick="openImageLightbox('/static/img_factory/warehouse_heavy_plates_stacked.jpg', '日本原裝進口精密鋁板與貼膜厚板庫存')">
-                                        🔍 實拍照
+                                        🔍 檢視儲位圖鑑
                                     </button>
                                 </div>
                             </div>
@@ -388,8 +388,8 @@
                         <div class="visual-shape-card">
                             <div class="vs-img-wrap" onclick="openImageLightbox('/static/img_factory/machining_chequered_shear_action.jpg', '川洋重型剪床裁切五線防滑花紋鋁板現場作業')">
                                 <img src="/static/img_factory/machining_chequered_shear_action.jpg" alt="五線防滑花紋板現場剪裁" loading="lazy">
-                                <span class="vs-badge-shape">🟨 五線防滑花紋板</span>
-                                <span class="vs-zoom-tip">🔍 點擊看花紋大圖</span>
+                                <span class="vs-badge-shape">防滑花紋板 · Chequered</span>
+                                <span class="vs-zoom-tip">🔍 檢視加工圖鑑</span>
                             </div>
                             <div class="vs-body">
                                 <div class="vs-title-row">
@@ -404,10 +404,10 @@
                                 </ul>
                                 <div class="vs-actions">
                                     <button type="button" class="btn-vs-pick" onclick="quickFillAndScroll('五線防滑花紋鋁板（車斗/踏板） 厚度: 2.0mm/3.0mm 尺寸: 4尺×8尺 或裁切: mm × mm')">
-                                        📋 我要買這個 (填尺寸)
+                                        📋 選取規格 · 帶入詢價
                                     </button>
                                     <button type="button" class="btn-vs-zoom" onclick="openImageLightbox('/static/img_factory/machining_chequered_shear_action.jpg', '五線防滑花紋板現場沖剪實景')">
-                                        🔍 實拍照
+                                        🔍 檢視儲位圖鑑
                                     </button>
                                 </div>
                             </div>
@@ -417,8 +417,8 @@
                         <div class="visual-shape-card">
                             <div class="vs-img-wrap" onclick="openImageLightbox('/static/img_factory/warehouse_bundled_skids.jpg', '鋁扁條、方棒、排鋁現貨整裝與防護包裝')">
                                 <img src="/static/img_factory/warehouse_bundled_skids.jpg" alt="鋁扁條與方棒打包" loading="lazy">
-                                <span class="vs-badge-shape">🟫 扁條 / 方棒 / 排鋁</span>
-                                <span class="vs-zoom-tip">🔍 點擊看包裝大圖</span>
+                                <span class="vs-badge-shape">實心扁條 / 方棒 · Flat & Square</span>
+                                <span class="vs-zoom-tip">🔍 檢視包裝圖鑑</span>
                             </div>
                             <div class="vs-body">
                                 <div class="vs-title-row">
@@ -433,10 +433,10 @@
                                 </ul>
                                 <div class="vs-actions">
                                     <button type="button" class="btn-vs-pick" onclick="quickFillAndScroll('四角扁條/方棒/排鋁 厚度: mm 寬度: mm 長度: mm 支數: 支')">
-                                        📋 我要買這個 (填尺寸)
+                                        📋 選取規格 · 帶入詢價
                                     </button>
                                     <button type="button" class="btn-vs-zoom" onclick="openImageLightbox('/static/img_factory/warehouse_bundled_skids.jpg', '鋁扁條、方棒現貨整裝')">
-                                        🔍 實拍照
+                                        🔍 檢視儲位圖鑑
                                     </button>
                                 </div>
                             </div>
@@ -446,8 +446,8 @@
                         <div class="visual-shape-card">
                             <div class="vs-img-wrap" onclick="openImageLightbox('/static/img_factory/warehouse_7075_tubes_racks.jpg', '7075 與 6061 中空無縫鋁管料架')">
                                 <img src="/static/img_factory/warehouse_7075_tubes_racks.jpg" alt="中空無縫鋁管料架" loading="lazy">
-                                <span class="vs-badge-shape">⭕ 中空圓管 / 方管</span>
-                                <span class="vs-zoom-tip">🔍 點擊看管材大圖</span>
+                                <span class="vs-badge-shape">中空無縫管 · Tube</span>
+                                <span class="vs-zoom-tip">🔍 檢視料架圖鑑</span>
                             </div>
                             <div class="vs-body">
                                 <div class="vs-title-row">
@@ -462,10 +462,10 @@
                                 </ul>
                                 <div class="vs-actions">
                                     <button type="button" class="btn-vs-pick" onclick="quickFillAndScroll('中空無縫圓管/方管 外徑: mm 壁厚: mm 長度: mm 支數: 支')">
-                                        📋 我要買這個 (填尺寸)
+                                        📋 選取規格 · 帶入詢價
                                     </button>
                                     <button type="button" class="btn-vs-zoom" onclick="openImageLightbox('/static/img_factory/warehouse_7075_tubes_racks.jpg', '中空無縫鋁管料架')">
-                                        🔍 實拍照
+                                        🔍 檢視儲位圖鑑
                                     </button>
                                 </div>
                             </div>
@@ -475,8 +475,8 @@
                         <div class="visual-shape-card">
                             <div class="vs-img-wrap" onclick="openImageLightbox('/static/img_factory/warehouse_extrusions_vertical.jpg', '六米長直立式 A 型架工業鋁擠型儲位區')">
                                 <img src="/static/img_factory/warehouse_extrusions_vertical.jpg" alt="工業結構鋁擠型料架" loading="lazy">
-                                <span class="vs-badge-shape">📐 工業結構鋁擠型</span>
-                                <span class="vs-zoom-tip">🔍 點擊看擠型大圖</span>
+                                <span class="vs-badge-shape">工業結構擠型 · Extrusion</span>
+                                <span class="vs-zoom-tip">🔍 檢視儲位圖鑑</span>
                             </div>
                             <div class="vs-body">
                                 <div class="vs-title-row">
@@ -491,10 +491,10 @@
                                 </ul>
                                 <div class="vs-actions">
                                     <button type="button" class="btn-vs-pick" onclick="quickFillAndScroll('工業結構鋁擠型 規格: 4040/3030 長度: mm 支數: 支 (含配件)')">
-                                        📋 我要買這個 (填尺寸)
+                                        📋 選取規格 · 帶入詢價
                                     </button>
                                     <button type="button" class="btn-vs-zoom" onclick="openImageLightbox('/static/img_factory/warehouse_extrusions_vertical.jpg', '工業結構鋁擠型儲位')">
-                                        🔍 實拍照
+                                        🔍 檢視儲位圖鑑
                                     </button>
                                 </div>
                             </div>
@@ -1978,18 +1978,18 @@
                                     </div>
                                 </div>
                                 <div class="form-group full">
-                                    <!-- 現場師傅形狀快捷列 (點選直接帶入) -->
-                                    <div class="machinist-quick-picks" style="margin-bottom: 8px;">
-                                        <span style="font-size: 0.86rem; font-weight: 700; color: #a62c22; display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
-                                            <span>👉 現場師傅快捷點選（點一下自動帶入材料形狀）：</span>
+                                    <!-- 常用斷面規格快捷選取列 -->
+                                    <div class="machinist-quick-picks" style="margin-bottom: 10px;">
+                                        <span style="font-size: 0.84rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+                                            <span>📐 常用規格快捷帶入（點擊自動填寫規格範本）：</span>
                                         </span>
                                         <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                                            <button type="button" class="chip-shape-btn" onclick="fillQuickMaterial('6061 實心圓棒 外徑: Ø mm 長度: mm 支數: 支')">🔵 實心圓棒</button>
-                                            <button type="button" class="chip-shape-btn" onclick="fillQuickMaterial('5052 平面貼膜鋁板 厚度: mm 尺寸: mm × mm 塊數: 塊')">🟩 平面厚板/貼膜板</button>
-                                            <button type="button" class="chip-shape-btn" onclick="fillQuickMaterial('五線防滑花紋鋁板（車斗/踏板） 厚度: 2.0mm/3.0mm 尺寸: 4尺×8尺 或裁切: mm × mm')">🟨 防滑花紋板</button>
-                                            <button type="button" class="chip-shape-btn" onclick="fillQuickMaterial('四角扁條/方棒/排鋁 厚度: mm 寬度: mm 長度: mm 支數: 支')">🟫 扁條/方棒</button>
-                                            <button type="button" class="chip-shape-btn" onclick="fillQuickMaterial('中空無縫圓管/方管 外徑: mm 壁厚: mm 長度: mm 支數: 支')">⭕ 圓管/方管</button>
-                                            <button type="button" class="chip-shape-btn" onclick="fillQuickMaterial('工業結構鋁擠型 規格: 4040/3030 長度: mm 支數: 支')">📐 結構鋁擠型</button>
+                                            <button type="button" class="chip-shape-btn" onclick="fillQuickMaterial('6061 實心圓棒 外徑: Ø mm 長度: mm 支數: 支')">實心圓棒 (Ø8~200mm+)</button>
+                                            <button type="button" class="chip-shape-btn" onclick="fillQuickMaterial('5052 平面貼膜鋁板 厚度: mm 尺寸: mm × mm 塊數: 塊')">平面厚板 / 貼膜板 (1~150mm+)</button>
+                                            <button type="button" class="chip-shape-btn" onclick="fillQuickMaterial('五線防滑花紋鋁板 厚度: 2.0mm/3.0mm 尺寸: 4尺×8尺 或裁切: mm × mm')">防滑花紋板 (五線踏板)</button>
+                                            <button type="button" class="chip-shape-btn" onclick="fillQuickMaterial('四角扁條/方棒/排鋁 厚度: mm 寬度: mm 長度: mm 支數: 支')">實心扁條 / 方棒 / 排鋁</button>
+                                            <button type="button" class="chip-shape-btn" onclick="fillQuickMaterial('中空無縫圓管/方管 外徑: mm 壁厚: mm 長度: mm 支數: 支')">中空無縫管 (圓管/方管)</button>
+                                            <button type="button" class="chip-shape-btn" onclick="fillQuickMaterial('工業結構鋁擠型 規格: 4040/3030 長度: mm 支數: 支')">工業結構鋁擠型</button>
                                         </div>
                                     </div>
                                     <label for="inquiryMaterial" data-i18n="contact.lbl_material">材料型號與規格需求 *</label>

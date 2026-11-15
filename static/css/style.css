@@ -5011,15 +5011,15 @@ textarea:focus-visible {
 
 
 /* ==========================================================================
-   現場師傅專用 · 看圖直覺找料專區 (Visual Shape Material Finder)
+   現貨斷面圖鑑 · 視覺化快速選料專區 (Visual Profile Catalog & Selector)
    ========================================================================== */
 .visual-finder-section {
   margin: 45px 0 35px 0;
-  padding: 36px 28px;
-  border-radius: 20px;
-  background: linear-gradient(180deg, #ffffff 0%, #faf6ee 100%);
-  border: 2px solid rgba(166, 44, 34, 0.28);
-  box-shadow: 0 14px 36px rgba(92, 72, 38, 0.08);
+  padding: 36px 32px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.05);
   position: relative;
 }
 
@@ -5027,26 +5027,27 @@ textarea:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: var(--accent-cinnabar);
-  color: #ffffff;
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 0.92rem;
-  font-weight: 800;
+  background: #0f172a;
+  color: #f8fafc;
+  padding: 5px 14px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
   letter-spacing: 0.5px;
 }
 
 .vf-title {
-  font-size: 1.8rem;
+  font-size: 1.75rem;
   font-weight: 800;
-  color: var(--text-main);
-  margin: 10px 0 6px 0;
-  line-height: 1.3;
+  color: #0f172a;
+  margin: 12px 0 6px 0;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
 }
 
 .vf-subtitle {
-  font-size: 1rem;
-  color: var(--text-dim);
+  font-size: 0.96rem;
+  color: #64748b;
   margin: 0;
   line-height: 1.6;
 }
@@ -5055,24 +5056,24 @@ textarea:focus-visible {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 22px;
-  margin-top: 24px;
+  margin-top: 26px;
 }
 
 .visual-shape-card {
   background: #ffffff;
-  border-radius: 16px;
-  border: 1px solid rgba(92, 75, 48, 0.16);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .visual-shape-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--accent-cinnabar);
-  box-shadow: 0 16px 36px rgba(166, 44, 34, 0.12);
+  transform: translateY(-4px);
+  border-color: #94a3b8;
+  box-shadow: 0 14px 28px -4px rgba(15, 23, 42, 0.08);
 }
 
 .vs-img-wrap {
@@ -5080,7 +5081,7 @@ textarea:focus-visible {
   height: 200px;
   overflow: hidden;
   cursor: pointer;
-  background: #2a241e;
+  background: #0f172a;
 }
 
 .vs-img-wrap img {
@@ -5091,36 +5092,38 @@ textarea:focus-visible {
 }
 
 .visual-shape-card:hover .vs-img-wrap img {
-  transform: scale(1.06);
+  transform: scale(1.05);
 }
 
 .vs-badge-shape {
   position: absolute;
   top: 12px;
   left: 12px;
-  background: rgba(26, 20, 16, 0.88);
+  background: rgba(15, 23, 42, 0.85);
   backdrop-filter: blur(8px);
-  color: #ffffff;
-  font-size: 0.85rem;
-  font-weight: 800;
-  padding: 4px 12px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #f8fafc;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  letter-spacing: 0.3px;
 }
 
 .vs-zoom-tip {
   position: absolute;
   bottom: 10px;
   right: 12px;
-  background: rgba(0, 0, 0, 0.72);
-  color: #ffffff;
-  font-size: 0.75rem;
+  background: rgba(15, 23, 42, 0.78);
+  color: #f1f5f9;
+  font-size: 0.74rem;
   padding: 3px 8px;
-  border-radius: 6px;
+  border-radius: 4px;
   backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .vs-body {
@@ -5138,18 +5141,20 @@ textarea:focus-visible {
 }
 
 .vs-title {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 800;
-  color: var(--text-main);
+  color: #0f172a;
   margin: 0;
+  letter-spacing: -0.01em;
 }
 
 .vs-spec-tag {
-  font-size: 0.76rem;
-  color: var(--accent-cinnabar);
-  background: rgba(166, 44, 34, 0.08);
+  font-size: 0.74rem;
+  color: #0f172a;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
   padding: 3px 8px;
-  border-radius: 6px;
+  border-radius: 4px;
   font-weight: 700;
 }
 
@@ -5158,7 +5163,7 @@ textarea:focus-visible {
   padding: 0;
   margin: 10px 0 16px 0;
   font-size: 0.88rem;
-  color: var(--text-dim);
+  color: #475569;
   line-height: 1.6;
 }
 
@@ -5170,7 +5175,7 @@ textarea:focus-visible {
 }
 
 .vs-features li b {
-  color: var(--text-main);
+  color: #0f172a;
 }
 
 .vs-actions {
@@ -5180,14 +5185,14 @@ textarea:focus-visible {
 }
 
 .btn-vs-pick {
-  flex: 1.5;
-  background: var(--accent-cinnabar);
+  flex: 1.4;
+  background: #0f172a;
   color: #ffffff;
-  border: none;
-  padding: 11px 12px;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  font-weight: 800;
+  border: 1px solid #0f172a;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
   cursor: pointer;
   text-align: center;
   transition: all 0.2s ease;
@@ -5195,52 +5200,57 @@ textarea:focus-visible {
   align-items: center;
   justify-content: center;
   gap: 6px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
 }
 
 .btn-vs-pick:hover {
-  background: #8e231b;
+  background: var(--accent-cinnabar, #991b1b);
+  border-color: var(--accent-cinnabar, #991b1b);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(166, 44, 34, 0.25);
+  box-shadow: 0 6px 16px rgba(153, 27, 27, 0.25);
 }
 
 .btn-vs-zoom {
   flex: 1;
-  background: #f5efe3;
-  color: var(--text-main);
-  border: 1px solid rgba(92, 75, 48, 0.2);
-  padding: 11px 10px;
-  border-radius: 10px;
-  font-size: 0.88rem;
-  font-weight: 700;
+  background: #ffffff;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.86rem;
+  font-weight: 600;
   cursor: pointer;
   text-align: center;
   transition: all 0.2s ease;
 }
 
 .btn-vs-zoom:hover {
-  background: #ebe2d0;
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
 }
 
-/* 師傅快捷點選列 */
+/* 規格快捷帶入列 */
 .chip-shape-btn {
   background: #ffffff;
-  border: 1px solid rgba(166, 44, 34, 0.35);
-  color: #1f1b16;
-  font-size: 0.86rem;
-  font-weight: 700;
-  padding: 7px 12px;
-  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+  font-size: 0.84rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.18s ease;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
 .chip-shape-btn:hover {
-  background: var(--accent-cinnabar);
+  background: #0f172a;
   color: #ffffff;
-  border-color: var(--accent-cinnabar);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(166, 44, 34, 0.18);
+  border-color: #0f172a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.14);
 }
