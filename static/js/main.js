@@ -3121,7 +3121,15 @@ function initStatCounters() {
 
 function animateSingleCounter(el) {
     const target = parseFloat(el.getAttribute('data-counter-target')) || 0;
-    const suffix = el.getAttribute('data-counter-suffix') || '';
+    const currentLang = window.currentLang || localStorage.getItem('fapo_lang') || 'zh-TW';
+    let suffix = el.getAttribute('data-counter-suffix') || '';
+    if (currentLang === 'en' && el.hasAttribute('data-counter-suffix-en')) {
+        suffix = el.getAttribute('data-counter-suffix-en');
+    } else if (currentLang === 'ja' && el.hasAttribute('data-counter-suffix-ja')) {
+        suffix = el.getAttribute('data-counter-suffix-ja');
+    } else if (currentLang === 'ko' && el.hasAttribute('data-counter-suffix-ko')) {
+        suffix = el.getAttribute('data-counter-suffix-ko');
+    }
     const prefix = el.getAttribute('data-counter-prefix') || '';
     const duration = 1600; // ms
     const startTime = performance.now();
@@ -3134,13 +3142,14 @@ function animateSingleCounter(el) {
         const currentVal = Math.round(target * ease);
 
         const formatted = currentVal >= 1000 ? currentVal.toLocaleString('en-US') : currentVal;
-        el.textContent = `${prefix}${formatted}${suffix}`;
+        const displaySuffix = (suffix && !suffix.startsWith('+') && !suffix.startsWith('%')) ? ` ${suffix}` : suffix;
+        el.textContent = `${prefix}${formatted}${displaySuffix}`;
 
         if (progress < 1) {
             requestAnimationFrame(update);
         } else {
             const finalVal = target >= 1000 ? target.toLocaleString('en-US') : target;
-            el.textContent = `${prefix}${finalVal}${suffix}`;
+            el.textContent = `${prefix}${finalVal}${displaySuffix}`;
         }
     }
 
@@ -3255,9 +3264,27 @@ function initButtonRipple() {
     });
 }
 
-// Multi-Language Dynamic Dock Voice Adaptation
+// Multi-Language Dynamic Dock Voice Adaptation & Counter Sync
 window.addEventListener('fapo-language-changed', (e) => {
     const lang = (e.detail && e.detail.lang) || 'zh-TW';
+
+    // Re-render stat counters with correct localized suffixes
+    document.querySelectorAll('[data-counter-target]').forEach(el => {
+        const target = parseFloat(el.getAttribute('data-counter-target')) || 0;
+        let suffix = el.getAttribute('data-counter-suffix') || '';
+        if (lang === 'en' && el.hasAttribute('data-counter-suffix-en')) {
+            suffix = el.getAttribute('data-counter-suffix-en');
+        } else if (lang === 'ja' && el.hasAttribute('data-counter-suffix-ja')) {
+            suffix = el.getAttribute('data-counter-suffix-ja');
+        } else if (lang === 'ko' && el.hasAttribute('data-counter-suffix-ko')) {
+            suffix = el.getAttribute('data-counter-suffix-ko');
+        }
+        const prefix = el.getAttribute('data-counter-prefix') || '';
+        const finalVal = target >= 1000 ? target.toLocaleString('en-US') : target;
+        const displaySuffix = (suffix && !suffix.startsWith('+') && !suffix.startsWith('%')) ? ` ${suffix}` : suffix;
+        el.textContent = `${prefix}${finalVal}${displaySuffix}`;
+    });
+
     const voiceSelect = document.getElementById('dockVoiceSelect');
     if (!voiceSelect) return;
 

@@ -162,7 +162,7 @@
                 </button>
                 <a href="javascript:void(0)" onclick="goToInquiryForm()" class="btn nav-cart-btn" id="navCartBtn" title="檢視已選詢價項目">
                     <span class="nav-cart-icon">🛒</span>
-                    <span class="nav-cart-text">詢價單</span>
+                    <span class="nav-cart-text" data-i18n="nav.cart">詢價單</span>
                     <span class="nav-cart-badge" id="navCartBadge">0</span>
                 </a>
                 <a href="/contact" data-nav-page="contact" class="btn btn-primary nav-cta-btn" data-i18n="nav.quote">立即詢價</a>
@@ -262,7 +262,7 @@
                                 <p data-i18n="hero.stat1_label">年專業誠信商譽</p>
                             </div>
                             <div class="stat-item reveal-on-scroll">
-                                <h3 data-counter-target="4" data-counter-suffix=" 大"><span data-i18n="hero_h3_branches">4 大</span></h3>
+                                <h3 data-counter-target="4" data-counter-suffix="大" data-counter-suffix-en="" data-counter-suffix-ja="大" data-counter-suffix-ko="대"><span data-i18n="hero_h3_branches">4 大</span></h3>
                                 <p data-i18n="hero.stat2_label">北中南營運據點</p>
                             </div>
                             <div class="stat-item reveal-on-scroll">
@@ -308,22 +308,22 @@
                     <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; border-bottom: 1px solid rgba(0,0,0,0.08); padding-bottom: 18px;">
                         <div>
                             <div class="vf-header-tag">
-                                <span>✦ 現貨斷面圖鑑 · 視覺化快速選料</span>
-                                <span style="background: rgba(255,255,255,0.2); padding: 1px 8px; border-radius: 10px; font-size: 0.76rem; font-weight: 600;">依形狀選型</span>
+                                <span data-i18n="vf.tag">✦ 現貨斷面圖鑑 · 視覺化快速選料</span>
+                                <span style="background: rgba(255,255,255,0.2); padding: 1px 8px; border-radius: 10px; font-size: 0.76rem; font-weight: 600;" data-i18n="vf.tag_badge">依形狀選型</span>
                             </div>
-                            <h3 class="vf-title">
+                            <h3 class="vf-title" data-i18n="vf.title">
                                 常用材料斷面圖鑑 · 依形狀直覺選料
                             </h3>
-                            <p class="vf-subtitle">
+                            <p class="vf-subtitle" data-i18n="vf.subtitle">
                                 精選六大金屬斷面與實拍儲位，點選常用形狀即可快速檢視尺寸、帶入詢價單，支援<b>手機拍照手繪草圖</b>上傳估算。
                             </p>
                         </div>
                         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                             <a href="tel:0422584931" class="btn btn-primary" style="padding: 9px 18px; font-size: 0.9rem; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px;">
-                                <span>📞 廠區專線洽詢</span>
+                                <span data-i18n="vf.btn_call">📞 廠區專線洽詢</span>
                             </a>
                             <button type="button" class="btn btn-secondary" onclick="quickSnapInquiry()" style="padding: 9px 18px; font-size: 0.9rem; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; background: #fff; border-color: rgba(0,0,0,0.18); color: var(--text-main);">
-                                <span>📸 拍照傳圖估價</span>
+                                <span data-i18n="vf.btn_snap">📸 拍照傳圖估價</span>
                             </button>
                         </div>
                     </div>
@@ -335,26 +335,26 @@
                         <div class="visual-shape-card">
                             <div class="vs-img-wrap" onclick="openImageLightbox('/static/img_factory/warehouse_6061_racks.jpg', '6061-T6 實心圓棒現貨料架（紫色端面色標管理，外徑 8mm~76.2mm+）')">
                                 <img src="/static/img_factory/warehouse_6061_racks.jpg" alt="6061 實心圓棒現貨儲位" loading="lazy">
-                                <span class="vs-badge-shape">實心圓棒 · Round Bar</span>
-                                <span class="vs-zoom-tip">🔍 檢視儲位圖鑑</span>
+                                <span class="vs-badge-shape" data-i18n="vf.c1_badge">實心圓棒 · Round Bar</span>
+                                <span class="vs-zoom-tip" data-i18n="vf.btn_view_rack">🔍 檢視儲位圖鑑</span>
                             </div>
                             <div class="vs-body">
                                 <div class="vs-title-row">
-                                    <h4 class="vs-title">實心圓棒 (圓形棒料)</h4>
-                                    <span class="vs-spec-tag">車床加工首選</span>
+                                    <h4 class="vs-title" data-i18n="vf.c1_title">實心圓棒 (圓形棒料)</h4>
+                                    <span class="vs-spec-tag" data-i18n="vf.c1_tag">車床加工首選</span>
                                 </div>
                                 <ul class="vs-features">
-                                    <li><span class="vf-prop-label">常用用途</span><span class="vf-prop-val">自動化心軸、螺絲、夾治具、精密車銑零件</span></li>
-                                    <li><span class="vf-prop-label">常備牌號</span><span class="vf-prop-val">6061-T6（切削性佳）／ 7075-T651（超高強度）</span></li>
-                                    <li><span class="vf-prop-label">現貨尺寸</span><span class="vf-prop-val">外徑 <b>Ø8mm ~ Ø200mm+</b> 充足常備現貨在庫</span></li>
-                                    <li><span class="vf-prop-label">廠內加工</span><span class="vf-prop-val">全自動數控鋸床精準定寸切斷</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_uses">常用用途</span><span class="vf-prop-val" data-i18n="vf.c1_uses">自動化心軸、螺絲、夾治具、精密車銑零件</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_grades">常備牌號</span><span class="vf-prop-val" data-i18n="vf.c1_grades">6061-T6（切削性佳）／ 7075-T651（超高強度）</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_sizes">現貨尺寸</span><span class="vf-prop-val" data-i18n="vf.c1_sizes">外徑 <b>Ø8mm ~ Ø200mm+</b> 充足常備現貨在庫</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_machining">廠內加工</span><span class="vf-prop-val" data-i18n="vf.c1_machining">全自動數控鋸床精準定寸切斷</span></li>
                                 </ul>
                                 <div class="vs-actions">
                                     <button type="button" class="btn-vs-pick" data-cart-id="round_bar" data-cart-name="6061 實心圓棒" data-cart-template="6061 實心圓棒（外徑: Ø mm × 長度: mm × 支數: 支）" onclick="addToInquiryCart('round_bar', '6061 實心圓棒', '6061 實心圓棒（外徑: Ø mm × 長度: mm × 支數: 支）', this)">
-                                        🛒 加入詢價單
+                                        <span data-i18n="vf.btn_add_cart">🛒 加入詢價單</span>
                                     </button>
                                     <button type="button" class="btn-vs-zoom" onclick="openImageLightbox('/static/img_factory/warehouse_6061_racks.jpg', '6061-T6 實心圓棒現貨料架')">
-                                        🔍 檢視儲位圖鑑
+                                        <span data-i18n="vf.btn_view_rack">🔍 檢視儲位圖鑑</span>
                                     </button>
                                 </div>
                             </div>
@@ -364,26 +364,26 @@
                         <div class="visual-shape-card">
                             <div class="vs-img-wrap" onclick="openImageLightbox('/static/img_factory/warehouse_heavy_plates_stacked.jpg', '日本原裝進口 UACJ 貼膜鋁板與精密厚板庫存（厚度 1mm~150mm+）')">
                                 <img src="/static/img_factory/warehouse_heavy_plates_stacked.jpg" alt="平面厚板與貼膜板" loading="lazy">
-                                <span class="vs-badge-shape">平面厚板 / 貼膜板 · Plate</span>
-                                <span class="vs-zoom-tip">🔍 檢視儲位圖鑑</span>
+                                <span class="vs-badge-shape" data-i18n="vf.c2_badge">平面厚板 / 貼膜板 · Plate</span>
+                                <span class="vs-zoom-tip" data-i18n="vf.btn_view_rack">🔍 檢視儲位圖鑑</span>
                             </div>
                             <div class="vs-body">
                                 <div class="vs-title-row">
-                                    <h4 class="vs-title">平面厚板 (塊狀平板)</h4>
-                                    <span class="vs-spec-tag">銑床不易翹曲</span>
+                                    <h4 class="vs-title" data-i18n="vf.c2_title">平面厚板 (塊狀平板)</h4>
+                                    <span class="vs-spec-tag" data-i18n="vf.c2_tag">銑床不易翹曲</span>
                                 </div>
                                 <ul class="vs-features">
-                                    <li><span class="vf-prop-label">常用用途</span><span class="vf-prop-val">CNC 銑床底板、機台台面、真空腔體、精密治具板</span></li>
-                                    <li><span class="vf-prop-label">常備牌號</span><span class="vf-prop-val">5052 雙面貼膜板（平整低應力）／ 6061-T651 ／ 7075</span></li>
-                                    <li><span class="vf-prop-label">現貨尺寸</span><span class="vf-prop-val">厚度 <b>1.0mm 至 150mm+</b> 木棧板在庫</span></li>
-                                    <li><span class="vf-prop-label">廠內加工</span><span class="vf-prop-val">CM3800 大行程裁板機精準開料、直角度鋸切</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_uses">常用用途</span><span class="vf-prop-val" data-i18n="vf.c2_uses">CNC 銑床底板、機台台面、真空腔體、精密治具板</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_grades">常備牌號</span><span class="vf-prop-val" data-i18n="vf.c2_grades">5052 雙面貼膜板（平整低應力）／ 6061-T651 ／ 7075</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_sizes">現貨尺寸</span><span class="vf-prop-val" data-i18n="vf.c2_sizes">厚度 <b>1.0mm 至 150mm+</b> 木棧板在庫</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_machining">廠內加工</span><span class="vf-prop-val" data-i18n="vf.c2_machining">CM3800 大行程裁板機精準開料、直角度鋸切</span></li>
                                 </ul>
                                 <div class="vs-actions">
                                     <button type="button" class="btn-vs-pick" data-cart-id="plate" data-cart-name="5052 平面貼膜板" data-cart-template="5052 平面貼膜鋁板（厚度: mm × 尺寸: mm × mm × 塊數: 塊）" onclick="addToInquiryCart('plate', '5052 平面貼膜板', '5052 平面貼膜鋁板（厚度: mm × 尺寸: mm × mm × 塊數: 塊）', this)">
-                                        🛒 加入詢價單
+                                        <span data-i18n="vf.btn_add_cart">🛒 加入詢價單</span>
                                     </button>
                                     <button type="button" class="btn-vs-zoom" onclick="openImageLightbox('/static/img_factory/warehouse_heavy_plates_stacked.jpg', '日本原裝進口精密鋁板與貼膜厚板庫存')">
-                                        🔍 檢視儲位圖鑑
+                                        <span data-i18n="vf.btn_view_rack">🔍 檢視儲位圖鑑</span>
                                     </button>
                                 </div>
                             </div>
@@ -393,26 +393,26 @@
                         <div class="visual-shape-card">
                             <div class="vs-img-wrap" onclick="openImageLightbox('/static/img_factory/machining_chequered_shear_action.jpg', '川洋重型剪床裁切五線防滑花紋鋁板現場作業')">
                                 <img src="/static/img_factory/machining_chequered_shear_action.jpg" alt="五線防滑花紋板現場剪裁" loading="lazy">
-                                <span class="vs-badge-shape">防滑花紋板 · Chequered</span>
-                                <span class="vs-zoom-tip">🔍 檢視加工圖鑑</span>
+                                <span class="vs-badge-shape" data-i18n="vf.c3_badge">防滑花紋板 · Chequered</span>
+                                <span class="vs-zoom-tip" data-i18n="vf.btn_view_mach">🔍 檢視加工圖鑑</span>
                             </div>
                             <div class="vs-body">
                                 <div class="vs-title-row">
-                                    <h4 class="vs-title">防滑花紋板 (凸紋踩踏板)</h4>
-                                    <span class="vs-spec-tag">車斗防滑耐磨</span>
+                                    <h4 class="vs-title" data-i18n="vf.c3_title">防滑花紋板 (凸紋踩踏板)</h4>
+                                    <span class="vs-spec-tag" data-i18n="vf.c3_tag">車斗防滑耐磨</span>
                                 </div>
                                 <ul class="vs-features">
-                                    <li><span class="vf-prop-label">常用用途</span><span class="vf-prop-val">貨車卡車車斗鋪底、工廠樓梯、水溝蓋、斜坡踏板</span></li>
-                                    <li><span class="vf-prop-label">表面特徵</span><span class="vf-prop-val">五線立體防滑條紋，高抓地力、耐磨防蝕</span></li>
-                                    <li><span class="vf-prop-label">現貨尺寸</span><span class="vf-prop-val">厚度 <b>1.5mm / 2.0mm / 3.0mm / 4.5mm</b>（標準4x8尺）</span></li>
-                                    <li><span class="vf-prop-label">廠內加工</span><span class="vf-prop-val">川洋重型油壓剪床定寸剪裁、支援客製折彎</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_uses">常用用途</span><span class="vf-prop-val" data-i18n="vf.c3_uses">貨車卡車車斗鋪底、工廠樓梯、水溝蓋、斜坡踏板</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_features">表面特徵</span><span class="vf-prop-val" data-i18n="vf.c3_features">五條立體防滑條紋，高抓地力、耐磨防蝕</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_sizes">現貨尺寸</span><span class="vf-prop-val" data-i18n="vf.c3_sizes">厚度 <b>1.5mm / 2.0mm / 3.0mm / 4.5mm</b>（標準4x8尺）</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_machining">廠內加工</span><span class="vf-prop-val" data-i18n="vf.c3_machining">川洋重型油壓剪床定寸剪裁、支援客製折彎</span></li>
                                 </ul>
                                 <div class="vs-actions">
                                     <button type="button" class="btn-vs-pick" data-cart-id="chequered" data-cart-name="五線防滑花紋板" data-cart-template="五線防滑花紋鋁板（厚度: 2.0mm/3.0mm × 尺寸: 4x8尺 或裁切: mm × mm × 塊數: 塊）" onclick="addToInquiryCart('chequered', '五線防滑花紋板', '五線防滑花紋鋁板（厚度: 2.0mm/3.0mm × 尺寸: 4x8尺 或裁切: mm × mm × 塊數: 塊）', this)">
-                                        🛒 加入詢價單
+                                        <span data-i18n="vf.btn_add_cart">🛒 加入詢價單</span>
                                     </button>
                                     <button type="button" class="btn-vs-zoom" onclick="openImageLightbox('/static/img_factory/machining_chequered_shear_action.jpg', '五線防滑花紋板現場沖剪實景')">
-                                        🔍 檢視儲位圖鑑
+                                        <span data-i18n="vf.btn_view_rack">🔍 檢視儲位圖鑑</span>
                                     </button>
                                 </div>
                             </div>
@@ -422,26 +422,26 @@
                         <div class="visual-shape-card">
                             <div class="vs-img-wrap" onclick="openImageLightbox('/static/img_factory/warehouse_bundled_skids.jpg', '鋁扁條、方棒、排鋁現貨整裝與防護包裝')">
                                 <img src="/static/img_factory/warehouse_bundled_skids.jpg" alt="鋁扁條與方棒打包" loading="lazy">
-                                <span class="vs-badge-shape">實心扁條 / 方棒 · Flat & Square</span>
-                                <span class="vs-zoom-tip">🔍 檢視包裝圖鑑</span>
+                                <span class="vs-badge-shape" data-i18n="vf.c4_badge">實心扁條 / 方棒 · Flat & Square</span>
+                                <span class="vs-zoom-tip" data-i18n="vf.btn_view_pkg">🔍 檢視包裝圖鑑</span>
                             </div>
                             <div class="vs-body">
                                 <div class="vs-title-row">
-                                    <h4 class="vs-title">長條扁鋁 (四角實心)</h4>
-                                    <span class="vs-spec-tag">機架結構滑軌</span>
+                                    <h4 class="vs-title" data-i18n="vf.c4_title">長條扁鋁 (四角實心)</h4>
+                                    <span class="vs-spec-tag" data-i18n="vf.c4_tag">機架結構滑軌</span>
                                 </div>
                                 <ul class="vs-features">
-                                    <li><span class="vf-prop-label">常用用途</span><span class="vf-prop-val">機台導軌邊條、治具方塊墊塊、導電鋁排、固定條</span></li>
-                                    <li><span class="vf-prop-label">常備牌號</span><span class="vf-prop-val">6061-T6 易切削扁條與各式正方形棒料</span></li>
-                                    <li><span class="vf-prop-label">現貨尺寸</span><span class="vf-prop-val">厚度 3~50mm，寬度 10~200mm，長度 3米／6米</span></li>
-                                    <li><span class="vf-prop-label">廠內加工</span><span class="vf-prop-val">自動高速圓鋸機定寸切斷，端面筆直無毛邊</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_uses">常用用途</span><span class="vf-prop-val" data-i18n="vf.c4_uses">機台導軌邊條、治具方塊墊塊、導電鋁排、固定條</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_grades">常備牌號</span><span class="vf-prop-val" data-i18n="vf.c4_grades">6061-T6 易切削扁條與各式正方形棒料</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_sizes">現貨尺寸</span><span class="vf-prop-val" data-i18n="vf.c4_sizes">厚度 <b>3~50mm</b>，寬度 <b>10~200mm</b>，長度 3米／6米</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_machining">廠內加工</span><span class="vf-prop-val" data-i18n="vf.c4_machining">自動高速圓鋸機定寸切斷，端面筆直無毛邊</span></li>
                                 </ul>
                                 <div class="vs-actions">
                                     <button type="button" class="btn-vs-pick" data-cart-id="flat_square" data-cart-name="6061 實心扁條/方棒" data-cart-template="6061 實心扁條/方棒（厚度: mm × 寬度: mm × 長度: mm × 支數: 支）" onclick="addToInquiryCart('flat_square', '6061 實心扁條/方棒', '6061 實心扁條/方棒（厚度: mm × 寬度: mm × 長度: mm × 支數: 支）', this)">
-                                        🛒 加入詢價單
+                                        <span data-i18n="vf.btn_add_cart">🛒 加入詢價單</span>
                                     </button>
                                     <button type="button" class="btn-vs-zoom" onclick="openImageLightbox('/static/img_factory/warehouse_bundled_skids.jpg', '鋁扁條、方棒現貨整裝')">
-                                        🔍 檢視儲位圖鑑
+                                        <span data-i18n="vf.btn_view_rack">🔍 檢視儲位圖鑑</span>
                                     </button>
                                 </div>
                             </div>
@@ -451,26 +451,26 @@
                         <div class="visual-shape-card">
                             <div class="vs-img-wrap" onclick="openImageLightbox('/static/img_factory/warehouse_7075_tubes_racks.jpg', '7075 與 6061 中空無縫鋁管料架')">
                                 <img src="/static/img_factory/warehouse_7075_tubes_racks.jpg" alt="中空無縫鋁管料架" loading="lazy">
-                                <span class="vs-badge-shape">中空無縫管 · Tube</span>
-                                <span class="vs-zoom-tip">🔍 檢視料架圖鑑</span>
+                                <span class="vs-badge-shape" data-i18n="vf.c5_badge">中空無縫管 · Tube</span>
+                                <span class="vs-zoom-tip" data-i18n="vf.btn_view_rack">🔍 檢視料架圖鑑</span>
                             </div>
                             <div class="vs-body">
                                 <div class="vs-title-row">
-                                    <h4 class="vs-title">中空管材 (圓管/方管)</h4>
-                                    <span class="vs-spec-tag">套筒滾輪軸心</span>
+                                    <h4 class="vs-title" data-i18n="vf.c5_title">中空管材 (圓管/方管)</h4>
+                                    <span class="vs-spec-tag" data-i18n="vf.c5_tag">套筒滾輪軸心</span>
                                 </div>
                                 <ul class="vs-features">
-                                    <li><span class="vf-prop-label">常用用途</span><span class="vf-prop-val">輸送滾輪軸套、流體管路、輕量化支柱、結構套筒</span></li>
-                                    <li><span class="vf-prop-label">材質優勢</span><span class="vf-prop-val">無縫高壓管、真圓度高、內孔平整光潔、抗壓性強</span></li>
-                                    <li><span class="vf-prop-label">現貨尺寸</span><span class="vf-prop-val">多元外徑與壁厚規格，支援薄壁管與特厚結構管材</span></li>
-                                    <li><span class="vf-prop-label">廠內加工</span><span class="vf-prop-val">SOCO MC-360NF 非鐵金屬高速圓鋸垂直精密切斷</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_uses">常用用途</span><span class="vf-prop-val" data-i18n="vf.c5_uses">輸送滾輪軸套、流體管路、輕量化支柱、結構套筒</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_advantage">材質優勢</span><span class="vf-prop-val" data-i18n="vf.c5_advantage">無縫高壓管、真圓度高、內孔平整光潔、抗壓性強</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_sizes">現貨尺寸</span><span class="vf-prop-val" data-i18n="vf.c5_sizes">多元外徑與壁厚規格，支援薄壁管與特厚結構管材</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_machining">廠內加工</span><span class="vf-prop-val" data-i18n="vf.c5_machining">SOCO MC-360NF 非鐵金屬高速圓鋸垂直精密切斷</span></li>
                                 </ul>
                                 <div class="vs-actions">
                                     <button type="button" class="btn-vs-pick" data-cart-id="tube" data-cart-name="中空無縫鋁管" data-cart-template="中空無縫圓管/方管（外徑: mm × 壁厚: mm × 長度: mm × 支數: 支）" onclick="addToInquiryCart('tube', '中空無縫鋁管', '中空無縫圓管/方管（外徑: mm × 壁厚: mm × 長度: mm × 支數: 支）', this)">
-                                        🛒 加入詢價單
+                                        <span data-i18n="vf.btn_add_cart">🛒 加入詢價單</span>
                                     </button>
                                     <button type="button" class="btn-vs-zoom" onclick="openImageLightbox('/static/img_factory/warehouse_7075_tubes_racks.jpg', '中空無縫鋁管料架')">
-                                        🔍 檢視儲位圖鑑
+                                        <span data-i18n="vf.btn_view_rack">🔍 檢視儲位圖鑑</span>
                                     </button>
                                 </div>
                             </div>
@@ -480,26 +480,26 @@
                         <div class="visual-shape-card">
                             <div class="vs-img-wrap" onclick="openImageLightbox('/static/img_factory/warehouse_extrusions_vertical.jpg', '六米長直立式 A 型架工業鋁擠型儲位區')">
                                 <img src="/static/img_factory/warehouse_extrusions_vertical.jpg" alt="工業結構鋁擠型料架" loading="lazy">
-                                <span class="vs-badge-shape">工業結構擠型 · Extrusion</span>
-                                <span class="vs-zoom-tip">🔍 檢視儲位圖鑑</span>
+                                <span class="vs-badge-shape" data-i18n="vf.c6_badge">工業結構擠型 · Extrusion</span>
+                                <span class="vs-zoom-tip" data-i18n="vf.btn_view_rack">🔍 檢視儲位圖鑑</span>
                             </div>
                             <div class="vs-body">
                                 <div class="vs-title-row">
-                                    <h4 class="vs-title">結構鋁擠型 (機架組合)</h4>
-                                    <span class="vs-spec-tag">工作桌防護罩</span>
+                                    <h4 class="vs-title" data-i18n="vf.c6_title">結構鋁擠型 (機架組合)</h4>
+                                    <span class="vs-spec-tag" data-i18n="vf.c6_tag">工作桌防護罩</span>
                                 </div>
                                 <ul class="vs-features">
-                                    <li><span class="vf-prop-label">常用用途</span><span class="vf-prop-val">組裝機台外框、無塵室工作桌、安全防護罩、滑軌支架</span></li>
-                                    <li><span class="vf-prop-label">標準常備</span><span class="vf-prop-val">2020、3030、4040、4080、8080 等歐規／日規鋁擠型</span></li>
-                                    <li><span class="vf-prop-label">齊全配件</span><span class="vf-prop-val">角件螺絲螺帽、端蓋、活動鉸鏈、地腳輪一站購足</span></li>
-                                    <li><span class="vf-prop-label">廠內加工</span><span class="vf-prop-val">直角度精密鋸切、斜角45度鋸切，即買即組裝</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_uses">常用用途</span><span class="vf-prop-val" data-i18n="vf.c6_uses">組裝機台外框、無塵室工作桌、安全防護罩、滑軌支架</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_standard">標準常備</span><span class="vf-prop-val" data-i18n="vf.c6_standard">2020、3030、4040、4080、8080 等歐規／日規鋁擠型</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_accessories">齊全配件</span><span class="vf-prop-val" data-i18n="vf.c6_accessories">角件螺絲螺帽、端蓋、活動鉸鏈、地腳輪一站購足</span></li>
+                                    <li><span class="vf-prop-label" data-i18n="vf.lbl_machining">廠內加工</span><span class="vf-prop-val" data-i18n="vf.c6_machining">直角度精密鋸切、斜角45度鋸切，即買即組裝</span></li>
                                 </ul>
                                 <div class="vs-actions">
                                     <button type="button" class="btn-vs-pick" data-cart-id="extrusion" data-cart-name="工業結構鋁擠型" data-cart-template="工業結構鋁擠型（規格: 4040/3030 × 長度: mm × 支數: 支，含配件）" onclick="addToInquiryCart('extrusion', '工業結構鋁擠型', '工業結構鋁擠型（規格: 4040/3030 × 長度: mm × 支數: 支，含配件）', this)">
-                                        🛒 加入詢價單
+                                        <span data-i18n="vf.btn_add_cart">🛒 加入詢價單</span>
                                     </button>
                                     <button type="button" class="btn-vs-zoom" onclick="openImageLightbox('/static/img_factory/warehouse_extrusions_vertical.jpg', '工業結構鋁擠型儲位')">
-                                        🔍 檢視儲位圖鑑
+                                        <span data-i18n="vf.btn_view_rack">🔍 檢視儲位圖鑑</span>
                                     </button>
                                 </div>
                             </div>
@@ -513,24 +513,24 @@
                             <span class="vf-cart-icon-bubble">🛒</span>
                             <div>
                                 <div class="vf-cart-dock-title">
-                                    詢價清單：已選取 <b id="vfCartCount">0</b> 項材料規格
+                                    <span data-i18n="vf.cart_title">詢價清單：已選取</span> <b id="vfCartCount">0</b> <span data-i18n="vf.cart_suffix">項材料規格</span>
                                 </div>
-                                <div class="vf-cart-dock-desc" id="vfCartDesc">
+                                <div class="vf-cart-dock-desc" id="vfCartDesc" data-i18n="vf.cart_desc">
                                     點選上方任一卡片「🛒 加入詢價單」即可多選加入，可累積多筆材料一併估價
                                 </div>
                             </div>
                         </div>
                         <div class="vf-cart-dock-right">
-                            <button type="button" class="btn-vf-clear" id="btnVfClear" onclick="clearInquiryCart(event)" style="display: none;">
+                            <button type="button" class="btn-vf-clear" id="btnVfClear" onclick="clearInquiryCart(event)" style="display: none;" data-i18n="vf.btn_clear">
                                 ✕ 清空重選
                             </button>
-                            <button type="button" class="btn-vf-checkout" id="btnVfCheckout" onclick="goToInquiryForm()">
+                            <button type="button" class="btn-vf-checkout" id="btnVfCheckout" onclick="goToInquiryForm()" data-i18n="vf.btn_checkout">
                                 帶入表單填寫尺寸 ➔
                             </button>
                         </div>
                     </div>
 
-                    </div>
+                </div>
 
                 <!-- Home Quick Portal Directory (八大核心專區分頁入口) -->
                 <div class="home-portal-directory">
