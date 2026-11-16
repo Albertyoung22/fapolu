@@ -3285,6 +3285,11 @@ window.addEventListener('fapo-language-changed', (e) => {
         el.textContent = `${prefix}${finalVal}${displaySuffix}`;
     });
 
+    // Re-render Inquiry Cart UI and buttons in current language
+    if (typeof window.renderInquiryCartUI === 'function') {
+        window.renderInquiryCartUI();
+    }
+
     const voiceSelect = document.getElementById('dockVoiceSelect');
     if (!voiceSelect) return;
 
@@ -3667,17 +3672,22 @@ window.renderInquiryCartUI = function() {
 
     // 2. Update Card Buttons state
     const allCartBtns = document.querySelectorAll('.btn-vs-pick');
+    const currentLang = window.currentLang || localStorage.getItem('fapo_lang') || 'zh-TW';
+    const dict = (typeof TRANSLATIONS !== 'undefined' && TRANSLATIONS[currentLang]) ? TRANSLATIONS[currentLang] : {};
+    const textInCart = dict['vf.btn_in_cart'] || '✓ 已在詢價單 (點擊查看)';
+    const textAddCart = dict['vf.btn_add_cart'] || '🛒 加入詢價單';
+
     allCartBtns.forEach(btn => {
         const itemId = btn.getAttribute('data-cart-id');
         if (!itemId) return;
         const inCart = window.inquiryCart.some(item => item.id === itemId);
         if (inCart) {
             btn.classList.add('is-in-cart');
-            btn.innerHTML = '✓ 已在詢價單 (點擊查看)';
+            btn.innerHTML = `<span data-i18n="vf.btn_in_cart">${textInCart}</span>`;
             btn.onclick = function() { window.goToInquiryForm(); };
         } else {
             btn.classList.remove('is-in-cart');
-            btn.innerHTML = '🛒 加入詢價單';
+            btn.innerHTML = `<span data-i18n="vf.btn_add_cart">${textAddCart}</span>`;
             const origTemplate = btn.getAttribute('data-cart-template');
             const origName = btn.getAttribute('data-cart-name');
             btn.onclick = function() { window.addToInquiryCart(itemId, origName, origTemplate, this); };
