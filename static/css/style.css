@@ -5687,11 +5687,16 @@ body.lang-en .vf-prop-label::after {
 }
 
 @media (max-width: 768px) {
+  .visual-shape-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
   .floating-inquiry-cart {
-    bottom: 84px;
-    right: 16px;
-    left: 16px;
+    bottom: 136px;
+    right: 14px;
+    left: 14px;
     border-radius: 12px;
     justify-content: space-between;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.22);
   }
 }
