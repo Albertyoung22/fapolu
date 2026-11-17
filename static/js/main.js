@@ -1463,6 +1463,7 @@ function initSpecsExplorer() {
     const searchInput = document.getElementById('specsSearchInput');
     const catSelect = document.getElementById('specsCatSelect');
     const groupTabs = document.getElementById('specsGroupTabs');
+    const quickChips = document.getElementById('specsQuickChips');
     const tableBody = document.getElementById('specsTableBody');
     const totalCountEl = document.getElementById('specsTotalCount');
     const pageNumEl = document.getElementById('specsPageNum');
@@ -1473,8 +1474,10 @@ function initSpecsExplorer() {
 
     let currentPage = 1;
     let totalPages = 1;
-    let currentGroup = 'all';
+    let currentGroup = 'stock'; // Default directly to 常備現貨規格表 (514)
+    let currentCategory = '全部';
     let debounceTimer;
+    let specsData = [];
 
     function syncGroupTabUI(grp) {
         currentGroup = grp;
@@ -1483,67 +1486,147 @@ function initSpecsExplorer() {
                 btn.classList.toggle('active', btn.dataset.specGroup === grp);
             });
         }
+        if (quickChips) {
+            // Show stock category chips when in stock or all mode
+            quickChips.style.display = (grp === 'mold') ? 'none' : 'flex';
+        }
     }
 
-    function fetchSpecs(page = 1) {
-        currentPage = page;
-        const q = searchInput ? searchInput.value.trim() : '';
-        const category = catSelect ? catSelect.value : '';
+    function renderTable() {
+        const q = searchInput ? searchInput.value.trim().toLowerCase() : '';
+        const cat = catSelect ? catSelect.value : currentCategory;
+        const curLang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
+
+        let filtered = specsData.filter(item => {
+            if (currentGroup !== 'all' && item.group !== currentGroup) {
+                return false;
+            }
+            if (cat && cat !== '全部' && item.category !== cat) {
+                return false;
+            }
+            if (q) {
+                const combined = `${item.category} ${item.material} ${item.dimension} ${item.size} ${item.note}`.toLowerCase();
+                if (!combined.includes(q)) return false;
+            }
+            return true;
+        });
+
+        const total = filtered.length;
+        const perPage = 25;
+        totalPages = Math.max(1, Math.ceil(total / perPage));
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        if (totalCountEl) totalCountEl.textContent = total.toLocaleString();
+        if (pageNumEl) pageNumEl.textContent = `${currentPage} / ${totalPages}`;
+        if (prevPageBtn) prevPageBtn.disabled = currentPage <= 1;
+        if (nextPageBtn) nextPageBtn.disabled = currentPage >= totalPages;
+
+        if (filtered.length === 0) {
+            const noResultText = curLang === 'en'
+                ? 'No specifications found matching your criteria. Try switching to "All Specs" or searching for thickness, OD, or alloy.'
+                : '找不到符合條件的規格，建議點選上方分類標籤或輸入厚度、外徑、合金型號（如 5052、6061、7075）。';
+            tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 36px; color: #94a3b8; font-size: 0.95rem;">${noResultText}</td></tr>`;
+            return;
+        }
+
+        const startIndex = (currentPage - 1) * perPage;
+        const pageItems = filtered.slice(startIndex, startIndex + perPage);
+
+        tableBody.innerHTML = pageItems.map((item, idx) => {
+            const rowNo = item.no || (startIndex + idx + 1);
+            const safeSpec = `${item.category} ${item.material} ${item.dimension} ${item.size}`.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+            const badgeStyle = item.group === 'mold'
+                ? 'background:rgba(53,89,122,0.12); color:#2b4c6b; border-color:rgba(53,89,122,0.3);'
+                : '';
+            const addQuoteText = curLang === 'en' ? 'Add to RFQ' : curLang === 'ja' ? '見積り追加' : curLang === 'ko' ? '견적 추가' : '🛒 加入詢價';
+            const categoryDisplay = formatSpecCategory(item.category, curLang);
+            const dimensionDisplay = formatSpecDimension(item.dimension, curLang);
+            const noteDisplay = formatSpecNote(item.note, item.group, curLang);
+            
+            // Check if item already in inquiry cart
+            const inCart = (window.inquiryCart || []).some(ci => ci.name === safeSpec);
+            const btnLabel = inCart ? '✓ 已在詢價單' : addQuoteText;
+            const btnStyle = inCart 
+                ? 'background: #15803d; color: #fff; border-color: #166534;' 
+                : 'background: var(--accent-cinnabar, #b8332a); color: #fff; border-color: #9f2a22;';
+
+            return `
+            <tr class="spec-row-item">
+                <td style="color: var(--accent-cinnabar); font-weight:700;">#${rowNo}</td>
+                <td><span style="font-weight:700; color:var(--text-main);">${categoryDisplay}</span></td>
+                <td><span class="chip" style="color:var(--accent-amber); font-weight:700;">${item.material}</span></td>
+                <td style="font-weight:600; color:var(--text-main);">${dimensionDisplay || '-'}</td>
+                <td>${item.size || '-'}</td>
+                <td class="spec-action-cell">
+                    <span class="badge-stock" style="${badgeStyle}">${noteDisplay}</span>
+                    <button class="spec-quote-btn" style="padding:6px 14px; font-size:0.8rem; font-weight:700; margin-left:8px; border-radius:6px; cursor:pointer; transition:all 0.2s ease; ${btnStyle}" onclick="addSpecToQuote('${safeSpec}', this)">${btnLabel}</button>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    function loadDataAndRender(targetPage = 1) {
+        currentPage = targetPage;
+        if (specsData.length > 0) {
+            renderTable();
+            return;
+        }
 
         const curLang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
-        const loadingText = curLang === 'en' ? '🔍 Searching live specifications database...' : curLang === 'ja' ? '🔍 規格データベースを検索中...' : curLang === 'ko' ? '🔍 실시간 규격 데이터베이스 검색 중...' : '🔍 正在檢索官網同步規格資料庫...';
+        const loadingText = curLang === 'en' ? '🔍 Loading stock specifications...' : '🔍 正在載入常備現貨規格資料庫...';
         tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 30px; color: #94a3b8;">${loadingText}</td></tr>`;
 
-        fetch(`/api/specs?q=${encodeURIComponent(q)}&category=${encodeURIComponent(category)}&group=${encodeURIComponent(currentGroup)}&page=${page}&per_page=25`)
-            .then(res => res.json())
+        // Direct static JSON load (super fast & reliable)
+        fetch('/static/data/inventory_specs.json')
+            .then(res => {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.json();
+            })
             .then(data => {
-                totalPages = data.total_pages || 1;
-                if (totalCountEl) totalCountEl.textContent = data.total;
-                if (pageNumEl) pageNumEl.textContent = `${data.page} / ${totalPages}`;
-                
-                if (prevPageBtn) prevPageBtn.disabled = data.page <= 1;
-                if (nextPageBtn) nextPageBtn.disabled = data.page >= totalPages;
-
-                if (!data.items || data.items.length === 0) {
-                    const noResultText = curLang === 'en'
-                        ? 'No specifications found matching your criteria. Try switching to "All Specs" or searching for thickness, OD, or alloy (e.g. 5052, 6061, 7075, FT001).'
-                        : curLang === 'ja'
-                        ? '条件に一致する規格が見つかりません。上の「すべての規格」に切り替えるか、厚み、外径、合金型番で再検索してください。'
-                        : curLang === 'ko'
-                        ? '조건에 맞는 규격을 찾을 수 없습니다. 상단의 "전체 규격"을 선택하거나 두께, 외경, 합금 모델명으로 검색해 보세요.'
-                        : '找不到符合條件的規格，建議切換上方「全部規格」或輸入厚度、外徑、合金型號（如 5052、6061、7075、FT001、PW5168）。';
-                    tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 30px; color: #94a3b8;">${noResultText}</td></tr>`;
-                    return;
-                }
-
-                tableBody.innerHTML = data.items.map((item, idx) => {
-                    const rowNo = item.no || ((data.page - 1) * 25 + idx + 1);
-                    const safeSpec = `${item.category} ${item.material} ${item.dimension} ${item.size}`.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-                    const badgeStyle = item.group === 'mold'
-                        ? 'background:rgba(53,89,122,0.12); color:#2b4c6b; border-color:rgba(53,89,122,0.3);'
-                        : '';
-                    const addQuoteText = curLang === 'en' ? 'Add to RFQ' : curLang === 'ja' ? '見積り追加' : curLang === 'ko' ? '견적 추가' : '加入詢價';
-                    const categoryDisplay = formatSpecCategory(item.category, curLang);
-                    const dimensionDisplay = formatSpecDimension(item.dimension, curLang);
-                    const noteDisplay = formatSpecNote(item.note, item.group, curLang);
-                    return `
-                    <tr class="spec-row-item">
-                        <td style="color: var(--accent-cinnabar); font-weight:700;">#${rowNo}</td>
-                        <td><span style="font-weight:700; color:var(--text-main);">${categoryDisplay}</span></td>
-                        <td><span class="chip" style="color:var(--accent-amber); font-weight:700;">${item.material}</span></td>
-                        <td style="font-weight:600; color:var(--text-main);">${dimensionDisplay || '-'}</td>
-                        <td>${item.size || '-'}</td>
-                        <td class="spec-action-cell">
-                            <span class="badge-stock" style="${badgeStyle}">${noteDisplay}</span>
-                            <button class="btn-outline spec-quote-btn" style="padding:4px 12px; font-size:0.78rem; margin-left:8px; border-radius:6px;" onclick="addSpecToQuote('${safeSpec}')">${addQuoteText}</button>
-                        </td>
-                    </tr>`;
-                }).join('');
+                specsData = data;
+                window._ALL_SPECS_DATA = data;
+                renderTable();
             })
             .catch(err => {
-                console.error(err);
-                tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 20px; color:#ef4444;">資料庫讀取失敗</td></tr>`;
+                console.warn('Fallback to /api/specs due to:', err);
+                fetch('/api/specs?group=stock&per_page=100')
+                    .then(r => r.json())
+                    .then(d => {
+                        specsData = d.items || [];
+                        renderTable();
+                    })
+                    .catch(e => {
+                        console.error('Specs load error:', e);
+                        tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 20px; color:#ef4444;">規格資料載入失敗，請點此 <a href="javascript:location.reload()">重新整理</a></td></tr>`;
+                    });
             });
+    }
+
+    // Connect Quick Category Chips
+    if (quickChips) {
+        quickChips.querySelectorAll('.spec-cat-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const cat = chip.dataset.cat;
+                quickChips.querySelectorAll('.spec-cat-chip').forEach(c => {
+                    c.classList.remove('active');
+                    c.style.background = '#fff';
+                    c.style.color = '#334155';
+                    c.style.borderColor = '#cbd5e1';
+                });
+                chip.classList.add('active');
+                chip.style.background = 'var(--accent-cinnabar)';
+                chip.style.color = '#fff';
+                chip.style.borderColor = 'var(--accent-cinnabar)';
+
+                if (catSelect) {
+                    catSelect.value = cat;
+                }
+                currentCategory = cat;
+                currentPage = 1;
+                renderTable();
+            });
+        });
     }
 
     if (groupTabs) {
@@ -1551,7 +1634,17 @@ function initSpecsExplorer() {
             btn.addEventListener('click', () => {
                 syncGroupTabUI(btn.dataset.specGroup);
                 if (catSelect) catSelect.value = '全部';
-                fetchSpecs(1);
+                if (quickChips) {
+                    quickChips.querySelectorAll('.spec-cat-chip').forEach((c, idx) => {
+                        c.classList.toggle('active', idx === 0);
+                        c.style.background = idx === 0 ? 'var(--accent-cinnabar)' : '#fff';
+                        c.style.color = idx === 0 ? '#fff' : '#334155';
+                        c.style.borderColor = idx === 0 ? 'var(--accent-cinnabar)' : '#cbd5e1';
+                    });
+                }
+                currentCategory = '全部';
+                currentPage = 1;
+                renderTable();
             });
         });
     }
@@ -1559,7 +1652,10 @@ function initSpecsExplorer() {
     if (searchInput) {
         searchInput.addEventListener('input', () => {
             clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => fetchSpecs(1), 260);
+            debounceTimer = setTimeout(() => {
+                currentPage = 1;
+                renderTable();
+            }, 180);
         });
     }
 
@@ -1569,19 +1665,40 @@ function initSpecsExplorer() {
             if (val !== '全部') {
                 syncGroupTabUI(val.startsWith('現有模具') ? 'mold' : 'stock');
             }
-            fetchSpecs(1);
+            if (quickChips) {
+                quickChips.querySelectorAll('.spec-cat-chip').forEach(c => {
+                    const match = c.dataset.cat === val;
+                    c.classList.toggle('active', match);
+                    c.style.background = match ? 'var(--accent-cinnabar)' : '#fff';
+                    c.style.color = match ? '#fff' : '#334155';
+                    c.style.borderColor = match ? 'var(--accent-cinnabar)' : '#cbd5e1';
+                });
+            }
+            currentCategory = val;
+            currentPage = 1;
+            renderTable();
         });
     }
 
     if (prevPageBtn) {
         prevPageBtn.addEventListener('click', () => {
-            if (currentPage > 1) fetchSpecs(currentPage - 1);
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+                const container = document.querySelector('.specs-table-container');
+                if (container) container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         });
     }
 
     if (nextPageBtn) {
         nextPageBtn.addEventListener('click', () => {
-            if (currentPage < totalPages) fetchSpecs(currentPage + 1);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+                const container = document.querySelector('.specs-table-container');
+                if (container) container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         });
     }
 
@@ -1589,7 +1706,7 @@ function initSpecsExplorer() {
     window.addEventListener('fapo-language-changed', (e) => {
         const lang = e.detail ? e.detail.lang : (window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW');
         updateSpecsCatSelectOptions(lang);
-        fetchSpecs(currentPage);
+        renderTable();
         if (typeof updateWeightShapeInputs === 'function') {
             const s = document.getElementById('wtShapeSelect');
             if (s) updateWeightShapeInputs();
@@ -1600,32 +1717,26 @@ function initSpecsExplorer() {
     updateSpecsCatSelectOptions(initLang);
 
     window._setSpecsGroupUI = syncGroupTabUI;
-    fetchSpecs(1);
+    syncGroupTabUI('stock');
+    loadDataAndRender(1);
 }
 
-window.addSpecToQuote = function(specText) {
-    const inquiryMaterial = document.getElementById('inquiryMaterial');
-    const inquiryMessage = document.getElementById('inquiryMessage');
+window.addSpecToQuote = function(specText, btnElement) {
+    const itemId = 'spec-' + btoa(encodeURIComponent(specText)).replace(/[^a-zA-Z0-9]/g, '').slice(0, 16);
+    const templateText = `【現貨規格】${specText}\n   【預計數量】1 件\n   【加工需求】精密切割/依指定尺寸`;
     
-    if (inquiryMaterial) {
-        if (!inquiryMaterial.value.trim()) {
-            inquiryMaterial.value = specText;
-        } else if (!inquiryMaterial.value.includes(specText)) {
-            inquiryMaterial.value += '、' + specText;
-        }
+    if (typeof window.addToInquiryCart === 'function') {
+        window.addToInquiryCart(itemId, specText, templateText, btnElement);
+    } else {
+        showToast(`🛒 已加入「${specText}」至詢價清單`);
     }
-    if (inquiryMessage) {
-        if (!inquiryMessage.value.trim()) {
-            inquiryMessage.value = `您好，我需要詢問以下現貨規格的報價與交期：\n1. 【規格】${specText}\n   【預計數量】1 件\n   【加工需求】精密切割/依指定尺寸`;
-        } else {
-            inquiryMessage.value += `\n\n+ 【規格】${specText}\n   【預計數量】1 件\n   【加工需求】依指定尺寸`;
-        }
+
+    if (btnElement) {
+        btnElement.textContent = '✓ 已在詢價單';
+        btnElement.style.background = '#15803d';
+        btnElement.style.color = '#ffffff';
+        btnElement.style.borderColor = '#166534';
     }
-    
-    if (window.navigateToPage) {
-        window.navigateToPage('contact', { scrollTarget: 'quoteFormCard' });
-    }
-    showToast(`📋 已帶入規格「${specText}」至詢價清單`);
 };
 
 window.copyRfqDraft = function() {
@@ -1747,36 +1858,55 @@ document.addEventListener('keydown', (e) => {
 });
 
 window.quickFilterExtrusion = function(filterCat) {
-    const catSelect = document.getElementById('specsCatSelect');
-    const searchInput = document.getElementById('specsSearchInput');
-    const explorerCard = document.getElementById('specsExplorerCard');
-    if (filterCat && catSelect) {
-        if (searchInput) searchInput.value = '';
-        catSelect.value = filterCat;
-        catSelect.dispatchEvent(new Event('change'));
+    if (window.navigateToPage) {
+        window.navigateToPage('specs', { scrollTarget: 'specsExplorerCard' });
+    }
+    setTimeout(() => {
+        const groupTabs = document.getElementById('specsGroupTabs');
+        if (groupTabs) {
+            const moldBtn = groupTabs.querySelector('[data-spec-group="mold"]');
+            if (moldBtn) moldBtn.click();
+        }
+        const catSelect = document.getElementById('specsCatSelect');
+        const searchInput = document.getElementById('specsSearchInput');
+        if (filterCat && catSelect) {
+            if (searchInput) searchInput.value = '';
+            catSelect.value = filterCat;
+            catSelect.dispatchEvent(new Event('change'));
+        }
+        const explorerCard = document.getElementById('specsExplorerCard');
         if (explorerCard) {
             explorerCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-        showToast(`📐 已切換至「${filterCat}」規格表`);
-    }
+    }, 60);
+    showToast(`📐 已切換至「${filterCat}」免開模規格表`);
 };
 
 window.quickFilterAlloy = function(alloyCode) {
-    const searchInput = document.getElementById('specsSearchInput');
-    const catSelect = document.getElementById('specsCatSelect');
-    const explorerCard = document.getElementById('specsExplorerCard');
-    if (catSelect) {
-        catSelect.value = '';
-        catSelect.dispatchEvent(new Event('change'));
+    if (window.navigateToPage) {
+        window.navigateToPage('specs', { scrollTarget: 'specsExplorerCard' });
     }
-    if (searchInput) {
-        searchInput.value = alloyCode;
-        searchInput.dispatchEvent(new Event('input'));
-    }
-    if (explorerCard) {
-        explorerCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-    showToast(`🔍 已為您檢索「${alloyCode}」系列現貨與模具規格`);
+    setTimeout(() => {
+        const groupTabs = document.getElementById('specsGroupTabs');
+        if (groupTabs) {
+            const stockBtn = groupTabs.querySelector('[data-spec-group="stock"]');
+            if (stockBtn) stockBtn.click();
+        }
+        const catSelect = document.getElementById('specsCatSelect');
+        const searchInput = document.getElementById('specsSearchInput');
+        if (catSelect) {
+            catSelect.value = '全部';
+        }
+        if (searchInput) {
+            searchInput.value = alloyCode;
+            searchInput.dispatchEvent(new Event('input'));
+        }
+        const explorerCard = document.getElementById('specsExplorerCard');
+        if (explorerCard) {
+            explorerCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, 60);
+    showToast(`🔍 已切換至現貨規格表，檢索「${alloyCode}」在庫材料`);
 };
 
 /* ==========================================================================

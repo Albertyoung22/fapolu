@@ -26,6 +26,7 @@ template = env.get_template('index.html')
 rendered_html = template.render(
     data=site_data,
     active_page='hero',
+    inventory_count='3,071',
     all_pages_meta={}
 )
 
@@ -40,3 +41,4 @@ with open(output_path, 'w', encoding='utf-8') as f:
     f.write(rendered_html)
 
 print('SUCCESS_RECOMPILED_DIST_INDEX_HTML, Size:', len(rendered_html))
+

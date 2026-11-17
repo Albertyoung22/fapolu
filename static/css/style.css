@@ -5213,13 +5213,27 @@ textarea:focus-visible {
 .vf-prop-label {
   flex-shrink: 0;
   width: auto;
-  min-width: 68px;
+  min-width: 74px;
   color: #64748b;
   font-weight: 700;
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   letter-spacing: 0.2px;
   white-space: nowrap;
   display: inline-flex;
+}
+
+.spec-cat-chip {
+  transition: all 0.2s ease;
+}
+.spec-cat-chip:hover {
+  border-color: var(--accent-cinnabar, #b8332a) !important;
+  color: var(--accent-cinnabar, #b8332a) !important;
+  background: rgba(184, 51, 42, 0.08) !important;
+}
+.spec-cat-chip.active {
+  background: var(--accent-cinnabar, #b8332a) !important;
+  color: #ffffff !important;
+  border-color: var(--accent-cinnabar, #b8332a) !important;
 }
 
 .vf-prop-label::after {
