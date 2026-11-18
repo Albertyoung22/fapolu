@@ -5845,3 +5845,45 @@ main {
     top: 12px !important;
   }
 }
+
+/* Floating Audio Tour Dock - Hidden by default until activated */
+.audio-dock {
+  transform: translateX(-50%) translateY(160%) !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, visibility 0.3s !important;
+}
+
+.audio-dock.active {
+  transform: translateX(-50%) translateY(0) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+.btn-dock-close {
+  background: transparent;
+  border: 1px solid rgba(158, 112, 36, 0.28);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted, #766c5d);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  margin-left: 6px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.btn-dock-close:hover {
+  background: rgba(166, 44, 34, 0.12);
+  color: var(--accent-cinnabar, #a62c22);
+  border-color: var(--accent-cinnabar, #a62c22);
+  transform: scale(1.08);
+}

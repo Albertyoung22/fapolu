@@ -8,6 +8,8 @@
 
     const TRANSLATIONS = {
         'zh-TW': {
+        'hero.btn_hub_branches': '🏭 北中南 4 大實體倉儲',
+        'hero.btn_hub_machining': '⚙️ 數控裁切加工能量',
             'nav.cart': '詢價單',
             'hero.stat2_label': '北中南營運據點',
             'hero.stat3_label': '現貨與免開模規格',
@@ -4245,7 +4247,9 @@
     };
 
     const LANG_LABELS = {
-        'zh-TW': { label: '繁體中文', flag: '🇹🇼' },
+        'zh-TW': {
+        'hero.btn_hub_branches': '🏭 北中南 4 大實體倉儲',
+        'hero.btn_hub_machining': '⚙️ 數控裁切加工能量', label: '繁體中文', flag: '🇹🇼' },
         'en': { label: 'English', flag: '🇺🇸' },
         'ja': { label: '日本語', flag: '🇯🇵' },
         'ko': { label: '한국어', flag: '🇰🇷' }

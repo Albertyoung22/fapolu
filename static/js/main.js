@@ -1,3 +1,27 @@
+
+window.openAudioDock = function() {
+    const dock = document.getElementById('audioDock');
+    if (dock) {
+        dock.classList.add('active');
+    }
+};
+
+window.closeAudioDock = function() {
+    const dock = document.getElementById('audioDock');
+    if (dock) {
+        dock.classList.remove('active');
+        dock.classList.remove('expanded');
+    }
+    if (audioTourState && audioTourState.audio) {
+        audioTourState.audio.pause();
+        audioTourState.isPlaying = false;
+        if (typeof updatePlayButtonUI === 'function') updatePlayButtonUI();
+    }
+    if (typeof StudioBgmEngine !== 'undefined' && StudioBgmEngine.bgmEnabled) {
+        StudioBgmEngine.stopAmbient();
+    }
+};
+
 /**
  * 法寶實業有限公司 - 沉浸式互動核心引擎
  * FAPO ENTERPRISE Interactive Experience & Edge-TTS Audio Engine
@@ -64,7 +88,7 @@ function initTechTabs() {
     });
 }
 
-window.filterChemTable = function(val) {
+window.filterChemTable = function (val) {
     const query = (val || '').toLowerCase().trim();
     const rows = document.querySelectorAll('#chemTableBody tr');
     rows.forEach(r => {
@@ -73,7 +97,7 @@ window.filterChemTable = function(val) {
     });
 };
 
-window.closeMobileMenu = function() {
+window.closeMobileMenu = function () {
     const overlay = document.getElementById('mobileNavOverlay');
     const menuBtn = document.getElementById('mobileMenuBtn');
     if (overlay) overlay.classList.remove('open');
@@ -482,7 +506,7 @@ const StudioBgmEngine = {
             a.play().then(() => {
                 this.isAmbientPlaying = true;
                 this._fadeTo(targetVol, 700);
-            }).catch(() => {});
+            }).catch(() => { });
         } else {
             this.isAmbientPlaying = true;
             this._fadeTo(targetVol, 500);
@@ -673,7 +697,7 @@ function initAudioTour() {
     const voiceSelect = document.getElementById('dockVoiceSelect');
     const speedSelect = document.getElementById('dockSpeedSelect');
     const zenBgmBtn = document.getElementById('dockZenBgmBtn');
-    
+
     // Read chapters from embedded data
     if (window.SITE_DATA && window.SITE_DATA.tour_chapters) {
         audioTourState.chapters = window.SITE_DATA.tour_chapters;
@@ -693,7 +717,7 @@ function initAudioTour() {
     if (chapterSelect) {
         const initLang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
         updateTourChaptersDropdown(initLang);
-        
+
         chapterSelect.addEventListener('change', (e) => {
             clearChimeTimer();
             stopCardAudio();
@@ -811,7 +835,7 @@ function initAudioTour() {
         const cur = audioTourState.audio.src || '';
         if (ch.audio_file && !cur.endsWith(ch.audio_file)) {
             audioTourState.audio.src = ch.audio_file;
-            audioTourState.audio.play().catch(() => {});
+            audioTourState.audio.play().catch(() => { });
         } else if (ch.text || ch.script) {
             audioTourState.isPlaying = false;
             updatePlayButtonUI();
@@ -848,6 +872,7 @@ function initAudioTour() {
     const startTourHeroBtn = document.getElementById('startTourHeroBtn');
     if (startTourHeroBtn) {
         startTourHeroBtn.addEventListener('click', (e) => {
+            window.openAudioDock();
             e.preventDefault();
             clearChimeTimer();
             if (StudioBgmEngine.bgmEnabled) {
@@ -880,6 +905,7 @@ function stopCardAudio() {
 }
 
 function selectChapter(index, autoPlay = false) {
+    if (autoPlay) window.openAudioDock();
     if (index < 0 || index >= audioTourState.chapters.length) return;
     stopCardAudio();
     audioTourState.currentChapter = index;
@@ -1016,7 +1042,7 @@ function highlightAndScrollToSection(sectionId) {
     }
     const el = document.getElementById(sectionId);
     if (!el) return;
-    
+
     // Temporary glow highlight
     el.classList.add('active-tour-section');
     setTimeout(() => {
@@ -1029,16 +1055,16 @@ function initAudioVisualizer() {
     const canvas = document.getElementById('audioWaveCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    
+
     let waveOffset = 0;
-    
+
     function drawWave() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
+
         const width = canvas.width;
         const height = canvas.height;
         const mid = height / 2;
-        
+
         if (StudioBgmEngine.bowlVisualEnergy > 0.01) {
             StudioBgmEngine.bowlVisualEnergy *= 0.965;
         } else {
@@ -1051,7 +1077,7 @@ function initAudioVisualizer() {
 
         ctx.beginPath();
         ctx.moveTo(0, mid);
-        
+
         const amplitude = (isSpeaking ? 9 : (isAmbient ? 4.5 : 1.8)) + bowlBoost;
         const speed = isSpeaking ? 0.11 : (isAmbient ? 0.05 : 0.025);
         waveOffset += speed;
@@ -1060,14 +1086,14 @@ function initAudioVisualizer() {
             const y = mid + Math.sin(x * 0.045 + waveOffset) * amplitude * Math.sin((x / width) * Math.PI);
             ctx.lineTo(x, y);
         }
-        
+
         const strokeColor = isSpeaking ? '#a62c22' : (isAmbient ? '#b07418' : 'rgba(120, 96, 58, 0.35)');
         ctx.strokeStyle = strokeColor;
         ctx.lineWidth = 2;
         ctx.shadowColor = (isSpeaking || isAmbient) ? 'rgba(180, 128, 36, 0.45)' : 'transparent';
         ctx.shadowBlur = (isSpeaking || isAmbient) ? 7 : 0;
         ctx.stroke();
-        
+
         requestAnimationFrame(drawWave);
     }
     drawWave();
@@ -1117,7 +1143,7 @@ if ('speechSynthesis' in window) {
     window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
 }
 
-window.getLocalizedSpeech = function(text, lang) {
+window.getLocalizedSpeech = function (text, lang) {
     if (!lang || lang === 'zh-TW') return text;
     // Map common card narrations
     if (text.includes('成立概要') || text.includes('企業沿革')) {
@@ -1159,9 +1185,9 @@ window.getLocalizedSpeech = function(text, lang) {
 };
 
 // On-demand dynamic TTS read-aloud for cards
-window.readAloudText = function(text, btnElement) {
+window.readAloudText = function (text, btnElement) {
     if (!text) return;
-    
+
     clearChimeTimer();
     stopCardAudio();
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
@@ -1192,7 +1218,7 @@ window.readAloudText = function(text, btnElement) {
     if (audioTourState.isPlaying) {
         audioTourState.audio.pause();
     }
-    
+
     const curLang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
     const speechText = window.getLocalizedSpeech(text, curLang);
     let voice = audioTourState.voice;
@@ -1207,7 +1233,7 @@ window.readAloudText = function(text, btnElement) {
 
     const controller = ('AbortController' in window) ? new AbortController() : null;
     const timeoutId = setTimeout(() => { if (controller) controller.abort(); }, 25000);
-    
+
     fetch(url, controller ? { signal: controller.signal } : {})
         .then(res => res.json().catch(() => ({})).then(data => ({ ok: res.ok, data })))
         .then(({ ok, data }) => {
@@ -1260,11 +1286,11 @@ window.readAloudText = function(text, btnElement) {
             const p = speechAudio.play();
             if (p && typeof p.then === 'function') {
                 p.then(() => showToast("🎙️ 正在為您朗讀內容..."))
-                 .catch(err => {
-                     console.warn('Audio play rejected:', err);
-                     audioTourState.cardAudio = null;
-                     speakWithBrowserTTS(text);
-                 });
+                    .catch(err => {
+                        console.warn('Audio play rejected:', err);
+                        audioTourState.cardAudio = null;
+                        speakWithBrowserTTS(text);
+                    });
             }
         })
         .catch(err => {
@@ -1374,25 +1400,25 @@ function formatSpecDimension(dim, lang) {
     let s = dim;
     if (lang === 'en') {
         s = s.replace(/^厚\s*/, 'Thick ')
-             .replace(/^(直徑|外徑)\s*/, 'Dia. ')
-             .replace(/^方寬\s*/, 'Sq. ')
-             .replace(/^對邊\s*/, 'AF ')
-             .replace(/^寬\s*/, 'Width ')
-             .replace(/^規格\s*/, 'Spec ');
+            .replace(/^(直徑|外徑)\s*/, 'Dia. ')
+            .replace(/^方寬\s*/, 'Sq. ')
+            .replace(/^對邊\s*/, 'AF ')
+            .replace(/^寬\s*/, 'Width ')
+            .replace(/^規格\s*/, 'Spec ');
     } else if (lang === 'ja') {
         s = s.replace(/^厚\s*/, '厚み ')
-             .replace(/^(直徑|外徑)\s*/, '外径 ')
-             .replace(/^方寬\s*/, '正方形幅 ')
-             .replace(/^對邊\s*/, '対辺 ')
-             .replace(/^寬\s*/, '幅 ')
-             .replace(/^規格\s*/, '規格 ');
+            .replace(/^(直徑|外徑)\s*/, '外径 ')
+            .replace(/^方寬\s*/, '正方形幅 ')
+            .replace(/^對邊\s*/, '対辺 ')
+            .replace(/^寬\s*/, '幅 ')
+            .replace(/^規格\s*/, '規格 ');
     } else if (lang === 'ko') {
         s = s.replace(/^厚\s*/, '두께 ')
-             .replace(/^(直徑|外徑)\s*/, '외경 ')
-             .replace(/^方寬\s*/, '정사각 폭 ')
-             .replace(/^對邊\s*/, '대변 ')
-             .replace(/^寬\s*/, '폭 ')
-             .replace(/^規格\s*/, '규격 ');
+            .replace(/^(直徑|外徑)\s*/, '외경 ')
+            .replace(/^方寬\s*/, '정사각 폭 ')
+            .replace(/^對邊\s*/, '대변 ')
+            .replace(/^寬\s*/, '폭 ')
+            .replace(/^規格\s*/, '규격 ');
     }
     return s;
 }
@@ -1469,7 +1495,7 @@ function initSpecsExplorer() {
     const pageNumEl = document.getElementById('specsPageNum');
     const prevPageBtn = document.getElementById('specsPrevBtn');
     const nextPageBtn = document.getElementById('specsNextBtn');
-    
+
     if (!tableBody) return;
 
     let currentPage = 1;
@@ -1543,12 +1569,12 @@ function initSpecsExplorer() {
             const categoryDisplay = formatSpecCategory(item.category, curLang);
             const dimensionDisplay = formatSpecDimension(item.dimension, curLang);
             const noteDisplay = formatSpecNote(item.note, item.group, curLang);
-            
+
             // Check if item already in inquiry cart
             const inCart = (window.inquiryCart || []).some(ci => ci.name === safeSpec);
             const btnLabel = inCart ? '✓ 已在詢價單' : addQuoteText;
-            const btnStyle = inCart 
-                ? 'background: #15803d; color: #fff; border-color: #166534;' 
+            const btnStyle = inCart
+                ? 'background: #15803d; color: #fff; border-color: #166534;'
                 : 'background: var(--accent-cinnabar, #b8332a); color: #fff; border-color: #9f2a22;';
 
             return `
@@ -1721,10 +1747,10 @@ function initSpecsExplorer() {
     loadDataAndRender(1);
 }
 
-window.addSpecToQuote = function(specText, btnElement) {
+window.addSpecToQuote = function (specText, btnElement) {
     const itemId = 'spec-' + btoa(encodeURIComponent(specText)).replace(/[^a-zA-Z0-9]/g, '').slice(0, 16);
     const templateText = `【現貨規格】${specText}\n   【預計數量】1 件\n   【加工需求】精密切割/依指定尺寸`;
-    
+
     if (typeof window.addToInquiryCart === 'function') {
         window.addToInquiryCart(itemId, specText, templateText, btnElement);
     } else {
@@ -1739,7 +1765,7 @@ window.addSpecToQuote = function(specText, btnElement) {
     }
 };
 
-window.copyRfqDraft = function() {
+window.copyRfqDraft = function () {
     const mat = document.getElementById('inquiryMaterial')?.value || '';
     const msg = document.getElementById('inquiryMessage')?.value || '';
     const comp = document.getElementById('companyName')?.value || '';
@@ -1757,7 +1783,7 @@ window.copyRfqDraft = function() {
 /* ==========================================================================
    4. Hardness Converter (國際標準金屬硬度對照計算器)
    ========================================================================== */
-window.applyHbPreset = function(val) {
+window.applyHbPreset = function (val) {
     const hbInput = document.getElementById('calcHbInput');
     if (hbInput) {
         hbInput.value = val;
@@ -1836,7 +1862,7 @@ function initProductFilters() {
     });
 }
 
-window.openImageLightbox = function(src, caption) {
+window.openImageLightbox = function (src, caption) {
     const modal = document.getElementById('imageLightboxModal');
     const img = document.getElementById('lightboxImg');
     const cap = document.getElementById('lightboxCaption');
@@ -1846,7 +1872,7 @@ window.openImageLightbox = function(src, caption) {
     modal.classList.add('open');
 };
 
-window.closeImageLightbox = function() {
+window.closeImageLightbox = function () {
     const modal = document.getElementById('imageLightboxModal');
     if (modal) modal.classList.remove('open');
 };
@@ -1857,7 +1883,7 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-window.quickFilterExtrusion = function(filterCat) {
+window.quickFilterExtrusion = function (filterCat) {
     if (window.navigateToPage) {
         window.navigateToPage('specs', { scrollTarget: 'specsExplorerCard' });
     }
@@ -1882,7 +1908,7 @@ window.quickFilterExtrusion = function(filterCat) {
     showToast(`📐 已切換至「${filterCat}」免開模規格表`);
 };
 
-window.quickFilterAlloy = function(alloyCode) {
+window.quickFilterAlloy = function (alloyCode) {
     if (window.navigateToPage) {
         window.navigateToPage('specs', { scrollTarget: 'specsExplorerCard' });
     }
@@ -1912,7 +1938,7 @@ window.quickFilterAlloy = function(alloyCode) {
 /* ==========================================================================
    6. Contact Form & Quotation Workflow (附圖面拖曳上傳與估價單)
    ========================================================================== */
-window.onDeliveryCountyChange = function(county) {
+window.onDeliveryCountyChange = function (county) {
     const north = ['台北市', '新北市', '基隆市', '桃園市', '新竹市', '新竹縣', '宜蘭縣'];
     const central = ['台中市', '苗栗縣', '彰化縣', '南投縣', '雲林縣'];
     const south = ['台南市', '嘉義市', '嘉義縣', '高雄市', '屏東縣', '花蓮縣', '台東縣', '澎湖金門連江'];
@@ -1926,7 +1952,7 @@ window.onDeliveryCountyChange = function(county) {
     }
 };
 
-window.selectRegion = function(regionName) {
+window.selectRegion = function (regionName) {
     const hidden = document.getElementById('selectedRegion');
     if (hidden) hidden.value = regionName;
 
@@ -1970,7 +1996,7 @@ window.selectRegion = function(regionName) {
     }
 };
 
-window.quickFillAndScroll = function(templateText) {
+window.quickFillAndScroll = function (templateText) {
     // If on subpage, navigate to contact page
     if (window.navigateToPage) {
         window.navigateToPage('contact', { scrollTarget: 'quoteFormCard' });
@@ -1990,7 +2016,7 @@ window.quickFillAndScroll = function(templateText) {
     }, 150);
 };
 
-window.quickSnapInquiry = function() {
+window.quickSnapInquiry = function () {
     if (window.navigateToPage) {
         window.navigateToPage('contact', { scrollTarget: 'quoteFormCard' });
     }
@@ -2006,7 +2032,7 @@ window.quickSnapInquiry = function() {
     }, 150);
 };
 
-window.fillQuickMaterial = function(text) {
+window.fillQuickMaterial = function (text) {
     const inp = document.getElementById('inquiryMaterial');
     if (inp) {
         inp.value = text;
@@ -2091,46 +2117,46 @@ function initContactForm() {
             method: 'POST',
             body: formData
         })
-        .then(res => res.json())
-        .then(data => {
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-            if (data.success) {
-                // Save current inquiry snapshot for instant quotation viewing
-                try {
-                    const snap = {
-                        id: data.ticket_id || ('REQ-' + Date.now()),
-                        companyName: (form.companyName ? form.companyName.value : '') || '貴客戶',
-                        contactPerson: (form.contactPerson ? form.contactPerson.value : '') || '採購專員',
-                        contactPhone: (form.contactPhone ? form.contactPhone.value : '') || '—',
-                        contactEmail: (form.contactEmail ? form.contactEmail.value : '') || '—',
-                        inquiryMaterial: (form.inquiryMaterial ? form.inquiryMaterial.value : '') || '客製鋁合金規格材料',
-                        inquiryMessage: (form.inquiryMessage ? form.inquiryMessage.value : '') || '',
-                        branch: (form.region ? form.region.value : '') || (form.deliveryCounty ? form.deliveryCounty.value : '') || '全台配送',
-                        timestamp: new Date().toISOString().slice(0, 10)
-                    };
-                    sessionStorage.setItem('current_inquiry', JSON.stringify(snap));
-                    if (data.ticket_id) {
-                        sessionStorage.setItem('inquiry_' + data.ticket_id, JSON.stringify(snap));
-                    }
-                } catch(e) {}
+            .then(res => res.json())
+            .then(data => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                if (data.success) {
+                    // Save current inquiry snapshot for instant quotation viewing
+                    try {
+                        const snap = {
+                            id: data.ticket_id || ('REQ-' + Date.now()),
+                            companyName: (form.companyName ? form.companyName.value : '') || '貴客戶',
+                            contactPerson: (form.contactPerson ? form.contactPerson.value : '') || '採購專員',
+                            contactPhone: (form.contactPhone ? form.contactPhone.value : '') || '—',
+                            contactEmail: (form.contactEmail ? form.contactEmail.value : '') || '—',
+                            inquiryMaterial: (form.inquiryMaterial ? form.inquiryMaterial.value : '') || '客製鋁合金規格材料',
+                            inquiryMessage: (form.inquiryMessage ? form.inquiryMessage.value : '') || '',
+                            branch: (form.region ? form.region.value : '') || (form.deliveryCounty ? form.deliveryCounty.value : '') || '全台配送',
+                            timestamp: new Date().toISOString().slice(0, 10)
+                        };
+                        sessionStorage.setItem('current_inquiry', JSON.stringify(snap));
+                        if (data.ticket_id) {
+                            sessionStorage.setItem('inquiry_' + data.ticket_id, JSON.stringify(snap));
+                        }
+                    } catch (e) { }
 
-                showSuccessModal(data.ticket_id, data.message);
-                form.reset();
-                updateFileDisplay(null);
-                if (typeof window.clearInquiryCart === 'function') {
-                    window.clearInquiryCart();
+                    showSuccessModal(data.ticket_id, data.message);
+                    form.reset();
+                    updateFileDisplay(null);
+                    if (typeof window.clearInquiryCart === 'function') {
+                        window.clearInquiryCart();
+                    }
+                } else {
+                    showToast("送出失敗：" + (data.error || '未預期錯誤'));
                 }
-            } else {
-                showToast("送出失敗：" + (data.error || '未預期錯誤'));
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-            showToast("網路錯誤，請稍後再試或致電各廠區");
-        });
+            })
+            .catch(err => {
+                console.error(err);
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                showToast("網路錯誤，請稍後再試或致電各廠區");
+            });
     });
 }
 
@@ -2139,6 +2165,11 @@ function showSuccessModal(ticketId, message) {
     const modalMsg = document.getElementById('modalMessage');
     const modalTicket = document.getElementById('modalTicket');
     const pdfBtn = document.getElementById('modalPrintPdfBtn');
+    const floatingCart = document.getElementById('floatingInquiryCart');
+    // Hide floating cart so it never overlaps the modal dialog
+    if (floatingCart) {
+        floatingCart.style.display = 'none';
+    }
     if (modal) {
         if (modalMsg) modalMsg.textContent = message;
         if (modalTicket) modalTicket.textContent = `諮詢單號：${ticketId}`;
@@ -2146,7 +2177,7 @@ function showSuccessModal(ticketId, message) {
             const quotationUrl = `/quotation.html?id=${encodeURIComponent(ticketId)}`;
             pdfBtn.href = quotationUrl;
             pdfBtn.setAttribute('target', '_blank');
-            pdfBtn.onclick = function(e) {
+            pdfBtn.onclick = function (e) {
                 // Ensure new tab opens quotation immediately
                 window.open(quotationUrl, '_blank');
                 return false;
@@ -2156,9 +2187,13 @@ function showSuccessModal(ticketId, message) {
     }
 }
 
-window.closeModal = function() {
+window.closeModal = function () {
     const modal = document.getElementById('successModal');
     if (modal) modal.classList.remove('open');
+    // Re-evaluate floating cart visibility
+    if (typeof window.renderInquiryCartUI === 'function') {
+        window.renderInquiryCartUI();
+    }
 };
 
 /* ==========================================================================
@@ -2178,7 +2213,7 @@ const PORTAL_PAGES = [
 
 window.CURRENT_PAGE_ID = 'hero';
 
-window.getPageLabel = function(pageId, type = 'label') {
+window.getPageLabel = function (pageId, type = 'label') {
     const lang = window.getCurrentLanguage ? window.getCurrentLanguage() : 'zh-TW';
     const dict = {
         'zh-TW': {
@@ -2230,7 +2265,7 @@ window.getPageLabel = function(pageId, type = 'label') {
     return (langDict[pageId] && langDict[pageId][type]) || pageId;
 };
 
-window.updateSubpageCrumbAndPager = function(pageId) {
+window.updateSubpageCrumbAndPager = function (pageId) {
     const crumbLabel = document.getElementById('subpageCrumbLabel');
     const prevBtn = document.getElementById('pagerPrevBtn');
     const nextBtn = document.getElementById('pagerNextBtn');
@@ -2268,7 +2303,7 @@ window.updateSubpageCrumbAndPager = function(pageId) {
 function initPageRouter() {
     // Disable browser aggressive scroll restoration on refresh so user always starts cleanly from page top
     if ('scrollRestoration' in history) {
-        try { history.scrollRestoration = 'manual'; } catch (e) {}
+        try { history.scrollRestoration = 'manual'; } catch (e) { }
     }
 
     function resolveFromUrl() {
@@ -2284,7 +2319,7 @@ function initPageRouter() {
         return { pageId: window.INITIAL_PAGE || 'hero', replaceUrl: false };
     }
 
-    window.navigateToPage = function(targetId, opts = {}) {
+    window.navigateToPage = function (targetId, opts = {}) {
         const idx = PORTAL_PAGES.findIndex(p => p.id === targetId);
         const safeIdx = idx >= 0 ? idx : 0;
         const page = PORTAL_PAGES[safeIdx];
@@ -2381,13 +2416,13 @@ function initPageRouter() {
 /* ==========================================================================
    8. Cloudflare Tunnel Management
    ========================================================================== */
-window.openTunnelModal = function() {
+window.openTunnelModal = function () {
     const modal = document.getElementById('tunnelModal');
     if (modal) modal.classList.add('open');
     checkTunnelStatus();
 };
 
-window.closeTunnelModal = function() {
+window.closeTunnelModal = function () {
     const modal = document.getElementById('tunnelModal');
     if (modal) modal.classList.remove('open');
 };
@@ -2418,7 +2453,7 @@ function checkTunnelStatus() {
         });
 }
 
-window.toggleTunnelAction = function() {
+window.toggleTunnelAction = function () {
     const input = document.getElementById('tunnelUrlInput');
     const btn = document.getElementById('btnToggleTunnel');
     const openLink = document.getElementById('tunnelOpenLink');
@@ -2434,35 +2469,35 @@ window.toggleTunnelAction = function() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ port: 5000 })
     })
-    .then(res => res.json())
-    .then(data => {
-        if (btn) {
-            btn.innerHTML = "⚡ 重新取得外網網址";
-            btn.disabled = false;
-        }
-        if (data.success && data.url) {
-            if (input) input.value = data.url;
-            if (openLink) {
-                openLink.href = data.url;
-                openLink.style.display = 'inline-flex';
+        .then(res => res.json())
+        .then(data => {
+            if (btn) {
+                btn.innerHTML = "⚡ 重新取得外網網址";
+                btn.disabled = false;
             }
-            showToast("🌐 Cloudflare Tunnel 已就緒！");
-        } else {
-            if (input) input.value = "建立失敗：" + (data.error || '請檢查網路連線');
-            showToast("穿透建立失敗");
-        }
-    })
-    .catch(err => {
-        if (btn) {
-            btn.innerHTML = "⚡ 建立 / 重新取得外網網址";
-            btn.disabled = false;
-        }
-        if (input) input.value = "網路請求失敗";
-        showToast("伺服器請求超時");
-    });
+            if (data.success && data.url) {
+                if (input) input.value = data.url;
+                if (openLink) {
+                    openLink.href = data.url;
+                    openLink.style.display = 'inline-flex';
+                }
+                showToast("🌐 Cloudflare Tunnel 已就緒！");
+            } else {
+                if (input) input.value = "建立失敗：" + (data.error || '請檢查網路連線');
+                showToast("穿透建立失敗");
+            }
+        })
+        .catch(err => {
+            if (btn) {
+                btn.innerHTML = "⚡ 建立 / 重新取得外網網址";
+                btn.disabled = false;
+            }
+            if (input) input.value = "網路請求失敗";
+            showToast("伺服器請求超時");
+        });
 };
 
-window.copyTunnelUrl = function() {
+window.copyTunnelUrl = function () {
     const input = document.getElementById('tunnelUrlInput');
     if (!input || !input.value.startsWith('http')) {
         showToast("尚無有效的公開網址可供複製");
@@ -2498,7 +2533,7 @@ function showToast(msg) {
    FAPO AI Customer Service & Google OR-Tools CP-SAT Interactive Client
    ========================================================================== */
 
-window.toggleAiChatWidget = function(forceState) {
+window.toggleAiChatWidget = function (forceState) {
     const widget = document.getElementById('aiChatWidget');
     const launcher = document.getElementById('aiChatLauncher');
     if (!widget) return;
@@ -2519,7 +2554,7 @@ window.toggleAiChatWidget = function(forceState) {
 };
 
 // Global escape key listener to close AI Chat Widget gracefully
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' || e.keyCode === 27) {
         const widget = document.getElementById('aiChatWidget');
         if (widget && widget.classList.contains('open')) {
@@ -2528,7 +2563,7 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-window.switchAiMode = function(mode) {
+window.switchAiMode = function (mode) {
     const btnChat = document.getElementById('aiTabBtnChat');
     const btnCpsat = document.getElementById('aiTabBtnCpsat');
     const panelChat = document.getElementById('aiPanelChat');
@@ -2558,7 +2593,7 @@ function formatAiMarkdown(text) {
         .replace(/\n/g, '<br>');
 }
 
-window.sendAiQuickPrompt = function(promptText) {
+window.sendAiQuickPrompt = function (promptText) {
     const inp = document.getElementById('aiChatInput');
     if (inp) {
         inp.value = promptText;
@@ -2566,7 +2601,7 @@ window.sendAiQuickPrompt = function(promptText) {
     }
 };
 
-window.sendAiChatMessage = function(retryText) {
+window.sendAiChatMessage = function (retryText) {
     const inp = document.getElementById('aiChatInput');
     const box = document.getElementById('aiChatMessages');
     if (!box) return;
@@ -2599,22 +2634,22 @@ window.sendAiChatMessage = function(retryText) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: text, lang: currentLang })
         })
-        .then(r => {
-            if (!r.ok) {
-                return r.json().catch(() => ({ reply: null })).then(errData => {
-                    throw new Error(errData.reply || ('HTTP ' + r.status));
-                });
-            }
-            return r.json();
-        })
-        .then(data => {
-            let html = `<div class="ai-msg-bubble">${formatAiMarkdown(data.reply || '')}`;
+            .then(r => {
+                if (!r.ok) {
+                    return r.json().catch(() => ({ reply: null })).then(errData => {
+                        throw new Error(errData.reply || ('HTTP ' + r.status));
+                    });
+                }
+                return r.json();
+            })
+            .then(data => {
+                let html = `<div class="ai-msg-bubble">${formatAiMarkdown(data.reply || '')}`;
 
-            if (data.specs && data.specs.length > 0) {
-                html += `<div class="ai-spec-cards">`;
-                data.specs.forEach(s => {
-                    const safeSpec = `${s.category} ${s.material} ${s.dimension || ''} ${s.size || ''}`.replace(/'/g, "\\'");
-                    html += `
+                if (data.specs && data.specs.length > 0) {
+                    html += `<div class="ai-spec-cards">`;
+                    data.specs.forEach(s => {
+                        const safeSpec = `${s.category} ${s.material} ${s.dimension || ''} ${s.size || ''}`.replace(/'/g, "\\'");
+                        html += `
                         <div class="ai-spec-mini-card">
                             <div class="ai-spec-mini-info">
                                 <strong>${s.material} · ${s.dimension || '-'}</strong>
@@ -2623,27 +2658,27 @@ window.sendAiChatMessage = function(retryText) {
                             <button type="button" class="ai-spec-mini-btn" onclick="addSpecToQuote('${safeSpec}')">＋詢價</button>
                         </div>
                     `;
-                });
-                html += `</div>`;
-            }
+                    });
+                    html += `</div>`;
+                }
 
-            if (data.cutting_plan && data.cutting_plan.success) {
-                const p = data.cutting_plan;
-                const quoteSummary = `[最佳化裁切需求] 母材 ${p.stock_length_mm}mm 共需 ${p.total_bars_used} 支 (利用率 ${p.overall_utilization_pct}%): ` +
-                    p.bars_plan.map(b => `第${b.bar_no}支(${b.cuts_summary})`).join('；');
-                const safeQuote = quoteSummary.replace(/'/g, "\\'");
-                html += `
+                if (data.cutting_plan && data.cutting_plan.success) {
+                    const p = data.cutting_plan;
+                    const quoteSummary = `[最佳化裁切需求] 母材 ${p.stock_length_mm}mm 共需 ${p.total_bars_used} 支 (利用率 ${p.overall_utilization_pct}%): ` +
+                        p.bars_plan.map(b => `第${b.bar_no}支(${b.cuts_summary})`).join('；');
+                    const safeQuote = quoteSummary.replace(/'/g, "\\'");
+                    html += `
                     <div style="margin-top:10px;">
                         <button type="button" class="ai-spec-mini-btn" style="width:100%;padding:7px;" onclick="addSpecToQuote('${safeQuote}')">
                             📋 將此最佳裁切方案加入詢價單
                         </button>
                     </div>
                 `;
-            }
+                }
 
-            const voiceText = data.voice_script || (data.reply || '').replace(/[*`#|•📍✅📦🧮📋💡☎️]/g, '').replace(/\[.*?\]\(.*?\)/g, '').trim().substring(0, 300);
-            const safeVoiceText = voiceText.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
-            html += `
+                const voiceText = data.voice_script || (data.reply || '').replace(/[*`#|•📍✅📦🧮📋💡☎️]/g, '').replace(/\[.*?\]\(.*?\)/g, '').trim().substring(0, 300);
+                const safeVoiceText = voiceText.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
+                html += `
                 <div style="margin-top:8px;">
                     <button type="button" class="ai-bubble-audio-btn" onclick="readAloudText('${safeVoiceText}', this)" title="播放擬人化語音解說">
                         🔊 聽取 AI 語音解說
@@ -2651,21 +2686,21 @@ window.sendAiChatMessage = function(retryText) {
                 </div>
             `;
 
-            html += `</div>`;
-            botDiv.innerHTML = html;
-            box.scrollTop = box.scrollHeight;
-        })
-        .catch(err => {
-            if (attemptsLeft > 0) {
-                botDiv.innerHTML = `<div class="ai-msg-bubble">🔄 雲端引擎喚醒中，正在為您自動重試 (倒數 5 秒)...</div>`;
+                html += `</div>`;
+                botDiv.innerHTML = html;
                 box.scrollTop = box.scrollHeight;
-                setTimeout(() => {
-                    botDiv.innerHTML = `<div class="ai-msg-bubble">⏳ 正在再次發送請求...</div>`;
-                    doFetch(attemptsLeft - 1);
-                }, 5000);
-            } else {
-                const escapedText = text.replace(/'/g, "\\'");
-                botDiv.innerHTML = `
+            })
+            .catch(err => {
+                if (attemptsLeft > 0) {
+                    botDiv.innerHTML = `<div class="ai-msg-bubble">🔄 雲端引擎喚醒中，正在為您自動重試 (倒數 5 秒)...</div>`;
+                    box.scrollTop = box.scrollHeight;
+                    setTimeout(() => {
+                        botDiv.innerHTML = `<div class="ai-msg-bubble">⏳ 正在再次發送請求...</div>`;
+                        doFetch(attemptsLeft - 1);
+                    }, 5000);
+                } else {
+                    const escapedText = text.replace(/'/g, "\\'");
+                    botDiv.innerHTML = `
                     <div class="ai-msg-bubble" style="border-left: 3px solid #e74c3c;">
                         ⚠️ 雲端運算伺服器可能正在休眠重啟中，請稍候片刻。<br>
                         <button type="button" class="ai-spec-mini-btn" style="margin-top:8px;padding:6px 12px;background:var(--accent-cinnabar);color:#fff;" onclick="this.closest('.ai-msg').remove(); window.sendAiChatMessage('${escapedText}');">
@@ -2673,15 +2708,15 @@ window.sendAiChatMessage = function(retryText) {
                         </button>
                     </div>
                 `;
-                box.scrollTop = box.scrollHeight;
-            }
-        });
+                    box.scrollTop = box.scrollHeight;
+                }
+            });
     }
 
     doFetch(1);
 };
 
-window.addCpsatDemandRow = function() {
+window.addCpsatDemandRow = function () {
     const list = document.getElementById('cpsatDemandList');
     if (!list) return;
     const row = document.createElement('div');
@@ -2695,7 +2730,7 @@ window.addCpsatDemandRow = function() {
     list.appendChild(row);
 };
 
-window.runInteractiveCpsatSolver = function() {
+window.runInteractiveCpsatSolver = function () {
     const stockLen = parseInt(document.getElementById('cpsatStockLen')?.value || '3000', 10);
     const kerf = parseInt(document.getElementById('cpsatKerf')?.value || '3', 10);
     const rows = document.querySelectorAll('#cpsatDemandList .cpsat-demand-row');
@@ -2724,72 +2759,72 @@ window.runInteractiveCpsatSolver = function() {
             demands: demands
         })
     })
-    .then(r => r.json())
-    .then(plan => {
-        if (solveBtn) solveBtn.disabled = false;
-        if (!plan.success) {
-            resBox.innerHTML = `<div style="color:#b91c1c;font-weight:700;">❌ ${plan.error || '求解失敗'}</div>`;
-            return;
-        }
+        .then(r => r.json())
+        .then(plan => {
+            if (solveBtn) solveBtn.disabled = false;
+            if (!plan.success) {
+                resBox.innerHTML = `<div style="color:#b91c1c;font-weight:700;">❌ ${plan.error || '求解失敗'}</div>`;
+                return;
+            }
 
-        let barsHtml = '';
-        const colorPalette = ['#b83b26', '#1d4ed8', '#059669', '#d97706', '#7c3aed', '#0891b2', '#c026d3'];
+            let barsHtml = '';
+            const colorPalette = ['#b83b26', '#1d4ed8', '#059669', '#d97706', '#7c3aed', '#0891b2', '#c026d3'];
 
-        plan.bars_plan.forEach(b => {
-            const stockL = plan.stock_length_mm;
-            let svgElements = '';
-            
-            // Background track representing the mother standard bar
-            svgElements += `<rect x="0" y="2" width="1000" height="38" rx="4" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />`;
+            plan.bars_plan.forEach(b => {
+                const stockL = plan.stock_length_mm;
+                let svgElements = '';
 
-            if (b.segments && b.segments.length > 0) {
-                b.segments.forEach(seg => {
-                    const x = (seg.start_mm / stockL) * 1000;
-                    const w = Math.max(1.2, (seg.length_mm / stockL) * 1000);
-                    if (seg.type === 'piece') {
-                        const col = colorPalette[Math.abs(seg.length_mm * 11 + seg.index) % colorPalette.length];
-                        svgElements += `
+                // Background track representing the mother standard bar
+                svgElements += `<rect x="0" y="2" width="1000" height="38" rx="4" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />`;
+
+                if (b.segments && b.segments.length > 0) {
+                    b.segments.forEach(seg => {
+                        const x = (seg.start_mm / stockL) * 1000;
+                        const w = Math.max(1.2, (seg.length_mm / stockL) * 1000);
+                        if (seg.type === 'piece') {
+                            const col = colorPalette[Math.abs(seg.length_mm * 11 + seg.index) % colorPalette.length];
+                            svgElements += `
                             <g class="cpsat-svg-piece">
                                 <rect x="${x.toFixed(1)}" y="4" width="${w.toFixed(1)}" height="34" rx="2" fill="${col}">
                                     <title>工件 #${seg.index}：長度 ${seg.length_mm} mm (位置 ${seg.start_mm} ~ ${seg.end_mm} mm)</title>
                                 </rect>
-                                ${w > 36 ? `<text x="${(x + w/2).toFixed(1)}" y="25" fill="#ffffff" font-size="11" font-weight="700" text-anchor="middle" pointer-events="none">${seg.length_mm}</text>` : ''}
+                                ${w > 36 ? `<text x="${(x + w / 2).toFixed(1)}" y="25" fill="#ffffff" font-size="11" font-weight="700" text-anchor="middle" pointer-events="none">${seg.length_mm}</text>` : ''}
                             </g>
                         `;
-                    } else if (seg.type === 'kerf') {
-                        const kw = Math.max(1.8, w);
-                        svgElements += `
+                        } else if (seg.type === 'kerf') {
+                            const kw = Math.max(1.8, w);
+                            svgElements += `
                             <rect x="${x.toFixed(1)}" y="2" width="${kw.toFixed(1)}" height="38" fill="#ef4444">
                                 <title>鋸縫損耗：${seg.length_mm} mm</title>
                             </rect>
                         `;
-                    } else if (seg.type === 'remnant') {
-                        svgElements += `
+                        } else if (seg.type === 'remnant') {
+                            svgElements += `
                             <g class="cpsat-svg-remnant">
                                 <rect x="${x.toFixed(1)}" y="4" width="${w.toFixed(1)}" height="34" rx="2" fill="rgba(148,163,184,0.2)" stroke="#94a3b8" stroke-dasharray="3,2">
                                     <title>可用餘料：${seg.length_mm} mm (${((seg.length_mm / stockL) * 100).toFixed(1)}%)</title>
                                 </rect>
-                                ${w > 45 ? `<text x="${(x + w/2).toFixed(1)}" y="25" fill="#475569" font-size="10" font-weight="700" text-anchor="middle" pointer-events="none">餘 ${seg.length_mm}mm</text>` : ''}
+                                ${w > 45 ? `<text x="${(x + w / 2).toFixed(1)}" y="25" fill="#475569" font-size="10" font-weight="700" text-anchor="middle" pointer-events="none">餘 ${seg.length_mm}mm</text>` : ''}
                             </g>
                         `;
+                        }
+                    });
+                } else {
+                    let segsHtml = '';
+                    b.cuts.forEach((c, idx) => {
+                        const pct = Math.max(8, Math.round(((c.length * c.count) / plan.stock_length_mm) * 100));
+                        const bgColors = ['#a83327', '#b87b28', '#2b5b84', '#3d7a5a'];
+                        const bg = bgColors[idx % bgColors.length];
+                        segsHtml += `<div class="cpsat-seg" style="width:${pct}%;background:${bg};" title="${c.label}">${c.length}×${c.count}</div>`;
+                    });
+                    if (b.remnant_mm > 0) {
+                        const remPct = Math.max(6, Math.round((b.remnant_mm / plan.stock_length_mm) * 100));
+                        segsHtml += `<div class="cpsat-seg-rem" style="width:${remPct}%;" title="餘料 ${b.remnant_mm}mm">餘${b.remnant_mm}</div>`;
                     }
-                });
-            } else {
-                let segsHtml = '';
-                b.cuts.forEach((c, idx) => {
-                    const pct = Math.max(8, Math.round(((c.length * c.count) / plan.stock_length_mm) * 100));
-                    const bgColors = ['#a83327', '#b87b28', '#2b5b84', '#3d7a5a'];
-                    const bg = bgColors[idx % bgColors.length];
-                    segsHtml += `<div class="cpsat-seg" style="width:${pct}%;background:${bg};" title="${c.label}">${c.length}×${c.count}</div>`;
-                });
-                if (b.remnant_mm > 0) {
-                    const remPct = Math.max(6, Math.round((b.remnant_mm / plan.stock_length_mm) * 100));
-                    segsHtml += `<div class="cpsat-seg-rem" style="width:${remPct}%;" title="餘料 ${b.remnant_mm}mm">餘${b.remnant_mm}</div>`;
+                    svgElements = segsHtml;
                 }
-                svgElements = segsHtml;
-            }
 
-            barsHtml += `
+                barsHtml += `
                 <div style="margin-bottom:12px;">
                     <div style="display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:0.78rem;margin-bottom:3px;">
                         <span>母材 #${b.bar_no}：${b.cuts_summary}</span>
@@ -2807,16 +2842,16 @@ window.runInteractiveCpsatSolver = function() {
                     </div>
                 </div>
             `;
-        });
+            });
 
-        const quoteSummary = `[最佳化裁切需求] 母材 ${plan.stock_length_mm}mm 共需 ${plan.total_bars_used} 支 (利用率 ${plan.overall_utilization_pct}%): ` +
-            plan.bars_plan.map(b => `第${b.bar_no}支(${b.cuts_summary})`).join('；');
-        const safeQuote = quoteSummary.replace(/'/g, "\'");
+            const quoteSummary = `[最佳化裁切需求] 母材 ${plan.stock_length_mm}mm 共需 ${plan.total_bars_used} 支 (利用率 ${plan.overall_utilization_pct}%): ` +
+                plan.bars_plan.map(b => `第${b.bar_no}支(${b.cuts_summary})`).join('；');
+            const safeQuote = quoteSummary.replace(/'/g, "\'");
 
-        const speechComm = plan.speech_commentary || `母材 ${plan.stock_length_mm}mm 最少需用 ${plan.total_bars_used} 支，材料利用率達 ${plan.overall_utilization_pct}%。`;
-        const safeCommentary = speechComm.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
+            const speechComm = plan.speech_commentary || `母材 ${plan.stock_length_mm}mm 最少需用 ${plan.total_bars_used} 支，材料利用率達 ${plan.overall_utilization_pct}%。`;
+            const safeCommentary = speechComm.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
 
-        resBox.innerHTML = `
+            resBox.innerHTML = `
             <div style="margin-bottom:10px;border-bottom:1px solid rgba(180,160,120,0.35);padding-bottom:8px;">
                 <div style="font-weight:800;color:var(--accent-cinnabar);font-size:0.86rem;">
                     ✅ ${plan.solver_status}（耗時 ${plan.solve_time_ms} ms）
@@ -2841,11 +2876,11 @@ window.runInteractiveCpsatSolver = function() {
                 </button>
             </div>
         `;
-    })
-    .catch(() => {
-        if (solveBtn) solveBtn.disabled = false;
-        resBox.innerHTML = `<div style="color:#b91c1c;">⚠️ 求解器連線異常</div>`;
-    });
+        })
+        .catch(() => {
+            if (solveBtn) solveBtn.disabled = false;
+            resBox.innerHTML = `<div style="color:#b91c1c;">⚠️ 求解器連線異常</div>`;
+        });
 };
 
 /* ==========================================================================
@@ -2854,7 +2889,7 @@ window.runInteractiveCpsatSolver = function() {
 let aiSpeechRecognition = null;
 let isAiListening = false;
 
-window.toggleAiVoiceRecognition = function() {
+window.toggleAiVoiceRecognition = function () {
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
     const btn = document.getElementById('aiVoiceInputBtn');
     const input = document.getElementById('aiChatInput');
@@ -2877,13 +2912,13 @@ window.toggleAiVoiceRecognition = function() {
         aiSpeechRecognition.continuous = false;
         aiSpeechRecognition.interimResults = true;
 
-        aiSpeechRecognition.onstart = function() {
+        aiSpeechRecognition.onstart = function () {
             isAiListening = true;
             if (btn) btn.classList.add('listening');
             if (input) input.placeholder = '🎙️ 正在聆聽，請說出規格或裁切尺寸...';
         };
 
-        aiSpeechRecognition.onresult = function(e) {
+        aiSpeechRecognition.onresult = function (e) {
             let transcript = '';
             for (let i = e.resultIndex; i < e.results.length; ++i) {
                 transcript += e.results[i][0].transcript;
@@ -2891,14 +2926,14 @@ window.toggleAiVoiceRecognition = function() {
             if (input) input.value = transcript;
         };
 
-        aiSpeechRecognition.onerror = function(e) {
+        aiSpeechRecognition.onerror = function (e) {
             console.warn('Speech rec error:', e);
             if (btn) btn.classList.remove('listening');
             isAiListening = false;
             if (input) input.placeholder = '輸入或以語音說出規格需求、裁切尺寸...';
         };
 
-        aiSpeechRecognition.onend = function() {
+        aiSpeechRecognition.onend = function () {
             isAiListening = false;
             if (btn) btn.classList.remove('listening');
             if (input) {
@@ -2923,7 +2958,7 @@ window.toggleAiVoiceRecognition = function() {
    Industrial Metal Weight & Volume Calculator
    ========================================================================== */
 
-window.applyRoundBarPreset = function(dia, len) {
+window.applyRoundBarPreset = function (dia, len) {
     const d1Input = document.getElementById('wtDim1');
     const lenInput = document.getElementById('wtLength');
     if (d1Input) d1Input.value = dia;
@@ -2931,13 +2966,13 @@ window.applyRoundBarPreset = function(dia, len) {
     calculateMetalWeight();
 };
 
-window.applyLengthPreset = function(len) {
+window.applyLengthPreset = function (len) {
     const lenInput = document.getElementById('wtLength');
     if (lenInput) lenInput.value = len;
     calculateMetalWeight();
 };
 
-window.updateWeightShapeInputs = function() {
+window.updateWeightShapeInputs = function () {
     const shape = document.getElementById('wtShapeSelect')?.value || 'plate';
     const d1Wrap = document.getElementById('wtDim1Wrap');
     const d2Wrap = document.getElementById('wtDim2Wrap');
@@ -3059,7 +3094,7 @@ window.updateWeightShapeInputs = function() {
     calculateMetalWeight();
 };
 
-window.applyPlatePreset = function(w, l) {
+window.applyPlatePreset = function (w, l) {
     const d2 = document.getElementById('wtDim2');
     const len = document.getElementById('wtLength');
     if (d2) d2.value = w;
@@ -3067,7 +3102,7 @@ window.applyPlatePreset = function(w, l) {
     calculateMetalWeight();
 };
 
-window.calculateMetalWeight = function() {
+window.calculateMetalWeight = function () {
     const alloyRaw = document.getElementById('wtAlloySelect')?.value || '2.70|6061';
     const density = parseFloat(alloyRaw.split('|')[0]) || 2.70;
     const shape = document.getElementById('wtShapeSelect')?.value || 'plate';
@@ -3112,7 +3147,7 @@ window.calculateMetalWeight = function() {
     if (elTotal) elTotal.textContent = `${totalKg.toFixed(2)} kg`;
 };
 
-window.addCalculatedWeightToQuote = function() {
+window.addCalculatedWeightToQuote = function () {
     const alloyRaw = document.getElementById('wtAlloySelect')?.value || '2.70|6061 鋁合金';
     const alloyName = alloyRaw.split('|')[1] || '6061 鋁合金';
     const shape = document.getElementById('wtShapeSelect')?.value || 'plate';
@@ -3137,7 +3172,7 @@ window.addCalculatedWeightToQuote = function() {
     }
 };
 
-window.exportCalculatedWeightToPdf = function() {
+window.exportCalculatedWeightToPdf = function () {
     const alloyRaw = document.getElementById('wtAlloySelect')?.value || '2.70|6061 鋁合金';
     const alloyName = alloyRaw.split('|')[1] || '6061 鋁合金';
     const shape = document.getElementById('wtShapeSelect')?.value || 'plate';
@@ -3466,7 +3501,7 @@ window.addEventListener('fapo-language-changed', (e) => {
 /* ==========================================================================
    Google OR-Tools CP-SAT Cutting Stock Optimization Engineering Workbench
    ========================================================================== */
-window.applyCpsatPreset = function(type) {
+window.applyCpsatPreset = function (type) {
     const stockInput = document.getElementById('wbStockLen');
     const kerfInput = document.getElementById('wbKerf');
     const list = document.getElementById('wbDemandList');
@@ -3511,7 +3546,7 @@ window.applyCpsatPreset = function(type) {
     window.runWorkbenchCpsatSolver();
 };
 
-window.addWbDemandRow = function(len = 600, qty = 2) {
+window.addWbDemandRow = function (len = 600, qty = 2) {
     const list = document.getElementById('wbDemandList');
     if (!list) return;
     const row = document.createElement('div');
@@ -3525,7 +3560,7 @@ window.addWbDemandRow = function(len = 600, qty = 2) {
     list.appendChild(row);
 };
 
-window.runWorkbenchCpsatSolver = function() {
+window.runWorkbenchCpsatSolver = function () {
     const stockLen = parseInt(document.getElementById('wbStockLen')?.value || '3000', 10);
     const kerf = parseFloat(document.getElementById('wbKerf')?.value || '3');
     const rows = document.querySelectorAll('#wbDemandList .wb-demand-row');
@@ -3566,59 +3601,59 @@ window.runWorkbenchCpsatSolver = function() {
             demands: demands
         })
     })
-    .then(r => r.json())
-    .then(plan => {
-        if (solveBtn) solveBtn.disabled = false;
-        if (!plan.success) {
-            resBox.innerHTML = `<div style="color:#b91c1c;font-weight:700;padding:14px;background:#fef2f2;border-radius:8px;">❌ 求解失敗：${plan.error || '無可行解或參數超出邊界'}</div>`;
-            return;
-        }
+        .then(r => r.json())
+        .then(plan => {
+            if (solveBtn) solveBtn.disabled = false;
+            if (!plan.success) {
+                resBox.innerHTML = `<div style="color:#b91c1c;font-weight:700;padding:14px;background:#fef2f2;border-radius:8px;">❌ 求解失敗：${plan.error || '無可行解或參數超出邊界'}</div>`;
+                return;
+            }
 
-        let barsHtml = '';
-        const colorPalette = ['#b83b26', '#1d4ed8', '#059669', '#d97706', '#7c3aed', '#0891b2', '#c026d3', '#2563eb', '#0d9488'];
+            let barsHtml = '';
+            const colorPalette = ['#b83b26', '#1d4ed8', '#059669', '#d97706', '#7c3aed', '#0891b2', '#c026d3', '#2563eb', '#0d9488'];
 
-        plan.bars_plan.forEach(b => {
-            const stockL = plan.stock_length_mm;
-            let svgElements = '';
-            
-            // Background track representing the mother standard bar
-            svgElements += `<rect x="0" y="2" width="1000" height="38" rx="4" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />`;
+            plan.bars_plan.forEach(b => {
+                const stockL = plan.stock_length_mm;
+                let svgElements = '';
 
-            if (b.segments && b.segments.length > 0) {
-                b.segments.forEach(seg => {
-                    const x = (seg.start_mm / stockL) * 1000;
-                    const w = Math.max(1.2, (seg.length_mm / stockL) * 1000);
-                    if (seg.type === 'piece') {
-                        const col = colorPalette[Math.abs(seg.length_mm * 11 + seg.index) % colorPalette.length];
-                        svgElements += `
+                // Background track representing the mother standard bar
+                svgElements += `<rect x="0" y="2" width="1000" height="38" rx="4" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />`;
+
+                if (b.segments && b.segments.length > 0) {
+                    b.segments.forEach(seg => {
+                        const x = (seg.start_mm / stockL) * 1000;
+                        const w = Math.max(1.2, (seg.length_mm / stockL) * 1000);
+                        if (seg.type === 'piece') {
+                            const col = colorPalette[Math.abs(seg.length_mm * 11 + seg.index) % colorPalette.length];
+                            svgElements += `
                             <g class="cpsat-svg-piece">
                                 <rect x="${x.toFixed(1)}" y="4" width="${w.toFixed(1)}" height="34" rx="2" fill="${col}">
                                     <title>工件 #${seg.index}：長度 ${seg.length_mm} mm (位置 ${seg.start_mm} ~ ${seg.end_mm} mm)</title>
                                 </rect>
-                                ${w > 36 ? `<text x="${(x + w/2).toFixed(1)}" y="25" fill="#ffffff" font-size="11" font-weight="700" text-anchor="middle" pointer-events="none">${seg.length_mm}</text>` : ''}
+                                ${w > 36 ? `<text x="${(x + w / 2).toFixed(1)}" y="25" fill="#ffffff" font-size="11" font-weight="700" text-anchor="middle" pointer-events="none">${seg.length_mm}</text>` : ''}
                             </g>
                         `;
-                    } else if (seg.type === 'kerf') {
-                        const kw = Math.max(1.8, w);
-                        svgElements += `
+                        } else if (seg.type === 'kerf') {
+                            const kw = Math.max(1.8, w);
+                            svgElements += `
                             <rect x="${x.toFixed(1)}" y="2" width="${kw.toFixed(1)}" height="38" fill="#ef4444">
                                 <title>鋸縫損耗：${seg.length_mm} mm</title>
                             </rect>
                         `;
-                    } else if (seg.type === 'remnant') {
-                        svgElements += `
+                        } else if (seg.type === 'remnant') {
+                            svgElements += `
                             <g class="cpsat-svg-remnant">
                                 <rect x="${x.toFixed(1)}" y="4" width="${w.toFixed(1)}" height="34" rx="2" fill="rgba(148,163,184,0.2)" stroke="#94a3b8" stroke-dasharray="3,2">
                                     <title>可用餘料：${seg.length_mm} mm (${((seg.length_mm / stockL) * 100).toFixed(1)}%)</title>
                                 </rect>
-                                ${w > 45 ? `<text x="${(x + w/2).toFixed(1)}" y="25" fill="#475569" font-size="10" font-weight="700" text-anchor="middle" pointer-events="none">餘 ${seg.length_mm}mm</text>` : ''}
+                                ${w > 45 ? `<text x="${(x + w / 2).toFixed(1)}" y="25" fill="#475569" font-size="10" font-weight="700" text-anchor="middle" pointer-events="none">餘 ${seg.length_mm}mm</text>` : ''}
                             </g>
                         `;
-                    }
-                });
-            }
+                        }
+                    });
+                }
 
-            barsHtml += `
+                barsHtml += `
                 <div style="margin-bottom: 16px; background: #ffffff; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border-subtle); box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
                     <div style="display:flex; justify-content:space-between; align-items:center; font-weight:700; font-size:0.86rem; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
                         <span style="color: var(--text-primary);">🔩 母材 #${b.bar_no}：${b.cuts_summary}</span>
@@ -3636,16 +3671,16 @@ window.runWorkbenchCpsatSolver = function() {
                     </div>
                 </div>
             `;
-        });
+            });
 
-        const quoteSummary = `[AI 最佳化裁切] 母材規格 ${plan.stock_length_mm}mm 共需 ${plan.total_bars_used} 支 (綜合利用率 ${plan.overall_utilization_pct}%): ` +
-            plan.bars_plan.map(b => `第${b.bar_no}支(${b.cuts_summary}, 餘${b.remnant_mm}mm)`).join('；');
-        const safeQuote = quoteSummary.replace(/'/g, "\\'");
+            const quoteSummary = `[AI 最佳化裁切] 母材規格 ${plan.stock_length_mm}mm 共需 ${plan.total_bars_used} 支 (綜合利用率 ${plan.overall_utilization_pct}%): ` +
+                plan.bars_plan.map(b => `第${b.bar_no}支(${b.cuts_summary}, 餘${b.remnant_mm}mm)`).join('；');
+            const safeQuote = quoteSummary.replace(/'/g, "\\'");
 
-        const speechComm = plan.speech_commentary || `AI 求解完成：母材 ${plan.stock_length_mm}mm 最少僅需 ${plan.total_bars_used} 支，總材料利用率達 ${plan.overall_utilization_pct}%，有效消除裁切浪費。`;
-        const safeCommentary = speechComm.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
+            const speechComm = plan.speech_commentary || `AI 求解完成：母材 ${plan.stock_length_mm}mm 最少僅需 ${plan.total_bars_used} 支，總材料利用率達 ${plan.overall_utilization_pct}%，有效消除裁切浪費。`;
+            const safeCommentary = speechComm.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
 
-        resBox.innerHTML = `
+            resBox.innerHTML = `
             <div style="margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border-subtle);">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
                     <span style="font-weight: 800; color: #166534; background: #dcfce7; padding: 4px 10px; border-radius: 6px; font-size: 0.88rem;">
@@ -3689,12 +3724,12 @@ window.runWorkbenchCpsatSolver = function() {
                 </button>
             </div>
         `;
-    })
-    .catch(err => {
-        if (solveBtn) solveBtn.disabled = false;
-        resBox.innerHTML = `<div style="color:#b91c1c;font-weight:700;padding:12px;background:#fef2f2;border-radius:8px;">❌ 網路或後端求解器連線異常，請稍後重試。</div>`;
-        console.error('CP-SAT solve error:', err);
-    });
+        })
+        .catch(err => {
+            if (solveBtn) solveBtn.disabled = false;
+            resBox.innerHTML = `<div style="color:#b91c1c;font-weight:700;padding:12px;background:#fef2f2;border-radius:8px;">❌ 網路或後端求解器連線異常，請稍後重試。</div>`;
+            console.error('CP-SAT solve error:', err);
+        });
 };
 
 // ==========================================================================
@@ -3702,23 +3737,23 @@ window.runWorkbenchCpsatSolver = function() {
 // ==========================================================================
 window.inquiryCart = [];
 
-window.initInquiryCart = function() {
+window.initInquiryCart = function () {
     try {
         const saved = sessionStorage.getItem('fapo_inquiry_cart');
         if (saved) {
             window.inquiryCart = JSON.parse(saved);
         }
-    } catch(e) {}
+    } catch (e) { }
     renderInquiryCartUI();
 };
 
-window.saveInquiryCart = function() {
+window.saveInquiryCart = function () {
     try {
         sessionStorage.setItem('fapo_inquiry_cart', JSON.stringify(window.inquiryCart));
-    } catch(e) {}
+    } catch (e) { }
 };
 
-window.addToInquiryCart = function(id, name, templateText, btnElement) {
+window.addToInquiryCart = function (id, name, templateText, btnElement) {
     const existingIndex = window.inquiryCart.findIndex(item => item.id === id);
     if (existingIndex === -1) {
         window.inquiryCart.push({ id, name, template: templateText });
@@ -3734,7 +3769,7 @@ window.addToInquiryCart = function(id, name, templateText, btnElement) {
     }
 };
 
-window.removeFromInquiryCart = function(id) {
+window.removeFromInquiryCart = function (id) {
     window.inquiryCart = window.inquiryCart.filter(item => item.id !== id);
     window.saveInquiryCart();
     renderInquiryCartUI();
@@ -3743,7 +3778,7 @@ window.removeFromInquiryCart = function(id) {
     }
 };
 
-window.clearInquiryCart = function(event) {
+window.clearInquiryCart = function (event) {
     if (event) event.stopPropagation();
     window.inquiryCart = [];
     window.saveInquiryCart();
@@ -3753,27 +3788,24 @@ window.clearInquiryCart = function(event) {
     }
 };
 
-window.renderInquiryCartUI = function() {
-    const count = window.inquiryCart.length;
-    
-    // 1. Update Floating Cart Dock (Always visible & animated)
+window.renderInquiryCartUI = function () {
+    const count = (window.inquiryCart && Array.isArray(window.inquiryCart)) ? window.inquiryCart.length : 0;
+
+    // 1. Update Floating Cart Dock (Only visible when items are selected)
     const floatingCart = document.getElementById('floatingInquiryCart');
     const badgeCount = document.getElementById('inquiryCartBadgeCount');
     const countText = document.getElementById('inquiryCartCountText');
     const hintText = document.getElementById('ficHintText');
     if (floatingCart) {
-        floatingCart.style.display = 'flex';
-        if (badgeCount) badgeCount.textContent = count;
-        if (countText) countText.textContent = count;
-        if (hintText) {
-            hintText.textContent = count > 0 ? '前往填尺寸 ➔' : '點選材料加入';
-        }
         if (count > 0) {
+            floatingCart.style.display = 'flex';
+            if (badgeCount) badgeCount.textContent = count;
+            if (countText) countText.textContent = count;
+            if (hintText) hintText.textContent = '前往填尺寸 ➔';
             floatingCart.style.borderColor = 'var(--accent-cinnabar, #b8332a)';
             floatingCart.style.boxShadow = '0 14px 38px rgba(184, 51, 42, 0.28), 0 4px 14px rgba(184, 51, 42, 0.2)';
         } else {
-            floatingCart.style.borderColor = '#cbd5e1';
-            floatingCart.style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)';
+            floatingCart.style.display = 'none'; // Completely hidden when cart is empty!
         }
     }
 
@@ -3814,13 +3846,13 @@ window.renderInquiryCartUI = function() {
         if (inCart) {
             btn.classList.add('is-in-cart');
             btn.innerHTML = `<span data-i18n="vf.btn_in_cart">${textInCart}</span>`;
-            btn.onclick = function() { window.goToInquiryForm(); };
+            btn.onclick = function () { window.goToInquiryForm(); };
         } else {
             btn.classList.remove('is-in-cart');
             btn.innerHTML = `<span data-i18n="vf.btn_add_cart">${textAddCart}</span>`;
             const origTemplate = btn.getAttribute('data-cart-template');
             const origName = btn.getAttribute('data-cart-name');
-            btn.onclick = function() { window.addToInquiryCart(itemId, origName, origTemplate, this); };
+            btn.onclick = function () { window.addToInquiryCart(itemId, origName, origTemplate, this); };
         }
     });
 
@@ -3851,7 +3883,7 @@ window.renderInquiryCartUI = function() {
     }
 };
 
-window.goToInquiryForm = function() {
+window.goToInquiryForm = function () {
     if (window.navigateToPage) {
         window.navigateToPage('contact', { scrollTarget: 'quoteFormCard' });
     }
@@ -3870,7 +3902,7 @@ window.goToInquiryForm = function() {
 };
 
 // Also support quick pick chips in quote form
-window.fillQuickMaterial = function(templateText, shapeName) {
+window.fillQuickMaterial = function (templateText, shapeName) {
     const id = 'quick_' + templateText.slice(0, 8).replace(/[^a-zA-Z0-9一-龥]/g, '_');
     const name = shapeName || templateText.split(' ')[0] || '常用規格';
     window.addToInquiryCart(id, name, templateText);
