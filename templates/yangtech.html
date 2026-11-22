@@ -2,9 +2,12 @@
 <html lang="zh-TW">
 
 <head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Long+Cang&family=Ma+Shan+Zheng&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>揚州數位轉型整合 · YangTech Digital | 煙花三月 · 傳產賦能 · 智慧轉型專家</title>
+    <title>揚州數位轉型整合 · YangTech Digital | <span class="font-poem-cursive" style="font-size: 1.15rem; letter-spacing: 2px;">煙花三月 · 傳產賦能</span> · 智慧轉型專家</title>
     <meta name="description" content="揚州數位轉型整合 (YangTech Digital) — 煙花三月，春風賦能。專注台灣傳產製造業、五金材料供應鏈、學校公務流程自動化與高階雲端系統開發。">
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%23f0fdf4'/><path d='M30 75 C30 50, 45 35, 50 25 C55 35, 70 50, 70 75 M40 55 C45 52, 55 52, 60 55' stroke='%230d9488' stroke-width='6' fill='none' stroke-linecap='round'/><circle cx='50' cy='22' r='4' fill='%23f43f5e'/></svg>">
@@ -667,7 +670,24 @@
                 font-size: 1.3rem;
             }
         }
-    </style>
+    
+/* 中華毛筆書法字型 (Chinese Brush Calligraphy Typography) */
+.font-calligraphy {
+    font-family: 'Ma Shan Zheng', 'Kaiti TC', 'STKaiti', 'DFKai-SB', '標楷體', 'BiauKai', cursive, serif !important;
+    letter-spacing: 2px;
+}
+.font-poem-cursive {
+    font-family: 'Long Cang', 'Ma Shan Zheng', 'Kaiti TC', 'STKaiti', cursive, serif !important;
+    letter-spacing: 3px;
+}
+.hero-title, .brand-stamp, .nav-title-calligraphy, .section-title-calligraphy {
+    font-family: 'Ma Shan Zheng', 'Noto Serif TC', 'STKaiti', cursive, serif !important;
+}
+.hero-poetry-tag, .poetic-quote, .yt-ad-poem {
+    font-family: 'Long Cang', 'Ma Shan Zheng', 'STKaiti', cursive, serif !important;
+}
+
+</style>
 </head>
 
 <body>
@@ -919,9 +939,9 @@
     <header class="navbar">
         <div class="container nav-inner">
             <a href="/yangtech" class="brand-logo">
-                <div class="brand-stamp">揚</div>
+                <div class="brand-stamp font-calligraphy">揚</div>
                 <div class="brand-text">
-                    <h1>揚州數位轉型整合</h1>
+                    <h1 class="font-calligraphy" style="font-size: 1.45rem;">揚州數位轉型整合</h1>
                     <p>YANGTECH DIGITAL</p>
                 </div>
             </a>
@@ -935,7 +955,7 @@
     <!-- Hero Header -->
     <section class="hero">
         <div class="container">
-            <div class="hero-poetry-tag">
+            <div class="hero-poetry-tag font-poem-cursive" style="font-size: 1.05rem; letter-spacing: 2.5px;">
                 <span class="blossom-dot"></span>
                 <span>煙花三月 · 春風賦能 · 傳統產業智慧轉型專家</span>
             </div>
@@ -1011,7 +1031,10 @@
                     </div>
                 </div>
                 <div class="preview-panel">
-                    <div class="preview-icon-round">🏭</div>
+                    <div class="preview-img-wrap" style="width:100%; height:200px; border-radius:12px; overflow:hidden; margin-bottom:14px; box-shadow:0 6px 18px rgba(0,0,0,0.08); border:1px solid #e2e8f0; position:relative;">
+                        <img src="/static/img/portfolio/fapo.jpg" alt="法寶實業官方門戶" style="width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        <span style="position:absolute; top:8px; left:8px; background:rgba(13,148,136,0.92); color:#fff; font-size:11px; padding:2px 8px; border-radius:6px; font-weight:700;">實拍規格庫 ERP</span>
+                    </div>
                     <div class="preview-title">法寶實業官方門戶</div>
                     <div class="preview-domain">https://www.fapolu.com.tw</div>
                     <div class="preview-meta-list">
@@ -1045,7 +1068,10 @@
                     </div>
                 </div>
                 <div class="preview-panel">
-                    <div class="preview-icon-round">📝</div>
+                    <div class="preview-img-wrap" style="width:100%; height:200px; border-radius:12px; overflow:hidden; margin-bottom:14px; box-shadow:0 6px 18px rgba(0,0,0,0.08); border:1px solid #e2e8f0; position:relative;">
+                        <img src="/static/img/portfolio/purchase.jpg" alt="學校採購申請自動化系統" style="width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        <span style="position:absolute; top:8px; left:8px; background:rgba(2,132,199,0.92); color:#fff; font-size:11px; padding:2px 8px; border-radius:6px; font-weight:700;">公務請購自動化</span>
+                    </div>
                     <div class="preview-title">採購申請自動化系統</div>
                     <div class="preview-domain">https://purchase-automation-2moa.onrender.com/</div>
                     <div class="preview-meta-list">
@@ -1118,7 +1144,10 @@
                     </div>
                 </div>
                 <div class="preview-panel">
-                    <div class="preview-icon-round">🌌</div>
+                    <div class="preview-img-wrap" style="width:100%; height:200px; border-radius:12px; overflow:hidden; margin-bottom:14px; box-shadow:0 6px 18px rgba(0,0,0,0.08); border:1px solid #e2e8f0; position:relative;">
+                        <img src="/static/img/portfolio/fate.jpg" alt="紫微八字 · 天機命譜" style="width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        <span style="position:absolute; top:8px; left:8px; background:rgba(124,58,237,0.92); color:#fff; font-size:11px; padding:2px 8px; border-radius:6px; font-weight:700;">天文星曜排盤引擎</span>
+                    </div>
                     <div class="preview-title">紫微八字 · 天機命譜</div>
                     <div class="preview-domain">https://fate-purple.onrender.com/</div>
                     <div class="preview-meta-list">
@@ -1206,7 +1235,7 @@
                 <div style="display: inline-flex; align-items: center; gap: 8px; background: #ccfbf1; color: #0d9488; font-size: 0.82rem; font-weight: 700; padding: 5px 14px; border-radius: 20px; margin-bottom: 12px; letter-spacing: 0.5px;">
                     🌸 數位賦能 · 攜手共進
                 </div>
-                <h2 style="font-size: 2rem; color: #0f172a; font-weight: 700; margin-bottom: 12px;">專案洽詢與轉型評估平台</h2>
+                <h2 style="font-size: 2rem; color: #0f172a; font-weight: 700; margin-bottom: 12px;"><span class="font-calligraphy" style="font-size: 2.3rem; letter-spacing: 2px;">專案洽詢與轉型評估平台</span></h2>
                 <p style="color: #64748b; font-size: 1.05rem; max-width: 650px; margin: 0 auto;">
                     無論是金屬製造、機關學校或創新物聯網應用，我們皆能為您量身打造專屬高規格軟體系統。請填寫下方需求，我們將於 24 小時內與您聯繫！
                 </p>
