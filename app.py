@@ -356,6 +356,57 @@ def page_yangtech_admin():
     from flask import send_from_directory
     return send_from_directory('dist', 'yangtech_admin.html')
 
+# ==============================================================================
+# 揚州數位轉型 (YangTech) 異地雙軌雲端備份節點 (Cloud Mirror Storage)
+# ==============================================================================
+@app.route('/api/yangtech/backup_lead', methods=['POST'])
+def api_yangtech_backup_lead():
+    try:
+        data = request.get_json(force=True)
+        backup_dir = os.path.join(DATA_DIR, 'yangtech_backups')
+        os.makedirs(backup_dir, exist_ok=True)
+        cloud_file = os.path.join(backup_dir, 'cloud_mirror_leads.json')
+        leads = []
+        if os.path.exists(cloud_file):
+            try:
+                with open(cloud_file, 'r', encoding='utf-8') as f:
+                    leads = json.load(f)
+            except Exception:
+                leads = []
+        
+        # Check if full batch or single item
+        if isinstance(data, list):
+            leads = data
+        elif isinstance(data, dict):
+            lead_id = data.get('id')
+            found = False
+            for i, item in enumerate(leads):
+                if item.get('id') == lead_id:
+                    leads[i] = data
+                    found = True
+                    break
+            if not found:
+                leads.insert(0, data)
+
+        with open(cloud_file, 'w', encoding='utf-8') as f:
+            json.dump(leads, f, ensure_ascii=False, indent=2)
+        return jsonify({'success': True, 'message': '異地雲端鏡像已安全儲存', 'count': len(leads), 'timestamp': time.time()})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/yangtech/cloud_leads', methods=['GET'])
+def api_yangtech_cloud_leads():
+    try:
+        cloud_file = os.path.join(DATA_DIR, 'yangtech_backups', 'cloud_mirror_leads.json')
+        if os.path.exists(cloud_file):
+            with open(cloud_file, 'r', encoding='utf-8') as f:
+                leads = json.load(f)
+            return jsonify({'success': True, 'leads': leads, 'source': 'Render Cloud Mirror Node'})
+        return jsonify({'success': True, 'leads': [], 'source': 'Empty Mirror'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
 @app.route('/api/site-data')
 def api_site_data():
     return jsonify(SITE_DATA)
