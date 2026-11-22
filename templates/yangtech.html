@@ -947,7 +947,7 @@
             </a>
             <div class="nav-actions">
                 <a href="/" class="btn-nav-return">➔ 回法寶官網</a>
-                <a href="mailto:youngtunchou@gmail.com?subject=【傳統產業數位轉型洽詢】揚州數位整合" class="btn-nav-contact">✉ 專案洽詢</a>
+                <a href="#consultation" class="btn-nav-contact" onclick="scrollToConsultation(event)">💬 線上專案洽詢</a>
             </div>
         </div>
     </header>
@@ -969,7 +969,7 @@
             </p>
             <div class="hero-cta">
                 <a href="#works" class="btn-primary">檢視四大代表作品 ➔</a>
-                <a href="mailto:youngtunchou@gmail.com?subject=【數位轉型顧問諮詢】來自官網合作" class="btn-secondary">預約轉型顧問諮詢</a>
+                <a href="#consultation" class="btn-secondary" onclick="scrollToConsultation(event)">🌸 預約轉型顧問諮詢 ➔</a>
             </div>
         </div>
     </section>
@@ -1216,9 +1216,7 @@
             <h3>準備好為您的企業開啟數位新春天了嗎？</h3>
             <p>不論您是傳統製造業、精密機械加工廠、行政流程自動化、物聯網音訊應用開發或特殊演算法平台需求，我們都能為您量身打造專屬高階數位中樞。</p>
             <div class="contact-pill-list">
-                <a href="mailto:youngtunchou@gmail.com?subject=【傳統產業數位轉型洽詢】揚州數位整合" class="contact-link-pill">
-                    <span>✉ 專案諮詢信箱：youngtunchou@gmail.com</span>
-                </a>
+                <a href="#consultation" class="contact-link-pill" onclick="scrollToConsultation(event)" style="background:linear-gradient(135deg, #0d9488, #059669); color:#fff; font-weight:700;">💬 前往線上諮詢評估表單 ➔</a>
                 <a href="https://www.fapolu.com.tw" target="_blank" class="contact-link-pill">
                     <span>🏭 觀看旗艦案例：法寶實業</span>
                 </a>
@@ -1352,6 +1350,22 @@
                 行政流程自動化</p>
         </div>
     </footer>
+
+
+
+<script>
+function scrollToConsultation(e) {
+    if (e) e.preventDefault();
+    const el = document.getElementById('consultation');
+    if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => {
+            const input = document.getElementById('consultCompany');
+            if (input) input.focus();
+        }, 500);
+    }
+}
+</script>
 
 </body>
 
