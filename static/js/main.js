@@ -3884,10 +3884,6 @@ window.renderInquiryCartUI = function () {
 };
 
 window.goToInquiryForm = function () {
-    // Trigger YangTech Small Advertisement Popup
-    if (typeof showYangtechAd === 'function') {
-        try { showYangtechAd(); } catch (e) {}
-    }
     if (window.navigateToPage) {
         window.navigateToPage('contact', { scrollTarget: 'quoteFormCard' });
     }
