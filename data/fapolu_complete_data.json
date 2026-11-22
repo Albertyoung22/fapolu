@@ -283,8 +283,8 @@
       "badge": "高平整精平板",
       "subtitle": "厚度公差 -0.1~+0.3mm · 每米平坦度 ≤2.0mm · 高 CP 值首選",
       "desc": "由韓國 Four Nine Co., Ltd 原廠專為法寶實業出具公差品質證明書（Statement of Product Tolerance），出廠經精密整平與雙面 PE 保護貼膜，兼具高平坦度與採購預算優勢，適用於精密光電基板與自動化設備台面。",
-      "image": "/static/img_crawled/korea_fournine_tolerance_cert.png",
-      "image_fit": "contain",
+      "image": "/static/img_factory/prod_korea_precision_plate.jpg",
+      "cert_image": "/static/img_crawled/korea_fournine_tolerance_cert.png",
       "specs": [
         "厚度公差：-0.1mm ~ +0.3mm (4T ~ 30T 原廠認證)",
         "平坦度公差：每米 ≤ 2.0mm (Max 2.0mm/m)",
