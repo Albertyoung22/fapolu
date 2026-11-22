@@ -672,6 +672,249 @@
 
 <body>
 
+<!-- 古畫「煙花三月下揚州」輕動畫畫布 (Classical Jiangnan Animated Canvas Background) -->
+<canvas id="yangzhouArtCanvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -1;"></canvas>
+
+<script>
+/**
+ * 煙花三月下揚州 · 古畫輕動畫引擎
+ * 水墨青綠遠山、煙波微漾、微雨薄霧、江中孤帆、垂柳依依、落英飄花
+ */
+(function() {
+    const canvas = document.getElementById('yangzhouArtCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    let w = canvas.width = window.innerWidth;
+    let h = canvas.height = window.innerHeight;
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    function resize() {
+        w = window.innerWidth;
+        h = window.innerHeight;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        ctx.scale(dpr, dpr);
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // 1. 花瓣與柳絮粒子 (Petals & Willow Catkins)
+    const PETAL_COUNT = Math.min(Math.floor(w / 35), 45);
+    const petals = [];
+    for (let i = 0; i < PETAL_COUNT; i++) {
+        petals.push({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            size: 4 + Math.random() * 7,
+            vx: 0.6 + Math.random() * 1.2, // wind to right
+            vy: 0.8 + Math.random() * 1.4, // gravity down
+            angle: Math.random() * Math.PI * 2,
+            vRot: (Math.random() - 0.5) * 0.04,
+            wobble: Math.random() * Math.PI * 2,
+            wobbleSpeed: 0.02 + Math.random() * 0.02,
+            isWillow: Math.random() > 0.65, // some willow leaves, some blossom petals
+            alpha: 0.35 + Math.random() * 0.5
+        });
+    }
+
+    // 2. 薄霧雲嵐 (Misty Cloud layers)
+    const clouds = [
+        { x: -w * 0.2, y: h * 0.32, speed: 0.15, radiusX: w * 0.45, radiusY: 90, alpha: 0.22 },
+        { x: w * 0.3, y: h * 0.48, speed: 0.22, radiusX: w * 0.5, radiusY: 110, alpha: 0.18 },
+        { x: -w * 0.4, y: h * 0.62, speed: 0.18, radiusX: w * 0.6, radiusY: 120, alpha: 0.25 }
+    ];
+
+    let time = 0;
+
+    function drawMountain(baseY, amp, freq, color, offset) {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(0, h);
+        ctx.lineTo(0, baseY);
+        for (let x = 0; x <= w; x += 30) {
+            const y = baseY - Math.sin((x * freq) + offset) * amp - Math.cos((x * freq * 0.5) + offset * 0.5) * (amp * 0.6);
+            ctx.lineTo(x, y);
+        }
+        ctx.lineTo(w, h);
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    function drawBoat(bx, by, scale, tilt) {
+        ctx.save();
+        ctx.translate(bx, by);
+        ctx.rotate(tilt);
+        ctx.scale(scale, scale);
+
+        // Boat hull (烏篷船/木舟)
+        ctx.fillStyle = 'rgba(71, 85, 105, 0.75)';
+        ctx.beginPath();
+        ctx.moveTo(-28, 4);
+        ctx.quadraticCurveTo(-14, 10, 24, 6);
+        ctx.quadraticCurveTo(32, 2, 34, -2);
+        ctx.quadraticCurveTo(10, 4, -24, 0);
+        ctx.closePath();
+        ctx.fill();
+
+        // Mast & Sail (孤帆)
+        ctx.strokeStyle = 'rgba(71, 85, 105, 0.8)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(2, 4);
+        ctx.lineTo(2, -34);
+        ctx.stroke();
+
+        // Sail cloth
+        ctx.fillStyle = 'rgba(248, 250, 252, 0.85)';
+        ctx.strokeStyle = 'rgba(148, 163, 184, 0.6)';
+        ctx.beginPath();
+        ctx.moveTo(2, -32);
+        ctx.quadraticCurveTo(16, -18, 2, -4);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    function drawWillow(wx, wy, count, sway) {
+        ctx.save();
+        ctx.translate(wx, wy);
+        for (let i = 0; i < count; i++) {
+            const angle = (i - count / 2) * 0.12 + Math.sin(sway + i * 0.5) * 0.08;
+            const len = 90 + (i % 3) * 35;
+            ctx.save();
+            ctx.rotate(angle);
+
+            ctx.strokeStyle = 'rgba(13, 148, 136, 0.45)';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            const midX = Math.sin(sway + i) * 15;
+            ctx.quadraticCurveTo(midX, len * 0.5, midX * 0.6, len);
+            ctx.stroke();
+
+            // Willow leaves along branch
+            for (let t = 0.2; t <= 0.95; t += 0.12) {
+                const lx = midX * t;
+                const ly = len * t;
+                ctx.fillStyle = 'rgba(5, 150, 105, 0.55)';
+                ctx.beginPath();
+                ctx.ellipse(lx + 4, ly, 2, 7, 0.5 + Math.sin(sway) * 0.2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.ellipse(lx - 4, ly + 4, 2, 7, -0.5 - Math.sin(sway) * 0.2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+        ctx.restore();
+    }
+
+    function animate() {
+        time += 0.015;
+        ctx.clearRect(0, 0, w, h);
+
+        // 1. 水墨青綠遠山 (Distant Misty Jiangnan Mountains)
+        // Far mountain (淡墨青灰)
+        drawMountain(h * 0.52, 60, 0.0022, 'rgba(196, 218, 210, 0.35)', 1.2);
+        // Mid mountain (碧綠含煙)
+        drawMountain(h * 0.62, 75, 0.0035, 'rgba(167, 212, 196, 0.32)', 3.8);
+        // Near mountain (青綠翠微)
+        drawMountain(h * 0.74, 90, 0.0048, 'rgba(142, 198, 180, 0.28)', 6.4);
+
+        // 2. 煙雨薄霧流動 (Drifting Mist Clouds)
+        clouds.forEach(c => {
+            c.x += c.speed;
+            if (c.x - c.radiusX > w) c.x = -c.radiusX;
+            const grad = ctx.createRadialGradient(c.x, c.y, 10, c.x, c.y, c.radiusX);
+            grad.addColorStop(0, `rgba(255, 255, 255, ${c.alpha})`);
+            grad.addColorStop(0.6, `rgba(240, 253, 244, ${c.alpha * 0.5})`);
+            grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.ellipse(c.x, c.y, c.radiusX, c.radiusY, 0, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        // 3. 長江孤帆微晃 (Solitary boat drifting gently)
+        const boatX = (w * 0.22 + Math.sin(time * 0.2) * 30);
+        const boatY = h * 0.68 + Math.sin(time * 0.8) * 4;
+        const boatTilt = Math.sin(time * 0.8) * 0.05;
+        drawBoat(boatX, boatY, 0.85, boatTilt);
+
+        // 2nd smaller boat further in distance
+        const boat2X = (w * 0.78 + Math.cos(time * 0.15) * 20);
+        const boat2Y = h * 0.58 + Math.sin(time * 0.6 + 1) * 3;
+        drawBoat(boat2X, boat2Y, 0.55, Math.sin(time * 0.6) * 0.04);
+
+        // 4. 江水微波漣漪 (Water ripple lines)
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.lineWidth = 1;
+        for (let j = 0; j < 6; j++) {
+            const wy = h * (0.72 + j * 0.048);
+            ctx.beginPath();
+            ctx.moveTo(0, wy);
+            for (let x = 0; x <= w; x += 40) {
+                const waveY = wy + Math.sin(x * 0.02 + time * 1.5 + j) * 2.5;
+                ctx.lineTo(x, waveY);
+            }
+            ctx.stroke();
+        }
+
+        // 5. 兩側依依垂柳 (Weeping Willow in top corners)
+        drawWillow(0, -10, 8, time * 0.8);
+        drawWillow(w, -10, 8, time * 0.8 + 1.2);
+
+        // 6. 煙花三月 · 飄落花瓣與柳絮 (Falling Peach Blossoms & Petals)
+        petals.forEach(p => {
+            p.x += p.vx + Math.sin(p.wobble) * 0.6;
+            p.y += p.vy;
+            p.angle += p.vRot;
+            p.wobble += p.wobbleSpeed;
+
+            // Wrap around
+            if (p.y > h + 20) { p.y = -20; p.x = Math.random() * w; }
+            if (p.x > w + 20) { p.x = -20; }
+
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.angle);
+
+            if (p.isWillow) {
+                // Willow catkin / tender leaf (嫩綠)
+                ctx.fillStyle = `rgba(16, 185, 129, ${p.alpha})`;
+                ctx.beginPath();
+                ctx.ellipse(0, 0, p.size * 0.35, p.size, 0, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                // Peach blossom petal (粉桃胭脂花瓣)
+                const grad = ctx.createLinearGradient(-p.size, -p.size, p.size, p.size);
+                grad.addColorStop(0, `rgba(254, 205, 211, ${p.alpha * 0.9})`);
+                grad.addColorStop(0.6, `rgba(244, 63, 94, ${p.alpha})`);
+                grad.addColorStop(1, `rgba(225, 29, 72, ${p.alpha * 0.8})`);
+                ctx.fillStyle = grad;
+
+                ctx.beginPath();
+                ctx.moveTo(0, -p.size);
+                ctx.bezierCurveTo(p.size * 0.8, -p.size * 0.6, p.size, p.size * 0.6, 0, p.size);
+                ctx.bezierCurveTo(-p.size, p.size * 0.6, -p.size * 0.8, -p.size * 0.6, 0, -p.size);
+                ctx.fill();
+            }
+            ctx.restore();
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    // Run animation
+    requestAnimationFrame(animate);
+})();
+</script>
+
+
+
     <!-- Header Navbar -->
     <header class="navbar">
         <div class="container nav-inner">

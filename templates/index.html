@@ -5133,6 +5133,10 @@
 <!-- 揚州數位轉型整合 (YangTech) 圖文並茂小廣告與洽詢平台彈窗 -->
 <div id="yangtechAdModal" class="yt-ad-backdrop" style="display:none;" role="dialog" aria-modal="true">
     <div class="yt-ad-card">
+
+        <!-- 煙花三月古畫輕動畫畫布 (Ad Modal Ambient Canvas) -->
+        <canvas id="ytAdMiniCanvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; border-radius: 20px; z-index: 0; opacity: 0.65;"></canvas>
+
         <!-- Close Button -->
         <button type="button" class="yt-ad-close" onclick="closeYangtechAd(event)" title="關閉廣告繼續詢價" aria-label="關閉">✕</button>
 
@@ -5657,6 +5661,68 @@ async function submitYtQuickConsult(e) {
         btn.textContent = '🌸 送出諮詢需求 · 顧問專人聯繫 ➔';
     }
 }
+</script>
+
+
+<script>
+// Ambient Blossom Drift in Ad Modal
+(function initAdMiniCanvas() {
+    const c = document.getElementById('ytAdMiniCanvas');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    let cw, ch;
+    function syncSize() {
+        if (!c.parentElement) return;
+        cw = c.width = c.parentElement.clientWidth;
+        ch = c.height = c.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', syncSize);
+    setTimeout(syncSize, 300);
+
+    const petals = [];
+    for (let i = 0; i < 22; i++) {
+        petals.push({
+            x: Math.random() * 500,
+            y: Math.random() * 600,
+            size: 3 + Math.random() * 5,
+            vx: 0.5 + Math.random() * 0.8,
+            vy: 0.7 + Math.random() * 1.0,
+            angle: Math.random() * 6.28,
+            vRot: (Math.random() - 0.5) * 0.03,
+            wobble: Math.random() * 6.28
+        });
+    }
+
+    function loop() {
+        if (!c.parentElement || c.parentElement.offsetParent === null) {
+            requestAnimationFrame(loop);
+            return;
+        }
+        if (!cw) syncSize();
+        ctx.clearRect(0, 0, cw, ch);
+
+        petals.forEach(p => {
+            p.x += p.vx + Math.sin(p.wobble) * 0.5;
+            p.y += p.vy;
+            p.angle += p.vRot;
+            p.wobble += 0.03;
+
+            if (p.y > ch + 10) { p.y = -10; p.x = Math.random() * cw; }
+            if (p.x > cw + 10) { p.x = -10; }
+
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.angle);
+            ctx.fillStyle = 'rgba(244, 63, 94, 0.45)';
+            ctx.beginPath();
+            ctx.ellipse(0, 0, p.size * 0.4, p.size, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        });
+        requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+})();
 </script>
 
 </body>
