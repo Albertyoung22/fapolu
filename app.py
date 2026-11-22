@@ -350,6 +350,12 @@ def page_contact():
 def page_yangtech():
     return render_template('yangtech.html')
 
+@app.route('/yangtech/admin', strict_slashes=False)
+@app.route('/yangtech_admin.html', strict_slashes=False)
+def page_yangtech_admin():
+    from flask import send_from_directory
+    return send_from_directory('dist', 'yangtech_admin.html')
+
 @app.route('/api/site-data')
 def api_site_data():
     return jsonify(SITE_DATA)
