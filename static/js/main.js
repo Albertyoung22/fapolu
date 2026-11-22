@@ -3884,6 +3884,10 @@ window.renderInquiryCartUI = function () {
 };
 
 window.goToInquiryForm = function () {
+    // 輕量彈出右下角小提示廣告（絕不影響原本的填單與捲動體驗）
+    if (typeof showYangtechMiniToast === 'function') {
+        try { showYangtechMiniToast(); } catch (e) {}
+    }
     if (window.navigateToPage) {
         window.navigateToPage('contact', { scrollTarget: 'quoteFormCard' });
     }

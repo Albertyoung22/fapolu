@@ -5133,5 +5133,203 @@
         <button type="button" class="fic-clear-btn" onclick="clearInquiryCart(event)" title="清空詢價清單">✕</button>
     </div>
 
+
+
+<!-- 揚州數位轉型 (YangTech) 右下角輕量小浮窗廣告（完全不遮擋、不影響詢價流程） -->
+<div id="yangtechMiniToast" class="yt-mini-floating-ad" style="display:none;" role="complementary" aria-label="系統開發推薦">
+    <button type="button" class="yt-mini-close" onclick="closeYangtechMiniToast(event)" title="關閉小提示" aria-label="關閉">✕</button>
+    <div class="yt-mini-body">
+        <div class="yt-mini-stamp font-calligraphy">揚</div>
+        <div class="yt-mini-info">
+            <div class="yt-mini-header">
+                <span class="yt-mini-tag">🌿 技術夥伴</span>
+                <span class="yt-mini-name font-calligraphy">揚州數位轉型整合</span>
+            </div>
+            <div class="yt-mini-poem font-poem-cursive">「煙花三月下揚州」</div>
+            <div class="yt-mini-pitch">
+                客製金屬 ERP、自動報價系統、學校機關自動化與智慧 IoT 專家
+            </div>
+            <a href="/yangtech" target="_blank" rel="noopener noreferrer" class="yt-mini-link" onclick="trackYtToastClick()">
+                🌸 參觀 4 大代表作品 ➔
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+/* 右下角輕巧小廣告（完全不阻擋主畫面） */
+.yt-mini-floating-ad {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 330px;
+    max-width: calc(100vw - 32px);
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(13, 148, 136, 0.35);
+    border-radius: 16px;
+    padding: 14px 16px;
+    box-shadow: 0 10px 30px rgba(13, 148, 136, 0.16), 0 4px 12px rgba(0, 0, 0, 0.08);
+    z-index: 9999;
+    animation: ytMiniSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    pointer-events: auto;
+}
+@keyframes ytMiniSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+.yt-mini-close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: none;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+.yt-mini-close:hover {
+    background: #fee2e2;
+    color: #ef4444;
+}
+.yt-mini-body {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+.yt-mini-stamp {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #0d9488, #059669);
+    color: #fff;
+    font-size: 1.35rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
+    margin-top: 2px;
+}
+.yt-mini-info {
+    flex: 1;
+}
+.yt-mini-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 2px;
+}
+.yt-mini-tag {
+    background: #ccfbf1;
+    color: #0d9488;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 4px;
+}
+.yt-mini-name {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: 0.5px;
+}
+.yt-mini-poem {
+    font-size: 0.88rem;
+    color: #059669;
+    margin-bottom: 4px;
+    letter-spacing: 1.5px;
+}
+.yt-mini-pitch {
+    font-size: 0.76rem;
+    color: #64748b;
+    line-height: 1.35;
+    margin-bottom: 8px;
+}
+.yt-mini-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #0d9488 !important;
+    text-decoration: none;
+    padding: 3px 10px;
+    background: #f0fdf4;
+    border: 1px solid #a7f3d0;
+    border-radius: 12px;
+    transition: all 0.2s;
+}
+.yt-mini-link:hover {
+    background: #0d9488;
+    color: #ffffff !important;
+    border-color: #0d9488;
+    transform: translateX(2px);
+}
+@media (max-width: 480px) {
+    .yt-mini-floating-ad {
+        bottom: 12px;
+        right: 12px;
+        left: 12px;
+        width: auto;
+        max-width: none;
+    }
+}
+</style>
+
+<script>
+function showYangtechMiniToast() {
+    const toast = document.getElementById('yangtechMiniToast');
+    if (!toast) return;
+    toast.style.display = 'block';
+
+    // Track impression
+    try {
+        fetch('/api_yangtech.php?action=track_stat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: 'impression' })
+        });
+    } catch (e) {}
+}
+
+function closeYangtechMiniToast(e) {
+    if (e) e.stopPropagation();
+    const toast = document.getElementById('yangtechMiniToast');
+    if (toast) {
+        toast.style.animation = 'none';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(16px)';
+        toast.style.transition = 'all 0.25s ease';
+        setTimeout(() => { toast.style.display = 'none'; }, 260);
+    }
+}
+
+function trackYtToastClick() {
+    try {
+        fetch('/api_yangtech.php?action=track_stat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: 'click' })
+        });
+    } catch (e) {}
+}
+</script>
+
 </body>
 </html>
