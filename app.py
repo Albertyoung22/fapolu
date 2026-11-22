@@ -1182,6 +1182,7 @@ def api_admin_settings():
         updates['google_sheets_webhook_url'] = str(body['google_sheets_webhook_url']).strip()
 
     mailer.save_local_config(updates)
+    db.save_app_settings(updates)
     cfg = mailer.get_smtp_config()
     storage = db.get_storage_status()
     return jsonify({
@@ -1205,6 +1206,7 @@ def api_admin_sync_github():
         updates['github_token'] = str(body['github_token']).strip()
     if updates:
         mailer.save_local_config(updates)
+        db.save_app_settings(updates)
     try:
         res = db.sync_all_to_github(custom_cfg={
             'repo': body.get('github_repo'),
