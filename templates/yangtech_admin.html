@@ -329,6 +329,80 @@
         </div>
 
         <!-- Main Card & Table -->
+        
+        <!-- 官網流量與每日造訪分析區塊 (Website Traffic Analytics) -->
+        <div class="main-card" style="margin-bottom: 24px; padding: 22px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:18px;">
+                <div>
+                    <h2 style="font-size:1.15rem; font-weight:700; color:#0f172a; display:flex; align-items:center; gap:8px;">
+                        <span>📊 法寶官網 ＆ 揚州官網 · 每日造訪流量分析</span>
+                        <span style="font-size:0.75rem; background:#ccfbf1; color:#0d9488; padding:2px 8px; border-radius:12px; font-weight:600;">即時統計</span>
+                    </h2>
+                    <p style="font-size:0.82rem; color:var(--text-muted); margin-top:2px;">即時統計每日不重複訪客數 (UV) 與總頁面瀏覽次數 (PV)</p>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="loadTrafficStats()">🔄 刷新流量數據</button>
+            </div>
+
+            <!-- Traffic Stats Cards Grid (4 Columns) -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:20px;">
+                <!-- Card 1: Today FAPO -->
+                <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <span style="font-size:0.82rem; font-weight:700; color:#166534;">🏭 今日法寶官網</span>
+                        <span style="font-size:0.75rem; color:#15803d;" id="tfFapoUv">0 人造訪</span>
+                    </div>
+                    <div style="font-size:1.6rem; font-weight:800; color:#0f172a;" id="tfFapoPv">0 <span style="font-size:0.8rem; font-weight:500; color:#64748b;">次瀏覽</span></div>
+                    <div style="font-size:0.76rem; color:#475569; margin-top:4px;">昨日：<span id="tfFapoYest">0 次 (0 人)</span></div>
+                </div>
+
+                <!-- Card 2: Today YangTech -->
+                <div style="background:#f0fdfa; border:1px solid #99f6e4; border-radius:12px; padding:16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <span style="font-size:0.82rem; font-weight:700; color:#115e59;">🌸 今日揚州官網</span>
+                        <span style="font-size:0.75rem; color:#0d9488;" id="tfYtUv">0 人造訪</span>
+                    </div>
+                    <div style="font-size:1.6rem; font-weight:800; color:#0f172a;" id="tfYtPv">0 <span style="font-size:0.8rem; font-weight:500; color:#64748b;">次瀏覽</span></div>
+                    <div style="font-size:0.76rem; color:#475569; margin-top:4px;">昨日：<span id="tfYtYest">0 次 (0 人)</span></div>
+                </div>
+
+                <!-- Card 3: Total Cumulative FAPO -->
+                <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:16px;">
+                    <div style="font-size:0.82rem; font-weight:700; color:#475569; margin-bottom:6px;">🏛️ 法寶官網累計總量</div>
+                    <div style="font-size:1.6rem; font-weight:800; color:#0f172a;" id="tfTotalFapo">0 <span style="font-size:0.8rem; font-weight:500; color:#64748b;">次總瀏覽</span></div>
+                    <div style="font-size:0.76rem; color:#64748b; margin-top:4px;">持久固態硬碟安全存檔</div>
+                </div>
+
+                <!-- Card 4: Total Cumulative YangTech -->
+                <div style="background:#fdf2f8; border:1px solid #fbcfe8; border-radius:12px; padding:16px;">
+                    <div style="font-size:0.82rem; font-weight:700; color:#9d174d; margin-bottom:6px;">✨ 揚州官網累計總量</div>
+                    <div style="font-size:1.6rem; font-weight:800; color:#0f172a;" id="tfTotalYt">0 <span style="font-size:0.8rem; font-weight:500; color:#64748b;">次總瀏覽</span></div>
+                    <div style="font-size:0.76rem; color:#9d174d; margin-top:4px;">雙軌雲端備份存檔</div>
+                </div>
+            </div>
+
+            <!-- Last 7 Days Daily Breakdown Table & Visual Bars -->
+            <div>
+                <h4 style="font-size:0.92rem; font-weight:700; color:#334155; margin-bottom:12px;">📅 近 7 日每日瀏覽趨勢對比表</h4>
+                <div class="table-responsive">
+                    <table style="font-size:0.84rem;">
+                        <thead>
+                            <tr style="background:#f8fafc;">
+                                <th style="padding:10px 14px;">日期</th>
+                                <th style="padding:10px 14px;">🏭 法寶官網 (瀏覽量 PV)</th>
+                                <th style="padding:10px 14px;">👥 法寶不重複訪客 (UV)</th>
+                                <th style="padding:10px 14px;">🌸 揚州官網 (瀏覽量 PV)</th>
+                                <th style="padding:10px 14px;">👥 揚州不重複訪客 (UV)</th>
+                                <th style="padding:10px 14px;">雙站瀏覽長條圖</th>
+                            </tr>
+                        </thead>
+                        <tbody id="traffic7DaysTbody">
+                            <tr><td colspan="6" style="text-align:center; padding:18px; color:#94a3b8;">載入中...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <div class="main-card">
             <div class="card-header">
                 <h2 class="card-title">
@@ -494,6 +568,7 @@
                     allLeads = data.leads || [];
                     currentConfig = data.config || {};
                     updateKpis();
+                    loadTrafficStats();
                     renderTable();
                 }
             } catch (err) {
@@ -601,6 +676,7 @@
                     const lead = allLeads.find(l => l.id === id);
                     if (lead) lead.status = newStatus;
                     updateKpis();
+                    loadTrafficStats();
                     renderTable();
                 } else {
                     alert(data.message || '更新失敗');
@@ -659,6 +735,7 @@
                 if (data.success) {
                     allLeads = allLeads.filter(l => l.id !== id);
                     updateKpis();
+                    loadTrafficStats();
                     renderTable();
                 }
             } catch (err) {
@@ -801,6 +878,81 @@
             reader.readAsText(file);
         }
     
+        
+        async function loadTrafficStats() {
+            try {
+                const res = await fetch('/api_yangtech.php?action=get_traffic_stats', { headers: getAuthHeader() });
+                const data = await res.json();
+                if (data.success) {
+                    renderTrafficDashboard(data);
+                }
+            } catch (err) {
+                console.error('Failed to load traffic stats:', err);
+            }
+        }
+
+        function renderTrafficDashboard(data) {
+            const t = data.today || {};
+            const y = data.yesterday || {};
+            const tot = data.totals || {};
+
+            document.getElementById('tfFapoPv').innerHTML = `${t.fapo_pv || 0} <span style="font-size:0.8rem; font-weight:500; color:#64748b;">次瀏覽</span>`;
+            document.getElementById('tfFapoUv').textContent = `${t.fapo_uv || 0} 人造訪`;
+            document.getElementById('tfFapoYest').textContent = `${y.fapo_pv || 0} 次 (${y.fapo_uv || 0} 人)`;
+
+            document.getElementById('tfYtPv').innerHTML = `${t.yangtech_pv || 0} <span style="font-size:0.8rem; font-weight:500; color:#64748b;">次瀏覽</span>`;
+            document.getElementById('tfYtUv').textContent = `${t.yangtech_uv || 0} 人造訪`;
+            document.getElementById('tfYtYest').textContent = `${y.yangtech_pv || 0} 次 (${y.yangtech_uv || 0} 人)`;
+
+            document.getElementById('tfTotalFapo').innerHTML = `${(tot.total_fapo_pv || 0).toLocaleString()} <span style="font-size:0.8rem; font-weight:500; color:#64748b;">次</span>`;
+            document.getElementById('tfTotalYt').innerHTML = `${(tot.total_yangtech_pv || 0).toLocaleString()} <span style="font-size:0.8rem; font-weight:500; color:#64748b;">次</span>`;
+
+            // Render 7 Days Table
+            const tbody = document.getElementById('traffic7DaysTbody');
+            const list = data.last_7_days || [];
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:18px; color:#94a3b8;">暫無紀錄</td></tr>';
+                return;
+            }
+
+            const maxPv = Math.max(...list.map(item => Math.max(item.fapo_pv, item.yangtech_pv)), 10);
+
+            tbody.innerHTML = list.map(row => {
+                const isToday = row.date === t.date;
+                const fapoWidth = Math.min(Math.round((row.fapo_pv / maxPv) * 100), 100);
+                const ytWidth = Math.min(Math.round((row.yangtech_pv / maxPv) * 100), 100);
+
+                return `
+                <tr style="${isToday ? 'background:#f0fdf4; font-weight:600;' : ''}">
+                    <td>
+                        <span>${escapeHtml(row.label)}</span>
+                        ${isToday ? '<span style="font-size:0.72rem; background:#10b981; color:#fff; padding:1px 5px; border-radius:4px; margin-left:4px;">今日</span>' : ''}
+                    </td>
+                    <td style="color:#166534; font-weight:700;">${row.fapo_pv} 次</td>
+                    <td>${row.fapo_uv} 人</td>
+                    <td style="color:#0d9488; font-weight:700;">${row.yangtech_pv} 次</td>
+                    <td>${row.yangtech_uv} 人</td>
+                    <td>
+                        <div style="display:flex; flex-direction:column; gap:4px; width:180px;">
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                <span style="font-size:0.7rem; color:#166534; width:30px;">法寶</span>
+                                <div style="flex:1; height:6px; background:#e2e8f0; border-radius:3px; overflow:hidden;">
+                                    <div style="width:${fapoWidth}%; height:100%; background:#10b981;"></div>
+                                </div>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                <span style="font-size:0.7rem; color:#0d9488; width:30px;">揚州</span>
+                                <div style="flex:1; height:6px; background:#e2e8f0; border-radius:3px; overflow:hidden;">
+                                    <div style="width:${ytWidth}%; height:100%; background:#0d9488;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                `;
+            }).reverse().join('');
+        }
+
         function escapeHtml(str) {
             if (!str) return '';
             return String(str)

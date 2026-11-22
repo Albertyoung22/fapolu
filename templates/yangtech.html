@@ -1383,6 +1383,31 @@ function scrollToConsultation(e) {
     }, { passive: true });
     </script>
 
+
+<script>
+// 非同步零延遲訪客點擊與瀏覽量統計 (YangTech Analytics)
+(function initYangtechTrafficTracker() {
+    try {
+        let vid = localStorage.getItem('yt_vid');
+        if (!vid) {
+            vid = 'yt_' + Math.random().toString(36).substring(2, 12) + Date.now().toString(36);
+            localStorage.setItem('yt_vid', vid);
+        }
+        const payload = JSON.stringify({ site: 'yangtech', vid: vid, path: window.location.pathname });
+        if (navigator.sendBeacon) {
+            navigator.sendBeacon('/api_yangtech.php?action=track_visit', payload);
+        } else {
+            fetch('/api_yangtech.php?action=track_visit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: payload,
+                keepalive: true
+            }).catch(() => {});
+        }
+    } catch (e) {}
+})();
+</script>
+
 </body>
 
 </html>

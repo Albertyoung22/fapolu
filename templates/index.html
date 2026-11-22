@@ -5334,5 +5334,30 @@ function trackYtToastClick() {
 }
 </script>
 
+
+<script>
+// 非同步零延遲訪客點擊與瀏覽量統計 (FAPO Analytics)
+(function initFapoTrafficTracker() {
+    try {
+        let vid = localStorage.getItem('fapo_vid');
+        if (!vid) {
+            vid = 'v_' + Math.random().toString(36).substring(2, 12) + Date.now().toString(36);
+            localStorage.setItem('fapo_vid', vid);
+        }
+        const payload = JSON.stringify({ site: 'fapo', vid: vid, path: window.location.pathname });
+        if (navigator.sendBeacon) {
+            navigator.sendBeacon('/api_yangtech.php?action=track_visit', payload);
+        } else {
+            fetch('/api_yangtech.php?action=track_visit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: payload,
+                keepalive: true
+            }).catch(() => {});
+        }
+    } catch (e) {}
+})();
+</script>
+
 </body>
 </html>
