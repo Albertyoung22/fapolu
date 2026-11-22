@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Long+Cang&family=Noto+Serif+TC:wght@600;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>揚州數位轉型整合 | 專案洽詢管理後台 (YangTech Admin)</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0d9488;
+            --primary-dark: #0f766e;
+            --primary-light: #ccfbf1;
+            --accent: #f43f5e;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans TC', sans-serif; }
+        body { background: var(--bg); color: var(--text-main); line-height: 1.6; min-height: 100vh; }
+        
+        /* Navbar */
+        .admin-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .nav-logo-badge {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #0d9488, #059669);
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(13, 148, 136, 0.25);
+        }
+        .nav-title { font-size: 1.15rem; font-weight: 700; color: #0f172a; }
+        .nav-subtitle { font-size: 0.8rem; color: var(--text-muted); }
+        .nav-actions { display: flex; gap: 10px; align-items: center; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            text-decoration: none;
+        }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-outline { background: #fff; border-color: var(--border); color: var(--text-main); }
+        .btn-outline:hover { background: #f1f5f9; border-color: #cbd5e1; }
+        .btn-accent { background: var(--accent); color: #fff; }
+        .btn-accent:hover { background: #e11d48; }
+        .btn-sm { padding: 4px 10px; font-size: 0.8rem; }
+
+        /* Container */
+        .container { max-width: 1360px; margin: 0 auto; padding: 24px; }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .kpi-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--primary);
+        }
+        .kpi-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+        .kpi-val { font-size: 1.7rem; font-weight: 700; color: #0f172a; line-height: 1.2; }
+        .kpi-label { font-size: 0.84rem; color: var(--text-muted); }
+
+        /* Table Card */
+        .main-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .card-title { font-size: 1.1rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px; }
+        .card-controls { display: flex; gap: 10px; flex-wrap: wrap; }
+        .search-input {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.88rem;
+            min-width: 240px;
+            outline: none;
+        }
+        .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15); }
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.88rem;
+            outline: none;
+            background: #fff;
+        }
+
+        /* Leads Table */
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        th {
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+        tr:hover td { background: #f8fafc; }
+        .lead-id { font-family: monospace; font-size: 0.8rem; color: var(--text-muted); }
+        .lead-company { font-weight: 700; color: #0f172a; margin-bottom: 2px; }
+        .lead-name { color: #334155; font-size: 0.85rem; }
+        .contact-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: #f1f5f9;
+            color: #0f172a;
+            font-size: 0.8rem;
+            text-decoration: none;
+            margin-right: 4px;
+            margin-top: 4px;
+        }
+        .contact-pill:hover { background: #e2e8f0; }
+
+        /* Status Badge & Select */
+        .status-select {
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid transparent;
+            cursor: pointer;
+            outline: none;
+        }
+        .status-new { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+        .status-contacted { background: #e0f2fe; color: #0369a1; border-color: #bae6fd; }
+        .status-quoting { background: #f3e8ff; color: #6b21a8; border-color: #e9d5ff; }
+        .status-signed { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+        .status-closed { background: #f1f5f9; color: #475569; border-color: #e2e8f0; }
+
+        /* Memo Box */
+        .memo-preview {
+            max-width: 220px;
+            font-size: 0.8rem;
+            color: #64748b;
+            background: #f8fafc;
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px dashed var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .memo-preview:hover { background: #f1f5f9; border-color: var(--primary); }
+
+        /* Login Modal */
+        #loginModal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .login-card {
+            background: #fff;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 420px;
+            padding: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            text-align: center;
+        }
+
+        /* Memo Edit Modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 500;
+        }
+        .modal-box {
+            background: #fff;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation -->
+    <header class="admin-nav">
+        <div class="nav-brand">
+            <div class="nav-logo-badge" style="font-family:"Noto Serif TC", "DFKai-SB", "標楷體", cursive, serif; font-size:1.45rem;">揚</div>
+            <div>
+                <h1 class="nav-title" style="font-family:"Noto Serif TC", "DFKai-SB", "標楷體", cursive, serif !important; font-size: 1.45rem; letter-spacing: 2px;">揚州數位轉型整合 <span style="font-family:'Noto Sans TC', sans-serif; font-size:0.95rem; color:#0d9488;">YangTech</span></h1>
+                <p class="nav-subtitle">專案洽詢管理系統與推播控制台</p>
+            </div>
+        </div>
+        <div class="nav-actions">
+            <a href="/yangtech" target="_blank" class="btn btn-outline btn-sm">🌸 查看品牌官網</a>
+            <a href="/" target="_blank" class="btn btn-outline btn-sm">🏛️ 查看法寶官網</a>
+            <button class="btn btn-primary btn-sm" onclick="openConfigModal()">⚙️ 廣告推播設定</button>
+            <button class="btn btn-outline btn-sm" onclick="exportCsv()">📥 匯出 CSV</button>
+            <button class="btn btn-outline btn-sm" onclick="logout()">登出</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-icon">📋</div>
+                <div>
+                    <div class="kpi-val" id="kpiTotal">0</div>
+                    <div class="kpi-label">總諮詢單數</div>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon" style="background:#fef3c7; color:#92400e;">🔔</div>
+                <div>
+                    <div class="kpi-val" id="kpiNew" style="color:#d97706;">0</div>
+                    <div class="kpi-label">待聯繫新洽詢</div>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon" style="background:#e0f2fe; color:#0369a1;">💼</div>
+                <div>
+                    <div class="kpi-val" id="kpiDiscuss">0</div>
+                    <div class="kpi-label">洽談與報價中</div>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon" style="background:#fdf2f8; color:#db2777;">📢</div>
+                <div>
+                    <div class="kpi-val" id="kpiAdClicks">0</div>
+                    <div class="kpi-label">廣告點擊次數 (曝光: <span id="kpiAdImpr">0</span>)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Card & Table -->
+        <div class="main-card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <span>🗂️ 專案洽詢案件列表</span>
+                    <span id="leadsCountBadge" style="background:var(--primary-light); color:var(--primary-dark); font-size:0.78rem; padding:2px 8px; border-radius:12px;">0 筆</span>
+                </h2>
+                <div class="card-controls">
+                    <input type="text" id="searchInput" class="search-input" placeholder="🔍 搜尋客戶名稱、電話、需求..." oninput="renderTable()">
+                    <select id="statusFilter" class="filter-select" onchange="renderTable()">
+                        <option value="ALL">全部狀態</option>
+                        <option value="新進洽詢">新進洽詢</option>
+                        <option value="已聯繫洽談">已聯繫洽談</option>
+                        <option value="需求評估報價">需求評估報價</option>
+                        <option value="已簽約成交">已簽約成交</option>
+                        <option value="結案存檔">結案存檔</option>
+                    </select>
+                    <button class="btn btn-outline btn-sm" onclick="loadLeads()">🔄 重新載入</button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>案件編號 / 時間</th>
+                            <th>客戶公司 / 聯絡人</th>
+                            <th>聯絡方式</th>
+                            <th>諮詢項目 / 預算</th>
+                            <th>需求說明</th>
+                            <th>案件狀態</th>
+                            <th>內部備忘備註</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leadsTbody">
+                        <tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">載入中...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal">
+        <div class="login-card">
+            <div class="nav-logo-badge" style="margin:0 auto 16px; width:52px; height:52px; font-size:1.6rem;">揚</div>
+            <h2 style="font-size:1.3rem; margin-bottom:6px; color:#0f172a;">揚州數位轉型整合</h2>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:24px;">請輸入管理密碼進入後台系統</p>
+            <form onsubmit="handleLogin(event)">
+                <input type="password" id="adminPwd" class="search-input" placeholder="請輸入管理授權密碼" style="width:100%; margin-bottom:16px; text-align:center;" required autofocus>
+                <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:10px;">驗證身分並登入</button>
+            </form>
+            <p id="loginError" style="color:var(--accent); font-size:0.84rem; margin-top:12px; display:none;"></p>
+        </div>
+    </div>
+
+    <!-- Memo Edit Modal -->
+    <div id="memoModal" class="modal-backdrop">
+        <div class="modal-box">
+            <h3 style="margin-bottom:14px; font-size:1.1rem; color:#0f172a;">📝 編輯內部備忘錄</h3>
+            <p id="memoLeadInfo" style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;"></p>
+            <textarea id="memoText" style="width:100%; height:120px; padding:10px; border:1px solid var(--border); border-radius:8px; font-size:0.9rem; margin-bottom:16px;"></textarea>
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn btn-outline" onclick="closeMemoModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveMemo()">儲存備忘</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Config Modal -->
+    <div id="configModal" class="modal-backdrop">
+        <div class="modal-box" style="max-width:560px;">
+            <h3 style="margin-bottom:14px; font-size:1.1rem; color:#0f172a;">⚙️ 詢價單廣告推播設定</h3>
+            <div style="margin-bottom:16px;">
+                <label style="display:flex; align-items:center; gap:8px; font-weight:600; cursor:pointer;">
+                    <input type="checkbox" id="cfgEnabled" style="width:18px; height:18px; accent-color:var(--primary);">
+                    啟用客戶點擊「詢價單」時的小廣告彈出展示
+                </label>
+            </div>
+            <div style="margin-bottom:12px;">
+                <label style="font-size:0.85rem; font-weight:600; color:#475569; display:block; margin-bottom:4px;">廣告標題</label>
+                <input type="text" id="cfgTitle" class="search-input" style="width:100%;">
+            </div>
+            <div style="margin-bottom:12px;">
+                <label style="font-size:0.85rem; font-weight:600; color:#475569; display:block; margin-bottom:4px;">詩意標語</label>
+                <input type="text" id="cfgPoem" class="search-input" style="width:100%;">
+            </div>
+            <div style="margin-bottom:16px;">
+                <label style="font-size:0.85rem; font-weight:600; color:#475569; display:block; margin-bottom:4px;">廣告推播文案</label>
+                <textarea id="cfgPitch" style="width:100%; height:80px; padding:10px; border:1px solid var(--border); border-radius:8px; font-size:0.88rem;"></textarea>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn btn-outline" onclick="closeConfigModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveConfig()">儲存設定</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allLeads = [];
+        let currentConfig = {};
+        let editingLeadId = null;
+
+        // Check login on start
+        window.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('yt_admin_token') || sessionStorage.getItem('yt_admin_token');
+            if (token) {
+                document.getElementById('loginModal').style.display = 'none';
+                loadLeads();
+            } else {
+                document.getElementById('loginModal').style.display = 'flex';
+            }
+        });
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const pwd = document.getElementById('adminPwd').value.trim();
+            const errEl = document.getElementById('loginError');
+            errEl.style.display = 'none';
+
+            try {
+                const res = await fetch('/api_yangtech.php?action=login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: pwd })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    localStorage.setItem('yt_admin_token', data.token);
+                    document.getElementById('loginModal').style.display = 'none';
+                    loadLeads();
+                } else {
+                    errEl.textContent = data.message || '密碼錯誤';
+                    errEl.style.display = 'block';
+                }
+            } catch (err) {
+                errEl.textContent = '連線失敗，請稍候再試';
+                errEl.style.display = 'block';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('yt_admin_token');
+            sessionStorage.removeItem('yt_admin_token');
+            location.reload();
+        }
+
+        function getAuthHeader() {
+            const token = localStorage.getItem('yt_admin_token') || 'yangtech2026';
+            return { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+        }
+
+        async function loadLeads() {
+            try {
+                const res = await fetch('/api_yangtech.php?action=list_leads', { headers: getAuthHeader() });
+                if (res.status === 401) {
+                    logout();
+                    return;
+                }
+                const data = await res.json();
+                if (data.success) {
+                    allLeads = data.leads || [];
+                    currentConfig = data.config || {};
+                    updateKpis();
+                    renderTable();
+                }
+            } catch (err) {
+                console.error('Failed to load leads:', err);
+            }
+        }
+
+        function updateKpis() {
+            document.getElementById('kpiTotal').textContent = allLeads.length;
+            const newCount = allLeads.filter(l => l.status === '新進洽詢').length;
+            const discussCount = allLeads.filter(l => l.status === '已聯繫洽談' || l.status === '需求評估報價').length;
+            document.getElementById('kpiNew').textContent = newCount;
+            document.getElementById('kpiDiscuss').textContent = discussCount;
+
+            document.getElementById('kpiAdClicks').textContent = currentConfig.clicks || 0;
+            document.getElementById('kpiAdImpr').textContent = currentConfig.impressions || 0;
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('leadsTbody');
+            const q = document.getElementById('searchInput').value.toLowerCase().trim();
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            const filtered = allLeads.filter(l => {
+                const matchesStatus = (statusFilter === 'ALL') || (l.status === statusFilter);
+                const matchesQ = !q || 
+                    (l.company && l.company.toLowerCase().includes(q)) ||
+                    (l.name && l.name.toLowerCase().includes(q)) ||
+                    (l.phone && l.phone.toLowerCase().includes(q)) ||
+                    (l.service_type && l.service_type.toLowerCase().includes(q)) ||
+                    (l.message && l.message.toLowerCase().includes(q));
+                return matchesStatus && matchesQ;
+            });
+
+            document.getElementById('leadsCountBadge').textContent = `${filtered.length} 筆`;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:36px; color:var(--text-muted);">無符合條件的洽詢案件</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(lead => {
+                const statusClass = {
+                    '新進洽詢': 'status-new',
+                    '已聯繫洽談': 'status-contacted',
+                    '需求評估報價': 'status-quoting',
+                    '已簽約成交': 'status-signed',
+                    '結案存檔': 'status-closed'
+                }[lead.status] || 'status-new';
+
+                const memoDisplay = lead.notes ? escapeHtml(lead.notes) : '點擊新增備忘...';
+
+                return `
+                <tr>
+                    <td>
+                        <div class="lead-id">${escapeHtml(lead.id)}</div>
+                        <div style="font-size:0.75rem; color:#94a3b8;">${escapeHtml(lead.created_at)}</div>
+                    </td>
+                    <td>
+                        <div class="lead-company">${escapeHtml(lead.company)}</div>
+                        <div class="lead-name">👤 ${escapeHtml(lead.name)}</div>
+                    </td>
+                    <td>
+                        <a href="tel:${escapeHtml(lead.phone)}" class="contact-pill" title="立即通話">📞 ${escapeHtml(lead.phone)}</a><br>
+                        ${lead.email && lead.email !== '未填寫' ? `<a href="mailto:${escapeHtml(lead.email)}" class="contact-pill" title="發送郵件">✉️ ${escapeHtml(lead.email)}</a><br>` : ''}
+                        ${lead.line_id && lead.line_id !== '未填寫' ? `<span class="contact-pill" style="background:#ecfdf5; color:#065f46;">💬 LINE: ${escapeHtml(lead.line_id)}</span>` : ''}
+                    </td>
+                    <td>
+                        <div style="font-weight:600; color:var(--primary-dark);">${escapeHtml(lead.service_type)}</div>
+                        <div style="font-size:0.8rem; color:#64748b;">預算：${escapeHtml(lead.budget)}</div>
+                    </td>
+                    <td>
+                        <div style="max-width:240px; font-size:0.83rem; color:#334155; line-height:1.4;">${escapeHtml(lead.message || '無額外說明')}</div>
+                    </td>
+                    <td>
+                        <select class="status-select ${statusClass}" onchange="changeStatus('${lead.id}', this.value)">
+                            <option value="新進洽詢" ${lead.status === '新進洽詢' ? 'selected' : ''}>新進洽詢</option>
+                            <option value="已聯繫洽談" ${lead.status === '已聯繫洽談' ? 'selected' : ''}>已聯繫洽談</option>
+                            <option value="需求評估報價" ${lead.status === '需求評估報價' ? 'selected' : ''}>需求評估報價</option>
+                            <option value="已簽約成交" ${lead.status === '已簽約成交' ? 'selected' : ''}>已簽約成交</option>
+                            <option value="結案存檔" ${lead.status === '結案存檔' ? 'selected' : ''}>結案存檔</option>
+                        </select>
+                    </td>
+                    <td>
+                        <div class="memo-preview" onclick="openMemoModal('${lead.id}')">${memoDisplay}</div>
+                    </td>
+                    <td>
+                        <button class="btn btn-outline btn-sm" style="color:#ef4444;" onclick="deleteLead('${lead.id}')" title="刪除案件">🗑️</button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        async function changeStatus(id, newStatus) {
+            try {
+                const res = await fetch('/api_yangtech.php?action=update_lead', {
+                    method: 'POST',
+                    headers: getAuthHeader(),
+                    body: JSON.stringify({ id, status: newStatus })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    const lead = allLeads.find(l => l.id === id);
+                    if (lead) lead.status = newStatus;
+                    updateKpis();
+                    renderTable();
+                } else {
+                    alert(data.message || '更新失敗');
+                }
+            } catch (err) {
+                alert('網路錯誤');
+            }
+        }
+
+        function openMemoModal(id) {
+            editingLeadId = id;
+            const lead = allLeads.find(l => l.id === id);
+            if (!lead) return;
+            document.getElementById('memoLeadInfo').textContent = `${lead.company} - ${lead.name} (${lead.id})`;
+            document.getElementById('memoText').value = lead.notes || '';
+            document.getElementById('memoModal').style.display = 'flex';
+        }
+
+        function closeMemoModal() {
+            document.getElementById('memoModal').style.display = 'none';
+            editingLeadId = null;
+        }
+
+        async function saveMemo() {
+            if (!editingLeadId) return;
+            const notes = document.getElementById('memoText').value.trim();
+            try {
+                const res = await fetch('/api_yangtech.php?action=update_lead', {
+                    method: 'POST',
+                    headers: getAuthHeader(),
+                    body: JSON.stringify({ id: editingLeadId, notes })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    const lead = allLeads.find(l => l.id === editingLeadId);
+                    if (lead) lead.notes = notes;
+                    closeMemoModal();
+                    renderTable();
+                } else {
+                    alert(data.message || '儲存失敗');
+                }
+            } catch (err) {
+                alert('網路錯誤');
+            }
+        }
+
+        async function deleteLead(id) {
+            if (!confirm(`確定要刪除案件 ${id} 嗎？此操作無法還原。`)) return;
+            try {
+                const res = await fetch('/api_yangtech.php?action=delete_lead', {
+                    method: 'POST',
+                    headers: getAuthHeader(),
+                    body: JSON.stringify({ id })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    allLeads = allLeads.filter(l => l.id !== id);
+                    updateKpis();
+                    renderTable();
+                }
+            } catch (err) {
+                alert('刪除失敗');
+            }
+        }
+
+        function openConfigModal() {
+            document.getElementById('cfgEnabled').checked = !!currentConfig.ad_enabled;
+            document.getElementById('cfgTitle').value = currentConfig.ad_title || '';
+            document.getElementById('cfgPoem').value = currentConfig.ad_poem || '';
+            document.getElementById('cfgPitch').value = currentConfig.ad_pitch || '';
+            document.getElementById('configModal').style.display = 'flex';
+        }
+
+        function closeConfigModal() {
+            document.getElementById('configModal').style.display = 'none';
+        }
+
+        async function saveConfig() {
+            const body = {
+                ad_enabled: document.getElementById('cfgEnabled').checked,
+                ad_title: document.getElementById('cfgTitle').value.trim(),
+                ad_poem: document.getElementById('cfgPoem').value.trim(),
+                ad_pitch: document.getElementById('cfgPitch').value.trim()
+            };
+            try {
+                const res = await fetch('/api_yangtech.php?action=update_config', {
+                    method: 'POST',
+                    headers: getAuthHeader(),
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    currentConfig = data.config;
+                    alert('設定已儲存！');
+                    closeConfigModal();
+                }
+            } catch (err) {
+                alert('設定儲存失敗');
+            }
+        }
+
+        function exportCsv() {
+            const token = localStorage.getItem('yt_admin_token') || 'yangtech2026';
+            window.open(`/api_yangtech.php?action=export_csv&token=${token}`, '_blank');
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+</html>
