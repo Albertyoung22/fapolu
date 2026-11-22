@@ -9,6 +9,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>揚州數位轉型整合 · YangTech Digital | <span class="font-poem-cursive" style="font-size: 1.15rem; letter-spacing: 2px;">煙花三月 · 傳產賦能</span> · 智慧轉型專家</title>
     <meta name="description" content="揚州數位轉型整合 (YangTech Digital) — 煙花三月，春風賦能。專注台灣傳產製造業、五金材料供應鏈、學校公務流程自動化與高階雲端系統開發。">
+
+    <!-- Open Graph / LINE / Facebook 社群分享卡片標籤 -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.fapolu.com.tw/yangtech">
+    <meta property="og:title" content="揚州數位轉型整合 · YangTech Digital | 煙花三月 · 傳產賦能 · 智慧轉型專家">
+    <meta property="og:description" content="專注台灣傳統製造業 ERP、金屬加工規格庫、機關學校行政流程自動化、全域物聯網廣播與高精度數理算法開發。四大標竿實戰代表作品集與線上轉型諮詢。">
+    <meta property="og:image" content="https://www.fapolu.com.tw/static/img/yangzhou_bg.jpg">
+    <meta property="og:site_name" content="揚州數位轉型整合">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="揚州數位轉型整合 · YangTech Digital">
+    <meta name="twitter:description" content="煙花三月下揚州，賦能企業數位轉型。四大代表作品：法寶實業、學校採購、OmniSignal全域廣播、天機命譜。">
+    <meta name="twitter:image" content="https://www.fapolu.com.tw/static/img/yangzhou_bg.jpg">
+
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%23f0fdf4'/><path d='M30 75 C30 50, 45 35, 50 25 C55 35, 70 50, 70 75 M40 55 C45 52, 55 52, 60 55' stroke='%230d9488' stroke-width='6' fill='none' stroke-linecap='round'/><circle cx='50' cy='22' r='4' fill='%23f43f5e'/></svg>">
     <style>
@@ -895,9 +908,19 @@
             ctx.restore();
         });
 
-        requestAnimationFrame(animate);
+        let isTabVisible = true;
+    document.addEventListener('visibilitychange', () => {
+        isTabVisible = !document.hidden;
+        if (isTabVisible) requestAnimationFrame(animate);
+    });
+
+    function loop() {
+        if (!isTabVisible) return;
+        animate();
+        requestAnimationFrame(loop);
     }
-    requestAnimationFrame(animate);
+    requestAnimationFrame(loop);
+    }
 })();
 </script>
 
@@ -1345,6 +1368,20 @@ function scrollToConsultation(e) {
     }
 }
 </script>
+
+
+
+    <!-- 浮動回頂部按鈕 (Floating Back to Top) -->
+    <button id="btnBackToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="回到頁面頂部" style="position: fixed; bottom: 28px; right: 28px; width: 44px; height: 44px; border-radius: 50%; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(8px); border: 1px solid rgba(13, 148, 136, 0.35); color: #0d9488; font-size: 1.25rem; font-weight: 700; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(13, 148, 136, 0.2); z-index: 99; transition: all 0.3s ease;">↑</button>
+
+    <script>
+    window.addEventListener('scroll', () => {
+        const btn = document.getElementById('btnBackToTop');
+        if (btn) {
+            btn.style.display = window.scrollY > 400 ? 'flex' : 'none';
+        }
+    }, { passive: true });
+    </script>
 
 </body>
 

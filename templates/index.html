@@ -5294,6 +5294,8 @@
 
 <script>
 function showYangtechMiniToast() {
+    // 若用戶本次瀏覽已主動點擊關閉，則不重複彈出打擾
+    if (sessionStorage.getItem('yt_mini_toast_dismissed') === 'true') return;
     const toast = document.getElementById('yangtechMiniToast');
     if (!toast) return;
     toast.style.display = 'block';
@@ -5310,6 +5312,7 @@ function showYangtechMiniToast() {
 
 function closeYangtechMiniToast(e) {
     if (e) e.stopPropagation();
+    try { sessionStorage.setItem('yt_mini_toast_dismissed', 'true'); } catch (err) {}
     const toast = document.getElementById('yangtechMiniToast');
     if (toast) {
         toast.style.animation = 'none';
