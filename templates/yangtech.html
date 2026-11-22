@@ -4,7 +4,7 @@
 <head>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Long+Cang&family=Ma+Shan+Zheng&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700;900&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>揚州數位轉型整合 · YangTech Digital | <span class="font-poem-cursive" style="font-size: 1.15rem; letter-spacing: 2px;">煙花三月 · 傳產賦能</span> · 智慧轉型專家</title>
@@ -671,34 +671,49 @@
             }
         }
     
-/* 中華毛筆書法字型 (Chinese Brush Calligraphy Typography) */
+/* 中華典雅繁體正楷與書法筆意 (Traditional Chinese Classical Typography) */
 .font-calligraphy {
-    font-family: 'Ma Shan Zheng', 'Kaiti TC', 'STKaiti', 'DFKai-SB', '標楷體', 'BiauKai', cursive, serif !important;
-    letter-spacing: 2px;
+    font-family: "Noto Serif TC", "Songti TC", "DFKai-SB", "標楷體", "Kaiti TC", "STKaiti", "BiauKai", serif !important;
+    font-weight: 900;
+    letter-spacing: 1.5px;
 }
 .font-poem-cursive {
-    font-family: 'Long Cang', 'Ma Shan Zheng', 'Kaiti TC', 'STKaiti', cursive, serif !important;
-    letter-spacing: 3px;
+    font-family: "DFKai-SB", "標楷體", "Kaiti TC", "STKaiti", "Noto Serif TC", cursive, serif !important;
+    font-weight: 700;
+    letter-spacing: 2px;
 }
-.hero-title, .brand-stamp, .nav-title-calligraphy, .section-title-calligraphy {
-    font-family: 'Ma Shan Zheng', 'Noto Serif TC', 'STKaiti', cursive, serif !important;
+.hero-title, .brand-stamp, .section-main-title {
+    font-family: "Noto Serif TC", "Songti TC", "DFKai-SB", "標楷體", serif !important;
 }
-.hero-poetry-tag, .poetic-quote, .yt-ad-poem {
-    font-family: 'Long Cang', 'Ma Shan Zheng', 'STKaiti', cursive, serif !important;
+.hero-poetry-tag, .hero-poem-verse {
+    font-family: "DFKai-SB", "標楷體", "Kaiti TC", "Noto Serif TC", serif !important;
+}
+
+/* 古畫背景層 (Authentic Traditional Painting Wallpaper) */
+.yangzhou-bg-layer {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: url('/static/img/yangzhou_bg.jpg') center top / cover no-repeat;
+    opacity: 0.32;
+    z-index: -2;
+    pointer-events: none;
+    filter: saturate(0.92) contrast(1.04);
 }
 
 </style>
 </head>
 
 <body>
+<div class="yangzhou-bg-layer"></div>
 
-<!-- 古畫「煙花三月下揚州」輕動畫畫布 (Classical Jiangnan Animated Canvas Background) -->
+<!-- 煙花三月 · 花瓣與薄霧輕動畫 (Light Floating Blossom & Mist Particles) -->
 <canvas id="yangzhouArtCanvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -1;"></canvas>
 
 <script>
 /**
- * 煙花三月下揚州 · 古畫輕動畫引擎
- * 水墨青綠遠山、煙波微漾、微雨薄霧、江中孤帆、垂柳依依、落英飄花
+ * 煙花三月下揚州 · 輕動畫引擎 (Gentle Petals & Spring Breeze Animation)
+ * 專注於細膩飄落的桃花瓣、柳絮與春風微雨薄霧，烘托古典水墨背景
  */
 (function() {
     const canvas = document.getElementById('yangzhouArtCanvas');
@@ -719,138 +734,41 @@
     window.addEventListener('resize', resize);
     resize();
 
-    // 1. 花瓣與柳絮粒子 (Petals & Willow Catkins)
-    const PETAL_COUNT = Math.min(Math.floor(w / 35), 45);
+    // 飄落桃花瓣與嫩綠柳葉粒子
+    const PETAL_COUNT = Math.min(Math.floor(w / 30), 40);
     const petals = [];
     for (let i = 0; i < PETAL_COUNT; i++) {
         petals.push({
             x: Math.random() * w,
             y: Math.random() * h,
             size: 4 + Math.random() * 7,
-            vx: 0.6 + Math.random() * 1.2, // wind to right
-            vy: 0.8 + Math.random() * 1.4, // gravity down
+            vx: 0.5 + Math.random() * 1.1, // wind drifting right
+            vy: 0.7 + Math.random() * 1.2, // gravity gently down
             angle: Math.random() * Math.PI * 2,
-            vRot: (Math.random() - 0.5) * 0.04,
+            vRot: (Math.random() - 0.5) * 0.035,
             wobble: Math.random() * Math.PI * 2,
-            wobbleSpeed: 0.02 + Math.random() * 0.02,
-            isWillow: Math.random() > 0.65, // some willow leaves, some blossom petals
-            alpha: 0.35 + Math.random() * 0.5
+            wobbleSpeed: 0.018 + Math.random() * 0.02,
+            isWillow: Math.random() > 0.72,
+            alpha: 0.45 + Math.random() * 0.45
         });
     }
 
-    // 2. 薄霧雲嵐 (Misty Cloud layers)
+    // 薄霧雲嵐微層
     const clouds = [
-        { x: -w * 0.2, y: h * 0.32, speed: 0.15, radiusX: w * 0.45, radiusY: 90, alpha: 0.22 },
-        { x: w * 0.3, y: h * 0.48, speed: 0.22, radiusX: w * 0.5, radiusY: 110, alpha: 0.18 },
-        { x: -w * 0.4, y: h * 0.62, speed: 0.18, radiusX: w * 0.6, radiusY: 120, alpha: 0.25 }
+        { x: -w * 0.2, y: h * 0.28, speed: 0.12, radiusX: w * 0.4, radiusY: 80, alpha: 0.15 },
+        { x: w * 0.4, y: h * 0.52, speed: 0.18, radiusX: w * 0.45, radiusY: 95, alpha: 0.12 }
     ];
 
-    let time = 0;
-
-    function drawMountain(baseY, amp, freq, color, offset) {
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.moveTo(0, h);
-        ctx.lineTo(0, baseY);
-        for (let x = 0; x <= w; x += 30) {
-            const y = baseY - Math.sin((x * freq) + offset) * amp - Math.cos((x * freq * 0.5) + offset * 0.5) * (amp * 0.6);
-            ctx.lineTo(x, y);
-        }
-        ctx.lineTo(w, h);
-        ctx.closePath();
-        ctx.fill();
-    }
-
-    function drawBoat(bx, by, scale, tilt) {
-        ctx.save();
-        ctx.translate(bx, by);
-        ctx.rotate(tilt);
-        ctx.scale(scale, scale);
-
-        // Boat hull (烏篷船/木舟)
-        ctx.fillStyle = 'rgba(71, 85, 105, 0.75)';
-        ctx.beginPath();
-        ctx.moveTo(-28, 4);
-        ctx.quadraticCurveTo(-14, 10, 24, 6);
-        ctx.quadraticCurveTo(32, 2, 34, -2);
-        ctx.quadraticCurveTo(10, 4, -24, 0);
-        ctx.closePath();
-        ctx.fill();
-
-        // Mast & Sail (孤帆)
-        ctx.strokeStyle = 'rgba(71, 85, 105, 0.8)';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.moveTo(2, 4);
-        ctx.lineTo(2, -34);
-        ctx.stroke();
-
-        // Sail cloth
-        ctx.fillStyle = 'rgba(248, 250, 252, 0.85)';
-        ctx.strokeStyle = 'rgba(148, 163, 184, 0.6)';
-        ctx.beginPath();
-        ctx.moveTo(2, -32);
-        ctx.quadraticCurveTo(16, -18, 2, -4);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.restore();
-    }
-
-    function drawWillow(wx, wy, count, sway) {
-        ctx.save();
-        ctx.translate(wx, wy);
-        for (let i = 0; i < count; i++) {
-            const angle = (i - count / 2) * 0.12 + Math.sin(sway + i * 0.5) * 0.08;
-            const len = 90 + (i % 3) * 35;
-            ctx.save();
-            ctx.rotate(angle);
-
-            ctx.strokeStyle = 'rgba(13, 148, 136, 0.45)';
-            ctx.lineWidth = 1.2;
-            ctx.beginPath();
-            ctx.moveTo(0, 0);
-            const midX = Math.sin(sway + i) * 15;
-            ctx.quadraticCurveTo(midX, len * 0.5, midX * 0.6, len);
-            ctx.stroke();
-
-            // Willow leaves along branch
-            for (let t = 0.2; t <= 0.95; t += 0.12) {
-                const lx = midX * t;
-                const ly = len * t;
-                ctx.fillStyle = 'rgba(5, 150, 105, 0.55)';
-                ctx.beginPath();
-                ctx.ellipse(lx + 4, ly, 2, 7, 0.5 + Math.sin(sway) * 0.2, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.ellipse(lx - 4, ly + 4, 2, 7, -0.5 - Math.sin(sway) * 0.2, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            ctx.restore();
-        }
-        ctx.restore();
-    }
-
     function animate() {
-        time += 0.015;
         ctx.clearRect(0, 0, w, h);
 
-        // 1. 水墨青綠遠山 (Distant Misty Jiangnan Mountains)
-        // Far mountain (淡墨青灰)
-        drawMountain(h * 0.52, 60, 0.0022, 'rgba(196, 218, 210, 0.35)', 1.2);
-        // Mid mountain (碧綠含煙)
-        drawMountain(h * 0.62, 75, 0.0035, 'rgba(167, 212, 196, 0.32)', 3.8);
-        // Near mountain (青綠翠微)
-        drawMountain(h * 0.74, 90, 0.0048, 'rgba(142, 198, 180, 0.28)', 6.4);
-
-        // 2. 煙雨薄霧流動 (Drifting Mist Clouds)
+        // 1. 煙雨薄霧流動
         clouds.forEach(c => {
             c.x += c.speed;
             if (c.x - c.radiusX > w) c.x = -c.radiusX;
             const grad = ctx.createRadialGradient(c.x, c.y, 10, c.x, c.y, c.radiusX);
             grad.addColorStop(0, `rgba(255, 255, 255, ${c.alpha})`);
-            grad.addColorStop(0.6, `rgba(240, 253, 244, ${c.alpha * 0.5})`);
+            grad.addColorStop(0.7, `rgba(240, 253, 244, ${c.alpha * 0.4})`);
             grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
             ctx.fillStyle = grad;
             ctx.beginPath();
@@ -858,43 +776,13 @@
             ctx.fill();
         });
 
-        // 3. 長江孤帆微晃 (Solitary boat drifting gently)
-        const boatX = (w * 0.22 + Math.sin(time * 0.2) * 30);
-        const boatY = h * 0.68 + Math.sin(time * 0.8) * 4;
-        const boatTilt = Math.sin(time * 0.8) * 0.05;
-        drawBoat(boatX, boatY, 0.85, boatTilt);
-
-        // 2nd smaller boat further in distance
-        const boat2X = (w * 0.78 + Math.cos(time * 0.15) * 20);
-        const boat2Y = h * 0.58 + Math.sin(time * 0.6 + 1) * 3;
-        drawBoat(boat2X, boat2Y, 0.55, Math.sin(time * 0.6) * 0.04);
-
-        // 4. 江水微波漣漪 (Water ripple lines)
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-        ctx.lineWidth = 1;
-        for (let j = 0; j < 6; j++) {
-            const wy = h * (0.72 + j * 0.048);
-            ctx.beginPath();
-            ctx.moveTo(0, wy);
-            for (let x = 0; x <= w; x += 40) {
-                const waveY = wy + Math.sin(x * 0.02 + time * 1.5 + j) * 2.5;
-                ctx.lineTo(x, waveY);
-            }
-            ctx.stroke();
-        }
-
-        // 5. 兩側依依垂柳 (Weeping Willow in top corners)
-        drawWillow(0, -10, 8, time * 0.8);
-        drawWillow(w, -10, 8, time * 0.8 + 1.2);
-
-        // 6. 煙花三月 · 飄落花瓣與柳絮 (Falling Peach Blossoms & Petals)
+        // 2. 煙花三月 · 飄落花瓣與柳絮 (Falling Peach Blossoms & Willow)
         petals.forEach(p => {
             p.x += p.vx + Math.sin(p.wobble) * 0.6;
             p.y += p.vy;
             p.angle += p.vRot;
             p.wobble += p.wobbleSpeed;
 
-            // Wrap around
             if (p.y > h + 20) { p.y = -20; p.x = Math.random() * w; }
             if (p.x > w + 20) { p.x = -20; }
 
@@ -903,7 +791,7 @@
             ctx.rotate(p.angle);
 
             if (p.isWillow) {
-                // Willow catkin / tender leaf (嫩綠)
+                // Willow tender leaf (嫩綠)
                 ctx.fillStyle = `rgba(16, 185, 129, ${p.alpha})`;
                 ctx.beginPath();
                 ctx.ellipse(0, 0, p.size * 0.35, p.size, 0, 0, Math.PI * 2);
@@ -911,9 +799,9 @@
             } else {
                 // Peach blossom petal (粉桃胭脂花瓣)
                 const grad = ctx.createLinearGradient(-p.size, -p.size, p.size, p.size);
-                grad.addColorStop(0, `rgba(254, 205, 211, ${p.alpha * 0.9})`);
+                grad.addColorStop(0, `rgba(254, 205, 211, ${p.alpha * 0.95})`);
                 grad.addColorStop(0.6, `rgba(244, 63, 94, ${p.alpha})`);
-                grad.addColorStop(1, `rgba(225, 29, 72, ${p.alpha * 0.8})`);
+                grad.addColorStop(1, `rgba(225, 29, 72, ${p.alpha * 0.85})`);
                 ctx.fillStyle = grad;
 
                 ctx.beginPath();
@@ -927,8 +815,6 @@
 
         requestAnimationFrame(animate);
     }
-
-    // Run animation
     requestAnimationFrame(animate);
 })();
 </script>
