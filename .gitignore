@@ -43,3 +43,14 @@ Thumbs.db
 Desktop.ini
 .DS_Store
 
+
+# ====================================================================
+# 機密商業資料與客戶洽詢名單（絕對嚴禁上傳 GitHub）
+# ====================================================================
+data/yangtech_leads.json
+data/yangtech_config.json
+data/yangtech_backups/
+data/backups/
+dist/data/
+*leads*.json
+*backup*.json
