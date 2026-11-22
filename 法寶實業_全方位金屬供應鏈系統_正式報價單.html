@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>法寶實業有限公司 - 專案商務報價提案書</title>
+    <style>
+        :root {
+            --primary: #a62c22;
+            --primary-light: rgba(166, 44, 34, 0.08);
+            --navy: #0f172a;
+            --gray-bg: #f8fafc;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-dim: #64748b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", Roboto, sans-serif;
+            background: #f1f5f9;
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 30px 15px;
+        }
+        .page {
+            max-width: 960px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 45px 55px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+            border: 1px solid var(--border);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 25px;
+            margin-bottom: 30px;
+        }
+        .header-title h1 {
+            font-size: 1.65rem;
+            color: var(--navy);
+            letter-spacing: 0.5px;
+            font-weight: 800;
+        }
+        .header-title h2 {
+            font-size: 1.15rem;
+            color: var(--primary);
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        .meta-box {
+            text-align: right;
+            font-size: 0.88rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+        .meta-box b { color: var(--navy); }
+        .badge-doc {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .summary-box {
+            background: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            padding: 16px 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+        .summary-box h3 {
+            font-size: 1.05rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        .section-title {
+            font-size: 1.15rem;
+            color: var(--navy);
+            font-weight: 800;
+            border-bottom: 1.5px solid var(--border);
+            padding-bottom: 8px;
+            margin: 30px 0 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            font-size: 0.88rem;
+        }
+        th {
+            background: #f1f5f9;
+            color: var(--navy);
+            padding: 10px 14px;
+            text-align: left;
+            font-weight: 700;
+            border: 1px solid var(--border);
+        }
+        td {
+            padding: 11px 14px;
+            border: 1px solid var(--border);
+            vertical-align: top;
+        }
+        tr:nth-child(even) td { background: #fafafa; }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .item-name { font-weight: 700; color: var(--navy); font-size: 0.92rem; }
+        .item-desc { color: var(--text-dim); font-size: 0.82rem; margin-top: 4px; line-height: 1.5; }
+        
+        .pricing-summary {
+            background: #fff;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            padding: 22px 28px;
+            margin: 30px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: center;
+        }
+        .pricing-original {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+        }
+        .pricing-original del {
+            color: #94a3b8;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        .pricing-final {
+            text-align: right;
+        }
+        .pricing-final .label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+        .pricing-final .amount {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--primary);
+            line-height: 1.1;
+        }
+        .pricing-final .note {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        .milestones {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .milestone-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            background: #f8fafc;
+            text-align: center;
+        }
+        .milestone-card.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        .milestone-phase { font-size: 0.8rem; font-weight: 700; color: var(--text-dim); }
+        .milestone-pct { font-size: 1.35rem; font-weight: 800; color: var(--navy); margin: 4px 0; }
+        .milestone-amt { font-size: 1.05rem; font-weight: 800; color: var(--primary); }
+        .milestone-cond { font-size: 0.75rem; color: var(--text-dim); margin-top: 6px; }
+
+        .signature-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 45px;
+            padding-top: 30px;
+            border-top: 1px dashed var(--border);
+        }
+        .sign-col h4 { font-size: 0.95rem; color: var(--navy); margin-bottom: 8px; }
+        .sign-col p { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 5px; }
+        .sign-line {
+            height: 55px;
+            border-bottom: 1.5px solid #334155;
+            margin-top: 10px;
+            margin-bottom: 8px;
+        }
+
+        .print-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: var(--primary);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 700;
+            box-shadow: 0 6px 20px rgba(166,44,34,0.35);
+            cursor: pointer;
+            border: none;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 999;
+        }
+        .print-btn:hover { background: #87221a; }
+
+        @media print {
+            body { background: #fff; padding: 0; }
+            .page { border: none; box-shadow: none; padding: 20px; max-width: 100%; }
+            .print-btn { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ 列印 / 另存為 PDF 報價單</button>
+
+    <div class="page">
+        <div class="header">
+            <div class="header-title">
+                <div class="badge-doc">OFFICIAL PROPOSAL & QUOTATION</div>
+                <h1>法寶實業有限公司</h1>
+                <h2>全方位鋁合金材料供應鏈旗艦門戶與內部 ERP/CRM 系統建置專案</h2>
+            </div>
+            <div class="meta-box">
+                <div><b>報價編號：</b>FAPO-QUO-202611-001</div>
+                <div><b>報價日期：</b>2026 年 11 月 23 日</div>
+                <div><b>有效期限：</b>30 日曆天</div>
+                <div><b>規劃負責人：</b>楊敦州 (Albert Young)</div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>專案綜述與效益承諾</h3>
+            <p>本專案為法寶實業近四十年金屬深耕量身打造，將傳統展示型網站躍升為<b>「具備實質營收與管理能力的企業數位核心」</b>。系統完整納入 <b>3,071 筆現貨規格與免開模斷面庫</b>、<b>現場手機隨拍隨傳線上估價</b>、<b>英日韓四國語系與沉浸式導覽</b>、<b>內部北中南分區 CRM 派單</b>、<b>辦公室 Windows 原生桌面彈窗提醒 App</b> 與 <b>雙軌雲端安全熱災備</b>，全面驅動業務接單與管理效率提升。</p>
+        </div>
+
+        <div class="section-title">一、 系統功能模組與工程報價明細</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 6%;" class="text-center">項次</th>
+                    <th style="width: 25%;">模組名稱</th>
+                    <th style="width: 45%;">詳細工項與規格內容</th>
+                    <th style="width: 10%;" class="text-center">工時</th>
+                    <th style="width: 14%;" class="text-right">市場牌面行情</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-center"><b>01</b></td>
+                    <td>
+                        <div class="item-name">旗艦形象門戶與自適應 RWD</div>
+                    </td>
+                    <td>
+                        <div class="item-desc">高階微光金屬/玻璃擬態 UI/UX、全端自適應排版（4K螢幕/筆電/平板/手機）、首頁大圖動態載入優化、動態外網分享與快速錨點導覽。</div>
+                    </td>
+                    <td class="text-center">70 hrs</td>
+                    <td class="text-right">NT$ 90,000</td>
+                </tr>
+                <tr>
+                    <td class="text-center"><b>02</b></td>
+                    <td>
+                        <div class="item-name">3,071 筆現貨與模具搜尋引擎</div>
+                    </td>
+                    <td>
+                        <div class="item-desc">收錄 514 項鋁板圓棒常備現貨 + 2,557 組免開模擠型斷面模具數據庫。支援形狀、材質、尺寸、米重即時秒查，一鍵加入詢價單。</div>
+                    </td>
+                    <td class="text-center">65 hrs</td>
+                    <td class="text-right">NT$ 110,000</td>
+                </tr>
+                <tr>
+                    <td class="text-center"><b>03</b></td>
+                    <td>
+                        <div class="item-name">常用斷面圖鑑與草圖估價系統</div>
+                    </td>
+                    <td>
+                        <div class="item-desc">六大實拍斷面（圓棒/方條/扁條/管材/六角/異型）直覺選料、手機拍照與工程 CAD/手繪草圖上傳，即時進度條與檔案防呆驗證。</div>
+                    </td>
+                    <td class="text-center">45 hrs</td>
+                    <td class="text-right">NT$ 75,000</td>
+                </tr>
+                <tr>
+                    <td class="text-center"><b>04</b></td>
+                    <td>
+                        <div class="item-name">四國語系與沉浸式語音導覽</div>
+                    </td>
+                    <td>
+                        <div class="item-desc">繁中、英文、日文、韓文四語無縫即時切換；7 大展區沉浸式智慧語音導覽廣播引擎；國際標準金屬硬度換算器（布氏/洛氏/維氏/肖氏）。</div>
+                    </td>
+                    <td class="text-center">50 hrs</td>
+                    <td class="text-right">NT$ 85,000</td>
+                </tr>
+                <tr>
+                    <td class="text-center"><b>05</b></td>
+                    <td>
+                        <div class="item-name">企業內部管理系統 (ERP/CRM)</div>
+                    </td>
+                    <td>
+                        <div class="item-desc">全台詢價單整合與北中南廠區自動分流派單、案件狀態追蹤（待處理/報價中/成交）、內部業務備忘、一鍵生成正式報價單 PDF 及 Excel 報表匯出；3,071 筆現貨與模具 CRUD 增刪改查。</div>
+                    </td>
+                    <td class="text-center">90 hrs</td>
+                    <td class="text-right">NT$ 160,000</td>
+                </tr>
+                <tr>
+                    <td class="text-center"><b>06</b></td>
+                    <td>
+                        <div class="item-name">辦公室 Windows 原生桌面軟體</div>
+                    </td>
+                    <td>
+                        <div class="item-desc">Windows 獨立原生視窗軟體、背景來單偵測、桌面右下角原生氣泡即時彈窗提醒、Gmail SMTP 自動化帶圖通知信。</div>
+                    </td>
+                    <td class="text-center">45 hrs</td>
+                    <td class="text-right">NT$ 70,000</td>
+                </tr>
+                <tr>
+                    <td class="text-center"><b>07</b></td>
+                    <td>
+                        <div class="item-name">雙軌雲端安全熱災備架構</div>
+                    </td>
+                    <td>
+                        <div class="item-desc">GitHub 獨立分支雙向熱備份（資料永不遺失）、Google 試算表 Webhook 鏡像儲存、Plesk CDN 與 Render 運算節點分散式反向代理、防機器人蜜罐防護。</div>
+                    </td>
+                    <td class="text-center">45 hrs</td>
+                    <td class="text-right">NT$ 80,000</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="pricing-summary">
+            <div class="pricing-original">
+                <div>軟體開發公司市場公定牌面價：</div>
+                <del>NT$ 670,000</del>
+                <div style="font-size: 0.85rem; color: #15803d; font-weight: 700; margin-top: 4px;">✔ 專案策略夥伴折讓：- NT$ 250,000</div>
+            </div>
+            <div class="pricing-final">
+                <div class="label">法寶專案特惠統包價 (未稅)</div>
+                <div class="amount">NT$ 420,000</div>
+                <div class="note">新台幣肆拾貳萬元整（全案建置、導入輔導統包）</div>
+            </div>
+        </div>
+
+        <div class="section-title">二、 建議付款時程 (三階段分期)</div>
+        <div class="milestones">
+            <div class="milestone-card active">
+                <div class="milestone-phase">第一期：專案簽約訂金</div>
+                <div class="milestone-pct">30%</div>
+                <div class="milestone-amt">NT$ 126,000</div>
+                <div class="milestone-cond">簽署委任合約後支付</div>
+            </div>
+            <div class="milestone-card active">
+                <div class="milestone-phase">第二期：系統就緒款</div>
+                <div class="milestone-pct">40%</div>
+                <div class="milestone-amt">NT$ 168,000</div>
+                <div class="milestone-cond">全功能與資料庫串聯完成</div>
+            </div>
+            <div class="milestone-card active">
+                <div class="milestone-phase">第三期：完工驗收款</div>
+                <div class="milestone-pct">30%</div>
+                <div class="milestone-amt">NT$ 126,000</div>
+                <div class="milestone-cond">正式網域上線與人員培訓完成</div>
+            </div>
+        </div>
+
+        <div class="section-title">三、 交付清單與後續保固 (Deliverables & SLA)</div>
+        <ul style="padding-left: 20px; font-size: 0.88rem; color: var(--text-dim); line-height: 1.8;">
+            <li><b>系統成果交付：</b>正式運作之線上官網全站源碼、企業內部管理系統（ERP/CRM）、Windows 桌面版應用軟體包、資料庫雲端自動備份庫。</li>
+            <li><b>初期保固與輔導：</b>自上線驗收日起提供 <b>90 天無償系統保固</b>，包含操作問題排除、資料備份驗證與人員操作指導。</li>
+            <li><b>次年起維護合約 (選購)：</b>NT$ 36,000 / 年（折合每月 NT$ 3,000），包含雲端伺服器效能監控、SSL 憑證更新、雙軌災備檢查及每年 10 次常態規格維護。</li>
+        </ul>
+
+        <div class="signature-box">
+            <div class="sign-col">
+                <h4>委託單位：法寶實業有限公司</h4>
+                <p>統一編號：22129598</p>
+                <p>代表人（簽章）：</p>
+                <div class="sign-line"></div>
+                <p>簽署日期：2026 年 _____ 月 _____ 日</p>
+            </div>
+            <div class="sign-col">
+                <h4>受託單位 / 規劃負責人：</h4>
+                <p>姓名：楊敦州 (Albert Young)</p>
+                <p>簽章：</p>
+                <div class="sign-line"></div>
+                <p>簽署日期：2026 年 _____ 月 _____ 日</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

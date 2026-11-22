@@ -344,6 +344,12 @@ def page_tech():
 def page_contact():
     return _render_portal_page('contact')
 
+
+@app.route('/yangtech', strict_slashes=False)
+@app.route('/partner', strict_slashes=False)
+def page_yangtech():
+    return render_template('yangtech.html')
+
 @app.route('/api/site-data')
 def api_site_data():
     return jsonify(SITE_DATA)
