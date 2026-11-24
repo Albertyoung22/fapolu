@@ -389,5 +389,22 @@
     "adminNote": "系統依送貨地點自動指派至【北部區域 (台北服務部)】",
     "emailSent": false,
     "emailError": "[Errno 101] Network is unreachable"
+  },
+  {
+    "id": "REQ-1024",
+    "companyName": "法寶測試部 (LINE連線驗證)",
+    "contactPerson": "周副總",
+    "contactPhone": "0922-333-444",
+    "contactEmail": "youngtunchou@gmail.com",
+    "inquiryMaterial": "6061-T6 精密鋁板 20mm x 500mm x 1000mm",
+    "inquiryMessage": "[送貨地點：台中市 ｜ 專屬派單：中部區域 (台中營運總部)]\n【金屬詢價測試】此訊息測試 LINE 官方帳號是否能在客戶線上估價時第一時間推播。",
+    "drawingUrl": "",
+    "timestamp": "2026-11-24 18:32:58",
+    "updatedAt": "2026-11-24 18:32:58",
+    "status": "pending",
+    "branch": "中部區域 (台中營運總部)",
+    "adminNote": "系統依送貨地點自動指派至【中部區域 (台中營運總部)】",
+    "emailSent": false,
+    "emailError": ""
   }
 ]
