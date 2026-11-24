@@ -372,5 +372,22 @@
     "adminNote": "系統依送貨地點自動指派至【中部區域 (台中營運總部)】",
     "emailSent": false,
     "emailError": "[Errno 101] Network is unreachable"
+  },
+  {
+    "id": "REQ-1023",
+    "companyName": "工業技術研究院",
+    "contactPerson": "許智閔",
+    "contactPhone": "0963661511",
+    "contactEmail": "itriB40596@itri.org.tw",
+    "inquiryMaterial": "1. 【現貨規格】現有模具 · 鋁圓管 模號 K3608 外徑 48.5 × 內徑 43.9 mm (厚 2.3 mm) 單米重 0.918 kg/m\r\n   【預計數量】1 件\r\n   【加工需求】精密切割/依指定尺寸",
+    "inquiryMessage": "[送貨地點：桃園市 ｜ 專屬派單：北部區域 (台北服務部)]\n1450長 5支",
+    "drawingUrl": "",
+    "timestamp": "2026-11-24 07:09:06",
+    "updatedAt": "2026-11-24 07:09:06",
+    "status": "pending",
+    "branch": "北部區域 (台北服務部)",
+    "adminNote": "系統依送貨地點自動指派至【北部區域 (台北服務部)】",
+    "emailSent": false,
+    "emailError": ""
   }
 ]
