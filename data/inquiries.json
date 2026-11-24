@@ -423,5 +423,22 @@
     "adminNote": "系統依送貨地點自動指派至【中部區域 (台中營運總部)】",
     "emailSent": false,
     "emailError": "[Errno 101] Network is unreachable"
+  },
+  {
+    "id": "REQ-1026",
+    "companyName": "土城高中",
+    "contactPerson": "楊敦州",
+    "contactPhone": "0932692277",
+    "contactEmail": "youngtunchou@gmail.com",
+    "inquiryMaterial": "123",
+    "inquiryMessage": "[送貨地點：台南市 ｜ 專屬派單：南部區域 (台南雙廠區)]\n",
+    "drawingUrl": "",
+    "timestamp": "2026-11-24 18:40:24",
+    "updatedAt": "2026-11-24 18:40:24",
+    "status": "pending",
+    "branch": "南部區域 (台南雙廠區)",
+    "adminNote": "系統依送貨地點自動指派至【南部區域 (台南雙廠區)】",
+    "emailSent": false,
+    "emailError": ""
   }
 ]
