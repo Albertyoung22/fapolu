@@ -24,10 +24,42 @@ def send_line_push_notification(text: str, user_id: str = None) -> bool:
         return False
 
     token = cfg.get('channel_access_token')
-    target_user = user_id or cfg.get('user_id')
+    if not token:
+        logger.warning("LINE token missing, cannot send push.")
+        return False
 
-    if not token or not target_user:
-        logger.warning("LINE token or user_id missing, cannot send push.")
+    # 1. Broadcast to all followers (全員廣播) if user_id is not specifically pinned or broadcast is enabled
+    is_broadcast = cfg.get('broadcast', True) and (user_id is None)
+    if is_broadcast:
+        b_url = 'https://api.line.me/v2/bot/message/broadcast'
+        b_payload = {
+            'messages': [
+                {
+                    'type': 'text',
+                    'text': text
+                }
+            ]
+        }
+        try:
+            req = urllib.request.Request(
+                b_url,
+                data=json.dumps(b_payload).encode('utf-8'),
+                headers={
+                    'Content-Type': 'application/json',
+                    'Authorization': f'Bearer {token}'
+                }
+            )
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                if resp.status == 200:
+                    logger.info("LINE broadcast message successfully sent to all followers.")
+                    return True
+        except Exception as be:
+            logger.warning(f"LINE broadcast failed, attempting single user push fallback: {be}")
+
+    # 2. Targeted Push Fallback (or targeted user push)
+    target_user = user_id or cfg.get('user_id')
+    if not target_user:
+        logger.warning("LINE target_user missing for push fallback.")
         return False
 
     url = 'https://api.line.me/v2/bot/message/push'
