@@ -323,23 +323,6 @@
     "emailError": ""
   },
   {
-    "id": "REQ-1020",
-    "companyName": "正澐精密",
-    "contactPerson": "歐宗澐",
-    "contactPhone": "0961261108",
-    "contactEmail": "rock70188@yahoo.com.tw",
-    "inquiryMaterial": "1. 【現貨規格】6061 鋁合金板現貨 6061-T651 厚 12 mm 4' * 8'\r\n   【預計數量】50 件\r\n   【加工需求】117*106*12",
-    "inquiryMessage": "[送貨地點：高雄市 ｜ 專屬派單：南部區域 (台南雙廠區)]\n詢價6016中鋁尺寸117*106*12 \r\n總數50個",
-    "drawingUrl": "",
-    "timestamp": "2026-11-20 06:25:30",
-    "updatedAt": "2026-11-22 17:10:57",
-    "status": "pending",
-    "branch": "南部區域 (台南雙廠區)",
-    "adminNote": "系統依送貨地點自動指派至【南部區域 (台南雙廠區)】",
-    "emailSent": false,
-    "emailError": "尚未完成 SMTP 寄件帳號與應用程式密碼設定"
-  },
-  {
     "id": "REQ-1021",
     "companyName": "黃家樺",
     "contactPerson": "黃家樺",
