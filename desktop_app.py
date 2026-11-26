@@ -89,7 +89,7 @@ def start_inquiry_monitor():
                             if len(mat) > 35:
                                 mat = mat[:35] + '...'
                             send_windows_toast(
-                                f"🔔 法寶實業 - 收到新詢價單！",
+                                f"🔔 【法寶實業】官網新客戶詢價單！",
                                 f"[{item.get('id')}] {cust}：{mat}"
                             )
                             seen_ids.add(item.get('id'))

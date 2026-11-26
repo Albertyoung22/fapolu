@@ -289,6 +289,7 @@
             <a href="/" target="_blank" class="btn btn-outline btn-sm">🏛️ 查看法寶官網</a>
             <button class="btn btn-outline btn-sm" onclick="openPwdModal()">🔑 修改管理密碼</button>
             <button class="btn btn-primary btn-sm" onclick="openConfigModal()">⚙️ 廣告推播設定</button>
+            <button class="btn btn-outline btn-sm" onclick="testLineNotify()" id="btnTestLine" style="border-color:#06c755; color:#06c755; font-weight:600;">🟢 測試 LINE 即時推播</button>
             <button class="btn btn-outline btn-sm" onclick="openBackupModal()" style="border-color:#0d9488; color:#0d9488;">☁️ 雲端災備中心</button>
             <button class="btn btn-outline btn-sm" onclick="exportCsv()">📥 匯出 CSV</button>
             <button class="btn btn-outline btn-sm" onclick="logout()">登出</button>
@@ -340,7 +341,10 @@
                     </h2>
                     <p style="font-size:0.82rem; color:var(--text-muted); margin-top:2px;">即時統計每日不重複訪客數 (UV) 與總頁面瀏覽次數 (PV)</p>
                 </div>
-                <button class="btn btn-outline btn-sm" onclick="loadTrafficStats()">🔄 刷新流量數據</button>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn btn-outline btn-sm" onclick="loadTrafficStats()">🔄 刷新流量數據</button>
+                    <button class="btn btn-outline btn-sm" style="color:#ef4444; border-color:#fca5a5;" onclick="resetTrafficStats()">🗑️ 數據歸零</button>
+                </div>
             </div>
 
             <!-- Traffic Stats Cards Grid (4 Columns) -->
@@ -420,6 +424,7 @@
                         <option value="結案存檔">結案存檔</option>
                     </select>
                     <button class="btn btn-outline btn-sm" onclick="loadLeads()">🔄 重新載入</button>
+                    <button class="btn btn-primary btn-sm" style="background:#1877f2; border-color:#1877f2;" onclick="openFbConverterModal(null)">📢 建立FB技術問答貼文</button>
                 </div>
             </div>
 
@@ -656,8 +661,9 @@
                         <div class="memo-preview" onclick="openMemoModal('${lead.id}')">${memoDisplay}</div>
                     </td>
                     <td>
+                        <button class="btn btn-outline btn-sm" onclick="openFbConverterModal('${lead.id}')" title="智能轉化為官方FB技術Q&A貼文" style="color:#1877f2; border-color:#93c5fd; font-weight:600;">🤖 轉FB技術文</button>
                         <button class="btn btn-outline btn-sm" onclick="copyLeadInfo('${lead.id}')" title="複製案件資料" style="color:#0d9488;">📋 複製</button>
-                    <button class="btn btn-outline btn-sm" style="color:#ef4444;" onclick="deleteLead('${lead.id}')" title="刪除案件">🗑️</button>
+                        <button class="btn btn-outline btn-sm" style="color:#ef4444;" onclick="deleteLead('${lead.id}')" title="刪除案件">🗑️</button>
                     </td>
                 </tr>
                 `;
@@ -837,6 +843,27 @@
                 btn.textContent = '🔄 立即全量雲端鏡像同步';
             }
         }
+
+        async function testLineNotify() {
+            const btn = document.getElementById('btnTestLine');
+            const oldText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '⏳ 發送中...';
+            try {
+                const res = await fetch('/api_yangtech.php?action=test_line_notify', { headers: getAuthHeader() });
+                const data = await res.json();
+                if (data.success) {
+                    alert('✅ 全員廣播測試成功！\n\n' + data.message + '\n\n所有加入【法寶實業】官方 LINE 的同仁手機均已同步收到通知。');
+                } else {
+                    alert('❌ 發送失敗：' + (data.message || '未知錯誤'));
+                }
+            } catch (err) {
+                alert('❌ 連線異常：' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = oldText;
+            }
+        }
         function restoreFromFile() {
             const fileInput = document.getElementById('backupFileInput');
             const fb = document.getElementById('backupFeedback');
@@ -888,6 +915,27 @@
                 }
             } catch (err) {
                 console.error('Failed to load traffic stats:', err);
+            }
+        }
+
+        async function resetTrafficStats() {
+            if (!confirm('確定要將法寶與揚州官網的訪客與瀏覽次數全部歸零重置嗎？\n（重置後將從 0 重新開始計算真實造訪）')) {
+                return;
+            }
+            try {
+                const res = await fetch('/api_yangtech.php?action=reset_traffic_stats', {
+                    method: 'POST',
+                    headers: getAuthHeader()
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('流量統計已成功歸零！');
+                    loadTrafficStats();
+                } else {
+                    alert(data.message || '歸零失敗');
+                }
+            } catch (err) {
+                alert('網路請求失敗');
             }
         }
 
@@ -961,6 +1009,147 @@
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;');
         }
+
+        // Facebook Smart Technical Post Disguiser
+        let currentFbLeadId = null;
+
+        function openFbConverterModal(leadId) {
+            currentFbLeadId = leadId;
+            document.getElementById('fbPublishFeedback').style.display = 'none';
+            const btn = document.getElementById('btnPublishFb');
+            btn.disabled = false;
+            btn.textContent = '🚀 一鍵發布至 Facebook 粉專';
+
+            let lead = null;
+            if (leadId) {
+                lead = allLeads.find(l => l.id === leadId);
+            }
+
+            let defaultTopic = "7075-T6 航太超硬鋁板高速切削與應力消除技巧";
+            let defaultImg = "https://fapolu.com.tw/static/img_factory/warehouse_wood_pallets_plates.jpg";
+
+            if (lead) {
+                const rawMsg = ((lead.message || '') + ' ' + (lead.service_type || '')).toLowerCase();
+                if (rawMsg.includes('7075') || rawMsg.includes('鋁')) {
+                    defaultTopic = "7075-T6 航太超硬鋁板高速銑削與應力消除技巧";
+                    defaultImg = "https://fapolu.com.tw/static/img_factory/warehouse_wood_pallets_plates.jpg";
+                } else if (rawMsg.includes('skd11') || rawMsg.includes('skd61') || rawMsg.includes('模具') || rawMsg.includes('沖頭')) {
+                    defaultTopic = "SKD11 與 SKD61 模具鋼耐磨度與熱疲勞壽命優化";
+                    defaultImg = "https://fapolu.com.tw/static/img_factory/prod_aerospace_billets_bars.jpg";
+                } else if (rawMsg.includes('5052') || rawMsg.includes('陽極') || rawMsg.includes('鈑金')) {
+                    defaultTopic = "日本 UACJ 5052-H32 貼膜鋁板陽極氧化均勻度探討";
+                    defaultImg = "https://fapolu.com.tw/static/img_factory/warehouse_heavy_plates_stacked.jpg";
+                } else if (rawMsg.includes('s50c') || rawMsg.includes('scm440') || rawMsg.includes('紅十字') || rawMsg.includes('軸')) {
+                    defaultTopic = "重負載傳動軸與機械結構件材料調質選用 (S50C vs SCM440)";
+                    defaultImg = "https://fapolu.com.tw/static/img_factory/warehouse_heavy_plates_stacked.jpg";
+                } else {
+                    defaultTopic = "特殊合金鋼與高階鋁合金精密裁切公差控制實務";
+                    defaultImg = "https://fapolu.com.tw/static/img_factory/machining_heavy_sawing_bay.jpg";
+                }
+            }
+
+            document.getElementById('fbPostTopic').value = defaultTopic;
+            document.getElementById('fbPostImageSelect').value = defaultImg;
+            updateFbPostImagePreview();
+            updateFbGeneratedPost();
+
+            document.getElementById('fbModal').style.display = 'flex';
+        }
+
+        function closeFbModal() {
+            document.getElementById('fbModal').style.display = 'none';
+        }
+
+        function updateFbPostImagePreview() {
+            const url = document.getElementById('fbPostImageSelect').value;
+            document.getElementById('fbPostImagePreview').src = url;
+        }
+
+        function updateFbGeneratedPost() {
+            const topic = document.getElementById('fbPostTopic').value.trim() || '精密材料選材與切削工藝';
+            
+            const post = `【法寶材料技術講堂 · 實務答客問精選】⚙️
+
+近日有許多精密模具與機械加工夥伴向我們的工程團隊諮詢：
+『請問在面對【${topic}】時，工藝上如何取得最佳壽命與精度？』
+
+💡 法寶材料工程技術部在此為各位業界先進深度解析：
+1️⃣ 核心材質特性把關：嚴選材料內部金相組織均勻度，確保無砂孔、偏析或雜質缺陷，出廠每批材料皆可追溯材質證明。
+2️⃣ 加工與應力控制建議：大面積開粗建議階梯式均勻對稱去肉，若為高應力件需選擇具備應力消除處理（如 T651 預拉伸／均勻預退火）之板材，防止切削後反彈變形。
+3️⃣ 表面與防刮防護：精密工件建議搭配原裝高黏度保護藍膜，下料裁切全程防護，減少後續研磨拋光工時與表面刮痕耗損。
+
+🏭 法寶金屬深耕台灣近40年，台北、台中、台南三地發貨聯動，常備數千項特殊鋼、模具鋼與超厚鋁合金現貨！
+歡迎各大模具廠、自動化設備廠與機械加工先進隨時交流探討！
+
+🌐 官方規格資料庫即時查詢：https://fapolu.com.tw
+📞 台北總公司：(02) 2718-3134
+📞 中部物流中心：(04) 2258-4931
+📞 南部營運中心：(06) 726-3666
+
+#法寶金屬 #材料工程 #金屬加工 #精密裁切 #模具鋼 #鋁合金 #現貨供應`;
+
+            document.getElementById('fbPostText').value = post;
+        }
+
+        async function submitPublishFb() {
+            const message = document.getElementById('fbPostText').value.trim();
+            const imageUrl = document.getElementById('fbPostImageSelect').value;
+            const btn = document.getElementById('btnPublishFb');
+            const fb = document.getElementById('fbPublishFeedback');
+
+            if (!message) {
+                alert('請先輸入貼文內容！');
+                return;
+            }
+
+            if (!confirm('確認要將這篇以官方名義包裝的技術專欄發布至 Facebook 粉絲專頁嗎？')) {
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = '⏳ 正在連線 Meta API 發布中...';
+            fb.style.display = 'none';
+
+            try {
+                const res = await fetch('/api_yangtech.php?action=publish_fb_post', {
+                    method: 'POST',
+                    headers: getAuthHeader(),
+                    body: JSON.stringify({
+                        message: message,
+                        image_url: imageUrl,
+                        lead_id: currentFbLeadId
+                    })
+                });
+
+                const data = await res.json();
+                fb.style.display = 'block';
+
+                if (data.success) {
+                    fb.style.background = '#f0fdf4';
+                    fb.style.border = '1px solid #bbf7d0';
+                    fb.style.color = '#166534';
+                    fb.innerHTML = `🎉 <strong>發布成功！</strong> 已同步推播至 Facebook！<br><a href="${data.permalink_url}" target="_blank" style="color:#1877f2; text-decoration:underline; font-weight:700; margin-top:6px; display:inline-block;">👉 點此前往 Facebook 查看此貼文</a>`;
+                    btn.textContent = '✅ 已發布完成';
+                    if (currentFbLeadId) {
+                        loadLeads();
+                    }
+                } else {
+                    fb.style.background = '#fef2f2';
+                    fb.style.border = '1px solid #fecaca';
+                    fb.style.color = '#991b1b';
+                    fb.textContent = '❌ 發布失敗: ' + (data.message || '未知錯誤');
+                    btn.disabled = false;
+                    btn.textContent = '🚀 重試發布';
+                }
+            } catch (err) {
+                fb.style.display = 'block';
+                fb.style.background = '#fef2f2';
+                fb.style.color = '#991b1b';
+                fb.textContent = '❌ 網路請求失敗，請檢查連線';
+                btn.disabled = false;
+                btn.textContent = '🚀 重試發布';
+            }
+        }
     </script>
 
     <!-- Change Password Modal -->
@@ -1026,6 +1215,58 @@
             </div>
 
             <div id="backupFeedback" style="margin-top:12px; font-size:0.85rem; text-align:center; display:none;"></div>
+        </div>
+    </div>
+
+    <!-- Facebook Smart Technical Post Disguiser Modal -->
+    <div id="fbModal" class="modal-backdrop">
+        <div class="modal-box" style="max-width:620px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                <h3 style="font-size:1.15rem; color:#0f172a; display:flex; align-items:center; gap:8px;">
+                    <span>📢 官方 Facebook 技術專欄發文轉換器</span>
+                </h3>
+                <button onclick="closeFbModal()" style="background:none; border:none; font-size:1.3rem; cursor:pointer; color:#94a3b8;">&times;</button>
+            </div>
+
+            <!-- Privacy Guarantee Banner -->
+            <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px 14px; margin-bottom:16px; font-size:0.83rem; color:#166534; display:flex; gap:8px; align-items:center;">
+                <span>🛡️</span>
+                <div><strong>隱私自動脫敏安全保護：</strong>客戶姓名、電話、公司名稱與報價等商業資訊已 100% 遮蔽，僅萃取純材料／切削／熱處理工藝，偽裝成法寶金屬官方工程團隊專欄！</div>
+            </div>
+
+            <div style="margin-bottom:12px;">
+                <label style="font-size:0.83rem; font-weight:700; color:#334155; display:block; margin-bottom:4px;">🎯 諮詢技術主題／核心問題：</label>
+                <input type="text" id="fbPostTopic" class="search-input" style="width:100%;" placeholder="例如：7075-T6 銑削變形與消除應力技巧" oninput="updateFbGeneratedPost()">
+            </div>
+
+            <div style="margin-bottom:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <label style="font-size:0.83rem; font-weight:700; color:#334155;">📝 官方 Facebook 貼文內容預覽（可直接編輯修改）：</label>
+                    <button class="btn btn-outline btn-sm" style="font-size:0.75rem; padding:2px 8px;" onclick="updateFbGeneratedPost()">🔄 重新套用專家範本</button>
+                </div>
+                <textarea id="fbPostText" style="width:100%; height:200px; padding:10px; border:1px solid var(--border); border-radius:8px; font-size:0.86rem; line-height:1.5; font-family:inherit; resize:vertical;"></textarea>
+            </div>
+
+            <div style="margin-bottom:18px;">
+                <label style="font-size:0.83rem; font-weight:700; color:#334155; display:block; margin-bottom:6px;">📷 選擇官方配圖：</label>
+                <div style="display:flex; gap:12px; align-items:center;">
+                    <select id="fbPostImageSelect" class="filter-select" style="flex:1;" onchange="updateFbPostImagePreview()">
+                        <option value="https://fapolu.com.tw/static/img_factory/warehouse_heavy_plates_stacked.jpg">🏭 厚板與特殊鋼常備在庫實景 (S50C/SCM440)</option>
+                        <option value="https://fapolu.com.tw/static/img_factory/warehouse_wood_pallets_plates.jpg">📦 萬坪原木棧板與高階鋁板倉 (7075/5052)</option>
+                        <option value="https://fapolu.com.tw/static/img_factory/machining_heavy_sawing_bay.jpg">⚙️ 大型數控鋸床與精密裁切中心 (裁切加工)</option>
+                        <option value="https://fapolu.com.tw/static/img_factory/prod_aerospace_billets_bars.jpg">✈️ 航太級高韌性鍛造圓棒 (SKD11/SKD61)</option>
+                        <option value="https://fapolu.com.tw/static/img_factory/factory_gate_facade.jpg">🚛 現代化廠區門面與直營物流車隊 (全台直發)</option>
+                    </select>
+                    <img id="fbPostImagePreview" src="https://fapolu.com.tw/static/img_factory/warehouse_heavy_plates_stacked.jpg" style="width:72px; height:48px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1;">
+                </div>
+            </div>
+
+            <div id="fbPublishFeedback" style="display:none; padding:10px; border-radius:8px; font-size:0.86rem; margin-bottom:14px;"></div>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn btn-outline" onclick="closeFbModal()">關閉</button>
+                <button class="btn btn-primary" id="btnPublishFb" style="background:#1877f2; border-color:#1877f2;" onclick="submitPublishFb()">🚀 一鍵發布至 Facebook 粉專</button>
+            </div>
         </div>
     </div>
     

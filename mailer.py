@@ -52,7 +52,7 @@ def get_admin_password():
     if env_pwd:
         return env_pwd
     local_cfg = load_local_config()
-    return str(local_cfg.get('admin_password', '')).strip() or 'fapolu8888'
+    return str(local_cfg.get('admin_password', '')).strip() or 'yangtech2026'
 
 
 def get_smtp_config():
@@ -188,7 +188,7 @@ def send_inquiry_email(inquiry, custom_cfg=None):
     attachments = _resolve_drawing_attachments(drawing_url)
     has_attachment_note = "（已隨信附上工程圖面檔案）" if attachments else ""
 
-    subject = f"【法寶新詢價單 · {region}】{ticket_id}｜{company} - {material[:35]}"
+    subject = f"【法寶實業 · 官網新客戶詢價單 · {region}】{ticket_id}｜{company} - {material[:35]}"
 
     drawing_text = f"\n圖面連結/說明：{drawing_url} {has_attachment_note}" if drawing_url else ""
     text_body = (
