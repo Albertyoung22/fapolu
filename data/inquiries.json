@@ -34,23 +34,6 @@
     "emailError": ""
   },
   {
-    "id": "REQ-1003",
-    "companyName": "土城高中",
-    "contactPerson": "楊敦州",
-    "contactPhone": "0932692277",
-    "contactEmail": "youngtunchou@gmail.com",
-    "inquiryMaterial": "1. 5052 平面貼膜鋁板（厚度: mm × 尺寸: mm × mm × 塊數: 塊）\r\n2. 五線防滑花紋鋁板（厚度: 2.0mm/3.0mm × 尺寸: 4x8尺 或裁切: mm × mm × 塊數: 塊）",
-    "inquiryMessage": "[送貨地點：台南市 ｜ 專屬派單：南部區域 (台南雙廠區)]\n",
-    "drawingUrl": "",
-    "timestamp": "2026-11-15 11:07:04",
-    "updatedAt": "2026-11-15 11:07:04",
-    "status": "pending",
-    "branch": "南部區域 (台南雙廠區)",
-    "adminNote": "系統依送貨地點自動指派至【南部區域 (台南雙廠區)】",
-    "emailSent": false,
-    "emailError": ""
-  },
-  {
     "id": "REQ-1005",
     "companyName": "惠霸企業股份有限公司",
     "contactPerson": "廖先生",
