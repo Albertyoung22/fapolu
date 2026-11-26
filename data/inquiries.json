@@ -425,23 +425,6 @@
     "emailError": "[Errno 101] Network is unreachable"
   },
   {
-    "id": "REQ-1027",
-    "companyName": "土城高中",
-    "contactPerson": "楊敦州",
-    "contactPhone": "0932692277",
-    "contactEmail": "youngtunchou@gmail.com",
-    "inquiryMaterial": "",
-    "inquiryMessage": "[送貨地點：台南市 ｜ 專屬派單：南部區域 (台南雙廠區)]\n",
-    "drawingUrl": "",
-    "timestamp": "2026-11-24 18:52:39",
-    "updatedAt": "2026-11-24 18:53:04",
-    "status": "pending",
-    "branch": "南部區域 (台南雙廠區)",
-    "adminNote": "系統依送貨地點自動指派至【南部區域 (台南雙廠區)】",
-    "emailSent": false,
-    "emailError": "[Errno 101] Network is unreachable"
-  },
-  {
     "id": "REQ-1028",
     "companyName": "晶宇銘版股份有限公司",
     "contactPerson": "王先生",
