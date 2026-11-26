@@ -2207,7 +2207,7 @@ const PORTAL_PAGES = [
     { id: 'specs', path: '/specs', short: '現貨規格', label: '現貨規格與現有模具檢索' },
     { id: 'machining', path: '/machining', short: '精密加工', label: '高階精密加工與實品圖鑑' },
     { id: 'cases', path: '/cases', short: '代表實績', label: '半導體與航太代表實績' },
-    { id: 'tech', path: '/tech', short: '技術硬度', label: '國際硬度換算與熱處理辭典' },
+    { id: 'tech', path: '/tech', short: '技術知識庫', label: '鋁材工程知識庫 · 特性選用與合金物性表' },
     { id: 'contact', path: '/contact', short: '聯絡諮詢', label: '即時諮詢與線上圖面估價' }
 ];
 
@@ -2224,7 +2224,7 @@ window.getPageLabel = function (pageId, type = 'label') {
             'specs': { short: '現貨規格', label: '現貨規格與現有模具檢索' },
             'machining': { short: '精密加工', label: '高階精密加工與實品圖鑑' },
             'cases': { short: '代表實績', label: '半導體與航太代表實績' },
-            'tech': { short: '技術硬度', label: '國際硬度換算與熱處理辭典' },
+            'tech': { short: '技術知識庫', label: '鋁材工程知識庫 · 特性選用與合金物性表' },
             'contact': { short: '聯絡諮詢', label: '即時諮詢與線上圖面估價' }
         },
         'en': {
@@ -2235,7 +2235,7 @@ window.getPageLabel = function (pageId, type = 'label') {
             'specs': { short: 'Stock Specs', label: 'Inventory & Mold Specs Explorer' },
             'machining': { short: 'Machining', label: 'High-End Precision Machining' },
             'cases': { short: 'Case Studies', label: 'Track Record & Industry Cases' },
-            'tech': { short: 'Tech Hub', label: 'Hardness Conversion & Temper Dict' },
+            'tech': { short: 'Tech Hub', label: 'Engineering Knowledge Hub · Metallurgy & Specs' },
             'contact': { short: 'Contact Us', label: 'Direct Inquiry & Online RFQ' }
         },
         'ja': {
@@ -2246,7 +2246,7 @@ window.getPageLabel = function (pageId, type = 'label') {
             'specs': { short: '在庫規格', label: '常備在庫・金型スペック検索' },
             'machining': { short: '精密加工', label: '高度精密加工・表面エンジニアリング' },
             'cases': { short: '実績紹介', label: '半導体・航空宇宙主要実績' },
-            'tech': { short: '技術硬度', label: '国際硬度換算と調質記号辞書' },
+            'tech': { short: '技術知識庫', label: 'アルミ工学知識ベース · 特性選定と合金物性表' },
             'contact': { short: 'お問い合わせ', label: 'お問い合わせ・オンライン見積り' }
         },
         'ko': {
@@ -2257,7 +2257,7 @@ window.getPageLabel = function (pageId, type = 'label') {
             'specs': { short: '재고규격', label: '재고 규격 및 보유 금형 검색' },
             'machining': { short: '정밀가공', label: '초정밀 가공 및 표면처리' },
             'cases': { short: '대표실적', label: '반도체 및 항공우주 주요실적' },
-            'tech': { short: '기술지식', label: '국제 경도 환산 및 조질 기호 사전' },
+            'tech': { short: '기술지식고', label: '알루미늄 공학 지식 베이스 · 특성 및 합금 물성표' },
             'contact': { short: '문의하기', label: '실시간 상담 및 온라인 견적' }
         }
     };

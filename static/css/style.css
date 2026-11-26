@@ -677,6 +677,20 @@ button {
   box-shadow: 0 3px 10px rgba(166, 44, 34, 0.24);
 }
 
+@media (min-width: 992px) {
+  .subpage-pill-strip {
+    display: none !important;
+  }
+  .subpage-topbar {
+    padding-top: 84px;
+    padding-bottom: 10px;
+  }
+  .subpage-crumb-row {
+    margin-bottom: 0;
+  }
+}
+
+
 /* Home Quick Portal Directory Cards */
 .home-portal-directory {
   margin-top: 64px;
