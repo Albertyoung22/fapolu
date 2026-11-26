@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Long+Cang&family=Noto+Serif+TC:wght@600;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>揚州數位轉型整合 | 專案洽詢管理後台 (YangTech Admin)</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0d9488;
+            --primary-dark: #0f766e;
+            --primary-light: #ccfbf1;
+            --accent: #f43f5e;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans TC', sans-serif; }
+        body { background: var(--bg); color: var(--text-main); line-height: 1.6; min-height: 100vh; }
+        
+        /* Navbar */
+        .admin-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .nav-logo-badge {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #0d9488, #059669);
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(13, 148, 136, 0.25);
+        }
+        .nav-title { font-size: 1.15rem; font-weight: 700; color: #0f172a; }
+        .nav-subtitle { font-size: 0.8rem; color: var(--text-muted); }
+        .nav-actions { display: flex; gap: 10px; align-items: center; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            text-decoration: none;
+        }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-outline { background: #fff; border-color: var(--border); color: var(--text-main); }
+        .btn-outline:hover { background: #f1f5f9; border-color: #cbd5e1; }
+        .btn-accent { background: var(--accent); color: #fff; }
+        .btn-accent:hover { background: #e11d48; }
+        .btn-sm { padding: 4px 10px; font-size: 0.8rem; }
+
+        /* Container */
+        .container { max-width: 1360px; margin: 0 auto; padding: 24px; }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .kpi-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--primary);
+        }
+        .kpi-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+        .kpi-val { font-size: 1.7rem; font-weight: 700; color: #0f172a; line-height: 1.2; }
+        .kpi-label { font-size: 0.84rem; color: var(--text-muted); }
+
+        /* Table Card */
+        .main-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .card-title { font-size: 1.1rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px; }
+        .card-controls { display: flex; gap: 10px; flex-wrap: wrap; }
+        .search-input {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.88rem;
+            min-width: 240px;
+            outline: none;
+        }
+        .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15); }
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.88rem;
+            outline: none;
+            background: #fff;
+        }
+
+        /* Leads Table */
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        th {
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+        tr:hover td { background: #f8fafc; }
+        .lead-id { font-family: monospace; font-size: 0.8rem; color: var(--text-muted); }
+        .lead-company { font-weight: 700; color: #0f172a; margin-bottom: 2px; }
+        .lead-name { color: #334155; font-size: 0.85rem; }
+        .contact-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: #f1f5f9;
+            color: #0f172a;
+            font-size: 0.8rem;
+            text-decoration: none;
+            margin-right: 4px;
+            margin-top: 4px;
+        }
+        .contact-pill:hover { background: #e2e8f0; }
+
+        /* Status Badge & Select */
+        .status-select {
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid transparent;
+            cursor: pointer;
+            outline: none;
+        }
+        .status-new { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+        .status-contacted { background: #e0f2fe; color: #0369a1; border-color: #bae6fd; }
+        .status-quoting { background: #f3e8ff; color: #6b21a8; border-color: #e9d5ff; }
+        .status-signed { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+        .status-closed { background: #f1f5f9; color: #475569; border-color: #e2e8f0; }
+
+        /* Memo Box */
+        .memo-preview {
+            max-width: 220px;
+            font-size: 0.8rem;
+            color: #64748b;
+            background: #f8fafc;
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px dashed var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .memo-preview:hover { background: #f1f5f9; border-color: var(--primary); }
+
+        /* Login Modal */
+        #loginModal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .login-card {
+            background: #fff;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 420px;
+            padding: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            text-align: center;
+        }
+
+        /* Memo Edit Modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 500;
+        }
+        .modal-box {
+            background: #fff;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation -->
+    <header class="admin-nav">
+        <div class="nav-brand">
+            <div class="nav-logo-badge" style="font-family:"Noto Serif TC", "DFKai-SB", "標楷體", cursive, serif; font-size:1.45rem;">揚</div>
+            <div>
+                <h1 class="nav-title" style="font-family:"Noto Serif TC", "DFKai-SB", "標楷體", cursive, serif !important; font-size: 1.45rem; letter-spacing: 2px;">揚州數位轉型整合 <span style="font-family:'Noto Sans TC', sans-serif; font-size:0.95rem; color:#0d9488;">YangTech</span></h1>
+                <p class="nav-subtitle">專案洽詢管理系統與推播控制台</p>
+            </div>
+        </div>
+        <div class="nav-actions">
+            <a href="/yangtech" target="_blank" class="btn btn-outline btn-sm">🌸 查看品牌官網</a>
+            <a href="/" target="_blank" class="btn btn-outline btn-sm">🏛️ 查看法寶官網</a>
+            <button class="btn btn-outline btn-sm" onclick="openPwdModal()">🔑 修改管理密碼</button>
+            <button class="btn btn-primary btn-sm" onclick="openConfigModal()">⚙️ 廣告推播設定</button>
+            <button class="btn btn-outline btn-sm" onclick="testLineNotify()" id="btnTestLine" style="border-color:#06c755; color:#06c755; font-weight:600;">🟢 測試 LINE 即時推播</button>
+            <button class="btn btn-outline btn-sm" onclick="openBackupModal()" style="border-color:#0d9488; color:#0d9488;">☁️ 雲端災備中心</button>
+            <button class="btn btn-outline btn-sm" onclick="exportCsv()">📥 匯出 CSV</button>
+            <button class="btn btn-outline btn-sm" onclick="logout()">登出</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-icon">📋</div>
+                <div>
+                    <div class="kpi-val" id="kpiTotal">0</div>
+                    <div class="kpi-label">總諮詢單數</div>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon" style="background:#fef3c7; color:#92400e;">🔔</div>
+                <div>
+                    <div class="kpi-val" id="kpiNew" style="color:#d97706;">0</div>
+                    <div class="kpi-label">待聯繫新洽詢</div>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon" style="background:#e0f2fe; color:#0369a1;">💼</div>
+                <div>
+                    <div class="kpi-val" id="kpiDiscuss">0</div>
+                    <div class="kpi-label">洽談與報價中</div>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon" style="background:#fdf2f8; color:#db2777;">📢</div>
+                <div>
+                    <div class="kpi-val" id="kpiAdClicks">0</div>
+                    <div class="kpi-label">廣告點擊次數 (曝光: <span id="kpiAdImpr">0</span>)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Card & Table -->
+        
+        <!-- 官網流量與每日造訪分析區塊 (Website Traffic Analytics) -->
+        <div class="main-card" style="margin-bottom: 24px; padding: 22px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:18px;">
+                <div>
+                    <h2 style="font-size:1.15rem; font-weight:700; color:#0f172a; display:flex; align-items:center; gap:8px;">
+                        <span>📊 法寶官網 ＆ 揚州官網 · 每日造訪流量分析</span>
+                        <span style="font-size:0.75rem; background:#ccfbf1; color:#0d9488; padding:2px 8px; border-radius:12px; font-weight:600;">即時統計</span>
+                    </h2>
+                    <p style="font-size:0.82rem; color:var(--text-muted); margin-top:2px;">即時統計每日不重複訪客數 (UV) 與總頁面瀏覽次數 (PV)</p>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn btn-outline btn-sm" onclick="loadTrafficStats()">🔄 刷新流量數據</button>
+                    <button class="btn btn-outline btn-sm" style="color:#ef4444; border-color:#fca5a5;" onclick="resetTrafficStats()">🗑️ 數據歸零</button>
+                </div>
+            </div>
+
+            <!-- Traffic Stats Cards Grid (4 Columns) -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:20px;">
+                <!-- Card 1: Today FAPO -->
+                <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <span style="font-size:0.82rem; font-weight:700; color:#166534;">🏭 今日法寶官網</span>
+                        <span style="font-size:0.75rem; color:#15803d;" id="tfFapoUv">0 人造訪</span>
+                    </div>
+                    <div style="font-size:1.6rem; font-weight:800; color:#0f172a;" id="tfFapoPv">0 <span style="font-size:0.8rem; font-weight:500; color:#64748b;">次瀏覽</span></div>
+                    <div style="font-size:0.76rem; color:#475569; margin-top:4px;">昨日：<span id="tfFapoYest">0 次 (0 人)</span></div>
+                </div>
+
+                <!-- Card 2: Today YangTech -->
+                <div style="background:#f0fdfa; border:1px solid #99f6e4; border-radius:12px; padding:16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <span style="font-size:0.82rem; font-weight:700; color:#115e59;">🌸 今日揚州官網</span>
+                        <span style="font-size:0.75rem; color:#0d9488;" id="tfYtUv">0 人造訪</span>
+                    </div>
+                    <div style="font-size:1.6rem; font-weight:800; color:#0f172a;" id="tfYtPv">0 <span style="font-size:0.8rem; font-weight:500; color:#64748b;">次瀏覽</span></div>
+                    <div style="font-size:0.76rem; color:#475569; margin-top:4px;">昨日：<span id="tfYtYest">0 次 (0 人)</span></div>
+                </div>
+
+                <!-- Card 3: Total Cumulative FAPO -->
+                <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:16px;">
+                    <div style="font-size:0.82rem; font-weight:700; color:#475569; margin-bottom:6px;">🏛️ 法寶官網累計總量</div>
+                    <div style="font-size:1.6rem; font-weight:800; color:#0f172a;" id="tfTotalFapo">0 <span style="font-size:0.8rem; font-weight:500; color:#64748b;">次總瀏覽</span></div>
+                    <div style="font-size:0.76rem; color:#64748b; margin-top:4px;">持久固態硬碟安全存檔</div>
+                </div>
+
+                <!-- Card 4: Total Cumulative YangTech -->
+                <div style="background:#fdf2f8; border:1px solid #fbcfe8; border-radius:12px; padding:16px;">
+                    <div style="font-size:0.82rem; font-weight:700; color:#9d174d; margin-bottom:6px;">✨ 揚州官網累計總量</div>
+                    <div style="font-size:1.6rem; font-weight:800; color:#0f172a;" id="tfTotalYt">0 <span style="font-size:0.8rem; font-weight:500; color:#64748b;">次總瀏覽</span></div>
+                    <div style="font-size:0.76rem; color:#9d174d; margin-top:4px;">雙軌雲端備份存檔</div>
+                </div>
+            </div>
+
+            <!-- Last 7 Days Daily Breakdown Table & Visual Bars -->
+            <div>
+                <h4 style="font-size:0.92rem; font-weight:700; color:#334155; margin-bottom:12px;">📅 近 7 日每日瀏覽趨勢對比表</h4>
+                <div class="table-responsive">
+                    <table style="font-size:0.84rem;">
+                        <thead>
+                            <tr style="background:#f8fafc;">
+                                <th style="padding:10px 14px;">日期</th>
+                                <th style="padding:10px 14px;">🏭 法寶官網 (瀏覽量 PV)</th>
+                                <th style="padding:10px 14px;">👥 法寶不重複訪客 (UV)</th>
+                                <th style="padding:10px 14px;">🌸 揚州官網 (瀏覽量 PV)</th>
+                                <th style="padding:10px 14px;">👥 揚州不重複訪客 (UV)</th>
+                                <th style="padding:10px 14px;">雙站瀏覽長條圖</th>
+                            </tr>
+                        </thead>
+                        <tbody id="traffic7DaysTbody">
+                            <tr><td colspan="6" style="text-align:center; padding:18px; color:#94a3b8;">載入中...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <span>🗂️ 專案洽詢案件列表</span>
+                    <span id="leadsCountBadge" style="background:var(--primary-light); color:var(--primary-dark); font-size:0.78rem; padding:2px 8px; border-radius:12px;">0 筆</span>
+                </h2>
+                <div class="card-controls">
+                    <input type="text" id="searchInput" class="search-input" placeholder="🔍 搜尋客戶名稱、電話、需求..." oninput="renderTable()">
+                    <select id="statusFilter" class="filter-select" onchange="renderTable()">
+                        <option value="ALL">全部狀態</option>
+                        <option value="新進洽詢">新進洽詢</option>
+                        <option value="已聯繫洽談">已聯繫洽談</option>
+                        <option value="需求評估報價">需求評估報價</option>
+                        <option value="已簽約成交">已簽約成交</option>
+                        <option value="結案存檔">結案存檔</option>
+                    </select>
+                    <button class="btn btn-outline btn-sm" onclick="loadLeads()">🔄 重新載入</button>
+                    <button class="btn btn-primary btn-sm" style="background:#1877f2; border-color:#1877f2;" onclick="openFbConverterModal(null)">📢 建立FB技術問答貼文</button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>案件編號 / 時間</th>
+                            <th>客戶公司 / 聯絡人</th>
+                            <th>聯絡方式</th>
+                            <th>諮詢項目 / 預算</th>
+                            <th>需求說明</th>
+                            <th>案件狀態</th>
+                            <th>內部備忘備註</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leadsTbody">
+                        <tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">載入中...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal">
+        <div class="login-card">
+            <div class="nav-logo-badge" style="margin:0 auto 16px; width:52px; height:52px; font-size:1.6rem;">揚</div>
+            <h2 style="font-size:1.3rem; margin-bottom:6px; color:#0f172a;">揚州數位轉型整合</h2>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:24px;">請輸入管理密碼進入後台系統</p>
+            <form onsubmit="handleLogin(event)">
+                <input type="password" id="adminPwd" class="search-input" placeholder="請輸入管理授權密碼" style="width:100%; margin-bottom:16px; text-align:center;" required autofocus>
+                <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:10px;">驗證身分並登入</button>
+            </form>
+            <p id="loginError" style="color:var(--accent); font-size:0.84rem; margin-top:12px; display:none;"></p>
+        </div>
+    </div>
+
+    <!-- Memo Edit Modal -->
+    <div id="memoModal" class="modal-backdrop">
+        <div class="modal-box">
+            <h3 style="margin-bottom:14px; font-size:1.1rem; color:#0f172a;">📝 編輯內部備忘錄</h3>
+            <p id="memoLeadInfo" style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;"></p>
+            <textarea id="memoText" style="width:100%; height:120px; padding:10px; border:1px solid var(--border); border-radius:8px; font-size:0.9rem; margin-bottom:16px;"></textarea>
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn btn-outline" onclick="closeMemoModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveMemo()">儲存備忘</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Config Modal -->
+    <div id="configModal" class="modal-backdrop">
+        <div class="modal-box" style="max-width:560px;">
+            <h3 style="margin-bottom:14px; font-size:1.1rem; color:#0f172a;">⚙️ 詢價單廣告推播設定</h3>
+            <div style="margin-bottom:16px;">
+                <label style="display:flex; align-items:center; gap:8px; font-weight:600; cursor:pointer;">
+                    <input type="checkbox" id="cfgEnabled" style="width:18px; height:18px; accent-color:var(--primary);">
+                    啟用客戶點擊「詢價單」時的小廣告彈出展示
+                </label>
+            </div>
+            <div style="margin-bottom:12px;">
+                <label style="font-size:0.85rem; font-weight:600; color:#475569; display:block; margin-bottom:4px;">廣告標題</label>
+                <input type="text" id="cfgTitle" class="search-input" style="width:100%;">
+            </div>
+            <div style="margin-bottom:12px;">
+                <label style="font-size:0.85rem; font-weight:600; color:#475569; display:block; margin-bottom:4px;">詩意標語</label>
+                <input type="text" id="cfgPoem" class="search-input" style="width:100%;">
+            </div>
+            <div style="margin-bottom:16px;">
+                <label style="font-size:0.85rem; font-weight:600; color:#475569; display:block; margin-bottom:4px;">廣告推播文案</label>
+                <textarea id="cfgPitch" style="width:100%; height:80px; padding:10px; border:1px solid var(--border); border-radius:8px; font-size:0.88rem;"></textarea>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn btn-outline" onclick="closeConfigModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveConfig()">儲存設定</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allLeads = [];
+        let currentConfig = {};
+        let editingLeadId = null;
+
+        // Check login on start
+        window.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('yt_admin_token') || sessionStorage.getItem('yt_admin_token');
+            if (token) {
+                document.getElementById('loginModal').style.display = 'none';
+                loadLeads();
+                setInterval(loadLeads, 45000); // 靜默背景自動檢查
+            } else {
+                document.getElementById('loginModal').style.display = 'flex';
+            }
+        });
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const pwd = document.getElementById('adminPwd').value.trim();
+            const errEl = document.getElementById('loginError');
+            errEl.style.display = 'none';
+
+            try {
+                const res = await fetch('/api_yangtech.php?action=login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: pwd })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    localStorage.setItem('yt_admin_token', data.token);
+                    document.getElementById('loginModal').style.display = 'none';
+                    loadLeads();
+                } else {
+                    errEl.textContent = data.message || '密碼錯誤';
+                    errEl.style.display = 'block';
+                }
+            } catch (err) {
+                errEl.textContent = '連線失敗，請稍候再試';
+                errEl.style.display = 'block';
+            }
+        }
+
+        function logout() {
+        localStorage.removeItem('yt_admin_token');
+        sessionStorage.removeItem('yt_admin_token');
+        try {
+            fetch('/api_yangtech.php?action=logout', { method: 'POST' });
+        } catch (e) {}
+        document.getElementById('loginModal').style.display = 'flex';
+        location.reload();
+    }
+
+        function getAuthHeader() {
+            const token = localStorage.getItem('yt_admin_token') || sessionStorage.getItem('yt_admin_token') || '';
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) {
+                headers['Authorization'] = 'Bearer ' + token;
+            }
+            return headers;
+        }
+
+        async function loadLeads() {
+            try {
+                const res = await fetch('/api_yangtech.php?action=list_leads', { headers: getAuthHeader() });
+                if (res.status === 401) {
+                    logout();
+                    return;
+                }
+                const data = await res.json();
+                if (data.success) {
+                    allLeads = data.leads || [];
+                    currentConfig = data.config || {};
+                    updateKpis();
+                    loadTrafficStats();
+                    renderTable();
+                }
+            } catch (err) {
+                console.error('Failed to load leads:', err);
+            }
+        }
+
+        function updateKpis() {
+            document.getElementById('kpiTotal').textContent = allLeads.length;
+            const newCount = allLeads.filter(l => l.status === '新進洽詢').length;
+            const discussCount = allLeads.filter(l => l.status === '已聯繫洽談' || l.status === '需求評估報價').length;
+            document.getElementById('kpiNew').textContent = newCount;
+            document.getElementById('kpiDiscuss').textContent = discussCount;
+
+            document.getElementById('kpiAdClicks').textContent = currentConfig.clicks || 0;
+            document.getElementById('kpiAdImpr').textContent = currentConfig.impressions || 0;
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('leadsTbody');
+            const q = document.getElementById('searchInput').value.toLowerCase().trim();
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            const filtered = allLeads.filter(l => {
+                const matchesStatus = (statusFilter === 'ALL') || (l.status === statusFilter);
+                const matchesQ = !q || 
+                    (l.company && l.company.toLowerCase().includes(q)) ||
+                    (l.name && l.name.toLowerCase().includes(q)) ||
+                    (l.phone && l.phone.toLowerCase().includes(q)) ||
+                    (l.service_type && l.service_type.toLowerCase().includes(q)) ||
+                    (l.message && l.message.toLowerCase().includes(q));
+                return matchesStatus && matchesQ;
+            });
+
+            document.getElementById('leadsCountBadge').textContent = `${filtered.length} 筆`;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:36px; color:var(--text-muted);">無符合條件的洽詢案件</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(lead => {
+                const statusClass = {
+                    '新進洽詢': 'status-new',
+                    '已聯繫洽談': 'status-contacted',
+                    '需求評估報價': 'status-quoting',
+                    '已簽約成交': 'status-signed',
+                    '結案存檔': 'status-closed'
+                }[lead.status] || 'status-new';
+
+                const memoDisplay = lead.notes ? escapeHtml(lead.notes) : '點擊新增備忘...';
+
+                return `
+                <tr>
+                    <td>
+                        <div class="lead-id">${escapeHtml(lead.id)}</div>
+                        <div style="font-size:0.75rem; color:#94a3b8;">${escapeHtml(lead.created_at)}</div>
+                    </td>
+                    <td>
+                        <div class="lead-company">${escapeHtml(lead.company)}</div>
+                        <div class="lead-name">👤 ${escapeHtml(lead.name)}</div>
+                    </td>
+                    <td>
+                        <a href="tel:${escapeHtml(lead.phone)}" class="contact-pill" title="立即通話">📞 ${escapeHtml(lead.phone)}</a><br>
+                        ${lead.email && lead.email !== '未填寫' ? `<a href="mailto:${escapeHtml(lead.email)}" class="contact-pill" title="發送郵件">✉️ ${escapeHtml(lead.email)}</a><br>` : ''}
+                        ${lead.line_id && lead.line_id !== '未填寫' ? `<span class="contact-pill" style="background:#ecfdf5; color:#065f46;">💬 LINE: ${escapeHtml(lead.line_id)}</span>` : ''}
+                    </td>
+                    <td>
+                        <div style="font-weight:600; color:var(--primary-dark);">${escapeHtml(lead.service_type)}</div>
+                        <div style="font-size:0.8rem; color:#64748b;">預算：${escapeHtml(lead.budget)}</div>
+                    </td>
+                    <td>
+                        <div style="max-width:240px; font-size:0.83rem; color:#334155; line-height:1.4;">${escapeHtml(lead.message || '無額外說明')}</div>
+                    </td>
+                    <td>
+                        <select class="status-select ${statusClass}" onchange="changeStatus('${lead.id}', this.value)">
+                            <option value="新進洽詢" ${lead.status === '新進洽詢' ? 'selected' : ''}>新進洽詢</option>
+                            <option value="已聯繫洽談" ${lead.status === '已聯繫洽談' ? 'selected' : ''}>已聯繫洽談</option>
+                            <option value="需求評估報價" ${lead.status === '需求評估報價' ? 'selected' : ''}>需求評估報價</option>
+                            <option value="已簽約成交" ${lead.status === '已簽約成交' ? 'selected' : ''}>已簽約成交</option>
+                            <option value="結案存檔" ${lead.status === '結案存檔' ? 'selected' : ''}>結案存檔</option>
+                        </select>
+                    </td>
+                    <td>
+                        <div class="memo-preview" onclick="openMemoModal('${lead.id}')">${memoDisplay}</div>
+                    </td>
+                    <td>
+                        <button class="btn btn-outline btn-sm" onclick="openFbConverterModal('${lead.id}')" title="智能轉化為官方FB技術Q&A貼文" style="color:#1877f2; border-color:#93c5fd; font-weight:600;">🤖 轉FB技術文</button>
+                        <button class="btn btn-outline btn-sm" onclick="copyLeadInfo('${lead.id}')" title="複製案件資料" style="color:#0d9488;">📋 複製</button>
+                        <button class="btn btn-outline btn-sm" style="color:#ef4444;" onclick="deleteLead('${lead.id}')" title="刪除案件">🗑️</button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        async function changeStatus(id, newStatus) {
+            try {
+                const res = await fetch('/api_yangtech.php?action=update_lead', {
+                    method: 'POST',
+                    headers: getAuthHeader(),
+                    body: JSON.stringify({ id, status: newStatus })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    const lead = allLeads.find(l => l.id === id);
+                    if (lead) lead.status = newStatus;
+                    updateKpis();
+                    loadTrafficStats();
+                    renderTable();
+                } else {
+                    alert(data.message || '更新失敗');
+                }
+            } catch (err) {
+                alert('網路錯誤');
+            }
+        }
+
+        function openMemoModal(id) {
+            editingLeadId = id;
+            const lead = allLeads.find(l => l.id === id);
+            if (!lead) return;
+            document.getElementById('memoLeadInfo').textContent = `${lead.company} - ${lead.name} (${lead.id})`;
+            document.getElementById('memoText').value = lead.notes || '';
+            document.getElementById('memoModal').style.display = 'flex';
+        }
+
+        function closeMemoModal() {
+            document.getElementById('memoModal').style.display = 'none';
+            editingLeadId = null;
+        }
+
+        async function saveMemo() {
+            if (!editingLeadId) return;
+            const notes = document.getElementById('memoText').value.trim();
+            try {
+                const res = await fetch('/api_yangtech.php?action=update_lead', {
+                    method: 'POST',
+                    headers: getAuthHeader(),
+                    body: JSON.stringify({ id: editingLeadId, notes })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    const lead = allLeads.find(l => l.id === editingLeadId);
+                    if (lead) lead.notes = notes;
+                    closeMemoModal();
+                    renderTable();
+                } else {
+                    alert(data.message || '儲存失敗');
+                }
+            } catch (err) {
+                alert('網路錯誤');
+            }
+        }
+
+        async function deleteLead(id) {
+            if (!confirm(`確定要刪除案件 ${id} 嗎？此操作無法還原。`)) return;
+            try {
+                const res = await fetch('/api_yangtech.php?action=delete_lead', {
+                    method: 'POST',
+                    headers: getAuthHeader(),
+                    body: JSON.stringify({ id })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    allLeads = allLeads.filter(l => l.id !== id);
+                    updateKpis();
+                    loadTrafficStats();
+                    renderTable();
+                }
+            } catch (err) {
+                alert('刪除失敗');
+            }
+        }
+
+        function openConfigModal() {
+            document.getElementById('cfgEnabled').checked = !!currentConfig.ad_enabled;
+            document.getElementById('cfgTitle').value = currentConfig.ad_title || '';
+            document.getElementById('cfgPoem').value = currentConfig.ad_poem || '';
+            document.getElementById('cfgPitch').value = currentConfig.ad_pitch || '';
+            document.getElementById('configModal').style.display = 'flex';
+        }
+
+        function closeConfigModal() {
+            document.getElementById('configModal').style.display = 'none';
+        }
+
+        async function saveConfig() {
+            const body = {
+                ad_enabled: document.getElementById('cfgEnabled').checked,
+                ad_title: document.getElementById('cfgTitle').value.trim(),
+                ad_poem: document.getElementById('cfgPoem').value.trim(),
+                ad_pitch: document.getElementById('cfgPitch').value.trim()
+            };
+            try {
+                const res = await fetch('/api_yangtech.php?action=update_config', {
+                    method: 'POST',
+                    headers: getAuthHeader(),
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    currentConfig = data.config;
+                    alert('設定已儲存！');
+                    closeConfigModal();
+                }
+            } catch (err) {
+                alert('設定儲存失敗');
+            }
+        }
+
+        function exportCsv() {
+            const token = localStorage.getItem('yt_admin_token') || sessionStorage.getItem('yt_admin_token') || '';
+            window.open(`/api_yangtech.php?action=export_csv&token=${token}`, '_blank');
+        }
+
+        
+        function copyLeadInfo(id) {
+            const l = allLeads.find(item => item.id === id);
+            if (!l) return;
+            const text = `【揚州專案洽詢】\n案件編號：${l.id}\n客戶公司：${l.company}\n聯絡人：${l.name}\n電話：${l.phone}\n信箱：${l.email}\nLINE：${l.line_id}\n諮詢項目：${l.service_type}\n預算：${l.budget}\n需求簡述：${l.message}\n備忘：${l.notes || '無'}`;
+            navigator.clipboard.writeText(text).then(() => {
+                alert(`✅ 案件 ${l.id} 客戶資料已成功複製至剪貼簿！可直接貼至 LINE 或筆記。`);
+            }).catch(() => {
+                alert('複製失敗，請手動選取');
+            });
+        }
+    
+        
+        function openBackupModal() {
+            document.getElementById('backupFeedback').style.display = 'none';
+            document.getElementById('backupModal').style.display = 'flex';
+        }
+        function closeBackupModal() {
+            document.getElementById('backupModal').style.display = 'none';
+        }
+        function downloadJsonBackup() {
+            const token = localStorage.getItem('yt_admin_token') || sessionStorage.getItem('yt_admin_token') || '';
+            window.open(`/api_yangtech.php?action=download_backup&token=${token}`, '_blank');
+        }
+        async function triggerManualSync() {
+            const btn = document.getElementById('btnSyncCloud');
+            const fb = document.getElementById('backupFeedback');
+            btn.disabled = true;
+            btn.textContent = '同步中...';
+            fb.style.display = 'none';
+            try {
+                const res = await fetch('/api_yangtech.php?action=cloud_sync_all', {
+                    method: 'POST',
+                    headers: getAuthHeader()
+                });
+                const data = await res.json();
+                fb.style.display = 'block';
+                if (data.success) {
+                    fb.style.color = '#059669';
+                    fb.textContent = data.message || '✅ 異地雙軌雲端備份同步完成！';
+                } else {
+                    fb.style.color = '#ef4444';
+                    fb.textContent = data.message || '同步失敗';
+                }
+            } catch (e) {
+                fb.style.display = 'block';
+                fb.style.color = '#ef4444';
+                fb.textContent = '連線失敗，請稍後再試';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🔄 立即全量雲端鏡像同步';
+            }
+        }
+
+        async function testLineNotify() {
+            const btn = document.getElementById('btnTestLine');
+            const oldText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '⏳ 發送中...';
+            try {
+                const res = await fetch('/api_yangtech.php?action=test_line_notify', { headers: getAuthHeader() });
+                const data = await res.json();
+                if (data.success) {
+                    alert('✅ 測試發送成功！\n\n' + data.message + '\n\n您可打開手機 LINE 官方帳號【法寶實業】查看最新通報訊息。');
+                } else {
+                    alert('❌ 發送失敗：' + (data.message || '未知錯誤'));
+                }
+            } catch (err) {
+                alert('❌ 連線異常：' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = oldText;
+            }
+        }
+        function restoreFromFile() {
+            const fileInput = document.getElementById('backupFileInput');
+            const fb = document.getElementById('backupFeedback');
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('請先選取備份 JSON 檔案');
+                return;
+            }
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    const leads = parsed.leads || parsed;
+                    if (!Array.isArray(leads)) {
+                        alert('檔案內容格式不符合備份結構');
+                        return;
+                    }
+                    if (!confirm(`確定要從此備份檔恢復 ${leads.length} 筆案件嗎？當前現有資料將會被自動儲存為快照。`)) return;
+                    
+                    const res = await fetch('/api_yangtech.php?action=restore_backup', {
+                        method: 'POST',
+                        headers: getAuthHeader(),
+                        body: JSON.stringify({ leads: leads, config: parsed.config })
+                    });
+                    const data = await res.json();
+                    fb.style.display = 'block';
+                    if (data.success) {
+                        fb.style.color = '#059669';
+                        fb.textContent = data.message || '🎉 資料已成功還原！';
+                        loadLeads();
+                    } else {
+                        fb.style.color = '#ef4444';
+                        fb.textContent = data.message || '還原失敗';
+                    }
+                } catch (err) {
+                    alert('JSON 檔案解析失敗，請確認檔案有效性');
+                }
+            };
+            reader.readAsText(file);
+        }
+    
+        
+        async function loadTrafficStats() {
+            try {
+                const res = await fetch('/api_yangtech.php?action=get_traffic_stats', { headers: getAuthHeader() });
+                const data = await res.json();
+                if (data.success) {
+                    renderTrafficDashboard(data);
+                }
+            } catch (err) {
+                console.error('Failed to load traffic stats:', err);
+            }
+        }
+
+        async function resetTrafficStats() {
+            if (!confirm('確定要將法寶與揚州官網的訪客與瀏覽次數全部歸零重置嗎？\n（重置後將從 0 重新開始計算真實造訪）')) {
+                return;
+            }
+            try {
+                const res = await fetch('/api_yangtech.php?action=reset_traffic_stats', {
+                    method: 'POST',
+                    headers: getAuthHeader()
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('流量統計已成功歸零！');
+                    loadTrafficStats();
+                } else {
+                    alert(data.message || '歸零失敗');
+                }
+            } catch (err) {
+                alert('網路請求失敗');
+            }
+        }
+
+        function renderTrafficDashboard(data) {
+            const t = data.today || {};
+            const y = data.yesterday || {};
+            const tot = data.totals || {};
+
+            document.getElementById('tfFapoPv').innerHTML = `${t.fapo_pv || 0} <span style="font-size:0.8rem; font-weight:500; color:#64748b;">次瀏覽</span>`;
+            document.getElementById('tfFapoUv').textContent = `${t.fapo_uv || 0} 人造訪`;
+            document.getElementById('tfFapoYest').textContent = `${y.fapo_pv || 0} 次 (${y.fapo_uv || 0} 人)`;
+
+            document.getElementById('tfYtPv').innerHTML = `${t.yangtech_pv || 0} <span style="font-size:0.8rem; font-weight:500; color:#64748b;">次瀏覽</span>`;
+            document.getElementById('tfYtUv').textContent = `${t.yangtech_uv || 0} 人造訪`;
+            document.getElementById('tfYtYest').textContent = `${y.yangtech_pv || 0} 次 (${y.yangtech_uv || 0} 人)`;
+
+            document.getElementById('tfTotalFapo').innerHTML = `${(tot.total_fapo_pv || 0).toLocaleString()} <span style="font-size:0.8rem; font-weight:500; color:#64748b;">次</span>`;
+            document.getElementById('tfTotalYt').innerHTML = `${(tot.total_yangtech_pv || 0).toLocaleString()} <span style="font-size:0.8rem; font-weight:500; color:#64748b;">次</span>`;
+
+            // Render 7 Days Table
+            const tbody = document.getElementById('traffic7DaysTbody');
+            const list = data.last_7_days || [];
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:18px; color:#94a3b8;">暫無紀錄</td></tr>';
+                return;
+            }
+
+            const maxPv = Math.max(...list.map(item => Math.max(item.fapo_pv, item.yangtech_pv)), 10);
+
+            tbody.innerHTML = list.map(row => {
+                const isToday = row.date === t.date;
+                const fapoWidth = Math.min(Math.round((row.fapo_pv / maxPv) * 100), 100);
+                const ytWidth = Math.min(Math.round((row.yangtech_pv / maxPv) * 100), 100);
+
+                return `
+                <tr style="${isToday ? 'background:#f0fdf4; font-weight:600;' : ''}">
+                    <td>
+                        <span>${escapeHtml(row.label)}</span>
+                        ${isToday ? '<span style="font-size:0.72rem; background:#10b981; color:#fff; padding:1px 5px; border-radius:4px; margin-left:4px;">今日</span>' : ''}
+                    </td>
+                    <td style="color:#166534; font-weight:700;">${row.fapo_pv} 次</td>
+                    <td>${row.fapo_uv} 人</td>
+                    <td style="color:#0d9488; font-weight:700;">${row.yangtech_pv} 次</td>
+                    <td>${row.yangtech_uv} 人</td>
+                    <td>
+                        <div style="display:flex; flex-direction:column; gap:4px; width:180px;">
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                <span style="font-size:0.7rem; color:#166534; width:30px;">法寶</span>
+                                <div style="flex:1; height:6px; background:#e2e8f0; border-radius:3px; overflow:hidden;">
+                                    <div style="width:${fapoWidth}%; height:100%; background:#10b981;"></div>
+                                </div>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                <span style="font-size:0.7rem; color:#0d9488; width:30px;">揚州</span>
+                                <div style="flex:1; height:6px; background:#e2e8f0; border-radius:3px; overflow:hidden;">
+                                    <div style="width:${ytWidth}%; height:100%; background:#0d9488;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                `;
+            }).reverse().join('');
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        // Facebook Smart Technical Post Disguiser
+        let currentFbLeadId = null;
+
+        function openFbConverterModal(leadId) {
+            currentFbLeadId = leadId;
+            document.getElementById('fbPublishFeedback').style.display = 'none';
+            const btn = document.getElementById('btnPublishFb');
+            btn.disabled = false;
+            btn.textContent = '🚀 一鍵發布至 Facebook 粉專';
+
+            let lead = null;
+            if (leadId) {
+                lead = allLeads.find(l => l.id === leadId);
+            }
+
+            let defaultTopic = "7075-T6 航太超硬鋁板高速切削與應力消除技巧";
+            let defaultImg = "https://fapolu.com.tw/static/img_factory/warehouse_wood_pallets_plates.jpg";
+
+            if (lead) {
+                const rawMsg = ((lead.message || '') + ' ' + (lead.service_type || '')).toLowerCase();
+                if (rawMsg.includes('7075') || rawMsg.includes('鋁')) {
+                    defaultTopic = "7075-T6 航太超硬鋁板高速銑削與應力消除技巧";
+                    defaultImg = "https://fapolu.com.tw/static/img_factory/warehouse_wood_pallets_plates.jpg";
+                } else if (rawMsg.includes('skd11') || rawMsg.includes('skd61') || rawMsg.includes('模具') || rawMsg.includes('沖頭')) {
+                    defaultTopic = "SKD11 與 SKD61 模具鋼耐磨度與熱疲勞壽命優化";
+                    defaultImg = "https://fapolu.com.tw/static/img_factory/prod_aerospace_billets_bars.jpg";
+                } else if (rawMsg.includes('5052') || rawMsg.includes('陽極') || rawMsg.includes('鈑金')) {
+                    defaultTopic = "日本 UACJ 5052-H32 貼膜鋁板陽極氧化均勻度探討";
+                    defaultImg = "https://fapolu.com.tw/static/img_factory/warehouse_heavy_plates_stacked.jpg";
+                } else if (rawMsg.includes('s50c') || rawMsg.includes('scm440') || rawMsg.includes('紅十字') || rawMsg.includes('軸')) {
+                    defaultTopic = "重負載傳動軸與機械結構件材料調質選用 (S50C vs SCM440)";
+                    defaultImg = "https://fapolu.com.tw/static/img_factory/warehouse_heavy_plates_stacked.jpg";
+                } else {
+                    defaultTopic = "特殊合金鋼與高階鋁合金精密裁切公差控制實務";
+                    defaultImg = "https://fapolu.com.tw/static/img_factory/machining_heavy_sawing_bay.jpg";
+                }
+            }
+
+            document.getElementById('fbPostTopic').value = defaultTopic;
+            document.getElementById('fbPostImageSelect').value = defaultImg;
+            updateFbPostImagePreview();
+            updateFbGeneratedPost();
+
+            document.getElementById('fbModal').style.display = 'flex';
+        }
+
+        function closeFbModal() {
+            document.getElementById('fbModal').style.display = 'none';
+        }
+
+        function updateFbPostImagePreview() {
+            const url = document.getElementById('fbPostImageSelect').value;
+            document.getElementById('fbPostImagePreview').src = url;
+        }
+
+        function updateFbGeneratedPost() {
+            const topic = document.getElementById('fbPostTopic').value.trim() || '精密材料選材與切削工藝';
+            
+            const post = `【法寶材料技術講堂 · 實務答客問精選】⚙️
+
+近日有許多精密模具與機械加工夥伴向我們的工程團隊諮詢：
+『請問在面對【${topic}】時，工藝上如何取得最佳壽命與精度？』
+
+💡 法寶材料工程技術部在此為各位業界先進深度解析：
+1️⃣ 核心材質特性把關：嚴選材料內部金相組織均勻度，確保無砂孔、偏析或雜質缺陷，出廠每批材料皆可追溯材質證明。
+2️⃣ 加工與應力控制建議：大面積開粗建議階梯式均勻對稱去肉，若為高應力件需選擇具備應力消除處理（如 T651 預拉伸／均勻預退火）之板材，防止切削後反彈變形。
+3️⃣ 表面與防刮防護：精密工件建議搭配原裝高黏度保護藍膜，下料裁切全程防護，減少後續研磨拋光工時與表面刮痕耗損。
+
+🏭 法寶金屬深耕台灣近40年，台北、台中、台南三地發貨聯動，常備數千項特殊鋼、模具鋼與超厚鋁合金現貨！
+歡迎各大模具廠、自動化設備廠與機械加工先進隨時交流探討！
+
+🌐 官方規格資料庫即時查詢：https://fapolu.com.tw
+📞 台北總公司：(02) 2718-3134
+📞 中部物流中心：(04) 2258-4931
+📞 南部營運中心：(06) 726-3666
+
+#法寶金屬 #材料工程 #金屬加工 #精密裁切 #模具鋼 #鋁合金 #現貨供應`;
+
+            document.getElementById('fbPostText').value = post;
+        }
+
+        async function submitPublishFb() {
+            const message = document.getElementById('fbPostText').value.trim();
+            const imageUrl = document.getElementById('fbPostImageSelect').value;
+            const btn = document.getElementById('btnPublishFb');
+            const fb = document.getElementById('fbPublishFeedback');
+
+            if (!message) {
+                alert('請先輸入貼文內容！');
+                return;
+            }
+
+            if (!confirm('確認要將這篇以官方名義包裝的技術專欄發布至 Facebook 粉絲專頁嗎？')) {
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = '⏳ 正在連線 Meta API 發布中...';
+            fb.style.display = 'none';
+
+            try {
+                const res = await fetch('/api_yangtech.php?action=publish_fb_post', {
+                    method: 'POST',
+                    headers: getAuthHeader(),
+                    body: JSON.stringify({
+                        message: message,
+                        image_url: imageUrl,
+                        lead_id: currentFbLeadId
+                    })
+                });
+
+                const data = await res.json();
+                fb.style.display = 'block';
+
+                if (data.success) {
+                    fb.style.background = '#f0fdf4';
+                    fb.style.border = '1px solid #bbf7d0';
+                    fb.style.color = '#166534';
+                    fb.innerHTML = `🎉 <strong>發布成功！</strong> 已同步推播至 Facebook！<br><a href="${data.permalink_url}" target="_blank" style="color:#1877f2; text-decoration:underline; font-weight:700; margin-top:6px; display:inline-block;">👉 點此前往 Facebook 查看此貼文</a>`;
+                    btn.textContent = '✅ 已發布完成';
+                    if (currentFbLeadId) {
+                        loadLeads();
+                    }
+                } else {
+                    fb.style.background = '#fef2f2';
+                    fb.style.border = '1px solid #fecaca';
+                    fb.style.color = '#991b1b';
+                    fb.textContent = '❌ 發布失敗: ' + (data.message || '未知錯誤');
+                    btn.disabled = false;
+                    btn.textContent = '🚀 重試發布';
+                }
+            } catch (err) {
+                fb.style.display = 'block';
+                fb.style.background = '#fef2f2';
+                fb.style.color = '#991b1b';
+                fb.textContent = '❌ 網路請求失敗，請檢查連線';
+                btn.disabled = false;
+                btn.textContent = '🚀 重試發布';
+            }
+        }
+    </script>
+
+    <!-- Change Password Modal -->
+    <div id="pwdModal" class="modal-backdrop">
+        <div class="modal-box" style="max-width:440px;">
+            <h3 style="margin-bottom:14px; font-size:1.1rem; color:#0f172a;">🔑 修改後台管理密碼</h3>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:14px;">設定後，下次登入管理後台將使用新密碼驗證。</p>
+            <div style="margin-bottom:14px;">
+                <label style="font-size:0.85rem; font-weight:600; color:#475569; display:block; margin-bottom:4px;">新密碼 (至少 4 碼)</label>
+                <input type="password" id="newAdminPwd" class="search-input" style="width:100%;" placeholder="請輸入新管理密碼">
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn btn-outline" onclick="closePwdModal()">取消</button>
+                <button class="btn btn-primary" onclick="submitNewPassword()">確認更新密碼</button>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- Cloud Backup & Disaster Recovery Center Modal -->
+    <div id="backupModal" class="modal-backdrop">
+        <div class="modal-box" style="max-width:540px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <h3 style="font-size:1.15rem; color:#0f172a; display:flex; align-items:center; gap:8px;">
+                    <span>☁️ 雙軌雲端安全災備中心</span>
+                </h3>
+                <button type="button" class="btn btn-outline btn-sm" onclick="closeBackupModal()">✕</button>
+            </div>
+
+            <!-- Dual Cloud Status Banner -->
+            <div style="background:#f0fdf4; border:1px solid #a7f3d0; border-radius:12px; padding:14px; margin-bottom:18px;">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                    <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#10b981;"></span>
+                    <strong style="font-size:0.9rem; color:#065f46;">雙軌即時異地備份機制：運作中</strong>
+                </div>
+                <div style="font-size:0.8rem; color:#047857; line-height:1.5;">
+                    • <b>主節點 (Plesk NVMe)</b>：即時寫入，提供毫秒級存取。<br>
+                    • <b>異地節點 (Render Cloud)</b>：客戶每送出一筆諮詢，即時同步鏡像存檔。<br>
+                    • <b>快照機制</b>：每日自動產生時間戳記歷史版本，永不遺失。
+                </div>
+            </div>
+
+            <!-- Actions Grid -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:18px;">
+                <button type="button" class="btn btn-primary" onclick="downloadJsonBackup()" style="justify-content:center; padding:12px; font-size:0.88rem;">
+                    📥 下載完整 JSON 備份檔
+                </button>
+                <button type="button" class="btn btn-outline" onclick="triggerManualSync()" id="btnSyncCloud" style="justify-content:center; padding:12px; font-size:0.88rem;">
+                    🔄 立即全量雲端鏡像同步
+                </button>
+            </div>
+
+            <!-- Restore from local file section -->
+            <div style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:10px; padding:14px;">
+                <div style="font-size:0.85rem; font-weight:700; color:#334155; margin-bottom:6px;">📤 災備還原：從本機 JSON 備份檔匯入</div>
+                <p style="font-size:0.78rem; color:#64748b; margin-bottom:10px;">若需要還原或遷移至新伺服器，請選取先前下載的 <code>.json</code> 備份檔：</p>
+                <input type="file" id="backupFileInput" accept=".json" style="font-size:0.82rem; margin-bottom:10px;">
+                <div>
+                    <button type="button" class="btn btn-outline btn-sm" onclick="restoreFromFile()" style="color:#0284c7; border-color:#0284c7;">
+                        確認由檔案還原數據
+                    </button>
+                </div>
+            </div>
+
+            <div id="backupFeedback" style="margin-top:12px; font-size:0.85rem; text-align:center; display:none;"></div>
+        </div>
+    </div>
+
+    <!-- Facebook Smart Technical Post Disguiser Modal -->
+    <div id="fbModal" class="modal-backdrop">
+        <div class="modal-box" style="max-width:620px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                <h3 style="font-size:1.15rem; color:#0f172a; display:flex; align-items:center; gap:8px;">
+                    <span>📢 官方 Facebook 技術專欄發文轉換器</span>
+                </h3>
+                <button onclick="closeFbModal()" style="background:none; border:none; font-size:1.3rem; cursor:pointer; color:#94a3b8;">&times;</button>
+            </div>
+
+            <!-- Privacy Guarantee Banner -->
+            <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px 14px; margin-bottom:16px; font-size:0.83rem; color:#166534; display:flex; gap:8px; align-items:center;">
+                <span>🛡️</span>
+                <div><strong>隱私自動脫敏安全保護：</strong>客戶姓名、電話、公司名稱與報價等商業資訊已 100% 遮蔽，僅萃取純材料／切削／熱處理工藝，偽裝成法寶金屬官方工程團隊專欄！</div>
+            </div>
+
+            <div style="margin-bottom:12px;">
+                <label style="font-size:0.83rem; font-weight:700; color:#334155; display:block; margin-bottom:4px;">🎯 諮詢技術主題／核心問題：</label>
+                <input type="text" id="fbPostTopic" class="search-input" style="width:100%;" placeholder="例如：7075-T6 銑削變形與消除應力技巧" oninput="updateFbGeneratedPost()">
+            </div>
+
+            <div style="margin-bottom:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <label style="font-size:0.83rem; font-weight:700; color:#334155;">📝 官方 Facebook 貼文內容預覽（可直接編輯修改）：</label>
+                    <button class="btn btn-outline btn-sm" style="font-size:0.75rem; padding:2px 8px;" onclick="updateFbGeneratedPost()">🔄 重新套用專家範本</button>
+                </div>
+                <textarea id="fbPostText" style="width:100%; height:200px; padding:10px; border:1px solid var(--border); border-radius:8px; font-size:0.86rem; line-height:1.5; font-family:inherit; resize:vertical;"></textarea>
+            </div>
+
+            <div style="margin-bottom:18px;">
+                <label style="font-size:0.83rem; font-weight:700; color:#334155; display:block; margin-bottom:6px;">📷 選擇官方配圖：</label>
+                <div style="display:flex; gap:12px; align-items:center;">
+                    <select id="fbPostImageSelect" class="filter-select" style="flex:1;" onchange="updateFbPostImagePreview()">
+                        <option value="https://fapolu.com.tw/static/img_factory/warehouse_heavy_plates_stacked.jpg">🏭 厚板與特殊鋼常備在庫實景 (S50C/SCM440)</option>
+                        <option value="https://fapolu.com.tw/static/img_factory/warehouse_wood_pallets_plates.jpg">📦 萬坪原木棧板與高階鋁板倉 (7075/5052)</option>
+                        <option value="https://fapolu.com.tw/static/img_factory/machining_heavy_sawing_bay.jpg">⚙️ 大型數控鋸床與精密裁切中心 (裁切加工)</option>
+                        <option value="https://fapolu.com.tw/static/img_factory/prod_aerospace_billets_bars.jpg">✈️ 航太級高韌性鍛造圓棒 (SKD11/SKD61)</option>
+                        <option value="https://fapolu.com.tw/static/img_factory/factory_gate_facade.jpg">🚛 現代化廠區門面與直營物流車隊 (全台直發)</option>
+                    </select>
+                    <img id="fbPostImagePreview" src="https://fapolu.com.tw/static/img_factory/warehouse_heavy_plates_stacked.jpg" style="width:72px; height:48px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1;">
+                </div>
+            </div>
+
+            <div id="fbPublishFeedback" style="display:none; padding:10px; border-radius:8px; font-size:0.86rem; margin-bottom:14px;"></div>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn btn-outline" onclick="closeFbModal()">關閉</button>
+                <button class="btn btn-primary" id="btnPublishFb" style="background:#1877f2; border-color:#1877f2;" onclick="submitPublishFb()">🚀 一鍵發布至 Facebook 粉專</button>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

@@ -266,6 +266,7 @@ if ($route === 'admin/login' && $method === 'POST') {
 }
 
 if ($route === 'admin/logout' && $method === 'POST') {
+    $_SESSION['is_admin'] = false;
     unset($_SESSION['is_admin']);
     @session_destroy();
     echo json_encode(array('success' => true, 'message' => '已成功登出'));

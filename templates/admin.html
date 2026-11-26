@@ -640,11 +640,12 @@
         }
 
         function getAuthHeader() {
-            const token = getAuthToken() || 'yangtech2026';
-            return {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
-            };
+            const token = getAuthToken();
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) {
+                headers['Authorization'] = 'Bearer ' + token;
+            }
+            return headers;
         }
 
         function showLogin() {
@@ -1764,9 +1765,15 @@ function doPost(e) {
         }
 
         async function logoutAdmin() {
-            await fetch('/api/admin/logout', { method: 'POST' });
+            sessionStorage.removeItem('fapo_admin_token');
+            localStorage.removeItem('fapo_admin_token');
+            try {
+                await fetch('/api/admin/logout', { method: 'POST' });
+            } catch (e) {}
+            showLogin();
             window.location.reload();
         }
+        window.logout = logoutAdmin;
 
         // =====================================================================
         //  Admin Tab Switching (Inquiries vs Specs CRUD)
