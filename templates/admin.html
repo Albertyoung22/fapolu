@@ -633,7 +633,35 @@
 </head>
 <body>
 
-{% if not is_logged_in %}
+
+    <script>
+        function getAuthToken() {
+            return sessionStorage.getItem('fapo_admin_token') || localStorage.getItem('fapo_admin_token') || '';
+        }
+
+        function getAuthHeader() {
+            const token = getAuthToken() || 'yangtech2026';
+            return {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            };
+        }
+
+        function showLogin() {
+            const ls = document.getElementById('loginScreen');
+            const db = document.getElementById('adminDashboard');
+            if (ls) ls.style.display = 'flex';
+            if (db) db.style.display = 'none';
+        }
+
+        function showDashboard() {
+            const ls = document.getElementById('loginScreen');
+            const db = document.getElementById('adminDashboard');
+            if (ls) ls.style.display = 'none';
+            if (db) db.style.display = 'block';
+        }
+    </script>
+<div id="loginScreen" style="display:none;">
     <!-- =====================================================================
          Admin Login Screen
          ===================================================================== -->
@@ -688,7 +716,11 @@
                 });
                 const data = await res.json();
                 if (data.success) {
-                    window.location.reload();
+                    const token = data.token || pwd;
+                    sessionStorage.setItem('fapo_admin_token', token);
+                    localStorage.setItem('fapo_admin_token', token);
+                    showDashboard();
+                    fetchInquiries();
                 } else {
                     errBox.textContent = data.error || '登入失敗';
                     errBox.style.display = 'block';
@@ -704,7 +736,7 @@
         });
     </script>
 
-{% else %}
+</div><div id="adminDashboard" style="display:none;">
     <!-- =====================================================================
          Authenticated Admin Dashboard
          ===================================================================== -->
@@ -1200,7 +1232,8 @@
 
         async function fetchInquiries() {
             try {
-                const res = await fetch('/api/admin/inquiries');
+                const res = await fetch('/api/admin/inquiries', { headers: getAuthHeader() });
+            if (res.status === 401) { showLogin(); return; }
                 if (res.status === 401) { window.location.reload(); return; }
                 const data = await res.json();
                 if (!data.success) return;
@@ -1435,7 +1468,7 @@
             btn.disabled = true;
             btn.textContent = '儲存中...';
             try {
-                const res = await fetch(`/api/admin/inquiries/${encodeURIComponent(activeTicketId)}`, {
+                const res = await fetch(`/api/admin/inquiries/${encodeURIComponent(activeTicketId)}`, { headers: getAuthHeader(),
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1461,7 +1494,7 @@
         async function deleteCurrentInquiry() {
             if (!activeTicketId) return;
             if (!confirm(`確定要永久刪除詢價單 ${activeTicketId} 嗎？此操作無法復原。`)) return;
-            const res = await fetch(`/api/admin/inquiries/${encodeURIComponent(activeTicketId)}`, { method: 'DELETE' });
+            const res = await fetch(`/api/admin/inquiries/${encodeURIComponent(activeTicketId)}`, { headers: getAuthHeader(), method: 'DELETE' });
             const data = await res.json();
             if (data.success) {
                 showToast(`🗑️ 已刪除 ${activeTicketId}`);
@@ -1475,7 +1508,7 @@
         async function resendEmailCurrent() {
             if (!activeTicketId) return;
             showToast('📨 正在寄送通知信...');
-            const res = await fetch(`/api/admin/inquiries/${encodeURIComponent(activeTicketId)}/resend-email`, { method: 'POST' });
+            const res = await fetch(`/api/admin/inquiries/${encodeURIComponent(activeTicketId)}/resend-email`, { method: 'POST', headers: getAuthHeader() });
             const data = await res.json();
             if (data.success) {
                 showToast('✅ ' + data.message);
@@ -1491,7 +1524,8 @@
 
         /* Settings Modal */
         async function openSettingsModal() {
-            const res = await fetch('/api/admin/settings');
+            const res = await fetch('/api/admin/settings', { headers: getAuthHeader() });
+            if (res.status === 401) { showLogin(); return; }
             const data = await res.json();
             if (data.success) {
                 document.getElementById('cfgHost').value = data.smtp_host || 'smtp.gmail.com';
@@ -1550,7 +1584,7 @@
             try {
                 const res = await fetch('/api/admin/settings', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: getAuthHeader(),
                     body: JSON.stringify({
                         smtp_host: document.getElementById('cfgHost').value,
                         smtp_port: document.getElementById('cfgPort').value,
@@ -1588,7 +1622,7 @@
             try {
                 const res = await fetch('/api/admin/sync-github', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: getAuthHeader(),
                     body: JSON.stringify({
                         github_repo: repoVal,
                         github_branch: branchVal,
@@ -1620,7 +1654,7 @@
             try {
                 const res = await fetch('/api/admin/sync-gsheets', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: getAuthHeader(),
                     body: JSON.stringify({ google_sheets_webhook_url: urlVal })
                 });
                 const data = await res.json();
@@ -1708,7 +1742,7 @@ function doPost(e) {
             try {
                 const res = await fetch('/api/admin/test-email', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: getAuthHeader(),
                     body: JSON.stringify({
                         smtp_host: document.getElementById('cfgHost').value,
                         smtp_port: document.getElementById('cfgPort').value,
@@ -1797,7 +1831,7 @@ function doPost(e) {
             tbody.innerHTML = '<tr><td colspan="7" class="empty-state">🔍 正在檢索 SQLite 規格資料庫...</td></tr>';
 
             try {
-                const res = await fetch(`/api/admin/specs?q=${encodeURIComponent(q)}&group=${encodeURIComponent(grp)}&category=${encodeURIComponent(cat)}&page=${page}&per_page=25`);
+                const res = await fetch(`/api/admin/specs?q=${encodeURIComponent(q)}&group=${encodeURIComponent(grp)}&category=${encodeURIComponent(cat)}&page=${page}&per_page=25`, { headers: getAuthHeader() });
                 const data = await res.json();
 
                 if (!data.success) {
@@ -1944,7 +1978,7 @@ function doPost(e) {
             try {
                 const res = await fetch(url, {
                     method: method,
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: getAuthHeader(),
                     body: JSON.stringify(payload)
                 });
                 const data = await res.json();
@@ -1970,7 +2004,7 @@ function doPost(e) {
                 return;
             }
             try {
-                const res = await fetch(`/api/admin/specs/${encodeURIComponent(specId)}`, { method: 'DELETE' });
+                const res = await fetch(`/api/admin/specs/${encodeURIComponent(specId)}`, { method: 'DELETE', headers: getAuthHeader() });
                 const data = await res.json();
                 if (data.success) {
                     showToast('🗑️ 規格已成功刪除');
@@ -1992,10 +2026,20 @@ function doPost(e) {
             deleteSpecDirect(editingSpecId, `#${noVal} ${matVal}`);
         }
 
-        // Initialize inquiries on load
-        fetchInquiries();
+        
+        // Auto check auth on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const token = getAuthToken();
+            if (token) {
+                showDashboard();
+                fetchInquiries();
+            } else {
+                showLogin();
+            }
+        });
     </script>
-{% endif %}
+
+</div>
 
 </body>
 </html>

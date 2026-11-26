@@ -1,0 +1,52 @@
+# ====================================================================
+#  法寶實業有限公司 (FAPO ENTERPRISE) LiteSpeed / Apache 伺服器規則
+# ====================================================================
+
+RewriteEngine On
+
+# 0. 跨域字型支援
+<IfModule mod_headers.c>
+    <FilesMatch "\\.(ttf|ttc|otf|eot|woff|woff2|font.css|css|js)$">
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+</IfModule>
+
+# 1. 舊版網站完全穿透：/old/ 路徑直接放行
+RewriteRule ^old/ - [L]
+
+# 2. 自動相容舊版資源路徑：wp-content, wp-includes, pic, img, images
+RewriteCond %{REQUEST_URI} ^/(wp-content|wp-includes|pic|img|images)/ [NC]
+RewriteRule ^(wp-content|wp-includes|pic|img|images)/(.*)$ /old/$1/$2 [L]
+
+# 2.5 本機極速現貨規格 API：由本地 PHP 直接讀取 JSON，0ms 延遲永不逾時
+RewriteRule ^api/specs/?$ /api_specs.php [QSA,L]
+
+# 3. 完美同源代理：將其他 /api/ 請求交由本機 api_proxy.php 代理至最新雲端運算節點
+RewriteRule ^api/(.*)$ /api_proxy.php?route=$1 [QSA,L]
+
+# 4. 乾淨網址支援：點擊 /about, /products, /specs 等自動對應到首頁
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(about|network|products|specs|machining|cases|tech|contact)/?$ /index.html [L,QSA]
+
+# 4.5 揚州數位轉型整合專屬介紹頁面
+RewriteRule ^yangtech/admin/?$ /yangtech_admin.html [L,QSA]
+RewriteRule ^(yangtech|partner)/?$ /yangtech.html [L,QSA]
+
+# 5. 業務後台直連戰國策專屬管理中心
+RewriteRule ^admin/?$ /admin.html [L,QSA]
+
+# 6. Gzip / 靜態資源快取加速
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/html "access plus 0 seconds"
+    ExpiresByType text/css "access plus 7 days"
+    ExpiresByType application/javascript "access plus 7 days"
+    ExpiresByType image/jpeg "access plus 30 days"
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/webp "access plus 30 days"
+    ExpiresByType image/svg+xml "access plus 30 days"
+    ExpiresByType font/ttf "access plus 30 days"
+    ExpiresByType font/woff "access plus 30 days"
+    ExpiresByType font/woff2 "access plus 30 days"
+</IfModule>
