@@ -699,6 +699,14 @@ def _next_ticket_id(items=None):
 
 
 def _async_notify_inquiry(inquiry_copy):
+    # 1. LINE Official Account Push Notification
+    try:
+        import line_notifier
+        line_notifier.notify_new_inquiry(inquiry_copy)
+    except Exception as line_err:
+        logging.getLogger(__name__).warning(f"LINE notification exception: {line_err}")
+
+    # 2. Email SMTP Notification
     cfg = mailer.get_smtp_config()
     if not cfg.get('enabled'):
         return

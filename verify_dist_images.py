@@ -19,3 +19,4 @@ if missing:
         print(f'MISSING: {m} -> {d}')
 else:
     print('ALL IMAGES EXIST PERFECTLY!')
+
