@@ -18,6 +18,15 @@ RewriteRule ^old/ - [L]
 RewriteCond %{REQUEST_URI} ^/(wp-content|wp-includes|pic|img|images)/ [NC]
 RewriteRule ^(wp-content|wp-includes|pic|img|images)/(.*)$ /old/$1/$2 [L]
 
+# 2.2 程式化 SEO 站點地圖與搜尋引擎指引 (Sitemap & Robots)
+RewriteRule ^robots\.txt$ /robots.txt [L]
+RewriteRule ^sitemap\.xml$ /sitemap.php [L]
+
+# 2.3 程式化 SEO 規格獨立落地頁面 (Programmatic SEO Landing Pages)
+RewriteRule ^specs/item/([0-9]+)/?$ /spec_detail.php?id=$1 [L,QSA]
+RewriteRule ^specs/category/(.+)/?$ /spec_detail.php?category=$1 [L,QSA]
+RewriteRule ^specs/alloy/([a-zA-Z0-9_-]+)/?$ /spec_detail.php?alloy=$1 [L,QSA]
+
 # 2.5 本機極速現貨規格 API：由本地 PHP 直接讀取 JSON，0ms 延遲永不逾時
 RewriteRule ^api/specs/?$ /api_specs.php [QSA,L]
 
@@ -33,8 +42,12 @@ RewriteRule ^(about|network|products|specs|machining|cases|tech|contact)/?$ /ind
 RewriteRule ^yangtech/admin/?$ /yangtech_admin.html [L,QSA]
 RewriteRule ^(yangtech|partner)/?$ /yangtech.html [L,QSA]
 
-# 5. 業務後台直連戰國策專屬管理中心
-RewriteRule ^admin/?$ /admin.html [L,QSA]
+# 4.8 報價單系統直連
+RewriteRule ^quotation/([^/]+)/?$ /quotation.html?id=$1 [L,QSA]
+RewriteRule ^quotation/?$ /quotation.html [L,QSA]
+
+# 5. 業務後台直連戰國策專屬管理中心 (支援多種路徑防瀏覽器301快取)
+RewriteRule ^(admin|crm|manage|backend)/?$ /admin.html [L,QSA]
 
 # 6. Gzip / 靜態資源快取加速
 <IfModule mod_expires.c>
