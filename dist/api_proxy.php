@@ -105,8 +105,296 @@ function check_admin_auth() {
     exit;
 }
 
-// LINE Notification Function (Broadcast to all followers)
-function trigger_line_notification($msg) {
+function build_flex_row($label, $value, $value_color = '#0f172a', $is_bold = true) {
+    return array(
+        'type' => 'box',
+        'layout' => 'horizontal',
+        'spacing' => 'sm',
+        'contents' => array(
+            array(
+                'type' => 'box',
+                'layout' => 'vertical',
+                'width' => '75px',
+                'contents' => array(
+                    array('type' => 'text', 'text' => $label, 'size' => 'xs', 'color' => '#64748b')
+                )
+            ),
+            array(
+                'type' => 'text',
+                'text' => !empty($value) ? (string)$value : '未填寫',
+                'size' => 'sm',
+                'color' => $value_color,
+                'weight' => $is_bold ? 'bold' : 'regular',
+                'wrap' => true,
+                'flex' => 1
+            )
+        )
+    );
+}
+
+function build_inquiry_flex_card($r) {
+    $tid = isset($r['id']) ? $r['id'] : 'REQ-1000';
+    $time = isset($r['timestamp']) ? $r['timestamp'] : date('Y-m-d H:i:s');
+    $company = isset($r['companyName']) && $r['companyName'] !== '' ? $r['companyName'] : '未填寫/個人';
+    $person = isset($r['contactPerson']) && $r['contactPerson'] !== '' ? $r['contactPerson'] : '未填寫';
+    $phone = isset($r['contactPhone']) && $r['contactPhone'] !== '' ? $r['contactPhone'] : '未填寫';
+    $email = isset($r['contactEmail']) && $r['contactEmail'] !== '' ? $r['contactEmail'] : '未填寫';
+    $mat = isset($r['inquiryMaterial']) && $r['inquiryMaterial'] !== '' ? $r['inquiryMaterial'] : '未指定規格';
+    $county = isset($r['deliveryCounty']) && $r['deliveryCounty'] !== '' ? $r['deliveryCounty'] : '未指定區域';
+    $branch = isset($r['branch']) && $r['branch'] !== '' ? $r['branch'] : '全台營運中心';
+    $msg = isset($r['inquiryMessage']) && $r['inquiryMessage'] !== '' ? $r['inquiryMessage'] : '無補充備註';
+    $drawing = isset($r['drawingUrl']) ? $r['drawingUrl'] : '';
+
+    $is_test = (
+        !empty($r['is_test']) ||
+        mb_strpos($company, '測試') !== false ||
+        mb_strpos($person, '測試') !== false ||
+        mb_strpos($mat, '測試') !== false ||
+        mb_strpos($msg, '測試') !== false ||
+        stripos($company, 'test') !== false ||
+        stripos($mat, 'test') !== false
+    );
+
+    $clean_phone = preg_replace('/[^\d\+]/', '', $phone);
+    if (empty($clean_phone)) $clean_phone = '0227183134';
+
+    $body_contents = array();
+
+    if ($is_test) {
+        $body_contents[] = array(
+            'type' => 'box',
+            'layout' => 'vertical',
+            'backgroundColor' => '#fef3c7',
+            'paddingAll' => '10px',
+            'cornerRadius' => '6px',
+            'contents' => array(
+                array(
+                    'type' => 'text',
+                    'text' => '📢【工程測試提醒】此單為系統升級連線測試，非真實客戶詢價，請全體同仁勿撥打電話或進行報價！',
+                    'size' => 'xs',
+                    'color' => '#b45309',
+                    'weight' => 'bold',
+                    'wrap' => true
+                )
+            )
+        );
+    }
+
+    $body_contents[] = array(
+        'type' => 'box',
+        'layout' => 'vertical',
+        'spacing' => 'sm',
+        'contents' => array(
+            build_flex_row('🏢 客戶公司', $company),
+            build_flex_row('👤 聯絡窗口', $person),
+            build_flex_row('📞 聯絡電話', $phone, '#0284c7', true),
+            build_flex_row('✉️ 電子信箱', $email, '#334155', false),
+            build_flex_row('📍 送貨區域', "{$county}（{$branch}）", '#dc2626', true)
+        )
+    );
+    $body_contents[] = array('type' => 'separator');
+    $body_contents[] = array(
+        'type' => 'box',
+        'layout' => 'vertical',
+        'spacing' => 'xs',
+        'contents' => array(
+            array('type' => 'text', 'text' => '📦 詢價規格項目：', 'size' => 'xs', 'color' => '#64748b', 'weight' => 'bold'),
+            array('type' => 'text', 'text' => $mat, 'size' => 'sm', 'color' => '#0f172a', 'weight' => 'bold', 'wrap' => true)
+        )
+    );
+    $body_contents[] = array(
+        'type' => 'box',
+        'layout' => 'vertical',
+        'spacing' => 'xs',
+        'contents' => array(
+            array('type' => 'text', 'text' => '💬 需求備註：', 'size' => 'xs', 'color' => '#64748b'),
+            array('type' => 'text', 'text' => $msg, 'size' => 'xs', 'color' => '#475569', 'wrap' => true)
+        )
+    );
+
+    if (!empty($drawing)) {
+        $body_contents[] = array(
+            'type' => 'box',
+            'layout' => 'vertical',
+            'spacing' => 'xs',
+            'contents' => array(
+                array('type' => 'text', 'text' => '📎 附隨圖面：', 'size' => 'xs', 'color' => '#64748b', 'weight' => 'bold'),
+                array('type' => 'text', 'text' => $drawing, 'size' => 'xs', 'color' => '#2563eb', 'wrap' => true)
+            )
+        );
+    }
+
+    $header_bg = $is_test ? '#7c2d12' : '#0f172a';
+    $kicker_text = $is_test ? '⚠️【系統工程測試·請同仁勿驚慌】' : '⚡ 官網新進詢價清單';
+    $kicker_color = $is_test ? '#fef08a' : '#fbbf24';
+    $badge_text = $is_test ? '工程測試' : '即時通報';
+    $badge_color = $is_test ? '#fbbf24' : '#10b981';
+    $title_text = $is_test ? '⚠️ 系統測試 · 線上詢價通報單' : '法寶實業 · 線上客戶詢價單';
+    $sub_text = $is_test ? "案號：{$tid} | 系統功能驗證（非客戶訂單）" : "案號：{$tid} | {$time}";
+    $alt_text = $is_test ? "⚠️【系統測試·非真實客戶】法寶實業詢價單！({$tid})" : "⚡【法寶實業】線上客戶詢價單！({$tid})";
+
+    return array(
+        'type' => 'flex',
+        'altText' => $alt_text,
+        'contents' => array(
+            'type' => 'bubble',
+            'size' => 'mega',
+            'header' => array(
+                'type' => 'box',
+                'layout' => 'vertical',
+                'backgroundColor' => $header_bg,
+                'paddingAll' => '16px',
+                'contents' => array(
+                    array(
+                        'type' => 'box',
+                        'layout' => 'horizontal',
+                        'contents' => array(
+                            array('type' => 'text', 'text' => $kicker_text, 'weight' => 'bold', 'color' => $kicker_color, 'size' => 'xs', 'flex' => 1),
+                            array('type' => 'text', 'text' => $badge_text, 'weight' => 'bold', 'color' => $badge_color, 'size' => 'xxs', 'align' => 'end')
+                        )
+                    ),
+                    array('type' => 'text', 'text' => $title_text, 'weight' => 'bold', 'color' => '#ffffff', 'size' => 'lg', 'margin' => 'sm'),
+                    array('type' => 'text', 'text' => $sub_text, 'color' => '#cbd5e1', 'size' => 'xs', 'margin' => 'xs')
+                )
+            ),
+            'body' => array(
+                'type' => 'box',
+                'layout' => 'vertical',
+                'paddingAll' => '18px',
+                'spacing' => 'md',
+                'contents' => $body_contents
+            ),
+            'footer' => array(
+                'type' => 'box',
+                'layout' => 'vertical',
+                'spacing' => 'sm',
+                'paddingAll' => '14px',
+                'contents' => array(
+                    array(
+                        'type' => 'button',
+                        'action' => array(
+                            'type' => 'uri',
+                            'label' => '📞 一鍵直接撥打電話',
+                            'uri' => 'tel:' . $clean_phone
+                        ),
+                        'style' => 'primary',
+                        'color' => '#059669',
+                        'height' => 'sm'
+                    ),
+                    array(
+                        'type' => 'button',
+                        'action' => array(
+                            'type' => 'uri',
+                            'label' => '🖥️ 前往官網後台管理',
+                            'uri' => 'https://www.fapolu.com.tw/admin.html'
+                        ),
+                        'style' => 'secondary',
+                        'color' => '#0f172a',
+                        'height' => 'sm'
+                    )
+                )
+            )
+        )
+    );
+}
+
+function build_admin_test_flex_card() {
+    $now_str = date('Y-m-d H:i:s');
+    return array(
+        'type' => 'flex',
+        'altText' => '⚠️【工程師系統檢測·請同仁勿驚慌】法寶實業推播正常',
+        'contents' => array(
+            'type' => 'bubble',
+            'size' => 'mega',
+            'header' => array(
+                'type' => 'box',
+                'layout' => 'vertical',
+                'backgroundColor' => '#1e293b',
+                'paddingAll' => '16px',
+                'contents' => array(
+                    array(
+                        'type' => 'box',
+                        'layout' => 'horizontal',
+                        'contents' => array(
+                            array('type' => 'text', 'text' => '⚠️【工程師系統檢測·請同仁勿驚慌】', 'weight' => 'bold', 'color' => '#fbbf24', 'size' => 'xs', 'flex' => 1),
+                            array('type' => 'text', 'text' => '工程測試', 'weight' => 'bold', 'color' => '#f59e0b', 'size' => 'xxs', 'align' => 'end')
+                        )
+                    ),
+                    array('type' => 'text', 'text' => '法寶實業 · LINE 即時推播正常', 'weight' => 'bold', 'color' => '#ffffff', 'size' => 'lg', 'margin' => 'sm'),
+                    array('type' => 'text', 'text' => "測試時間：{$now_str} | 非真實客戶詢價", 'color' => '#cbd5e1', 'size' => 'xs', 'margin' => 'xs')
+                )
+            ),
+            'body' => array(
+                'type' => 'box',
+                'layout' => 'vertical',
+                'paddingAll' => '18px',
+                'spacing' => 'md',
+                'contents' => array(
+                    array(
+                        'type' => 'box',
+                        'layout' => 'vertical',
+                        'backgroundColor' => '#fef3c7',
+                        'paddingAll' => '10px',
+                        'cornerRadius' => '6px',
+                        'contents' => array(
+                            array(
+                                'type' => 'text',
+                                'text' => '📢【提醒同仁】此為工程師系統連線與格式測試，非真實客戶訂單，請勿撥打電話或進行報價！',
+                                'size' => 'xs',
+                                'color' => '#b45309',
+                                'weight' => 'bold',
+                                'wrap' => true
+                            )
+                        )
+                    ),
+                    array(
+                        'type' => 'box',
+                        'layout' => 'vertical',
+                        'spacing' => 'sm',
+                        'contents' => array(
+                            build_flex_row('🖥️ 伺服主機', '戰國策專屬主機 (fapolu.com.tw)'),
+                            build_flex_row('🤖 官方帳號', '法寶實業 (@602jdoua)'),
+                            build_flex_row('📢 推播模式', '全員同步廣播（所有同仁接收）', '#059669', true),
+                            build_flex_row('✅ 通報狀態', '綠燈正常運作中（精美卡片版）', '#0284c7', true)
+                        )
+                    ),
+                    array('type' => 'separator'),
+                    array(
+                        'type' => 'text',
+                        'text' => '官網金屬詢價、揚州專案諮詢均已全面升級為精美 LINE 卡片，包含一鍵直接撥打電話與前往管理後台功能。',
+                        'size' => 'xs',
+                        'color' => '#64748b',
+                        'wrap' => true
+                    )
+                )
+            ),
+            'footer' => array(
+                'type' => 'box',
+                'layout' => 'vertical',
+                'spacing' => 'sm',
+                'paddingAll' => '14px',
+                'contents' => array(
+                    array(
+                        'type' => 'button',
+                        'action' => array(
+                            'type' => 'uri',
+                            'label' => '🖥️ 前往官網後台管理',
+                            'uri' => 'https://www.fapolu.com.tw/admin.html'
+                        ),
+                        'style' => 'primary',
+                        'color' => '#059669',
+                        'height' => 'sm'
+                    )
+                )
+            )
+        )
+    );
+}
+
+
+
+// LINE Notification Function (Broadcast to all followers, supports Flex Card & Text)
+function trigger_line_notification($msg_or_card) {
     global $DATA_DIR;
     $cfg_file = __DIR__ . '/line_config.json';
     if (!file_exists($cfg_file)) $cfg_file = $DATA_DIR . '/line_config.json';
@@ -119,11 +407,15 @@ function trigger_line_notification($msg) {
     $user_id = !empty($cfg['user_id']) ? $cfg['user_id'] : 'U61e3e6e073b76a54d63b7dcb30744c63';
     if (empty($token)) return false;
 
+    $message_item = (is_array($msg_or_card) && isset($msg_or_card['type'])) 
+        ? $msg_or_card 
+        : array('type' => 'text', 'text' => (string)$msg_or_card);
+
     // 1. Try Broadcast to all friends
     $bch = curl_init('https://api.line.me/v2/bot/message/broadcast');
     curl_setopt($bch, CURLOPT_POST, true);
     curl_setopt($bch, CURLOPT_POSTFIELDS, json_encode(array(
-        'messages' => array(array('type' => 'text', 'text' => $msg))
+        'messages' => array($message_item)
     ), JSON_UNESCAPED_UNICODE));
     curl_setopt($bch, CURLOPT_HTTPHEADER, array(
         'Content-Type: application/json',
@@ -145,7 +437,7 @@ function trigger_line_notification($msg) {
         curl_setopt($pch, CURLOPT_POST, true);
         curl_setopt($pch, CURLOPT_POSTFIELDS, json_encode(array(
             'to' => $user_id,
-            'messages' => array(array('type' => 'text', 'text' => $msg))
+            'messages' => array($message_item)
         ), JSON_UNESCAPED_UNICODE));
         curl_setopt($pch, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
@@ -220,24 +512,9 @@ if ($route === 'contact' && $method === 'POST') {
     array_unshift($inquiries, $record);
     save_json_data($INQUIRIES_FILE, $inquiries);
 
-    // Send LINE Notification
-    $line_msg = "⚡【法寶實業】官網新客戶詢價單！({$ticket_id})\n"
-              . "━━━━━━━━━━━━━━━\n"
-              . "🏢 公司名稱：{$c_company}\n"
-              . "👤 聯絡窗口：{$c_person}\n"
-              . "📞 聯絡電話：{$c_phone}\n"
-              . "✉️ 電子信箱：{$c_email}\n"
-              . "📦 詢價規格：{$c_mat}\n"
-              . "📍 送貨地區：{$c_county}（{$c_branch}）\n"
-              . "💬 需求說明：{$c_msg}\n";
-    if (!empty($c_drawing)) {
-        $line_msg .= "📎 附加圖面：{$c_drawing}\n";
-    }
-    $line_msg .= "⏰ 提交時間：{$now_str}\n"
-              . "━━━━━━━━━━━━━━━\n"
-              . "🔗 管理後台：https://www.fapolu.com.tw/admin.html";
-
-    @trigger_line_notification($line_msg);
+    // Send LINE Flex Message Card (Rich layout with direct-dial button)
+    $flex_card = build_inquiry_flex_card($record);
+    @trigger_line_notification($flex_card);
 
     echo json_encode(array(
         'success' => true,
@@ -261,6 +538,20 @@ if ($route === 'admin/login' && $method === 'POST') {
     } else {
         http_response_code(401);
         echo json_encode(array('success' => false, 'error' => '管理密碼錯誤，請重新輸入'));
+    }
+    exit;
+}
+
+// TEST LINE NOTIFY (ADMIN)
+if ($route === 'admin/test-line' && $method === 'POST') {
+    check_admin_auth();
+    $test_card = build_admin_test_flex_card();
+    $ok = trigger_line_notification($test_card);
+    if ($ok) {
+        echo json_encode(array('success' => true, 'message' => 'LINE 全員廣播測試卡片已成功送出！所有加入好友的同仁均已同步收到精美通報卡。'));
+    } else {
+        http_response_code(500);
+        echo json_encode(array('success' => false, 'message' => 'LINE 推送失敗，請確認 Channel Access Token 是否有效。'));
     }
     exit;
 }

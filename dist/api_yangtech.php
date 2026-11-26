@@ -110,42 +110,331 @@ function get_line_config() {
     return get_json($cfg_file);
 }
 
-function send_line_push_notification($text, $to_user = null) {
+function build_yt_flex_row($label, $value, $value_color = '#0f172a', $is_bold = true) {
+    return array(
+        'type' => 'box',
+        'layout' => 'horizontal',
+        'spacing' => 'sm',
+        'contents' => array(
+            array(
+                'type' => 'box',
+                'layout' => 'vertical',
+                'width' => '75px',
+                'contents' => array(
+                    array('type' => 'text', 'text' => $label, 'size' => 'xs', 'color' => '#64748b')
+                )
+            ),
+            array(
+                'type' => 'text',
+                'text' => !empty($value) ? (string)$value : '未填寫',
+                'size' => 'sm',
+                'color' => $value_color,
+                'weight' => $is_bold ? 'bold' : 'regular',
+                'wrap' => true,
+                'flex' => 1
+            )
+        )
+    );
+}
+
+function build_yangtech_flex_card($lead) {
+    $id = isset($lead['id']) ? $lead['id'] : 'YT-' . date('Ymd') . '-001';
+    $company = isset($lead['company']) && $lead['company'] !== '' ? $lead['company'] : '個人/未填寫';
+    $name = isset($lead['name']) && $lead['name'] !== '' ? $lead['name'] : '未填寫';
+    $phone = isset($lead['phone']) && $lead['phone'] !== '' ? $lead['phone'] : '未填寫';
+    $email = isset($lead['email']) && $lead['email'] !== '' ? $lead['email'] : '未填寫';
+    $line_id = isset($lead['line_id']) && $lead['line_id'] !== '' ? $lead['line_id'] : '未填寫';
+    $service_type = isset($lead['service_type']) && $lead['service_type'] !== '' ? $lead['service_type'] : '數位轉型整合';
+    $budget = isset($lead['budget']) && $lead['budget'] !== '' ? $lead['budget'] : '洽談評估中';
+    $message = isset($lead['message']) && $lead['message'] !== '' ? $lead['message'] : '無補充備註';
+    $created_at = isset($lead['created_at']) ? $lead['created_at'] : date('Y-m-d H:i:s');
+
+    $is_test = (
+        mb_strpos($company, '測試') !== false ||
+        mb_strpos($name, '測試') !== false ||
+        mb_strpos($message, '測試') !== false ||
+        stripos($company, 'test') !== false
+    );
+
+    $clean_phone = preg_replace('/[^\d\+]/', '', $phone);
+    if (empty($clean_phone)) $clean_phone = '0227183134';
+
+    $body_contents = array();
+    if ($is_test) {
+        $body_contents[] = array(
+            'type' => 'box',
+            'layout' => 'vertical',
+            'backgroundColor' => '#fef3c7',
+            'paddingAll' => '10px',
+            'cornerRadius' => '6px',
+            'contents' => array(
+                array(
+                    'type' => 'text',
+                    'text' => '📢【工程測試提醒】此單為系統升級連線測試，非真實客戶洽詢，請同仁勿撥打電話或接單！',
+                    'size' => 'xs',
+                    'color' => '#b45309',
+                    'weight' => 'bold',
+                    'wrap' => true
+                )
+            )
+        );
+    }
+
+    $body_contents[] = array(
+        'type' => 'box',
+        'layout' => 'vertical',
+        'spacing' => 'sm',
+        'contents' => array(
+            build_yt_flex_row('🏢 客戶公司', $company),
+            build_yt_flex_row('👤 聯絡姓名', $name),
+            build_yt_flex_row('📞 聯絡電話', $phone, '#0284c7', true),
+            build_yt_flex_row('✉️ 電子信箱', $email, '#334155', false),
+            build_yt_flex_row('💬 客戶LINE', $line_id, '#059669', true)
+        )
+    );
+    $body_contents[] = array('type' => 'separator');
+    $body_contents[] = array(
+        'type' => 'box',
+        'layout' => 'vertical',
+        'spacing' => 'xs',
+        'contents' => array(
+            array('type' => 'text', 'text' => '🎯 諮詢項目需求：', 'size' => 'xs', 'color' => '#64748b', 'weight' => 'bold'),
+            array('type' => 'text', 'text' => $service_type, 'size' => 'sm', 'color' => '#0f172a', 'weight' => 'bold', 'wrap' => true),
+            build_yt_flex_row('💰 預算規模', $budget, '#dc2626', true)
+        )
+    );
+    $body_contents[] = array(
+        'type' => 'box',
+        'layout' => 'vertical',
+        'spacing' => 'xs',
+        'contents' => array(
+            array('type' => 'text', 'text' => '📝 需求詳細說明：', 'size' => 'xs', 'color' => '#64748b'),
+            array('type' => 'text', 'text' => $message, 'size' => 'xs', 'color' => '#475569', 'wrap' => true)
+        )
+    );
+
+    $header_bg = $is_test ? '#7c2d12' : '#064e3b';
+    $kicker_text = $is_test ? '⚠️【系統工程測試·請同仁勿驚慌】' : '🌸 揚州專案諮詢整合';
+    $kicker_color = $is_test ? '#fef08a' : '#a7f3d0';
+    $badge_text = $is_test ? '工程測試' : '即時通報';
+    $badge_color = $is_test ? '#fbbf24' : '#34d399';
+    $title_text = $is_test ? '⚠️ 系統測試 · 揚州諮詢單' : 'YangTech · 線上專案諮詢單';
+    $sub_text = $is_test ? "案號：{$id} | 系統功能驗證（非客戶案件）" : "案號：{$id} | {$created_at}";
+    $alt_text = $is_test ? "⚠️【系統測試·非真實客戶】專案諮詢單！({$id})" : "🌸【揚州專案】新客戶線上諮詢單！({$id})";
+
+    return array(
+        'type' => 'flex',
+        'altText' => $alt_text,
+        'contents' => array(
+            'type' => 'bubble',
+            'size' => 'mega',
+            'header' => array(
+                'type' => 'box',
+                'layout' => 'vertical',
+                'backgroundColor' => $header_bg,
+                'paddingAll' => '16px',
+                'contents' => array(
+                    array(
+                        'type' => 'box',
+                        'layout' => 'horizontal',
+                        'contents' => array(
+                            array('type' => 'text', 'text' => $kicker_text, 'weight' => 'bold', 'color' => $kicker_color, 'size' => 'xs', 'flex' => 1),
+                            array('type' => 'text', 'text' => $badge_text, 'weight' => 'bold', 'color' => $badge_color, 'size' => 'xxs', 'align' => 'end')
+                        )
+                    ),
+                    array('type' => 'text', 'text' => $title_text, 'weight' => 'bold', 'color' => '#ffffff', 'size' => 'lg', 'margin' => 'sm'),
+                    array('type' => 'text', 'text' => $sub_text, 'color' => '#cbd5e1', 'size' => 'xs', 'margin' => 'xs')
+                )
+            ),
+            'body' => array(
+                'type' => 'box',
+                'layout' => 'vertical',
+                'paddingAll' => '18px',
+                'spacing' => 'md',
+                'contents' => $body_contents
+            ),
+            'footer' => array(
+                'type' => 'box',
+                'layout' => 'vertical',
+                'spacing' => 'sm',
+                'paddingAll' => '14px',
+                'contents' => array(
+                    array(
+                        'type' => 'button',
+                        'action' => array(
+                            'type' => 'uri',
+                            'label' => '📞 一鍵直接撥打電話',
+                            'uri' => 'tel:' . $clean_phone
+                        ),
+                        'style' => 'primary',
+                        'color' => '#0d9488',
+                        'height' => 'sm'
+                    ),
+                    array(
+                        'type' => 'button',
+                        'action' => array(
+                            'type' => 'uri',
+                            'label' => '🖥️ 前往專案管理後台',
+                            'uri' => 'https://www.fapolu.com.tw/yangtech_admin.html'
+                        ),
+                        'style' => 'secondary',
+                        'color' => '#0f172a',
+                        'height' => 'sm'
+                    )
+                )
+            )
+        )
+    );
+}
+
+function build_admin_test_flex_card() {
+    $now_str = date('Y-m-d H:i:s');
+    return array(
+        'type' => 'flex',
+        'altText' => '⚠️【工程師系統檢測·請同仁勿驚慌】法寶實業推播正常',
+        'contents' => array(
+            'type' => 'bubble',
+            'size' => 'mega',
+            'header' => array(
+                'type' => 'box',
+                'layout' => 'vertical',
+                'backgroundColor' => '#1e293b',
+                'paddingAll' => '16px',
+                'contents' => array(
+                    array(
+                        'type' => 'box',
+                        'layout' => 'horizontal',
+                        'contents' => array(
+                            array('type' => 'text', 'text' => '⚠️【工程師系統檢測·請同仁勿驚慌】', 'weight' => 'bold', 'color' => '#fbbf24', 'size' => 'xs', 'flex' => 1),
+                            array('type' => 'text', 'text' => '工程測試', 'weight' => 'bold', 'color' => '#f59e0b', 'size' => 'xxs', 'align' => 'end')
+                        )
+                    ),
+                    array('type' => 'text', 'text' => '法寶實業 · LINE 即時推播正常', 'weight' => 'bold', 'color' => '#ffffff', 'size' => 'lg', 'margin' => 'sm'),
+                    array('type' => 'text', 'text' => "測試時間：{$now_str} | 非真實客戶詢價", 'color' => '#cbd5e1', 'size' => 'xs', 'margin' => 'xs')
+                )
+            ),
+            'body' => array(
+                'type' => 'box',
+                'layout' => 'vertical',
+                'paddingAll' => '18px',
+                'spacing' => 'md',
+                'contents' => array(
+                    array(
+                        'type' => 'box',
+                        'layout' => 'vertical',
+                        'backgroundColor' => '#fef3c7',
+                        'paddingAll' => '10px',
+                        'cornerRadius' => '6px',
+                        'contents' => array(
+                            array(
+                                'type' => 'text',
+                                'text' => '📢【提醒同仁】此為工程師系統連線與格式測試，非真實客戶訂單，請勿撥打電話或進行報價！',
+                                'size' => 'xs',
+                                'color' => '#b45309',
+                                'weight' => 'bold',
+                                'wrap' => true
+                            )
+                        )
+                    ),
+                    array(
+                        'type' => 'box',
+                        'layout' => 'vertical',
+                        'spacing' => 'sm',
+                        'contents' => array(
+                            build_yt_flex_row('🖥️ 伺服主機', '戰國策專屬主機 (fapolu.com.tw)'),
+                            build_yt_flex_row('🤖 官方帳號', '法寶實業 (@602jdoua)'),
+                            build_yt_flex_row('📢 推播模式', '全員同步廣播（所有同仁接收）', '#059669', true),
+                            build_yt_flex_row('✅ 通報狀態', '綠燈正常運作中（精美卡片版）', '#0284c7', true)
+                        )
+                    ),
+                    array('type' => 'separator'),
+                    array(
+                        'type' => 'text',
+                        'text' => '官網金屬詢價、揚州專案諮詢均已全面升級為精美 LINE 卡片，包含一鍵直接撥打電話與前往管理後台功能。',
+                        'size' => 'xs',
+                        'color' => '#64748b',
+                        'wrap' => true
+                    )
+                )
+            ),
+            'footer' => array(
+                'type' => 'box',
+                'layout' => 'vertical',
+                'spacing' => 'sm',
+                'paddingAll' => '14px',
+                'contents' => array(
+                    array(
+                        'type' => 'button',
+                        'action' => array(
+                            'type' => 'uri',
+                            'label' => '🖥️ 前往官網後台管理',
+                            'uri' => 'https://www.fapolu.com.tw/admin.html'
+                        ),
+                        'style' => 'primary',
+                        'color' => '#059669',
+                        'height' => 'sm'
+                    )
+                )
+            )
+        )
+    );
+}
+
+function send_line_push_notification($msg_or_card, $to_user = null) {
     $cfg = get_line_config();
     $token = !empty($cfg['channel_access_token']) ? $cfg['channel_access_token'] : 'OYxWmTRvLTCInR9X22g/muRg5xuEeb3UHLfgv9O9NSxFZXqF3MxbgdDCCXJG0ZeCpZyMTuA4SV+2zoBNmVqCvXpofkbV6MGm66v4hDBfCYTYoSuAq+QPnmn/5lZ3ss5FN1tBzoQ5OjGtqNqe/qUYzwdB04t89/1O/w1cDnyilFU=';
     $user_id = $to_user ?: (!empty($cfg['user_id']) ? $cfg['user_id'] : 'U61e3e6e073b76a54d63b7dcb30744c63');
 
-    if (empty($token) || empty($user_id)) {
+    if (empty($token)) {
         return false;
     }
 
-    $url = 'https://api.line.me/v2/bot/message/push';
-    $payload = array(
-        'to' => $user_id,
-        'messages' => array(
-            array(
-                'type' => 'text',
-                'text' => $text
-            )
-        )
-    );
+    $message_item = (is_array($msg_or_card) && isset($msg_or_card['type']))
+        ? $msg_or_card
+        : array('type' => 'text', 'text' => (string)$msg_or_card);
 
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload, JSON_UNESCAPED_UNICODE));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    // 1. Try Broadcast to all followers
+    $bch = curl_init('https://api.line.me/v2/bot/message/broadcast');
+    curl_setopt($bch, CURLOPT_POST, true);
+    curl_setopt($bch, CURLOPT_POSTFIELDS, json_encode(array(
+        'messages' => array($message_item)
+    ), JSON_UNESCAPED_UNICODE));
+    curl_setopt($bch, CURLOPT_HTTPHEADER, array(
         'Content-Type: application/json',
         'Authorization: Bearer ' . $token
     ));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 6);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    $res = curl_exec($ch);
-    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
+    curl_setopt($bch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($bch, CURLOPT_TIMEOUT, 6);
+    curl_setopt($bch, CURLOPT_CONNECTTIMEOUT, 3);
+    curl_setopt($bch, CURLOPT_SSL_VERIFYPEER, false);
+    $bres = curl_exec($bch);
+    $bcode = curl_getinfo($bch, CURLINFO_HTTP_CODE);
+    curl_close($bch);
 
-    return ($code === 200);
+    if ($bcode === 200) return true;
+
+    // 2. Fallback to push
+    if (!empty($user_id)) {
+        $pch = curl_init('https://api.line.me/v2/bot/message/push');
+        curl_setopt($pch, CURLOPT_POST, true);
+        curl_setopt($pch, CURLOPT_POSTFIELDS, json_encode(array(
+            'to' => $user_id,
+            'messages' => array($message_item)
+        ), JSON_UNESCAPED_UNICODE));
+        curl_setopt($pch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $token
+        ));
+        curl_setopt($pch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($pch, CURLOPT_TIMEOUT, 6);
+        curl_setopt($pch, CURLOPT_CONNECTTIMEOUT, 3);
+        curl_setopt($pch, CURLOPT_SSL_VERIFYPEER, false);
+        $res = curl_exec($pch);
+        $code = curl_getinfo($pch, CURLINFO_HTTP_CODE);
+        curl_close($pch);
+        return ($code === 200);
+    }
+    return false;
 }
 
 function send_line_lead_notification($lead) {
@@ -160,22 +449,8 @@ function send_line_lead_notification($lead) {
     $message = isset($lead['message']) ? $lead['message'] : '';
     $created_at = isset($lead['created_at']) ? $lead['created_at'] : date('Y-m-d H:i:s');
 
-    $text = "🔔【揚州數位轉型】新專案洽詢通報！\n"
-          . "━━━━━━━━━━━━━━━\n"
-          . "📌 案件編號：{$id}\n"
-          . "🏢 客戶公司：{$company}\n"
-          . "👤 聯絡姓名：{$name}\n"
-          . "📞 聯絡電話：{$phone}\n"
-          . "✉️ 電子信箱：{$email}\n"
-          . "💬 客戶LINE：{$line_id}\n"
-          . "🎯 諮詢項目：{$service_type}\n"
-          . "💰 預算規模：{$budget}\n"
-          . "📝 需求說明：{$message}\n"
-          . "⏰ 提交時間：{$created_at}\n"
-          . "━━━━━━━━━━━━━━━\n"
-          . "🔗 管理後台：https://www.fapolu.com.tw/yangtech_admin.html";
-
-    return send_line_push_notification($text);
+    $card = build_yangtech_flex_card($lead);
+    return send_line_push_notification($card);
 }
 
 $action = isset($_GET['action']) ? $_GET['action'] : '';
@@ -743,19 +1018,10 @@ if ($action === 'cloud_sync_all') {
 // 13. TEST LINE NOTIFY (ADMIN)
 if ($action === 'test_line_notify') {
     check_admin_auth();
-    $test_msg = "🔔【法寶實業 官網即時通報測試】\n"
-              . "━━━━━━━━━━━━━━━\n"
-              . "您好！這是一則來自官網管理後台的連線測試通知：\n"
-              . "• 主機伺服器：戰國策雲端主機 (fapolu.com.tw)\n"
-              . "• 官方帳號：法寶實業 (@602jdoua)\n"
-              . "• 測試時間：" . date('Y-m-d H:i:s') . "\n"
-              . "• 通報狀態：✅ 綠燈運作中\n"
-              . "━━━━━━━━━━━━━━━\n"
-              . "日後官網如有新的「金屬詢價」或「專案洽詢」，系統將自動同步推播至此！";
-
-    $ok = send_line_push_notification($test_msg);
+    $test_card = build_admin_test_flex_card();
+    $ok = send_line_push_notification($test_card);
     if ($ok) {
-        echo json_encode(array('success' => true, 'message' => 'LINE 測試訊息已成功推送至您的 LINE 官方帳號對話框！'));
+        echo json_encode(array('success' => true, 'message' => 'LINE 全員廣播測試卡片已成功送出！所有加入好友的同仁均已同步收到精美通報卡。'));
     } else {
         http_response_code(500);
         echo json_encode(array('success' => false, 'message' => 'LINE 推送失敗，請確認 Channel Access Token 是否有效。'));

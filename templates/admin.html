@@ -763,6 +763,7 @@
             <div id="smtpStatusPill" class="smtp-pill off" onclick="openSettingsModal()" title="點擊設定 Email 通知">
                 ⚪ Email 通知檢測中...
             </div>
+            <button class="btn btn-outline btn-sm" onclick="testLineNotify()" id="btnTestLine" style="border-color:#06c755; color:#06c755; font-weight:700;">🟢 測試 LINE 即時推播</button>
             <button class="btn" onclick="fetchInquiries()">🔄 重新整理</button>
             <button class="btn" onclick="openSettingsModal()">⚙️ 雲端與通知設定</button>
             <button class="btn btn-emerald" onclick="exportCsv()">📥 匯出 Excel (CSV)</button>
@@ -2044,7 +2045,31 @@ function doPost(e) {
                 showLogin();
             }
         });
-    </script>
+    
+        async function testLineNotify() {
+            const btn = document.getElementById('btnTestLine');
+            const oldText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '⏳ 發送中...';
+            try {
+                const res = await fetch('/api/admin/test-line', {
+                    method: 'POST',
+                    headers: getAuthHeader()
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('✅ 測試發送成功！\n\n' + data.message + '\n\n（卡片已自動加註【工程師系統檢測·請同仁勿驚慌】，同仁手機將收到精美通報卡）');
+                } else {
+                    alert('❌ 發送失敗：' + (data.message || '未知錯誤'));
+                }
+            } catch (err) {
+                alert('❌ 連線異常：' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = oldText;
+            }
+        }
+</script>
 
 </div>
 
