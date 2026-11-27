@@ -2594,10 +2594,31 @@ function formatAiMarkdown(text) {
 }
 
 window.sendAiQuickPrompt = function (promptText) {
+    if (promptText.includes('LINE') || promptText.includes('開啟 LINE')) {
+        window.open('https://line.me/R/ti/p/@602jdoua', '_blank');
+        return;
+    }
+    if (promptText.includes('留下電話') || promptText.includes('留電話')) {
+        window.focusAiPhoneInput();
+        return;
+    }
+    if (promptText.includes('即時諮詢與快速估價') || promptText.includes('線上估價單') || promptText.includes('前往快速估價')) {
+        window.open('https://www.fapolu.com.tw/#contact', '_blank');
+        return;
+    }
     const inp = document.getElementById('aiChatInput');
     if (inp) {
         inp.value = promptText;
         sendAiChatMessage();
+    }
+};
+
+window.focusAiPhoneInput = function () {
+    const inp = document.getElementById('aiChatInput');
+    if (inp) {
+        inp.value = '我的聯絡電話是：';
+        inp.focus();
+        inp.setSelectionRange(inp.value.length, inp.value.length);
     }
 };
 
